@@ -4,10 +4,10 @@ import 'app_colors.dart';
 
 class AzulProTheme {
   static ThemeData get lightTheme {
-    final base = GoogleFonts.spaceGroteskTextTheme();
+    final base = GoogleFonts.interTextTheme();
     return ThemeData(
       useMaterial3: true,
-      fontFamily: GoogleFonts.spaceGrotesk().fontFamily,
+      fontFamily: GoogleFonts.inter().fontFamily,
       textTheme: base,
       colorScheme: const ColorScheme(
         brightness: Brightness.light,

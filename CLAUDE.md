@@ -31,11 +31,19 @@ lib/
 │       ├── am_press.dart
 │       ├── am_ramo_icon.dart
 │       ├── am_section_label.dart
-│       └── am_segmented.dart
+│       ├── am_segmented.dart
+│       └── am_text_field.dart      # Campo de texto estilizado (reutilizable en forms)
 └── features/
-    ├── onboarding/presentation/
-    │   ├── splash_screen.dart      # Logo animado con rings pulsantes → auto-navega a /login
-    │   └── login_screen.dart       # Gradiente azul, botones Apple/Google/invitado
+    ├── onboarding/
+    │   ├── presentation/
+    │   │   ├── splash_screen.dart  # Logo animado con rings pulsantes → auto-navega a /login
+    │   │   └── login_screen.dart   # Gradiente azul, botones Apple/Google/invitado
+    │   ├── providers/
+    │   │   └── login_provider.dart # LoginNotifier: signInWithGoogle/Apple/Guest/Email
+    │   └── widgets/
+    │       ├── login_social_btn.dart   # Botón blanco con icon + texto azul (Apple/Google)
+    │       ├── login_guest_btn.dart    # Botón transparente "Explorar como invitado"
+    │       └── email_login_sheet.dart  # Bottom sheet con form email/contraseña
     ├── home/presentation/
     │   └── home_screen.dart        # Dashboard del asesor: alertas, action cards, AI bar, stats
     ├── clients/presentation/
@@ -81,6 +89,38 @@ lib/
 | `AmSectionLabel` | `label`, `trailing` | Label en mayúsculas |
 | `AmBackBar` | `title`, `subtitle`, `trailing`, `onBack` | Blur + sticky top |
 | `AmRamoIcon` | `ramo`, `size` | Icono coloreado: Auto/GMM/Vida/Hogar |
+
+---
+
+## Arquitectura de features
+
+### Separación pantalla / lógica
+
+**Las pantallas solo presentan. Toda lógica va en providers.**
+
+- Cada feature tiene su propio provider en `features/<nombre>/providers/<nombre>_provider.dart`
+- La pantalla (`presentation/`) solo hace `ref.watch` / `ref.read` + renderiza
+- No hay funciones async inline en `build`, ni llamadas directas a `authProvider` u otros providers core desde la pantalla — pasan por el provider de la feature
+- Los errores los decide el provider (expone un enum de error); la pantalla convierte ese enum en string para mostrarlo
+
+### Widgets sin guión bajo — cada uno en su propio archivo
+
+- **Nunca** clases privadas con `_` en un archivo de pantalla
+- Si el widget es reutilizable en otras pantallas → `core/widgets/am_<nombre>.dart`
+- Si el widget es específico de una feature → `features/<feature>/widgets/<nombre>.dart`
+- Convención de nombre: `LoginSocialBtn`, `EmailLoginSheet`, `AmTextField` (sin prefijo `_`)
+
+### Estructura de un feature completo
+
+```
+features/<nombre>/
+├── presentation/
+│   └── <nombre>_screen.dart    # solo UI, sin lógica
+├── providers/
+│   └── <nombre>_provider.dart  # NotifierProvider con toda la lógica
+└── widgets/
+    └── <widget_name>.dart      # un archivo por widget
+```
 
 ---
 

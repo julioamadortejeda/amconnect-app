@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/mock/mock_data.dart';
+import 'package:amconnect/core/providers/auth_provider.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
 import 'package:amconnect/core/widgets/am_icon_btn.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ── Shared reminders provider ─────────────────────────────────────────────────
 
@@ -92,12 +94,80 @@ class HomeScreen extends ConsumerWidget {
 
 // ── Header ────────────────────────────────────────────────────────────────────
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   const _Header({required this.urgentCount});
   final int urgentCount;
 
+  void _showMenu(BuildContext context, WidgetRef ref) {
+    final user = Supabase.instance.client.auth.currentUser;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36, height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: AmColors.lineLight,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                alignment: Alignment.center,
+              ),
+              if (user?.email != null) ...[
+                Text('Cuenta',
+                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
+                        color: AmColors.mutedLight, letterSpacing: 0.06)),
+                const SizedBox(height: 6),
+                Text(user!.email!,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500,
+                        color: AmColors.inkLight)),
+                const SizedBox(height: 20),
+                const Divider(height: 1, color: AmColors.lineSoftLight),
+                const SizedBox(height: 12),
+              ],
+              AmPress(
+                onTap: () async {
+                  Navigator.pop(context);
+                  await ref.read(authProvider.notifier).signOut();
+                  if (context.mounted) context.go('/login');
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AmColors.redWashLight,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout_rounded, color: AmColors.redLight, size: 18),
+                      SizedBox(width: 9),
+                      Text('Cerrar sesión',
+                          style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
+                              color: AmColors.redLight)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -122,6 +192,12 @@ class _Header extends StatelessWidget {
             onTap: () => context.push('/agenda'),
             tone: AmIconBtnTone.soft,
             dot: urgentCount > 0,
+          ),
+          const SizedBox(width: 8),
+          AmIconBtn(
+            icon: Icons.person_outline_rounded,
+            onTap: () => _showMenu(context, ref),
+            tone: AmIconBtnTone.soft,
           ),
         ],
       ),

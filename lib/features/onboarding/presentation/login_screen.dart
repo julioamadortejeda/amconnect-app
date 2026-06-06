@@ -1,147 +1,101 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/features/onboarding/providers/login_provider.dart';
+import 'package:amconnect/features/onboarding/widgets/login_social_btn.dart';
+import 'package:amconnect/features/onboarding/widgets/login_email_btn.dart';
 
-class LoginScreen extends StatelessWidget {
+const _kBg = Color(0xFF1278C5);
+
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(loginProvider);
+    final notifier = ref.read(loginProvider.notifier);
+
+    ref.listen(loginProvider, (prev, next) {
+      if (next.error != null && prev?.error != next.error) {
+        final msg = switch (next.error!) {
+          LoginError.google => 'No se pudo iniciar sesión con Google.',
+          LoginError.apple  => 'No se pudo iniciar sesión con Apple.',
+          LoginError.email  => 'Correo o contraseña incorrectos.',
+        };
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+          backgroundColor: AmColors.redLight,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ));
+      }
+    });
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF2EB0FF), Color(0xFF007AC0), Color(0xFF005580)],
-            stops: [0.0, 0.50, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                // Logo
-                Image.asset('assets/logo/logo_t.png', width: 92, height: 92,
-                    color: Colors.white),
-                const Spacer(),
-                // Headline
-                const Text(
-                  'Bienvenido a\nAMConnect',
-                  style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    letterSpacing: -0.02,
-                    height: 1.05,
-                  ),
+      backgroundColor: _kBg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              Image.asset('assets/logo/logo.png', width: 72, height: 72),
+              const Spacer(),
+              const Text(
+                'Bienvenido a\nAMConnect',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: -0.5,
+                  height: 1.1,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Tu asistente inteligente. Concentra a tus clientes, pólizas y recordatorios — y pregúntale lo que sea.',
-                  style: TextStyle(
-                    fontSize: 17,
-                    height: 1.45,
-                    color: Colors.white.withValues(alpha: 0.82),
-                  ),
-                ),
-                const Spacer(),
-                // Buttons
-                _SocialBtn(
-                  icon: Icons.apple,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Tu asistente inteligente. Concentra a tus clientes, pólizas y recordatorios — y pregúntale lo que sea.',
+                style: TextStyle(
+                    fontSize: 15,
+                    height: 1.55,
+                    color: Colors.white.withValues(alpha: 0.80)),
+              ),
+              const Spacer(),
+
+              if (Platform.isIOS) ...[
+                LoginSocialBtn(
+                  onTap: state.isLoading ? null : notifier.signInWithApple,
+                  icon: const Icon(Icons.apple, size: 22, color: Color(0xFF1A1A1A)),
                   label: 'Continuar con Apple',
-                  onTap: () => context.go('/home'),
                 ),
-                const SizedBox(height: 13),
-                _SocialBtn(
-                  icon: Icons.g_mobiledata_rounded,
-                  label: 'Continuar con Google',
-                  onTap: () => context.go('/home'),
-                ),
-                const SizedBox(height: 13),
-                AmPress(
-                  onTap: () => context.go('/home'),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1.5),
-                      borderRadius: BorderRadius.circular(17),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.person_outline, size: 19, color: Colors.white.withValues(alpha: 0.9)),
-                        const SizedBox(width: 10),
-                        Text('Explorar como invitado',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withValues(alpha: 0.9),
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  'Al continuar, aceptas los Términos y la Política de Privacidad.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: Colors.white.withValues(alpha: 0.7),
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
               ],
-            ),
+
+              LoginSocialBtn(
+                onTap: state.isLoading ? null : notifier.signInWithGoogle,
+                icon: Image.asset('assets/google_logo.png', width: 20, height: 20),
+                label: 'Continuar con Google',
+              ),
+              const SizedBox(height: 10),
+
+              LoginEmailBtn(
+                onTap: state.isLoading ? null : () => context.push('/email-login'),
+              ),
+
+              const SizedBox(height: 20),
+              Text(
+                'Al continuar, aceptas los Términos y la Política de Privacidad.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 12.5,
+                    color: Colors.white.withValues(alpha: 0.65),
+                    height: 1.5),
+              ),
+              const SizedBox(height: 18),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SocialBtn extends StatelessWidget {
-  const _SocialBtn({required this.icon, required this.label, required this.onTap});
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return AmPress(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(17),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 22,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 22, color: const Color(0xFF007AC0)),
-            const SizedBox(width: 11),
-            Text(label,
-                style: const TextStyle(
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF007AC0),
-                )),
-          ],
         ),
       ),
     );
