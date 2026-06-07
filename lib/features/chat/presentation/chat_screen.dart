@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/core/theme/am_theme.dart';
 import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/chat/providers/chat_provider.dart';
@@ -47,6 +48,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final chat = ref.watch(chatProvider);
 
@@ -59,7 +62,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final showSugg = chat.messages.isEmpty && !chat.isLoading;
 
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -69,7 +71,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.chevron_left, size: 26, color: AmColors.inkLight),
+                    icon: Icon(Icons.chevron_left, size: 26, color: cs.onSurface),
                     onPressed: () => context.pop(),
                   ),
                   Container(
@@ -86,23 +88,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(l10n.chatTitle,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600,
-                                color: AmColors.inkLight)),
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600,
+                                color: cs.onSurface)),
                         Row(children: [
                           Container(width: 7, height: 7,
-                              decoration: const BoxDecoration(
-                                  color: AmColors.greenLight, shape: BoxShape.circle)),
+                              decoration: BoxDecoration(
+                                  color: am.green, shape: BoxShape.circle)),
                           const SizedBox(width: 5),
                           Text(l10n.chatSubtitle,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                                  color: AmColors.greenLight)),
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                                  color: am.green)),
                         ]),
                       ],
                     ),
                   ),
                   if (chat.sessionId != null)
                     IconButton(
-                      icon: const Icon(Icons.refresh, color: AmColors.mutedLight, size: 20),
+                      icon: Icon(Icons.refresh, color: cs.tertiary, size: 20),
                       onPressed: () => ref.read(chatProvider.notifier).reset(),
                       tooltip: l10n.chatNewConversation,
                     ),
@@ -131,15 +133,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: AmColors.redLight.withValues(alpha: 0.1),
+                  color: cs.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AmColors.redLight.withValues(alpha: 0.3)),
+                  border: Border.all(color: cs.error.withValues(alpha: 0.3)),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.error_outline, color: AmColors.redLight, size: 16),
+                  Icon(Icons.error_outline, color: cs.error, size: 16),
                   const SizedBox(width: 8),
                   Expanded(child: Text(chat.error!,
-                      style: const TextStyle(fontSize: 13, color: AmColors.redLight))),
+                      style: TextStyle(fontSize: 13, color: cs.error))),
                 ]),
               ),
 
@@ -158,12 +160,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: AmColors.lineLight),
+                          border: Border.all(color: cs.outline),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(s,
-                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600,
-                                color: AmColors.inkSoftLight)),
+                            style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600,
+                                color: cs.onSurfaceVariant)),
                       ),
                     ),
                   )).toList(),
@@ -186,13 +188,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       controller: _ctrl,
                       onSubmitted: (_) => _send(),
                       enabled: !chat.isLoading,
-                      style: const TextStyle(fontSize: 15, color: AmColors.inkLight),
+                      style: TextStyle(fontSize: 15, color: cs.onSurface),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
                         hintText: l10n.chatInputHint,
-                        hintStyle: const TextStyle(color: AmColors.mutedLight),
+                        hintStyle: TextStyle(color: cs.tertiary),
                       ),
                     ),
                   ),
@@ -221,6 +223,7 @@ class _Bubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     if (role == 'user') {
       return Align(
         alignment: Alignment.centerRight,
@@ -265,7 +268,7 @@ class _Bubble extends StatelessWidget {
               boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
             ),
             child: Text(text,
-                style: const TextStyle(fontSize: 15, color: AmColors.inkLight, height: 1.5)),
+                style: TextStyle(fontSize: 15, color: cs.onSurface, height: 1.5)),
           ),
         ),
       ],
@@ -281,18 +284,19 @@ class _ActionBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return AmPress(
       onTap: onTap,
       child: Container(
         width: 40, height: 40,
         decoration: BoxDecoration(
-          color: accent ? AmColors.accent : AmColors.cardSunkenLight,
+          color: accent ? AmColors.accent : cs.secondaryContainer,
           borderRadius: BorderRadius.circular(13),
           boxShadow: accent
               ? [BoxShadow(color: AmColors.accent.withValues(alpha: 0.3), blurRadius: 10)]
               : null,
         ),
-        child: Icon(icon, size: 20, color: accent ? Colors.white : AmColors.inkSoftLight),
+        child: Icon(icon, size: 20, color: accent ? Colors.white : cs.onSurfaceVariant),
       ),
     );
   }
@@ -318,6 +322,7 @@ class _TypingBubbleState extends State<_TypingBubble> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
+    final am = context.am;
     return Row(
       children: [
         Container(
@@ -351,7 +356,7 @@ class _TypingBubbleState extends State<_TypingBubble> with SingleTickerProviderS
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   width: 8, height: 8,
                   decoration: BoxDecoration(
-                    color: AmColors.muted2Light.withValues(alpha: 0.4 + anim.value * 0.6),
+                    color: am.muted2.withValues(alpha: 0.4 + anim.value * 0.6),
                     shape: BoxShape.circle,
                   ),
                   transform: Matrix4.translationValues(0, -anim.value * 5, 0),

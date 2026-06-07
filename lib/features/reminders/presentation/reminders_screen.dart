@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/core/theme/am_theme.dart';
 import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/home/presentation/home_screen.dart';
+import 'package:amconnect/features/home/providers/home_provider.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
@@ -20,6 +21,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final reminders = ref.watch(remindersProvider);
     final filter = _filter;
@@ -30,7 +32,6 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     final pending = reminders.where((r) => !r.hecho).length;
 
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -43,11 +44,11 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(l10n.remindersPendingCount(pending),
-                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
-                                color: AmColors.mutedLight)),
+                            style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
+                                color: cs.tertiary)),
                         Text(l10n.remindersTitle,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
-                                color: AmColors.inkLight, letterSpacing: -0.01)),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
+                                color: cs.onSurface, letterSpacing: -0.01)),
                       ],
                     ),
                   ),
@@ -99,8 +100,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                   child: ListView.separated(
                     padding: const EdgeInsets.only(bottom: 20),
                     itemCount: filtered.length,
-                    separatorBuilder: (_, __) => const Divider(
-                        height: 0, indent: 18, endIndent: 18, color: AmColors.lineSoftLight),
+                    separatorBuilder: (_, __) => Divider(
+                        height: 0, indent: 18, endIndent: 18, color: cs.outlineVariant),
                     itemBuilder: (_, i) => _ReminderItem(r: filtered[i]),
                   ),
                 ),
@@ -122,12 +123,13 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return AmPress(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
         decoration: BoxDecoration(
-          color: active ? AmColors.accent : AmColors.cardLight,
+          color: active ? AmColors.accent : cs.surface,
           borderRadius: BorderRadius.circular(11),
           boxShadow: [
             BoxShadow(
@@ -138,7 +140,7 @@ class _FilterChip extends StatelessWidget {
         ),
         child: Text(label,
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500,
-                color: active ? Colors.white : AmColors.inkSoftLight)),
+                color: active ? Colors.white : cs.onSurfaceVariant)),
       ),
     );
   }
@@ -150,11 +152,13 @@ class _ReminderItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final (col, wash, icon) = switch (r.tipo) {
-      'pago'       => (AmColors.amberLight, AmColors.amberWashLight, Icons.payments_outlined),
-      'renovacion' => (AmColors.accentInk, AmColors.accentWash, Icons.autorenew),
-      'llamada'    => (AmColors.greenLight, AmColors.greenWashLight, Icons.phone_outlined),
-      _            => (AmColors.mutedLight, AmColors.cardSunkenLight, Icons.notifications_outlined),
+      'pago'       => (am.amber, am.amberWash, Icons.payments_outlined),
+      'renovacion' => (cs.onPrimaryContainer, cs.primaryContainer, Icons.autorenew),
+      'llamada'    => (am.green, am.greenWash, Icons.phone_outlined),
+      _            => (cs.tertiary, cs.secondaryContainer, Icons.notifications_outlined),
     };
 
     return Opacity(
@@ -168,8 +172,8 @@ class _ReminderItem extends ConsumerWidget {
               child: Container(
                 width: 26, height: 26,
                 decoration: BoxDecoration(
-                  color: r.hecho ? AmColors.greenLight : Colors.transparent,
-                  border: r.hecho ? null : Border.all(color: AmColors.lineLight, width: 2),
+                  color: r.hecho ? am.green : Colors.transparent,
+                  border: r.hecho ? null : Border.all(color: cs.outline, width: 2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: r.hecho
@@ -195,17 +199,17 @@ class _ReminderItem extends ConsumerWidget {
                   children: [
                     Text(r.titulo,
                         style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
-                            color: AmColors.inkLight,
+                            color: cs.onSurface,
                             decoration: r.hecho ? TextDecoration.lineThrough : null)),
                     Text('${r.sub}${r.hora != '—' ? ' · ${r.hora}' : ''}',
-                        style: const TextStyle(fontSize: 12.5, color: AmColors.mutedLight)),
+                        style: TextStyle(fontSize: 12.5, color: cs.tertiary)),
                   ],
                 ),
               ),
             ),
             if (r.urgente && !r.hecho)
               Container(width: 8, height: 8,
-                  decoration: const BoxDecoration(color: AmColors.redLight, shape: BoxShape.circle)),
+                  decoration: BoxDecoration(color: cs.error, shape: BoxShape.circle)),
           ],
         ),
       ),

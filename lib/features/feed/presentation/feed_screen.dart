@@ -52,6 +52,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final ingest = ref.watch(ingestProvider);
 
@@ -63,7 +64,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: SafeArea(
         child: Stack(
           children: [
@@ -74,15 +74,15 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l10n.feedTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
-                            color: AmColors.mutedLight)),
+                            color: cs.tertiary)),
                     Text(l10n.feedSubtitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: AmColors.inkLight,
+                            color: cs.onSurface,
                             letterSpacing: -0.01)),
                   ],
                 ),
@@ -126,20 +126,20 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(l10n.feedTypeWhatsapp,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: AmColors.inkLight)),
+                                    color: cs.onSurface)),
                             const SizedBox(height: 2),
                             Text(l10n.feedTypeWhatsappDesc,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 12.5,
-                                    color: AmColors.mutedLight)),
+                                    color: cs.tertiary)),
                           ],
                         ),
                       ),
-                      const Icon(Icons.chevron_right,
-                          color: AmColors.muted2Light, size: 18),
+                      Icon(Icons.chevron_right,
+                          color: cs.onSurfaceVariant, size: 18),
                     ],
                   ),
                 ),
@@ -167,24 +167,24 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: AmColors.redLight.withValues(alpha: 0.08),
+                        color: cs.error.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                            color: AmColors.redLight.withValues(alpha: 0.25)),
+                            color: cs.error.withValues(alpha: 0.25)),
                       ),
                       child: Row(children: [
-                        const Icon(Icons.error_outline,
-                            color: AmColors.redLight, size: 18),
+                        Icon(Icons.error_outline,
+                            color: cs.error, size: 18),
                         const SizedBox(width: 10),
                         Expanded(
                             child: Text(ingest.error!,
-                                style: const TextStyle(
-                                    fontSize: 13.5, color: AmColors.redLight))),
+                                style: TextStyle(
+                                    fontSize: 13.5, color: cs.error))),
                         TextButton(
                           onPressed: _handleClose,
                           child: Text(l10n.commonClose,
-                              style: const TextStyle(
-                                  color: AmColors.redLight, fontSize: 13)),
+                              style: TextStyle(
+                                  color: cs.error, fontSize: 13)),
                         ),
                       ]),
                     ),
@@ -212,6 +212,7 @@ class _TypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final bg = Color.alphaBlend(t.color.withValues(alpha: 0.14), Colors.white);
     return AmCard(
       onTap: onTap,
@@ -227,14 +228,14 @@ class _TypeCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(t.label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w600,
-                  color: AmColors.inkLight)),
+                  color: cs.onSurface)),
           const SizedBox(height: 3),
           Text(t.sub,
-              style: const TextStyle(
-                  fontSize: 12.5, color: AmColors.mutedLight, height: 1.4)),
+              style: TextStyle(
+                  fontSize: 12.5, color: cs.tertiary, height: 1.4)),
         ],
       ),
     );
@@ -248,6 +249,7 @@ class _DocRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final (icon, color) = switch (doc.tipo) {
       'doc' => (Icons.description_outlined, AmColors.srcDoc),
       'wave' => (Icons.graphic_eq, AmColors.srcWave),
@@ -260,9 +262,9 @@ class _DocRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(18, 13, 18, 13),
       decoration: isLast
           ? null
-          : const BoxDecoration(
+          : BoxDecoration(
               border:
-                  Border(bottom: BorderSide(color: AmColors.lineSoftLight))),
+                  Border(bottom: BorderSide(color: cs.outlineVariant))),
       child: Row(
         children: [
           Container(
@@ -278,15 +280,15 @@ class _DocRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(doc.nombre,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: AmColors.inkLight),
+                        color: cs.onSurface),
                     overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 1),
                 Text('${doc.cliente} · ${doc.tam} · ${doc.fecha}',
-                    style: const TextStyle(
-                        fontSize: 12, color: AmColors.mutedLight)),
+                    style: TextStyle(
+                        fontSize: 12, color: cs.tertiary)),
               ],
             ),
           ),
@@ -309,6 +311,7 @@ class _ProcessingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final isUploading = phase == IngestPhase.uploading;
     return Container(
@@ -331,7 +334,7 @@ class _ProcessingOverlay extends StatelessWidget {
                 height: 5,
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
-                    color: AmColors.lineLight,
+                    color: cs.outline,
                     borderRadius: BorderRadius.circular(99)),
               ),
               Container(
@@ -339,7 +342,7 @@ class _ProcessingOverlay extends StatelessWidget {
                 height: 80,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: AmColors.accentWash,
+                  color: cs.primaryContainer,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
@@ -352,16 +355,16 @@ class _ProcessingOverlay extends StatelessWidget {
               ),
               Text(
                 isUploading ? l10n.feedUploading : l10n.feedProcessing,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w600,
-                    color: AmColors.inkLight),
+                    color: cs.onSurface),
               ),
               const SizedBox(height: 6),
               Text(
                 isUploading ? l10n.feedUploadingDesc : l10n.feedProcessingDesc,
                 style:
-                    const TextStyle(fontSize: 13.5, color: AmColors.mutedLight),
+                    TextStyle(fontSize: 13.5, color: cs.tertiary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 28),

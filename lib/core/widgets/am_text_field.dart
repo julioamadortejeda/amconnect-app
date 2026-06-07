@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
 
 class AmTextField extends StatelessWidget {
   const AmTextField({
@@ -23,15 +22,16 @@ class AmTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AmColors.cardSunkenLight,
+        color: cs.secondaryContainer,
         borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: AmColors.lineLight),
+        border: Border.all(color: cs.outline),
       ),
       child: Row(children: [
         const SizedBox(width: 14),
-        Icon(icon, color: AmColors.mutedLight, size: 20),
+        Icon(icon, color: cs.tertiary, size: 20),
         const SizedBox(width: 10),
         Expanded(
           child: TextField(
@@ -39,11 +39,11 @@ class AmTextField extends StatelessWidget {
             keyboardType: keyboardType,
             obscureText: obscure,
             onSubmitted: onSubmitted,
-            style: const TextStyle(fontSize: 15.5, color: AmColors.inkLight),
+            style: TextStyle(fontSize: 15.5, color: cs.onSurface),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: hint,
-              hintStyle: const TextStyle(color: AmColors.mutedLight),
+              hintStyle: TextStyle(color: cs.tertiary),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(vertical: 15),
             ),

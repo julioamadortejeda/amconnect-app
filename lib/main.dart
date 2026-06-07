@@ -28,6 +28,7 @@ class MyApp extends ConsumerWidget {
       title: 'AMConnect Advisor',
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
+      darkTheme: AzulProTheme.darkTheme,
       routerConfig: router,
       localizationsDelegates: const [
         AppLocalizations.delegate,

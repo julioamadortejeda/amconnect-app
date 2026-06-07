@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
 
 class AmSegmented extends StatelessWidget {
   const AmSegmented({super.key, required this.options, required this.selected, required this.onSelect});
@@ -10,10 +9,11 @@ class AmSegmented extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AmColors.cardSunkenLight,
+        color: cs.secondaryContainer,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -38,7 +38,7 @@ class AmSegmented extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: active ? AmColors.accentInk : AmColors.mutedLight,
+                    color: active ? cs.onPrimaryContainer : cs.tertiary,
                   ),
                 ),
               ),

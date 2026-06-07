@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/core/theme/am_theme.dart';
 
 enum AmBadgeTone { accent, green, red, amber, muted }
 
@@ -12,12 +12,14 @@ class AmBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final (bg, fg) = switch (tone) {
-      AmBadgeTone.accent => (AmColors.accentWash, AmColors.accentInk),
-      AmBadgeTone.green  => (AmColors.greenWashLight, AmColors.greenLight),
-      AmBadgeTone.red    => (AmColors.redWashLight, AmColors.redLight),
-      AmBadgeTone.amber  => (AmColors.amberWashLight, AmColors.amberLight),
-      AmBadgeTone.muted  => (AmColors.cardSunkenLight, AmColors.mutedLight),
+      AmBadgeTone.accent => (cs.primaryContainer, cs.onPrimaryContainer),
+      AmBadgeTone.green  => (am.greenWash, am.green),
+      AmBadgeTone.red    => (cs.errorContainer, cs.error),
+      AmBadgeTone.amber  => (am.amberWash, am.amber),
+      AmBadgeTone.muted  => (cs.secondaryContainer, cs.tertiary),
     };
 
     return Container(

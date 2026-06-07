@@ -27,9 +27,9 @@ class ShellScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final bottom = MediaQuery.of(context).padding.bottom;
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: child,
       bottomNavigationBar: Stack(
         clipBehavior: Clip.none,
@@ -46,7 +46,7 @@ class ShellScreen extends StatelessWidget {
                   bottom: bottom + 10,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xDDF5F6F7),
+                  color: cs.surface.withValues(alpha: 0.87),
                   border: Border(
                     top: BorderSide(color: Colors.black.withValues(alpha: 0.07), width: 0.5),
                   ),
@@ -115,6 +115,7 @@ class _TabItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     return AmPress(
       onTap: () => context.go(t.path),
@@ -126,7 +127,7 @@ class _TabItem extends StatelessWidget {
             Icon(
               t.icon,
               size: 23,
-              color: active ? AmColors.accent : AmColors.mutedLight,
+              color: active ? AmColors.accent : cs.tertiary,
             ),
             const SizedBox(height: 3),
             Text(
@@ -134,7 +135,7 @@ class _TabItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: active ? FontWeight.w600 : FontWeight.w500,
-                color: active ? AmColors.accentInk : AmColors.mutedLight,
+                color: active ? cs.onPrimaryContainer : cs.tertiary,
               ),
             ),
           ],

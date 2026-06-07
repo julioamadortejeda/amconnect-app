@@ -24,11 +24,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final client = clientById(widget.clientId) ?? mockClients.first;
 
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: Stack(
         children: [
           ListView(
@@ -44,11 +44,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     AmAvatar(client: client, size: 76, radius: 24),
                     const SizedBox(height: 8),
                     Text(client.nombre,
-                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600,
-                            color: AmColors.inkLight)),
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600,
+                            color: cs.onSurface)),
                     const SizedBox(height: 4),
                     Text('${client.ocupacion} · ${client.edad} años · ${client.ciudad}',
-                        style: const TextStyle(fontSize: 13.5, color: AmColors.mutedLight)),
+                        style: TextStyle(fontSize: 13.5, color: cs.tertiary)),
                     const SizedBox(height: 6),
                     AmBadge(label: client.desde, tone: AmBadgeTone.green),
                     const SizedBox(height: 18),
@@ -141,7 +141,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           ),
           // Floating back bar
           AmBackBar(trailing: IconButton(
-            icon: const Icon(Icons.more_horiz, color: AmColors.inkLight),
+            icon: Icon(Icons.more_horiz, color: cs.onSurface),
             onPressed: () {},
           )),
         ],
@@ -158,18 +158,19 @@ class _ContactRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
       decoration: hasBorder
-          ? const BoxDecoration(border: Border(bottom: BorderSide(color: AmColors.lineSoftLight)))
+          ? BoxDecoration(border: Border(bottom: BorderSide(color: cs.outlineVariant)))
           : null,
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AmColors.accentInk),
+          Icon(icon, size: 18, color: cs.onPrimaryContainer),
           const SizedBox(width: 12),
           Text(text,
-              style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
-                  color: AmColors.inkLight)),
+              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
+                  color: cs.onSurface)),
         ],
       ),
     );
@@ -187,6 +188,7 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Expanded(
       child: AmPress(
         onTap: onTap,
@@ -205,15 +207,15 @@ class _QuickAction extends StatelessWidget {
               Container(
                 width: 38, height: 38,
                 decoration: BoxDecoration(
-                  color: accent ? AmColors.accent : AmColors.accentWash,
+                  color: accent ? AmColors.accent : cs.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, size: 19, color: accent ? Colors.white : AmColors.accentInk),
+                child: Icon(icon, size: 19, color: accent ? Colors.white : cs.onPrimaryContainer),
               ),
               const SizedBox(height: 7),
               Text(label,
-                  style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500,
-                      color: AmColors.inkSoftLight)),
+                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500,
+                      color: cs.onSurfaceVariant)),
             ],
           ),
         ),
@@ -228,6 +230,7 @@ class _PolicyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final tone = switch (p.estado) {
       'Vigente'      => AmBadgeTone.green,
@@ -249,10 +252,10 @@ class _PolicyCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(p.ramo,
-                        style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
-                            color: AmColors.inkLight)),
+                        style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
+                            color: cs.onSurface)),
                     Text('${p.aseguradora} · ${p.numero}',
-                        style: const TextStyle(fontSize: 12.5, color: AmColors.mutedLight)),
+                        style: TextStyle(fontSize: 12.5, color: cs.tertiary)),
                   ],
                 ),
               ),
@@ -263,7 +266,7 @@ class _PolicyCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AmColors.cardSunkenLight,
+              color: cs.secondaryContainer,
               borderRadius: BorderRadius.circular(13),
             ),
             child: Column(
@@ -299,17 +302,18 @@ class _PolicyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label.toUpperCase(),
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
-                  color: AmColors.mutedLight, letterSpacing: 0.04)),
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
+                  color: cs.tertiary, letterSpacing: 0.04)),
           const SizedBox(height: 2),
           Text(value,
-              style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
-                  color: AmColors.inkLight)),
+              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
+                  color: cs.onSurface)),
         ],
       ),
     );
@@ -322,6 +326,7 @@ class _NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final color = switch (n.tipo) {
       'doc'      => AmColors.srcDoc,
       'whatsapp' => AmColors.srcWhatsApp,
@@ -353,11 +358,11 @@ class _NoteCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(n.t,
-                    style: const TextStyle(fontSize: 14, color: AmColors.inkLight, height: 1.5)),
+                    style: TextStyle(fontSize: 14, color: cs.onSurface, height: 1.5)),
                 const SizedBox(height: 6),
                 Text(n.src,
-                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
-                        color: AmColors.mutedLight)),
+                    style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
+                        color: cs.tertiary)),
               ],
             ),
           ),

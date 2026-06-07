@@ -24,11 +24,12 @@ class AmIconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final (bg, fg, shadow) = switch (tone) {
-      AmIconBtnTone.soft    => (AmColors.cardLight, AmColors.inkSoftLight, true),
-      AmIconBtnTone.sunken  => (AmColors.cardSunkenLight, AmColors.inkSoftLight, false),
+      AmIconBtnTone.soft    => (cs.surface, cs.onSurfaceVariant, true),
+      AmIconBtnTone.sunken  => (cs.secondaryContainer, cs.onSurfaceVariant, false),
       AmIconBtnTone.accent  => (AmColors.accent, Colors.white, true),
-      AmIconBtnTone.ghost   => (Colors.transparent, AmColors.inkSoftLight, false),
+      AmIconBtnTone.ghost   => (Colors.transparent, cs.onSurfaceVariant, false),
     };
 
     final btn = Container(
@@ -53,7 +54,7 @@ class AmIconBtn extends StatelessWidget {
                 width: 9,
                 height: 9,
                 decoration: BoxDecoration(
-                  color: AmColors.redLight,
+                  color: cs.error,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),

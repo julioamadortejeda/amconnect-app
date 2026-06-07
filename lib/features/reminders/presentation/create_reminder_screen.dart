@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/core/theme/am_theme.dart';
 import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
 import 'package:amconnect/core/widgets/am_back_bar.dart';
@@ -43,9 +44,10 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: Stack(
         children: [
           SafeArea(
@@ -117,8 +119,8 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                       boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
                     ),
                     child: Text(_titulo,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
-                            color: AmColors.inkLight)),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
+                            color: cs.onSurface)),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -150,11 +152,11 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  Icon(icon, size: 19, color: active ? Colors.white : AmColors.inkSoftLight),
+                                  Icon(icon, size: 19, color: active ? Colors.white : cs.onSurfaceVariant),
                                   const SizedBox(height: 6),
                                   Text(label,
                                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
-                                          color: active ? Colors.white : AmColors.inkSoftLight)),
+                                          color: active ? Colors.white : cs.onSurfaceVariant)),
                                 ],
                               ),
                             ),
@@ -195,8 +197,8 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                                   AmAvatar(client: c, size: 30, radius: 9),
                                   const SizedBox(width: 8),
                                   Text(c.nombre.split(' ').first,
-                                      style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,
-                                          color: AmColors.inkLight)),
+                                      style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,
+                                          color: cs.onSurface)),
                                 ],
                               ),
                             ),
@@ -223,10 +225,10 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.calendar_today_outlined, size: 17, color: AmColors.accentInk),
+                              Icon(Icons.calendar_today_outlined, size: 17, color: cs.onPrimaryContainer),
                               const SizedBox(width: 9),
-                              const Text('Mañana · Jue 5 jun',
-                                  style: TextStyle(fontSize: 13.5, color: AmColors.inkLight)),
+                              Text('Mañana · Jue 5 jun',
+                                  style: TextStyle(fontSize: 13.5, color: cs.onSurface)),
                             ],
                           ),
                         ),
@@ -246,10 +248,10 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.access_time, size: 17, color: AmColors.accentInk),
+                              Icon(Icons.access_time, size: 17, color: cs.onPrimaryContainer),
                               const SizedBox(width: 8),
-                              const Text('15:00',
-                                  style: TextStyle(fontSize: 15, color: AmColors.inkLight)),
+                              Text('15:00',
+                                  style: TextStyle(fontSize: 15, color: cs.onSurface)),
                             ],
                           ),
                         ),
@@ -269,12 +271,12 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.autorenew, size: 18, color: AmColors.inkSoftLight),
+                      Icon(Icons.autorenew, size: 18, color: cs.onSurfaceVariant),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(l10n.remindersRepeatYearly,
                             style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600,
-                                color: AmColors.inkLight)),
+                                color: cs.onSurface)),
                       ),
                       _Toggle(),
                     ],
@@ -307,7 +309,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                         const Icon(Icons.notifications_outlined, size: 19, color: Colors.white),
                         const SizedBox(width: 9),
                         Text(l10n.remindersCreateBtn,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500,
                                 color: Colors.white)),
                       ],
                     ),
@@ -336,15 +338,15 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                       Container(
                         width: 72, height: 72,
                         decoration: BoxDecoration(
-                          color: AmColors.greenWashLight,
+                          color: am.greenWash,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.check, size: 38, color: AmColors.greenLight),
+                        child: Icon(Icons.check, size: 38, color: am.green),
                       ),
                       const SizedBox(height: 14),
                       Text(l10n.remindersCreated,
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,
-                              color: AmColors.inkLight)),
+                              color: cs.onSurface)),
                     ],
                   ),
                 ),
@@ -363,14 +365,15 @@ class _Field extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(label.toUpperCase(),
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                  letterSpacing: 0.08 * 12, color: AmColors.mutedLight)),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                  letterSpacing: 0.08 * 12, color: cs.tertiary)),
         ),
         child,
       ],
@@ -388,13 +391,14 @@ class _ToggleState extends State<_Toggle> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => setState(() => _on = !_on),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: 50, height: 30,
         decoration: BoxDecoration(
-          color: _on ? AmColors.accent : AmColors.lineLight,
+          color: _on ? AmColors.accent : cs.outline,
           borderRadius: BorderRadius.circular(999),
         ),
         padding: const EdgeInsets.all(3),

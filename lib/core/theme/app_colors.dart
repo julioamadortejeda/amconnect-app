@@ -24,6 +24,14 @@ class AmColors {
   static const amberLight = Color(0xFFB9791A);
   static const amberWashLight = Color(0xFFF4EFE6);
 
+  // Lines (dark)
+  static const lineDark = Color(0xFF2A3038);
+  static const lineSoftDark = Color(0xFF1E2730);
+
+  // Accent (dark variants for containers)
+  static const accentWashDark = Color(0xFF0D1F2D);
+  static const accentInkDark = Color(0xFF4BAAD4);
+
   // Dark theme
   static const bgDark = Color(0xFF0C1116);
   static const cardDark = Color(0xFF161F29);

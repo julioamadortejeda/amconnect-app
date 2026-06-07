@@ -22,6 +22,7 @@ class ClientsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final q = ref.watch(clientSearchProvider);
     final list = mockClients
@@ -29,7 +30,6 @@ class ClientsScreen extends ConsumerWidget {
         .toList();
 
     return Scaffold(
-      backgroundColor: AmColors.bgLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -42,11 +42,11 @@ class ClientsScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(l10n.clientsTotal(mockClients.length),
-                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
-                                color: AmColors.mutedLight, letterSpacing: 0.02)),
+                            style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
+                                color: cs.tertiary, letterSpacing: 0.02)),
                         Text(l10n.clientsTitle,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
-                                color: AmColors.inkLight, letterSpacing: -0.01)),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
+                                color: cs.onSurface, letterSpacing: -0.01)),
                       ],
                     ),
                   ),
@@ -91,25 +91,26 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: BoxDecoration(
-        color: AmColors.cardLight, borderRadius: BorderRadius.circular(15),
+        color: cs.surface, borderRadius: BorderRadius.circular(15),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
       ),
       child: Row(
         children: [
-          const Icon(Icons.search, color: AmColors.muted2Light, size: 18),
+          Icon(Icons.search, color: cs.onSurfaceVariant, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               onChanged: onChanged,
-              style: const TextStyle(fontSize: 15, color: AmColors.inkLight),
+              style: TextStyle(fontSize: 15, color: cs.onSurface),
               decoration: InputDecoration(
                 border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero,
                 hintText: l10n.clientsSearchHint,
-                hintStyle: const TextStyle(color: AmColors.mutedLight),
+                hintStyle: TextStyle(color: cs.tertiary),
               ),
             ),
           ),
@@ -125,6 +126,7 @@ class _ClientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final (statusLabel, tone) = _clientStatus(client, l10n);
     return AmCard(
@@ -138,12 +140,12 @@ class _ClientRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(client.nombre,
-                    style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500,
-                        color: AmColors.inkLight)),
+                    style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500,
+                        color: cs.onSurface)),
                 const SizedBox(height: 2),
                 Text(
                   '${client.ocupacion} · ${client.ciudad} · ${client.polizas.length} póliza${client.polizas.length != 1 ? "s" : ""}',
-                  style: const TextStyle(fontSize: 12.5, color: AmColors.mutedLight),
+                  style: TextStyle(fontSize: 12.5, color: cs.tertiary),
                 ),
               ],
             ),

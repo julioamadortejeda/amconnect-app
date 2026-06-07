@@ -46,6 +46,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final state = ref.watch(ingestProvider);
 
     ref.listen(ingestProvider, (prev, next) {
@@ -82,7 +83,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                     Container(
                       width: 44, height: 5,
                       decoration: BoxDecoration(
-                        color: AmColors.lineLight,
+                        color: cs.outline,
                         borderRadius: BorderRadius.circular(99),
                       ),
                     ),
@@ -103,20 +104,20 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Confirmar póliza',
+                              Text('Confirmar póliza',
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,
-                                      color: AmColors.inkLight)),
+                                      color: cs.onSurface)),
                               if (policyNumber != null || carrierName != null)
                                 Text(
                                   [if (carrierName != null) carrierName,
                                    if (policyNumber != null) '# $policyNumber'].join(' · '),
-                                  style: const TextStyle(fontSize: 12.5, color: AmColors.mutedLight),
+                                  style: TextStyle(fontSize: 12.5, color: cs.tertiary),
                                 ),
                             ],
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, color: AmColors.mutedLight, size: 20),
+                          icon: Icon(Icons.close, color: cs.tertiary, size: 20),
                           onPressed: widget.onClose,
                         ),
                       ],
@@ -135,7 +136,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                       ),
                     ],
                     const SizedBox(height: 10),
-                    const Divider(height: 1, color: AmColors.lineSoftLight),
+                    Divider(height: 1, color: cs.outlineVariant),
                   ],
                 ),
               ),
@@ -161,11 +162,11 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                   margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AmColors.redLight.withValues(alpha: 0.1),
+                    color: cs.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(state.error!,
-                      style: const TextStyle(fontSize: 12.5, color: AmColors.redLight)),
+                      style: TextStyle(fontSize: 12.5, color: cs.error)),
                 ),
 
               // Input
@@ -173,7 +174,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                 margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
                 decoration: BoxDecoration(
-                  color: AmColors.cardSunkenLight,
+                  color: cs.secondaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -183,13 +184,13 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                         controller: _ctrl,
                         onSubmitted: (_) => _send(),
                         enabled: !state.isSending,
-                        style: const TextStyle(fontSize: 15, color: AmColors.inkLight),
-                        decoration: const InputDecoration(
+                        style: TextStyle(fontSize: 15, color: cs.onSurface),
+                        decoration: InputDecoration(
                           border: InputBorder.none,
                           isDense: true,
                           contentPadding: EdgeInsets.zero,
                           hintText: 'Confirma o corrige los datos…',
-                          hintStyle: TextStyle(color: AmColors.mutedLight),
+                          hintStyle: TextStyle(color: cs.tertiary),
                         ),
                       ),
                     ),
@@ -222,16 +223,17 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: AmColors.accentWash,
+        color: cs.primaryContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(label,
-          style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
-              color: AmColors.accentInk)),
+          style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
+              color: cs.onPrimaryContainer)),
     );
   }
 }
@@ -243,15 +245,16 @@ class _ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     if (role == 'user') {
       return Align(
         alignment: Alignment.centerRight,
         child: Container(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AmColors.accent,
-            borderRadius: const BorderRadius.only(
+            borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16), topRight: Radius.circular(16),
               bottomLeft: Radius.circular(16), bottomRight: Radius.circular(4),
             ),
@@ -267,14 +270,14 @@ class _ChatBubble extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AmColors.cardSunkenLight,
+          color: cs.secondaryContainer,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(4), topRight: Radius.circular(16),
             bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16),
           ),
         ),
         child: Text(text,
-            style: const TextStyle(fontSize: 14.5, color: AmColors.inkLight, height: 1.5)),
+            style: TextStyle(fontSize: 14.5, color: cs.onSurface, height: 1.5)),
       ),
     );
   }
@@ -298,12 +301,13 @@ class _TypingDotsState extends State<_TypingDots> with SingleTickerProviderState
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: AmColors.cardSunkenLight,
+          color: cs.secondaryContainer,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
@@ -319,7 +323,7 @@ class _TypingDotsState extends State<_TypingDots> with SingleTickerProviderState
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 width: 7, height: 7,
                 decoration: BoxDecoration(
-                  color: AmColors.mutedLight.withValues(alpha: 0.4 + anim.value * 0.6),
+                  color: cs.tertiary.withValues(alpha: 0.4 + anim.value * 0.6),
                   shape: BoxShape.circle,
                 ),
                 transform: Matrix4.translationValues(0, -anim.value * 4, 0),

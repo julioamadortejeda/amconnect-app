@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
 
 class AmBackBar extends StatelessWidget {
   const AmBackBar({
@@ -19,6 +18,7 @@ class AmBackBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -34,7 +34,7 @@ class AmBackBar extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.chevron_left, size: 26),
-                color: AmColors.inkLight,
+                color: cs.onSurface,
                 onPressed: onBack ?? () => context.pop(),
                 padding: EdgeInsets.zero,
                 visualDensity: VisualDensity.compact,
@@ -47,18 +47,18 @@ class AmBackBar extends StatelessWidget {
                   children: [
                     if (subtitle != null)
                       Text(subtitle!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
-                            color: AmColors.mutedLight,
+                            color: cs.tertiary,
                             letterSpacing: 0.02,
                           )),
                     if (title != null)
                       Text(title!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: AmColors.inkLight,
+                            color: cs.onSurface,
                             letterSpacing: -0.01,
                           ),
                           overflow: TextOverflow.ellipsis),
