@@ -31,27 +31,27 @@ class ShellScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AmColors.bgLight,
       body: child,
-      bottomNavigationBar: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: EdgeInsets.only(
-              left: 14,
-              right: 14,
-              top: 10,
-              bottom: bottom + 10,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xDDF5F6F7),
-              border: Border(
-                top: BorderSide(color: Colors.black.withValues(alpha: 0.07), width: 0.5),
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: [
-                Row(
+      bottomNavigationBar: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 14,
+                  right: 14,
+                  top: 10,
+                  bottom: bottom + 10,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xDDF5F6F7),
+                  border: Border(
+                    top: BorderSide(color: Colors.black.withValues(alpha: 0.07), width: 0.5),
+                  ),
+                ),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ..._tabs.sublist(0, 2).map((t) => _TabItem(t: t, active: _activeTab == t.path)),
@@ -59,32 +59,36 @@ class ShellScreen extends StatelessWidget {
                     ..._tabs.sublist(2, 4).map((t) => _TabItem(t: t, active: _activeTab == t.path)),
                   ],
                 ),
-                Positioned(
-                  bottom: 4,
-                  child: AmPress(
-                    onTap: () => context.push('/chat'),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: AmColors.accent,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AmColors.accent.withValues(alpha: 0.4),
-                            blurRadius: 18,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          Positioned(
+            top: -30,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: AmPress(
+                onTap: () => context.push('/chat'),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: AmColors.accent,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AmColors.accent.withValues(alpha: 0.4),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -76,6 +76,11 @@
   "homePolicies": "Pólizas",
   "homeToRenew": "Por renovar",
   "homeClients": "Clientes",
+  "homePendientes": "Pendientes",
+  "homeSeguimientos": "Seguimientos",
+  "homeClientesRecientes": "Clientes recientes",
+  "homeViewAgenda": "Ver agenda",
+  "homeViewAll": "Ver todos",
 
   "@_reminderTypes": {},
   "reminderTypePayment": "Pago",

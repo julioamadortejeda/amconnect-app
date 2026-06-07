@@ -164,6 +164,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeClients => 'Clientes';
 
   @override
+  String get homePendientes => 'Pendientes';
+
+  @override
+  String get homeSeguimientos => 'Seguimientos';
+
+  @override
+  String get homeClientesRecientes => 'Clientes recientes';
+
+  @override
+  String get homeViewAgenda => 'Ver agenda';
+
+  @override
+  String get homeViewAll => 'Ver todos';
+
+  @override
   String get reminderTypePayment => 'Pago';
 
   @override

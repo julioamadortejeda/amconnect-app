@@ -386,6 +386,36 @@ abstract class AppLocalizations {
   /// **'Clientes'**
   String get homeClients;
 
+  /// No description provided for @homePendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendientes'**
+  String get homePendientes;
+
+  /// No description provided for @homeSeguimientos.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimientos'**
+  String get homeSeguimientos;
+
+  /// No description provided for @homeClientesRecientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Clientes recientes'**
+  String get homeClientesRecientes;
+
+  /// No description provided for @homeViewAgenda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver agenda'**
+  String get homeViewAgenda;
+
+  /// No description provided for @homeViewAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos'**
+  String get homeViewAll;
+
   /// No description provided for @reminderTypePayment.
   ///
   /// In es, this message translates to:
