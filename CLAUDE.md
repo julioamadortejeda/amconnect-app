@@ -96,8 +96,9 @@ lib/
 │   ├── shell/
 │   │   └── shell_screen.dart       # Scaffold con bottom tab bar + FAB micrófono central
 │   ├── theme/
-│   │   ├── app_colors.dart         # Design tokens: accent #007AC0, light/dark surfaces
-│   │   └── theme.dart              # MaterialApp theme (AzulProTheme)
+│   │   ├── app_colors.dart         # Design tokens: AmColors — constantes light/dark + fijas
+│   │   ├── am_theme.dart           # AmTheme ThemeExtension + extensión context.am
+│   │   └── theme.dart              # AzulProTheme.lightTheme + AzulProTheme.darkTheme
 │   └── widgets/                    # Widgets reutilizables (ver detalle abajo)
 │       ├── am_avatar.dart
 │       ├── am_back_bar.dart
@@ -221,29 +222,64 @@ final myProvider = StateProvider<String>((ref) => '');
 
 | Provider | Tipo | Dónde |
 |---|---|---|
-| `remindersProvider` | `NotifierProvider<RemindersNotifier, List<MockReminder>>` | `home_screen.dart` |
+| `remindersProvider` | `NotifierProvider<RemindersNotifier, List<MockReminder>>` | `home/providers/home_provider.dart` |
 | `clientSearchProvider` | `NotifierProvider<_SearchNotifier, String>` | `clients_screen.dart` |
 
-`RemindersNotifier` expone `.toggle(id)` para marcar hecho/pendiente. Es compartido entre HomeScreen y RemindersScreen.
+`RemindersNotifier` expone `.toggle(id)` para marcar hecho/pendiente. Es compartido entre HomeScreen y RemindersScreen — importar desde `home/providers/home_provider.dart`.
 
 ---
 
-## Design tokens (app_colors.dart)
+## Sistema de color adaptativo
+
+La app tiene light y dark theme. **Nunca hardcodear `AmColors.xxxLight`** en widgets — usar siempre la capa más alta disponible:
+
+### 1. `Theme.of(context).colorScheme` (la mayoría de colores)
 
 ```dart
-AmColors.accent       // #007AC0 — azul principal
-AmColors.inkLight     // #16212D — texto principal
-AmColors.inkSoftLight // #46525F — texto secundario
-AmColors.mutedLight   // #939DAA — texto terciario
-AmColors.cardSunkenLight  // fondo sunken de cards
-AmColors.lineLight    // #EAE7DC — bordes
-AmColors.greenLight   // #0E7C42
-AmColors.redLight     // #D8453F
-AmColors.amberLight   // #B9791A
-AmColors.accentWash   // azul claro (fondo de badges accent)
-AmColors.accentInk    // azul oscuro (texto sobre fondo accent wash)
-AmColors.srcDoc / srcWhatsApp / srcWave / srcImage / srcNote  // colores de fuentes
+final cs = Theme.of(context).colorScheme;
+cs.onSurface          // texto principal (inkLight / inkDark)
+cs.onSurfaceVariant   // texto secundario (inkSoftLight / inkSoftDark)
+cs.tertiary           // texto muted (mutedLight / mutedDark)
+cs.surface            // fondo de cards (cardLight / cardDark)
+cs.secondaryContainer // fondo sunken (cardSunkenLight / cardSunkenDark)
+cs.outline            // bordes (lineLight / lineDark)
+cs.outlineVariant     // bordes sutiles
+cs.error              // rojo (redLight / redDark)
+cs.errorContainer     // fondo rojo suave
+cs.primary            // azul principal #007AC0
+cs.primaryContainer   // fondo badge accent
+cs.onPrimaryContainer // texto sobre badge accent
 ```
+
+### 2. `context.am` (colores no en ColorScheme: green, amber, muted2, bg, card2)
+
+```dart
+import 'package:amconnect/core/theme/am_theme.dart';
+
+final am = context.am;
+am.green / am.greenWash   // verde (llamadas, éxito)
+am.amber / am.amberWash   // ámbar (pagos, alertas)
+am.muted2                 // gris más suave
+am.bg                     // fondo scaffold (rara vez — el theme lo aplica solo)
+am.card2                  // superficie secundaria de cards
+```
+
+### 3. `AmColors.xxx` — solo constantes fijas (mismo valor en ambos temas)
+
+```dart
+AmColors.accent      // #007AC0 — ok para box shadows, FABs
+AmColors.onAccent    // blanco sobre azul
+AmColors.authBg      // solo pantallas de login
+AmColors.srcDoc / srcWhatsApp / srcWave / srcImage / srcNote  // iconos de fuente
+```
+
+### Regla de Scaffold
+
+**NO** poner `backgroundColor` en `Scaffold`. La `scaffoldBackgroundColor` está en el theme y se aplica automáticamente.
+
+### Regla de const
+
+`TextStyle`, `BoxDecoration`, etc. con colores del theme **no pueden ser `const`**. Quitar `const` del widget afectado.
 
 ---
 
@@ -266,7 +302,7 @@ Datos disponibles:
 - [ ] Conectar con Supabase backend (ver `/Users/Development/Projects/JACATSoft/AmConnect/backend/`)
 - [ ] Reemplazar mock data con llamadas reales al Edge Function `amconnect-api`
 - [ ] Implementar autenticación real (Apple/Google Sign In)
-- [ ] Modo oscuro (los tokens de `app_colors.dart` tienen versiones dark listas)
+- [x] Modo oscuro — `AzulProTheme.darkTheme` + `AmTheme` extension; todos los widgets usan `cs.*`/`context.am.*`
 - [ ] Voz real en ChatScreen (actualmente solo texto)
 - [ ] Subida real de archivos en FeedScreen
 - [ ] Notificaciones push para recordatorios
