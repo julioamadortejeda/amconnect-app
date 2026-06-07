@@ -5,6 +5,7 @@ import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/chat/providers/chat_provider.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -46,6 +47,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final chat = ref.watch(chatProvider);
 
     ref.listen(chatProvider, (prev, next) {
@@ -83,16 +85,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Asistente',
-                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600,
+                        Text(l10n.chatTitle,
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600,
                                 color: AmColors.inkLight)),
                         Row(children: [
                           Container(width: 7, height: 7,
                               decoration: const BoxDecoration(
                                   color: AmColors.greenLight, shape: BoxShape.circle)),
                           const SizedBox(width: 5),
-                          const Text('Conectado a tu base',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                          Text(l10n.chatSubtitle,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                                   color: AmColors.greenLight)),
                         ]),
                       ],
@@ -102,7 +104,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     IconButton(
                       icon: const Icon(Icons.refresh, color: AmColors.mutedLight, size: 20),
                       onPressed: () => ref.read(chatProvider.notifier).reset(),
-                      tooltip: 'Nueva conversación',
+                      tooltip: l10n.chatNewConversation,
                     ),
                 ],
               ),
@@ -185,12 +187,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onSubmitted: (_) => _send(),
                       enabled: !chat.isLoading,
                       style: const TextStyle(fontSize: 15, color: AmColors.inkLight),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
-                        hintText: 'Pregúntale a tu asistente…',
-                        hintStyle: TextStyle(color: AmColors.mutedLight),
+                        hintText: l10n.chatInputHint,
+                        hintStyle: const TextStyle(color: AmColors.mutedLight),
                       ),
                     ),
                   ),

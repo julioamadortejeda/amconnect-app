@@ -9,6 +9,7 @@ import 'package:amconnect/core/widgets/am_back_bar.dart';
 import 'package:amconnect/core/widgets/am_segmented.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/core/widgets/am_ramo_icon.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class ClientDetailScreen extends StatefulWidget {
   const ClientDetailScreen({super.key, required this.clientId});
@@ -19,12 +20,12 @@ class ClientDetailScreen extends StatefulWidget {
 }
 
 class _ClientDetailScreenState extends State<ClientDetailScreen> {
-  String _tab = 'Pólizas';
+  int _tabIdx = 0;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final client = clientById(widget.clientId) ?? mockClients.first;
-    final tab = _tab;
 
     return Scaffold(
       backgroundColor: AmColors.bgLight,
@@ -54,17 +55,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     // Quick actions
                     Row(
                       children: [
-                        _QuickAction(icon: Icons.phone_outlined, label: 'Llamar', onTap: () {}),
+                        _QuickAction(icon: Icons.phone_outlined, label: l10n.clientsActionCall, onTap: () {}),
                         const SizedBox(width: 9),
-                        _QuickAction(icon: Icons.chat_bubble_outline, label: 'Mensaje', onTap: () {}),
+                        _QuickAction(icon: Icons.chat_bubble_outline, label: l10n.clientsActionMessage, onTap: () {}),
                         const SizedBox(width: 9),
                         _QuickAction(
-                          icon: Icons.notifications_outlined, label: 'Recordar',
+                          icon: Icons.notifications_outlined, label: l10n.clientsActionRemind,
                           onTap: () => context.push('/crear-recordatorio?cliente=${widget.clientId}'),
                         ),
                         const SizedBox(width: 9),
                         _QuickAction(
-                          icon: Icons.auto_awesome, label: 'Preguntar',
+                          icon: Icons.auto_awesome, label: l10n.clientsActionAsk,
                           onTap: () => context.push('/chat'),
                           accent: true,
                         ),
@@ -85,15 +86,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     // Tabs
                     AmSegmented(
                       options: [
-                        'Pólizas · ${client.polizas.length}',
-                        'Notas · ${client.notas.length}',
+                        l10n.clientsPoliciesTab(client.polizas.length),
+                        l10n.clientsNotesTab(client.notas.length),
                       ],
-                      selected: tab,
-                      onSelect: (v) => setState(() => _tab = v),
+                      selected: _tabIdx == 0
+                          ? l10n.clientsPoliciesTab(client.polizas.length)
+                          : l10n.clientsNotesTab(client.notas.length),
+                      onSelect: (v) => setState(() => _tabIdx = v == l10n.clientsPoliciesTab(client.polizas.length) ? 0 : 1),
                     ),
                     const SizedBox(height: 14),
                     // Tab content
-                    if (tab.startsWith('Pólizas'))
+                    if (_tabIdx == 0)
                       ...client.polizas.map((p) => Padding(
                             padding: const EdgeInsets.only(bottom: 11),
                             child: _PolicyCard(p: p),
@@ -123,7 +126,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                           children: [
                             const Icon(Icons.auto_awesome, color: Colors.white, size: 19),
                             const SizedBox(width: 10),
-                            Text('Preguntar sobre ${client.nombre.split(' ').first}',
+                            Text(l10n.clientsAskAbout(client.nombre.split(' ').first),
                                 style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500,
                                     color: Colors.white)),
                           ],
@@ -225,6 +228,7 @@ class _PolicyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final tone = switch (p.estado) {
       'Vigente'      => AmBadgeTone.green,
       'Por renovar'  => AmBadgeTone.amber,
@@ -266,17 +270,17 @@ class _PolicyCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _PolicyField(label: 'Suma asegurada', value: p.suma),
+                    _PolicyField(label: l10n.clientsPolicySumInsured, value: p.suma),
                     const SizedBox(width: 14),
-                    _PolicyField(label: 'Prima', value: '${p.prima} · ${p.period}'),
+                    _PolicyField(label: l10n.clientsPolicyPremium, value: '${p.prima} · ${p.period}'),
                   ],
                 ),
                 const SizedBox(height: 11),
                 Row(
                   children: [
-                    _PolicyField(label: 'Próximo pago', value: p.proxPago),
+                    _PolicyField(label: l10n.clientsPolicyNextPayment, value: p.proxPago),
                     const SizedBox(width: 14),
-                    _PolicyField(label: 'Deducible', value: p.deducible),
+                    _PolicyField(label: l10n.clientsPolicyDeductible, value: p.deducible),
                   ],
                 ),
               ],

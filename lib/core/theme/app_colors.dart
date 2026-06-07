@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 class AmColors {
   static const accent = Color(0xFF007AC0);
+  static const authBg = Color(0xFF1278C5);
+  static const white = Colors.white;
+  static const authError = Color(0xFFFFB3B3);
 
   // Light theme — Privé style (cool gray surfaces)
   static const bgLight = Color(0xFFF5F6F7);

@@ -6,6 +6,7 @@ import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class _SearchNotifier extends Notifier<String> {
   @override
@@ -21,6 +22,7 @@ class ClientsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final q = ref.watch(clientSearchProvider);
     final list = mockClients
         .where((c) => c.nombre.toLowerCase().contains(q.toLowerCase()))
@@ -39,11 +41,11 @@ class ClientsScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${mockClients.length} en total',
+                        Text(l10n.clientsTotal(mockClients.length),
                             style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
                                 color: AmColors.mutedLight, letterSpacing: 0.02)),
-                        const Text('Clientes',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
+                        Text(l10n.clientsTitle,
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
                                 color: AmColors.inkLight, letterSpacing: -0.01)),
                       ],
                     ),
@@ -89,6 +91,7 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: BoxDecoration(
@@ -103,10 +106,10 @@ class _SearchBar extends StatelessWidget {
             child: TextField(
               onChanged: onChanged,
               style: const TextStyle(fontSize: 15, color: AmColors.inkLight),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero,
-                hintText: 'Buscar cliente…',
-                hintStyle: TextStyle(color: AmColors.mutedLight),
+                hintText: l10n.clientsSearchHint,
+                hintStyle: const TextStyle(color: AmColors.mutedLight),
               ),
             ),
           ),
@@ -122,7 +125,8 @@ class _ClientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (statusLabel, tone) = _clientStatus(client);
+    final l10n = AppLocalizations.of(context)!;
+    final (statusLabel, tone) = _clientStatus(client, l10n);
     return AmCard(
       onTap: () => context.push('/clientes/${client.id}'),
       child: Row(
@@ -150,12 +154,12 @@ class _ClientRow extends StatelessWidget {
     );
   }
 
-  static (String, AmBadgeTone) _clientStatus(MockClient c) {
-    if (c.desde == 'Prospecto') return ('Prospecto', AmBadgeTone.accent);
+  (String, AmBadgeTone) _clientStatus(MockClient c, AppLocalizations l10n) {
+    if (c.desde == 'Prospecto') return (l10n.clientsStatusProspect, AmBadgeTone.accent);
     for (final p in c.polizas) {
-      if (p.estado == 'Por renovar') return ('Por renovar', AmBadgeTone.amber);
-      if (p.estado == 'Pago próximo') return ('Pago próximo', AmBadgeTone.amber);
+      if (p.estado == 'Por renovar') return (l10n.clientsStatusToRenew, AmBadgeTone.amber);
+      if (p.estado == 'Pago próximo') return (l10n.clientsStatusPaymentDue, AmBadgeTone.amber);
     }
-    return ('Al día', AmBadgeTone.green);
+    return (l10n.clientsStatusUpToDate, AmBadgeTone.green);
   }
 }

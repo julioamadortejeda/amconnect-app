@@ -1,65 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:amconnect/core/repositories/auth_repository.dart';
+import 'package:amconnect/core/repositories/supabase_auth_repository.dart';
 
+/// Stream del usuario autenticado — escuchado por el router para redirigir.
 final authUserProvider = StreamProvider<User?>((ref) {
-  return Supabase.instance.client.auth.onAuthStateChange
-      .map((event) => event.session?.user);
+  return ref.watch(authRepositoryProvider).onAuthStateChange;
 });
 
-class AuthNotifier extends AsyncNotifier<void> {
+/// Notifier de acciones de auth.
+/// Solo conoce [AuthRepository] — no sabe nada de Supabase, Google, Apple, etc.
+/// Los métodos lanzan excepción en error; la pantalla la captura vía ref.listen.
+class AuthNotifier extends Notifier<void> {
+  late final AuthRepository _repo;
+
   @override
-  Future<void> build() async {}
-
-  Future<void> signIn({required String email, required String password}) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await Supabase.instance.client.auth
-          .signInWithPassword(email: email, password: password);
-    });
+  void build() {
+    _repo = ref.read(authRepositoryProvider);
   }
 
-  Future<void> signInWithGoogle() async {
-    state = const AsyncLoading();
-    final googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) {
-      state = const AsyncData(null);
-      return;
-    }
-    state = await AsyncValue.guard(() async {
-      final googleAuth = await googleUser.authentication;
-      await Supabase.instance.client.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: googleAuth.idToken!,
-        accessToken: googleAuth.accessToken,
-      );
-    });
-  }
+  Future<void> signIn({required String email, required String password}) =>
+      _repo.signIn(email: email, password: password);
 
-  Future<void> signInWithApple() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-      await Supabase.instance.client.auth.signInWithIdToken(
-        provider: OAuthProvider.apple,
-        idToken: credential.identityToken!,
-      );
-    });
-  }
+  Future<void> signInWithGoogle() => _repo.signInWithGoogle();
 
-  Future<void> signOut() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      try { await GoogleSignIn().signOut(); } catch (_) {}
-      await Supabase.instance.client.auth.signOut();
-    });
-  }
+  Future<void> signInWithApple() => _repo.signInWithApple();
+
+  Future<void> signOut() => _repo.signOut();
 }
 
-final authProvider = AsyncNotifierProvider<AuthNotifier, void>(AuthNotifier.new);
+final authProvider = NotifierProvider<AuthNotifier, void>(AuthNotifier.new);

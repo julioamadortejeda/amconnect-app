@@ -13,6 +13,7 @@ import 'package:amconnect/features/reminders/presentation/create_reminder_screen
 import 'package:amconnect/features/chat/presentation/chat_screen.dart';
 import 'package:amconnect/features/feed/presentation/feed_screen.dart';
 import 'package:amconnect/features/onboarding/presentation/email_login_screen.dart';
+import 'package:amconnect/features/onboarding/presentation/register_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -22,7 +23,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final user = ref.read(authUserProvider).value;
       final loc = state.matchedLocation;
-      final onPublic = loc == '/' || loc == '/login' || loc == '/email-login';
+      final onPublic = loc == '/' || loc == '/login' || loc == '/email-login' || loc == '/register';
       if (user == null && !onPublic) return '/login';
       if (user != null && onPublic) return '/home';
       return null;
@@ -33,6 +34,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/email-login',
         pageBuilder: (_, state) => _slide(const EmailLoginScreen(), state),
+      ),
+      GoRoute(
+        path: '/register',
+        pageBuilder: (_, state) => _slide(const RegisterScreen(), state),
       ),
 
       ShellRoute(

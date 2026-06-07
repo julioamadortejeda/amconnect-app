@@ -4,7 +4,83 @@
 
 App móvil Flutter para asesores de seguros. Permite gestionar clientes, pólizas, recordatorios y chatear con un asistente IA. Diseño basado en prototipo HTML/CSS exportado desde Claude Design.
 
-**Stack:** Flutter · Riverpod 3.x · GoRouter · Google Fonts
+**Stack:** Flutter · Riverpod 3.x · GoRouter · Google Fonts · flutter_localizations (i18n)
+
+---
+
+## Internacionalización (i18n)
+
+La app usa **Flutter ARB + flutter_localizations** (SDK oficial, sin dependencias externas).
+
+### Archivos clave
+
+```
+lib/l10n/
+├── app_es.arb              # Español — plantilla maestra (template)
+├── app_en.arb              # Inglés
+├── app_localizations.dart  # Generado por flutter gen-l10n — NO editar a mano
+├── app_localizations_es.dart
+└── app_localizations_en.dart
+l10n.yaml                   # arb-dir, template, output file
+```
+
+### Cómo usar en cualquier pantalla o widget
+
+```dart
+import 'package:amconnect/l10n/app_localizations.dart';
+
+@override
+Widget build(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return Text(l10n.algoClave);
+}
+```
+
+- **Nunca** hardcodear strings visibles al usuario. Siempre `l10n.xxx`.
+- Cada sub-widget con `BuildContext` propio (clases separadas) necesita su propio `AppLocalizations.of(context)!`.
+- En callbacks con contexto diferente (e.g., `showModalBottomSheet builder: (ctx)`), usar `AppLocalizations.of(ctx)!`.
+
+### Organización de claves ARB
+
+Las claves siguen el prefijo del feature al que pertenecen:
+
+| Prefijo | Feature |
+|---|---|
+| `login*` | Pantalla de login (social) |
+| `emailLogin*` | Pantalla email/password |
+| `register*` | Pantalla de registro |
+| `shell*` | Bottom tab bar |
+| `home*` | Dashboard |
+| `clients*` | Lista y detalle de clientes |
+| `reminders*` | Agenda y crear recordatorio |
+| `chat*` | Pantalla de chat IA |
+| `feed*` | Base de conocimiento |
+| `field*` | Labels de campos de formulario |
+| `err*` | Mensajes de error |
+| `common*` | Strings reutilizables (cerrar, cuenta, etc.) |
+
+### Strings con parámetros
+
+```arb
+"homeGreeting": "Hola, {name}",
+"@homeGreeting": { "placeholders": { "name": { "type": "String" } } }
+```
+
+```dart
+l10n.homeGreeting('Daniel')   // → "Hola, Daniel"
+l10n.clientsTotal(5)          // → "5 en total"
+```
+
+### Agregar una nueva string
+
+1. Agregar la clave en `lib/l10n/app_es.arb` (con `@key` si tiene parámetros).
+2. Agregar la traducción en `lib/l10n/app_en.arb`.
+3. Ejecutar `flutter gen-l10n` (o `flutter run` que lo hace automáticamente).
+4. Usar `l10n.nuevaClave` en el widget.
+
+### Agregar un nuevo idioma
+
+Crear `lib/l10n/app_<locale>.arb` con las mismas claves que `app_es.arb` y agregar el locale a `supportedLocales` en `main.dart`.
 
 ---
 
@@ -194,6 +270,7 @@ Datos disponibles:
 - [ ] Voz real en ChatScreen (actualmente solo texto)
 - [ ] Subida real de archivos en FeedScreen
 - [ ] Notificaciones push para recordatorios
+- [x] i18n implementado — español + inglés via ARB + flutter_localizations
 
 ---
 
@@ -212,4 +289,60 @@ flutter build ios        # build iOS
 assets/logo/
 ├── logo.png     # logo con fondo
 └── logo_t.png   # logo transparente (el que se usa en la app)
+```
+
+---
+
+## Reglas del proyecto
+
+- **No modificar versiones de dependencias.** Las versiones definidas en `pubspec.yaml` (Flutter, Riverpod, GoRouter, Google Fonts, etc.) **no deben cambiarse**. Si una API parece diferente a lo esperado, adaptarse al código existente — nunca actualizar o cambiar una versión para resolver la discrepancia.
+
+- **Capa de repositorio obligatoria para acceso a datos externos.** Nunca acceder directamente a SDKs de infraestructura (Supabase, Firebase, APIs REST, etc.) desde un `Notifier` o una pantalla. Todo acceso a datos externos debe pasar por un `Repository`:
+
+```
+core/
+└── repositories/
+    ├── auth_repository.dart          # Interfaz abstracta
+    └── supabase_auth_repository.dart # Implementación concreta + Provider
+```
+
+**Flujo correcto:**
+```
+Pantalla → ref.watch/read(provider) → Notifier → ref.read(repositoryProvider) → Repository → SDK
+```
+
+**Ejemplo de estructura:**
+```dart
+// 1. Interfaz abstracta (lib/core/repositories/foo_repository.dart)
+abstract class FooRepository {
+  Future<void> doSomething();
+}
+
+// 2. Implementación concreta (lib/core/repositories/supabase_foo_repository.dart)
+class SupabaseFooRepository implements FooRepository {
+  final SupabaseClient _client;
+  SupabaseFooRepository(this._client);
+
+  @override
+  Future<void> doSomething() async {
+    await _client.from('foo').select();
+  }
+}
+
+final fooRepositoryProvider = Provider<FooRepository>((ref) {
+  return SupabaseFooRepository(Supabase.instance.client);
+});
+
+// 3. Notifier (features/foo/providers/foo_provider.dart)
+class FooNotifier extends Notifier<FooState> {
+  late final FooRepository _repo;
+
+  @override
+  FooState build() {
+    _repo = ref.read(fooRepositoryProvider);
+    return FooState();
+  }
+
+  Future<void> load() => _repo.doSomething();
+}
 ```

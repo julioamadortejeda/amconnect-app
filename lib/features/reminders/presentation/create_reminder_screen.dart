@@ -5,6 +5,7 @@ import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
 import 'package:amconnect/core/widgets/am_back_bar.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class CreateReminderScreen extends ConsumerStatefulWidget {
   const CreateReminderScreen({super.key, this.clienteId});
@@ -21,11 +22,18 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
   bool _saved = false;
 
   final _tipos = [
-    ('llamada', 'Llamada', Icons.phone_outlined),
-    ('pago', 'Pago', Icons.payments_outlined),
-    ('renovacion', 'Renovación', Icons.autorenew),
-    ('otro', 'Otro', Icons.notifications_outlined),
+    ('llamada', Icons.phone_outlined),
+    ('pago',    Icons.payments_outlined),
+    ('renovacion', Icons.autorenew),
+    ('otro',    Icons.notifications_outlined),
   ];
+
+  String _tipoLabel(String key, AppLocalizations l10n) => switch (key) {
+    'llamada'    => l10n.reminderTypeCall,
+    'pago'       => l10n.reminderTypePayment,
+    'renovacion' => l10n.reminderTypeRenewal,
+    _            => l10n.reminderTypeOther,
+  };
 
   @override
   void initState() {
@@ -35,6 +43,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AmColors.bgLight,
       body: Stack(
@@ -64,7 +73,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                       Row(children: [
                         const Icon(Icons.auto_awesome, color: Colors.white, size: 17),
                         const SizedBox(width: 8),
-                        Text('DÍSELO CON TUS PALABRAS',
+                        Text(l10n.remindersVoiceHint,
                             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500,
                                 color: Colors.white.withValues(alpha: 0.92), letterSpacing: 0.03)),
                       ]),
@@ -78,7 +87,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Text('"recuérdame llamar a José mañana a las 3"',
+                              child: Text('"${l10n.remindersVoicePlaceholder}"',
                                   style: TextStyle(fontSize: 14.5, color: Colors.white.withValues(alpha: 0.7))),
                             ),
                             Container(
@@ -99,7 +108,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
 
                 // Title
                 _Field(
-                  label: 'Título',
+                  label: l10n.remindersFieldTitle,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                     decoration: BoxDecoration(
@@ -116,10 +125,11 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
 
                 // Type grid
                 _Field(
-                  label: 'Tipo',
+                  label: l10n.remindersFieldType,
                   child: Row(
                     children: _tipos.map((t) {
-                      final (key, label, icon) = t;
+                      final (key, icon) = t;
+                      final label = _tipoLabel(key, l10n);
                       final active = _tipo == key;
                       return Expanded(
                         child: Padding(
@@ -158,7 +168,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
 
                 // Client selector
                 _Field(
-                  label: 'Cliente',
+                  label: l10n.remindersFieldClient,
                   child: SizedBox(
                     height: 56,
                     child: ListView(
@@ -203,7 +213,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                   children: [
                     Expanded(
                       child: _Field(
-                        label: 'Fecha',
+                        label: l10n.remindersFieldDate,
                         child: Container(
                           padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
                           decoration: BoxDecoration(
@@ -226,7 +236,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                     SizedBox(
                       width: 118,
                       child: _Field(
-                        label: 'Hora',
+                        label: l10n.remindersFieldTime,
                         child: Container(
                           padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
                           decoration: BoxDecoration(
@@ -261,8 +271,8 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                     children: [
                       const Icon(Icons.autorenew, size: 18, color: AmColors.inkSoftLight),
                       const SizedBox(width: 10),
-                      const Expanded(
-                        child: Text('Repetir cada año',
+                      Expanded(
+                        child: Text(l10n.remindersRepeatYearly,
                             style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600,
                                 color: AmColors.inkLight)),
                       ),
@@ -296,7 +306,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                       children: [
                         const Icon(Icons.notifications_outlined, size: 19, color: Colors.white),
                         const SizedBox(width: 9),
-                        const Text('Crear recordatorio',
+                        Text(l10n.remindersCreateBtn,
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500,
                                 color: Colors.white)),
                       ],
@@ -307,7 +317,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
             ),
           ),
           // Back bar
-          const AmBackBar(title: 'Nuevo recordatorio'),
+          AmBackBar(title: l10n.remindersNewTitle),
           // Success overlay
           if (_saved)
             Container(
@@ -332,7 +342,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                         child: const Icon(Icons.check, size: 38, color: AmColors.greenLight),
                       ),
                       const SizedBox(height: 14),
-                      const Text('Recordatorio creado',
+                      Text(l10n.remindersCreated,
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,
                               color: AmColors.inkLight)),
                     ],

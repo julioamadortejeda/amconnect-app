@@ -10,6 +10,7 @@ import 'package:amconnect/core/widgets/am_avatar.dart';
 import 'package:amconnect/core/widgets/am_icon_btn.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ── Shared reminders provider ─────────────────────────────────────────────────
@@ -47,6 +48,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final reminders = ref.watch(remindersProvider);
     final pending = reminders.where((r) => !r.hecho).toList();
     final urgent = pending.where((r) => r.urgente).toList();
@@ -65,10 +67,10 @@ class HomeScreen extends ConsumerWidget {
             _AskBar(),
             const SizedBox(height: 14),
             AmSectionLabel(
-              label: 'Atención inmediata',
+              label: l10n.homeImmediateAttention,
               trailing: urgent.isNotEmpty
                   ? AmBadge(
-                      label: '${urgent.length} urgente${urgent.length != 1 ? "s" : ""}',
+                      label: l10n.homeUrgentCount(urgent.length),
                       tone: AmBadgeTone.red)
                   : null,
             ),
@@ -78,11 +80,11 @@ class HomeScreen extends ConsumerWidget {
                   child: _ActionCard(r: r),
                 )),
             const SizedBox(height: 4),
-            const AmSectionLabel(label: 'Tu cartera'),
+            AmSectionLabel(label: l10n.homePortfolio),
             const SizedBox(height: 9),
             const _PortfolioStats(),
             const SizedBox(height: 14),
-            const AmSectionLabel(label: 'Necesitan atención'),
+            AmSectionLabel(label: l10n.homeNeedAttention),
             const SizedBox(height: 11),
             const _ClientsAttention(),
           ],
@@ -105,69 +107,73 @@ class _Header extends ConsumerWidget {
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 36, height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: AmColors.lineLight,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                alignment: Alignment.center,
-              ),
-              if (user?.email != null) ...[
-                Text('Cuenta',
-                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
-                        color: AmColors.mutedLight, letterSpacing: 0.06)),
-                const SizedBox(height: 6),
-                Text(user!.email!,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500,
-                        color: AmColors.inkLight)),
-                const SizedBox(height: 20),
-                const Divider(height: 1, color: AmColors.lineSoftLight),
-                const SizedBox(height: 12),
-              ],
-              AmPress(
-                onTap: () async {
-                  Navigator.pop(context);
-                  await ref.read(authProvider.notifier).signOut();
-                  if (context.mounted) context.go('/login');
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 36, height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
-                    color: AmColors.redWashLight,
-                    borderRadius: BorderRadius.circular(14),
+                    color: AmColors.lineLight,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.logout_rounded, color: AmColors.redLight, size: 18),
-                      SizedBox(width: 9),
-                      Text('Cerrar sesión',
-                          style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
-                              color: AmColors.redLight)),
-                    ],
+                  alignment: Alignment.center,
+                ),
+                if (user?.email != null) ...[
+                  Text(l10n.commonAccount,
+                      style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
+                          color: AmColors.mutedLight, letterSpacing: 0.06)),
+                  const SizedBox(height: 6),
+                  Text(user!.email!,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500,
+                          color: AmColors.inkLight)),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1, color: AmColors.lineSoftLight),
+                  const SizedBox(height: 12),
+                ],
+                AmPress(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await ref.read(authProvider.notifier).signOut();
+                    if (context.mounted) context.go('/login');
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: AmColors.redWashLight,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.logout_rounded, color: AmColors.redLight, size: 18),
+                        const SizedBox(width: 9),
+                        Text(l10n.commonSignOut,
+                            style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
+                                color: AmColors.redLight)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-            ],
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -177,12 +183,12 @@ class _Header extends ConsumerWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('AMConnect',
-                    style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
+              children: [
+                Text(l10n.homeTitle,
+                    style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
                         color: AmColors.mutedLight, letterSpacing: 0.02)),
-                Text('Hola, Daniel',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
+                Text(l10n.homeGreeting('Daniel'),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
                         color: AmColors.inkLight, letterSpacing: -0.01)),
               ],
             ),
@@ -214,6 +220,7 @@ class _AlertBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasUrgent = urgent.isNotEmpty;
     final bg = hasUrgent ? AmColors.redWashLight : AmColors.amberWashLight;
     final iconBg = hasUrgent ? AmColors.redLight : AmColors.amberLight;
@@ -235,12 +242,12 @@ class _AlertBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${pending.length} póliza${pending.length != 1 ? "s" : ""} necesitan tu atención',
+                    l10n.homeAttentionDesc(pending.length),
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AmColors.inkLight),
                   ),
                   if (hasUrgent)
                     Text(
-                      '${urgent.length} urgente${urgent.length != 1 ? "s" : ""} · hoy',
+                      l10n.homeUrgentToday(urgent.length),
                       style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: AmColors.redLight),
                     ),
                 ],
@@ -259,6 +266,7 @@ class _AlertBanner extends StatelessWidget {
 class _AskBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AmPress(
       onTap: () => context.push('/chat'),
       child: Container(
@@ -280,9 +288,9 @@ class _AskBar extends StatelessWidget {
           children: [
             const Icon(Icons.auto_awesome, color: AmColors.accentInk, size: 18),
             const SizedBox(width: 11),
-            const Expanded(
-              child: Text('Pregúntale sobre tus clientes',
-                  style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(l10n.homeAiHint,
+                  style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
                       color: AmColors.inkSoftLight)),
             ),
             Container(
@@ -308,13 +316,14 @@ class _ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final client = clientById(r.clienteId);
     if (client == null) return const SizedBox.shrink();
 
     final (icon, label, tone) = switch (r.tipo) {
-      'pago'       => (Icons.payments_outlined, 'Pago', AmColors.amberLight),
-      'renovacion' => (Icons.autorenew, 'Renovación', AmColors.accentInk),
-      _            => (Icons.phone_outlined, 'Llamada', AmColors.greenLight),
+      'pago'       => (Icons.payments_outlined, l10n.reminderTypePayment, AmColors.amberLight),
+      'renovacion' => (Icons.autorenew, l10n.reminderTypeRenewal, AmColors.accentInk),
+      _            => (Icons.phone_outlined, l10n.reminderTypeCall, AmColors.greenLight),
     };
     final accentColor = r.urgente ? AmColors.redLight : tone;
 
@@ -379,7 +388,7 @@ class _ActionCard extends StatelessWidget {
                   const SizedBox(height: 13),
                   Row(
                     children: [
-                      _MiniAction(icon: Icons.phone_outlined, label: 'Llamar', onTap: () {}),
+                      _MiniAction(icon: Icons.phone_outlined, label: l10n.clientsActionCall, onTap: () {}),
                       const SizedBox(width: 8),
                       _MiniAction(icon: Icons.chat_bubble_outline, label: 'WhatsApp', onTap: () {}),
                     ],
@@ -433,14 +442,15 @@ class _PortfolioStats extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final reminders = ref.watch(remindersProvider);
     final pending = reminders.where((r) => !r.hecho).toList();
     final renovaciones = pending.where((r) => r.tipo == 'renovacion').length;
 
     final tiles = [
-      (mockStats['polizas']!.toString(), 'Pólizas'),
-      (renovaciones.toString(), 'Por renovar'),
-      (mockClients.length.toString(), 'Clientes'),
+      (mockStats['polizas']!.toString(), l10n.homePolicies),
+      (renovaciones.toString(), l10n.homeToRenew),
+      (mockClients.length.toString(), l10n.homeClients),
     ];
 
     return AmCard(

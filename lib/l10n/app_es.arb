@@ -1,0 +1,166 @@
+{
+  "@@locale": "es",
+
+  "@_common": {},
+  "commonTerms": "Al continuar, aceptas los Términos y la Política de Privacidad.",
+  "commonClose": "Cerrar",
+  "commonAccount": "Cuenta",
+  "commonSignOut": "Cerrar sesión",
+
+  "@_login": {},
+  "loginWelcomeTitle": "Bienvenido a\nAMConnect",
+  "loginWelcomeSubtitle": "Tu asistente inteligente. Concentra a tus clientes, pólizas y recordatorios — y pregúntale lo que sea.",
+  "loginContinueApple": "Continuar con Apple",
+  "loginContinueGoogle": "Continuar con Google",
+  "loginEnterEmail": "Entrar con correo",
+  "loginGuest": "Explorar como invitado",
+  "loginErrGoogle": "No se pudo iniciar sesión con Google.",
+  "loginErrApple": "No se pudo iniciar sesión con Apple.",
+
+  "@_emailLogin": {},
+  "emailLoginTitle": "Iniciar sesión",
+  "emailLoginSubtitle": "Ingresa con tu correo y contraseña",
+  "emailLoginForgot": "¿Olvidaste tu contraseña?",
+  "emailLoginBtn": "Iniciar sesión",
+  "emailLoginNoAccount": "¿No tienes cuenta? ",
+  "emailLoginCreateAccount": "Crear cuenta",
+
+  "@_register": {},
+  "registerTitle": "Crear cuenta",
+  "registerSubtitle": "Regístrate para comenzar a usar AMConnect",
+  "registerBtn": "Crear cuenta",
+  "registerHasAccount": "¿Ya tienes cuenta? ",
+  "registerSignIn": "Iniciar sesión",
+
+  "@_fields": {},
+  "fieldEmail": "Correo electrónico",
+  "fieldPassword": "Contraseña",
+  "fieldConfirm": "Confirmar contraseña",
+
+  "@_errors": {},
+  "errInvalidEmail": "Ingresa un correo electrónico válido",
+  "errEmptyCredentials": "Por favor, llena todos los campos",
+  "errWrongCredentials": "Correo o contraseña incorrectos",
+  "errFillAll": "Por favor, completa todos los campos",
+  "errPasswordMismatch": "Las contraseñas no coinciden",
+  "errCreateAccount": "Error al crear la cuenta. Inténtalo de nuevo.",
+
+  "@_shell": {},
+  "shellHome": "Inicio",
+  "shellAgenda": "Agenda",
+  "shellClients": "Clientes",
+  "shellData": "Datos",
+
+  "@_home": {},
+  "homeTitle": "AMConnect",
+  "homeGreeting": "Hola, {name}",
+  "@homeGreeting": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "homeImmediateAttention": "Atención inmediata",
+  "homePortfolio": "Tu cartera",
+  "homeNeedAttention": "Necesitan atención",
+  "homeAiHint": "Pregúntale sobre tus clientes",
+  "homeUrgentCount": "{count} urgente(s)",
+  "@homeUrgentCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homeUrgentToday": "{count} urgente(s) · hoy",
+  "@homeUrgentToday": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homeAttentionDesc": "{count} póliza(s) necesitan tu atención",
+  "@homeAttentionDesc": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homePolicies": "Pólizas",
+  "homeToRenew": "Por renovar",
+  "homeClients": "Clientes",
+
+  "@_reminderTypes": {},
+  "reminderTypePayment": "Pago",
+  "reminderTypeRenewal": "Renovación",
+  "reminderTypeCall": "Llamada",
+  "reminderTypeOther": "Otro",
+
+  "@_clients": {},
+  "clientsTitle": "Clientes",
+  "clientsTotal": "{count} en total",
+  "@clientsTotal": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsSearchHint": "Buscar cliente…",
+  "clientsStatusProspect": "Prospecto",
+  "clientsStatusToRenew": "Por renovar",
+  "clientsStatusPaymentDue": "Pago próximo",
+  "clientsStatusUpToDate": "Al día",
+  "clientsActionCall": "Llamar",
+  "clientsActionMessage": "Mensaje",
+  "clientsActionRemind": "Recordar",
+  "clientsActionAsk": "Preguntar",
+  "clientsPoliciesTab": "Pólizas · {count}",
+  "@clientsPoliciesTab": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsNotesTab": "Notas · {count}",
+  "@clientsNotesTab": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsPolicyActive": "Vigente",
+  "clientsPolicySumInsured": "Suma asegurada",
+  "clientsPolicyPremium": "Prima",
+  "clientsPolicyNextPayment": "Próximo pago",
+  "clientsPolicyDeductible": "Deducible",
+  "clientsAskAbout": "Preguntar sobre {name}",
+  "@clientsAskAbout": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "@_reminders": {},
+  "remindersTitle": "Agenda",
+  "remindersPendingCount": "{count} pendientes",
+  "@remindersPendingCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "remindersFilterAll": "Todos",
+  "remindersFilterPayments": "Pagos",
+  "remindersFilterRenewals": "Renovaciones",
+  "remindersFilterCalls": "Llamadas",
+  "remindersNewTitle": "Nuevo recordatorio",
+  "remindersCreated": "Recordatorio creado",
+  "remindersVoiceHint": "DÍSELO CON TUS PALABRAS",
+  "remindersVoicePlaceholder": "recuérdame llamar a José mañana a las 3",
+  "remindersFieldTitle": "Título",
+  "remindersFieldType": "Tipo",
+  "remindersFieldClient": "Cliente",
+  "remindersFieldDate": "Fecha",
+  "remindersFieldTime": "Hora",
+  "remindersRepeatYearly": "Repetir cada año",
+  "remindersCreateBtn": "Crear recordatorio",
+
+  "@_chat": {},
+  "chatTitle": "Asistente",
+  "chatSubtitle": "Conectado a tu base",
+  "chatNewConversation": "Nueva conversación",
+  "chatInputHint": "Pregúntale a tu asistente…",
+
+  "@_feed": {},
+  "feedTitle": "Base de conocimiento",
+  "feedSubtitle": "Alimentar la app",
+  "feedQuestion": "¿Qué quieres agregar?",
+  "feedTypePolicyPdf": "Póliza PDF",
+  "feedTypePolicyPdfDesc": "Sube la póliza y la leo completa",
+  "feedTypePolicyPhoto": "Foto de póliza",
+  "feedTypePolicyPhotoDesc": "Fotografía con tu cámara",
+  "feedTypeAudio": "Audio / nota voz",
+  "feedTypeAudioDesc": "Transcribe y extrae datos",
+  "feedTypeText": "Texto / notas",
+  "feedTypeTextDesc": "Pega chats o notas escritas",
+  "feedTypeWhatsapp": "Importar chat de WhatsApp",
+  "feedTypeWhatsappDesc": "Exporta y sube la conversación",
+  "feedRecentlyUploaded": "Subido recientemente",
+  "feedUploading": "Subiendo archivo…",
+  "feedProcessing": "Procesando con IA…",
+  "feedUploadingDesc": "Enviando el PDF a Supabase Storage",
+  "feedProcessingDesc": "La IA está extrayendo los datos de la póliza"
+}

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class ShellScreen extends StatelessWidget {
   const ShellScreen({super.key, required this.child, required this.location});
@@ -11,10 +12,10 @@ class ShellScreen extends StatelessWidget {
   final String location;
 
   static const _tabs = [
-    _Tab(path: '/home',     icon: Icons.home_outlined,          label: 'Inicio'),
-    _Tab(path: '/agenda',   icon: Icons.calendar_today_outlined, label: 'Agenda'),
-    _Tab(path: '/clientes', icon: Icons.group_outlined,          label: 'Clientes'),
-    _Tab(path: '/datos',    icon: Icons.folder_outlined,         label: 'Datos'),
+    _Tab(path: '/home',     icon: Icons.home_outlined),
+    _Tab(path: '/agenda',   icon: Icons.calendar_today_outlined),
+    _Tab(path: '/clientes', icon: Icons.group_outlined),
+    _Tab(path: '/datos',    icon: Icons.folder_outlined),
   ];
 
   String get _activeTab {
@@ -58,7 +59,6 @@ class ShellScreen extends StatelessWidget {
                     ..._tabs.sublist(2, 4).map((t) => _TabItem(t: t, active: _activeTab == t.path)),
                   ],
                 ),
-                // Center mic FAB
                 Positioned(
                   bottom: 4,
                   child: AmPress(
@@ -91,10 +91,9 @@ class ShellScreen extends StatelessWidget {
 }
 
 class _Tab {
-  const _Tab({required this.path, required this.icon, required this.label});
+  const _Tab({required this.path, required this.icon});
   final String path;
   final IconData icon;
-  final String label;
 }
 
 class _TabItem extends StatelessWidget {
@@ -102,8 +101,17 @@ class _TabItem extends StatelessWidget {
   final _Tab t;
   final bool active;
 
+  String _label(AppLocalizations l10n) => switch (t.path) {
+    '/home'     => l10n.shellHome,
+    '/agenda'   => l10n.shellAgenda,
+    '/clientes' => l10n.shellClients,
+    '/datos'    => l10n.shellData,
+    _           => '',
+  };
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AmPress(
       onTap: () => context.go(t.path),
       child: SizedBox(
@@ -118,7 +126,7 @@ class _TabItem extends StatelessWidget {
             ),
             const SizedBox(height: 3),
             Text(
-              t.label,
+              _label(l10n),
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: active ? FontWeight.w600 : FontWeight.w500,

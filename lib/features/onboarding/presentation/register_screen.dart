@@ -2,87 +2,121 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/features/onboarding/providers/email_login_provider.dart';
+import 'package:amconnect/features/onboarding/providers/register_provider.dart';
 import 'package:amconnect/features/onboarding/widgets/auth_app_bar.dart';
 import 'package:amconnect/features/onboarding/widgets/auth_divider.dart';
 import 'package:amconnect/features/onboarding/widgets/auth_error_msg.dart';
 import 'package:amconnect/features/onboarding/widgets/auth_field.dart';
 import 'package:amconnect/features/onboarding/widgets/auth_submit_btn.dart';
-import 'package:amconnect/core/widgets/am_fade_animation.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
-class EmailLoginScreen extends ConsumerStatefulWidget {
-  const EmailLoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<EmailLoginScreen> createState() => _EmailLoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen>
+    with SingleTickerProviderStateMixin {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
-  bool _obscure = true;
-  bool _emailTouched = false;
+  final _confirmCtrl = TextEditingController();
+  bool _obscurePass = true;
+  bool _obscureConfirm = true;
+
+  late final AnimationController _ctrl;
+  late final Animation<double> _headerOpacity;
+  late final Animation<double> _headerDy;
+  late final Animation<double> _fieldsOpacity;
+  late final Animation<double> _fieldsDy;
+  late final Animation<double> _footerOpacity;
 
   @override
   void initState() {
     super.initState();
-    _emailCtrl.addListener(_onEmailChanged);
+    _emailCtrl.addListener(_rebuild);
     _passCtrl.addListener(_rebuild);
+    _confirmCtrl.addListener(_rebuild);
+
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900));
+
+    _headerOpacity =
+        Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.25, 0.70, curve: Curves.easeOut),
+    ));
+    _headerDy = Tween<double>(begin: 14.0, end: 0.0).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.25, 0.70, curve: Curves.easeOut),
+    ));
+    _fieldsOpacity =
+        Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.42, 0.85, curve: Curves.easeOut),
+    ));
+    _fieldsDy = Tween<double>(begin: 14.0, end: 0.0).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.42, 0.85, curve: Curves.easeOut),
+    ));
+    _footerOpacity =
+        Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _ctrl,
+      curve: const Interval(0.60, 1.00, curve: Curves.easeOut),
+    ));
+
+    _ctrl.forward();
   }
 
   void _rebuild() => setState(() {});
-  void _onEmailChanged() => setState(() => _emailTouched = false);
 
   @override
   void dispose() {
-    _emailCtrl.removeListener(_onEmailChanged);
+    _emailCtrl.removeListener(_rebuild);
     _passCtrl.removeListener(_rebuild);
+    _confirmCtrl.removeListener(_rebuild);
     _emailCtrl.dispose();
     _passCtrl.dispose();
+    _confirmCtrl.dispose();
+    _ctrl.dispose();
     super.dispose();
   }
+
+  bool get _canSubmit =>
+      _emailCtrl.text.trim().isNotEmpty &&
+      _passCtrl.text.isNotEmpty &&
+      _confirmCtrl.text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = ref.watch(emailLoginProvider);
+    final state = ref.watch(registerProvider);
 
-    final email = _emailCtrl.text.trim();
-    final isEmailEmpty = email.isEmpty;
-    final isEmailValid = isEmailEmpty ||
-        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
-
-    final String? validationError =
-        (_emailTouched && !isEmailValid) ? l10n.errInvalidEmail : null;
-    final errorMsg = validationError ??
-        (switch (state.error) {
-          EmailLoginError.emptyFields => l10n.errEmptyCredentials,
-          EmailLoginError.wrongCredentials => l10n.errWrongCredentials,
-          null => null,
-        });
+    final errorMsg = switch (state.error) {
+      RegisterError.emptyFields => l10n.errFillAll,
+      RegisterError.passwordMismatch => l10n.errPasswordMismatch,
+      RegisterError.serverError => l10n.errCreateAccount,
+      null => null,
+    };
 
     final size = MediaQuery.sizeOf(context);
     final scale = (size.width / 390).clamp(0.80, 1.40);
     final vScale = (size.height / 844).clamp(0.75, 1.40);
 
-    final isFormValid = _emailCtrl.text.trim().isNotEmpty &&
-        _passCtrl.text.isNotEmpty &&
-        isEmailValid;
-
     return Scaffold(
-        backgroundColor: AmColors.authBg,
-        appBar: const AuthAppBar(),
-        body: SafeArea(
-          top: false,
-          bottom: true,
-          child: Padding(
+      backgroundColor: AmColors.authBg,
+      appBar: const AuthAppBar(),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Padding(
             padding: EdgeInsets.fromLTRB(
                 28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Logo animado con Hero
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                // Logo
                 Hero(
                   tag: 'auth_logo',
                   child: ColorFiltered(
@@ -95,14 +129,19 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
 
                 SizedBox(height: 24 * vScale),
 
-                // Título + subtítulo reutilizando la animación Fade
-                AmFadeAnimation(
-                  delayMs: 100,
+                // Título + subtítulo
+                AnimatedBuilder(
+                  animation: _ctrl,
+                  builder: (_, child) => Opacity(
+                    opacity: _headerOpacity.value,
+                    child: Transform.translate(
+                        offset: Offset(0, _headerDy.value), child: child),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.emailLoginTitle,
+                        l10n.registerTitle,
                         style: TextStyle(
                           fontSize: 38 * scale,
                           fontWeight: FontWeight.w800,
@@ -113,7 +152,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                       ),
                       SizedBox(height: 8 * vScale),
                       Text(
-                        l10n.emailLoginSubtitle,
+                        l10n.registerSubtitle,
                         style: TextStyle(
                           fontSize: 15 * scale,
                           height: 1.55,
@@ -127,8 +166,13 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                 const Spacer(),
 
                 // Campos + botón
-                AmFadeAnimation(
-                  delayMs: 250,
+                AnimatedBuilder(
+                  animation: _ctrl,
+                  builder: (_, child) => Opacity(
+                    opacity: _fieldsOpacity.value,
+                    child: Transform.translate(
+                        offset: Offset(0, _fieldsDy.value), child: child),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -138,20 +182,19 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         icon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        onBlur: () => setState(() => _emailTouched = true),
                       ),
                       SizedBox(height: 12 * vScale),
                       AuthField(
                         controller: _passCtrl,
                         hint: l10n.fieldPassword,
                         icon: Icons.lock_outline,
-                        obscure: _obscure,
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) => isFormValid ? _onSubmit() : null,
+                        obscure: _obscurePass,
+                        textInputAction: TextInputAction.next,
                         suffixIcon: GestureDetector(
-                          onTap: () => setState(() => _obscure = !_obscure),
+                          onTap: () =>
+                              setState(() => _obscurePass = !_obscurePass),
                           child: Icon(
-                            _obscure
+                            _obscurePass
                                 ? Icons.visibility_outlined
                                 : Icons.visibility_off_outlined,
                             color: AmColors.white,
@@ -159,12 +202,24 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8 * vScale),
-                      Text(
-                        l10n.emailLoginForgot,
-                        style: TextStyle(
-                          fontSize: 13 * scale,
-                          color: Colors.white.withValues(alpha: 0.75),
+                      SizedBox(height: 12 * vScale),
+                      AuthField(
+                        controller: _confirmCtrl,
+                        hint: l10n.fieldConfirm,
+                        icon: Icons.lock_outline,
+                        obscure: _obscureConfirm,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _onSubmit(),
+                        suffixIcon: GestureDetector(
+                          onTap: () => setState(
+                              () => _obscureConfirm = !_obscureConfirm),
+                          child: Icon(
+                            _obscureConfirm
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            color: AmColors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                       if (errorMsg != null) ...[
@@ -172,16 +227,14 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         AuthErrorMsg(
                           message: errorMsg,
                           scale: scale,
-                          onDismiss: () {
-                            setState(() => _emailTouched = false);
-                            ref.read(emailLoginProvider.notifier).clearError();
-                          },
+                          onDismiss: () =>
+                              ref.read(registerProvider.notifier).clearError(),
                         ),
                       ],
                       SizedBox(height: 20 * vScale),
                       AuthSubmitBtn(
-                        label: l10n.emailLoginBtn,
-                        enabled: isFormValid,
+                        label: l10n.registerBtn,
+                        enabled: _canSubmit,
                         isLoading: state.isLoading,
                         onTap: _onSubmit,
                       ),
@@ -192,8 +245,10 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                 SizedBox(height: 24 * vScale),
 
                 // Footer
-                AmFadeAnimation(
-                  delayMs: 400,
+                AnimatedBuilder(
+                  animation: _ctrl,
+                  builder: (_, child) =>
+                      Opacity(opacity: _footerOpacity.value, child: child),
                   child: Column(
                     children: [
                       const AuthDivider(),
@@ -202,16 +257,16 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            l10n.emailLoginNoAccount,
+                            l10n.registerHasAccount,
                             style: TextStyle(
                               fontSize: 14 * scale,
                               color: Colors.white.withValues(alpha: 0.70),
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => context.push('/register'),
+                            onTap: () => context.pop(),
                             child: Text(
-                              l10n.emailLoginCreateAccount,
+                              l10n.registerSignIn,
                               style: TextStyle(
                                 fontSize: 14 * scale,
                                 fontWeight: FontWeight.w700,
@@ -240,10 +295,11 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
               ],
             ),
           ),
-        ));
+        ),
+    );
   }
 
   void _onSubmit() => ref
-      .read(emailLoginProvider.notifier)
-      .signIn(_emailCtrl.text.trim(), _passCtrl.text);
+      .read(registerProvider.notifier)
+      .signUp(_emailCtrl.text.trim(), _passCtrl.text, _confirmCtrl.text);
 }

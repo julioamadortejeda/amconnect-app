@@ -6,6 +6,7 @@ import 'package:amconnect/core/mock/mock_data.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/home/presentation/home_screen.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -19,6 +20,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final reminders = ref.watch(remindersProvider);
     final filter = _filter;
     final filtered = reminders.where((r) {
@@ -40,11 +42,11 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('$pending pendientes',
+                        Text(l10n.remindersPendingCount(pending),
                             style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
                                 color: AmColors.mutedLight)),
-                        const Text('Agenda',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
+                        Text(l10n.remindersTitle,
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
                                 color: AmColors.inkLight, letterSpacing: -0.01)),
                       ],
                     ),
@@ -72,10 +74,10 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 children: [
                   for (final (key, label) in [
-                    ('todos', 'Todos'),
-                    ('pago', 'Pagos'),
-                    ('renovacion', 'Renovaciones'),
-                    ('llamada', 'Llamadas'),
+                    ('todos', l10n.remindersFilterAll),
+                    ('pago', l10n.remindersFilterPayments),
+                    ('renovacion', l10n.remindersFilterRenewals),
+                    ('llamada', l10n.remindersFilterCalls),
                   ])
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
