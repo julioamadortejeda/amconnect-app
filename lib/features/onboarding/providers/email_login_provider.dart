@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:amconnect/core/providers/auth_provider.dart';
 
 enum EmailLoginError { emptyFields, wrongCredentials }
 
@@ -36,11 +37,10 @@ class EmailLoginNotifier extends Notifier<EmailLoginState> {
     }
 
     state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    if (email == 'admin@jacat.com' && password == '123456') {
+    try {
+      await ref.read(authProvider.notifier).signIn(email: email, password: password);
       state = state.copyWith(isLoading: false);
-    } else {
+    } catch (_) {
       state = state.copyWith(isLoading: false, error: EmailLoginError.wrongCredentials);
     }
   }

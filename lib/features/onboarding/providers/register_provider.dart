@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:amconnect/core/providers/auth_provider.dart';
 
 enum RegisterError { emptyFields, passwordMismatch, serverError }
 
@@ -40,10 +41,12 @@ class RegisterNotifier extends Notifier<RegisterState> {
     }
 
     state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    // Mock successful sign up
-    state = state.copyWith(isLoading: false);
+    try {
+      await ref.read(authProvider.notifier).signUp(email: email, password: pass);
+      state = state.copyWith(isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false, error: RegisterError.serverError);
+    }
   }
 }
 

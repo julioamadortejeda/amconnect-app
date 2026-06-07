@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:amconnect/core/providers/auth_provider.dart';
 
 enum LoginError { google, apple, email }
 
@@ -29,23 +30,21 @@ class LoginNotifier extends Notifier<LoginState> {
 
   Future<void> signInWithGoogle() async {
     state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    state = state.copyWith(isLoading: false);
+    try {
+      await ref.read(authProvider.notifier).signInWithGoogle();
+      state = state.copyWith(isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false, error: LoginError.google);
+    }
   }
 
   Future<void> signInWithApple() async {
     state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    state = state.copyWith(isLoading: false);
-  }
-
-  Future<void> signInWithEmail(String email, String pass) async {
-    state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (email == 'admin@jacat.com' && pass == '123456') {
+    try {
+      await ref.read(authProvider.notifier).signInWithApple();
       state = state.copyWith(isLoading: false);
-    } else {
-      state = state.copyWith(isLoading: false, error: LoginError.email);
+    } catch (_) {
+      state = state.copyWith(isLoading: false, error: LoginError.apple);
     }
   }
 }
