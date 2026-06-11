@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:amconnect/features/home/providers/home_provider.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/chat/widgets/voice_overlay.dart';
@@ -19,7 +21,7 @@ const _kIndicatorVPad = 8.0;
 // Padding horizontal extra a cada lado del indicador
 const _kIndicatorHPad = 6.0;
 
-class ShellScreen extends StatelessWidget {
+class ShellScreen extends ConsumerWidget {
   const ShellScreen({super.key, required this.child, required this.location});
 
   final Widget child;
@@ -40,25 +42,30 @@ class ShellScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bottom = MediaQuery.of(context).padding.bottom;
+    final barVisible = location != '/home' || ref.watch(homeReadyProvider).hasValue;
 
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(child: child),
 
-          Positioned(
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 320),
+            curve: Curves.easeInOut,
             left: _kBarLeft,
             right: _kBarRight,
-            bottom: bottom + _kBottomOffset,
+            bottom: barVisible ? bottom + _kBottomOffset : -(bottom + _kBarHeight + _kBottomOffset),
             height: _kBarHeight,
             child: _PillBar(tabs: _tabs, activeTab: _activeTab),
           ),
 
-          Positioned(
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 320),
+            curve: Curves.easeInOut,
             right: _kMicRight,
-            bottom: bottom + _kBottomOffset,
+            bottom: barVisible ? bottom + _kBottomOffset : -(bottom + _kMicSize + _kBottomOffset),
             width: _kMicSize,
             height: _kMicSize,
             child: const _MicButton(),

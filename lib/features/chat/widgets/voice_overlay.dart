@@ -74,7 +74,7 @@ class _VoiceOverlayState extends State<VoiceOverlay> {
             color: const Color(0xFF003B7A).withValues(alpha: 0.52),
             child: Stack(
               children: [
-                const AmAurora(),
+                const AmAurora(delay: Duration(milliseconds: 300)),
 
                 SafeArea(
                   child: Column(

@@ -5,6 +5,7 @@
   "commonClose": "Close",
   "commonAccount": "Account",
   "commonSignOut": "Sign out",
+  "commonLoading": "Loading...",
 
   "loginWelcomeTitle": "Welcome to\nAMConnect",
   "loginWelcomeSubtitle": "Your intelligent assistant. Manage your clients, policies, and reminders — and ask it anything.",
@@ -62,6 +63,12 @@
   "homeClientesRecientes": "Recent clients",
   "homeViewAgenda": "View schedule",
   "homeViewAll": "View all",
+  "homeViewAllCount": "View all ({count})",
+  "@homeViewAllCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
 
   "reminderTypePayment": "Payment",
   "reminderTypeRenewal": "Renewal",

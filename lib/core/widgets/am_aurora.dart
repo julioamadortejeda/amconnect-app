@@ -9,7 +9,12 @@ import 'package:flutter/material.dart';
 /// On entry the glow "paints itself" clockwise starting from the right edge;
 /// once complete, the colors rotate continuously.
 class AmAurora extends StatefulWidget {
-  const AmAurora({super.key});
+  const AmAurora({super.key, this.delay = Duration.zero});
+
+  /// How long to wait before starting the entry sweep.
+  /// Set this to match the parent overlay's transition duration so the
+  /// sweep only begins once the screen is fully visible.
+  final Duration delay;
 
   @override
   State<AmAurora> createState() => _AmAuroraState();
@@ -25,11 +30,19 @@ class _AmAuroraState extends State<AmAurora> with TickerProviderStateMixin {
     _entryCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1100),
-    )..forward();
+    );
     _loopCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 9000),
     )..repeat();
+
+    if (widget.delay == Duration.zero) {
+      _entryCtrl.forward();
+    } else {
+      Future.delayed(widget.delay, () {
+        if (mounted) _entryCtrl.forward();
+      });
+    }
   }
 
   @override

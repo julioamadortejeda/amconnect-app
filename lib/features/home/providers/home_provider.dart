@@ -30,7 +30,8 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
 }
 
 final remindersProvider =
-    AsyncNotifierProvider<RemindersNotifier, List<Reminder>>(RemindersNotifier.new);
+    AsyncNotifierProvider<RemindersNotifier, List<Reminder>>(
+        RemindersNotifier.new);
 
 /// Nombre del asesor autenticado desde GET /agents/me
 final agentNameProvider = FutureProvider<String>((ref) {
@@ -40,4 +41,15 @@ final agentNameProvider = FutureProvider<String>((ref) {
 /// Conteo total de pólizas del asesor desde GET /policies
 final policiesCountProvider = FutureProvider<int>((ref) {
   return ref.read(policyRepositoryProvider).getCount();
+});
+
+/// True cuando todos los datos del dashboard cargaron Y pasaron al menos 3 segundos.
+final homeReadyProvider = FutureProvider<bool>((ref) async {
+  await Future.wait([
+    ref.watch(remindersProvider.future),
+    ref.watch(agentNameProvider.future),
+    ref.watch(policiesCountProvider.future),
+    Future.delayed(const Duration(milliseconds: 500)),
+  ]);
+  return true;
 });

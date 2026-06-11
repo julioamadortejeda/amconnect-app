@@ -5,7 +5,9 @@ import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/theme/app_dimensions.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/features/home/providers/home_provider.dart';
+import 'package:amconnect/features/clients/providers/clients_provider.dart';
 import 'package:amconnect/features/home/widgets/home_clientes_recientes.dart';
+import 'package:amconnect/core/widgets/am_loader.dart';
 import 'package:amconnect/features/home/widgets/home_floating_btn.dart';
 import 'package:amconnect/features/home/widgets/home_header.dart';
 import 'package:amconnect/features/home/widgets/home_pendientes_card.dart';
@@ -46,9 +48,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
+    final ready = ref.watch(homeReadyProvider);
+    if (!ready.hasValue) return const AmLoader();
+
     final reminders    = ref.watch(remindersProvider).asData?.value ?? [];
     final agentName    = ref.watch(agentNameProvider).asData?.value ?? '';
     final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
+    final clientsCount = ref.watch(clientsProvider).asData?.value?.length ?? 0;
 
     final pending    = reminders.where((r) => !r.hecho).toList();
     final urgentCount = pending.where((r) => r.urgente).length;
@@ -79,9 +85,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   label: l10n.homePendientes,
                   trailing: GestureDetector(
                     onTap: () => context.push('/agenda'),
-                    child: Text(l10n.homeViewAgenda,
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                            color: AmColors.accent)),
+                    child: Text(
+                      pending.length > 4
+                          ? l10n.homeViewAllCount(pending.length)
+                          : l10n.homeViewAgenda,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
+                          color: AmColors.accent),
+                    ),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),
@@ -89,9 +99,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   HomePendientesCard(reminders: pending.take(4).toList()),
                 const SizedBox(height: AmDimens.gapL),
                 if (followUps.isNotEmpty) ...[
-                  AmSectionLabel(label: l10n.homeSeguimientos),
+                  AmSectionLabel(
+                    label: l10n.homeSeguimientos,
+                    trailing: followUps.length > 3 ? GestureDetector(
+                      onTap: () => context.push('/agenda'),
+                      child: Text(
+                        l10n.homeViewAllCount(followUps.length),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
+                            color: AmColors.accent),
+                      ),
+                    ) : null,
+                  ),
                   const SizedBox(height: AmDimens.gapXS),
-                  ...followUps.take(2).map((r) => Padding(
+                  ...followUps.take(3).map((r) => Padding(
                         padding: const EdgeInsets.only(bottom: 11),
                         child: HomeSeguimientoCard(reminder: r),
                       )),
@@ -101,9 +121,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   label: l10n.homeClientesRecientes,
                   trailing: GestureDetector(
                     onTap: () => context.go('/clientes'),
-                    child: Text(l10n.homeViewAll,
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                            color: AmColors.accent)),
+                    child: Text(
+                      clientsCount > 0
+                          ? l10n.homeViewAllCount(clientsCount)
+                          : l10n.homeViewAll,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
+                          color: AmColors.accent),
+                    ),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),

@@ -22,6 +22,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonSignOut => 'Sign out';
 
   @override
+  String get commonLoading => 'Loading...';
+
+  @override
+  String homeViewAllCount(int count) {
+    return 'View all ($count)';
+  }
+
+  @override
   String get loginWelcomeTitle => 'Welcome to\nAMConnect';
 
   @override

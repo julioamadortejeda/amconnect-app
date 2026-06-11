@@ -122,6 +122,18 @@ abstract class AppLocalizations {
   /// **'Cerrar sesión'**
   String get commonSignOut;
 
+  /// No description provided for @commonLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando...'**
+  String get commonLoading;
+
+  /// No description provided for @homeViewAllCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos ({count})'**
+  String homeViewAllCount(int count);
+
   /// No description provided for @loginWelcomeTitle.
   ///
   /// In es, this message translates to:

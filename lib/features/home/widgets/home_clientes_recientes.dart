@@ -11,7 +11,7 @@ class HomeClientesRecientes extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
-    final contacts = ref.watch(clientsProvider).asData?.value ?? [];
+    final contacts = (ref.watch(clientsProvider).asData?.value ?? []).take(10).toList();
 
     return SizedBox(
       height: 74,

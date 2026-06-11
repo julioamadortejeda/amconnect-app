@@ -6,6 +6,13 @@
   "commonClose": "Cerrar",
   "commonAccount": "Cuenta",
   "commonSignOut": "Cerrar sesión",
+  "commonLoading": "Cargando...",
+  "homeViewAllCount": "Ver todos ({count})",
+  "@homeViewAllCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
 
   "@_login": {},
   "loginWelcomeTitle": "Bienvenido a\nAMConnect",
