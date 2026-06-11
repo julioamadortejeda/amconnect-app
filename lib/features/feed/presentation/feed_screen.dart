@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
@@ -63,7 +64,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         child: Stack(
           children: [
             ListView(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 100),
+              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 12, AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,9 +82,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                             letterSpacing: -0.01)),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: AmDimens.gapS),
                 AmSectionLabel(label: l10n.feedQuestion),
-                const SizedBox(height: 11),
+                const SizedBox(height: AmDimens.gapXS),
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

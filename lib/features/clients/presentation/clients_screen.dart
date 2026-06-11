@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/mock/mock_data.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
+import 'package:amconnect/core/models/contact.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
+import 'package:amconnect/features/clients/providers/clients_provider.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
 class _SearchNotifier extends Notifier<String> {
@@ -25,23 +27,27 @@ class ClientsScreen extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final q = ref.watch(clientSearchProvider);
-    final list = mockClients
-        .where((c) => c.nombre.toLowerCase().contains(q.toLowerCase()))
-        .toList();
+    final contactsAsync = ref.watch(clientsProvider);
+    final allContacts = contactsAsync.asData?.value ?? [];
+    final list = q.isEmpty
+        ? allContacts
+        : allContacts
+            .where((c) => c.fullName.toLowerCase().contains(q.toLowerCase()))
+            .toList();
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 12, AmDimens.screenH, 0),
               child: Row(
                 children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.clientsTotal(mockClients.length),
+                        Text(l10n.clientsTotal(allContacts.length),
                             style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
                                 color: cs.tertiary, letterSpacing: 0.02)),
                         Text(l10n.clientsTitle,
@@ -62,20 +68,32 @@ class ClientsScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AmDimens.gapS),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
               child: _SearchBar(
                 onChanged: (v) => ref.read(clientSearchProvider.notifier).set(v),
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AmDimens.gapS),
             Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
-                itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (_, i) => _ClientRow(client: list[i]),
+              child: contactsAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(
+                  child: Text('Error al cargar clientes',
+                      style: TextStyle(color: cs.tertiary)),
+                ),
+                data: (_) => list.isEmpty
+                    ? Center(
+                        child: Text('Sin clientes',
+                            style: TextStyle(color: cs.tertiary)),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
+                        itemCount: list.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (_, i) => _ClientRow(contact: list[i]),
+                      ),
               ),
             ),
           ],
@@ -121,47 +139,40 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _ClientRow extends StatelessWidget {
-  const _ClientRow({required this.client});
-  final MockClient client;
+  const _ClientRow({required this.contact});
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final (statusLabel, tone) = _clientStatus(client, l10n);
+    final subtitle = [
+      if (contact.occupation != null && contact.occupation!.isNotEmpty) contact.occupation!,
+      if (contact.address != null && contact.address!.isNotEmpty) contact.address!,
+    ].join(' · ');
+
     return AmCard(
-      onTap: () => context.push('/clientes/${client.id}'),
+      onTap: () => context.push('/clientes/${contact.id}'),
       child: Row(
         children: [
-          AmAvatar(client: client, size: 48, radius: 15),
+          AmAvatar(inicial: contact.inicial, color: contact.color, size: 48, radius: 15),
           const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(client.nombre,
+                Text(contact.fullName,
                     style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500,
                         color: cs.onSurface)),
                 const SizedBox(height: 2),
-                Text(
-                  '${client.ocupacion} · ${client.ciudad} · ${client.polizas.length} póliza${client.polizas.length != 1 ? "s" : ""}',
-                  style: TextStyle(fontSize: 12.5, color: cs.tertiary),
-                ),
+                Text(subtitle,
+                    style: TextStyle(fontSize: 12.5, color: cs.tertiary)),
               ],
             ),
           ),
-          AmBadge(label: statusLabel, tone: tone),
+          AmBadge(label: l10n.clientsStatusUpToDate, tone: AmBadgeTone.green),
         ],
       ),
     );
-  }
-
-  (String, AmBadgeTone) _clientStatus(MockClient c, AppLocalizations l10n) {
-    if (c.desde == 'Prospecto') return (l10n.clientsStatusProspect, AmBadgeTone.accent);
-    for (final p in c.polizas) {
-      if (p.estado == 'Por renovar') return (l10n.clientsStatusToRenew, AmBadgeTone.amber);
-      if (p.estado == 'Pago próximo') return (l10n.clientsStatusPaymentDue, AmBadgeTone.amber);
-    }
-    return (l10n.clientsStatusUpToDate, AmBadgeTone.green);
   }
 }

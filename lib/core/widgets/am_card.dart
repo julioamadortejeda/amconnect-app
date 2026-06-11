@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
 import 'am_press.dart';
 
 class AmCard extends StatelessWidget {
@@ -20,11 +21,11 @@ class AmCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final card = Container(
-      padding: noPad ? EdgeInsets.zero : (padding ?? const EdgeInsets.all(18)),
+      padding: noPad ? EdgeInsets.zero : (padding ?? const EdgeInsets.all(AmDimens.cardPad)),
       decoration: style ??
           BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(AmDimens.cardRadius),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0D141E1A),

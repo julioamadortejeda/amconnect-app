@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/mock/mock_data.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/features/home/providers/home_provider.dart';
 import 'package:amconnect/features/home/widgets/home_clientes_recientes.dart';
@@ -45,12 +45,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final reminders = ref.watch(remindersProvider);
-    final pending = reminders.where((r) => !r.hecho).toList();
+
+    final reminders    = ref.watch(remindersProvider).asData?.value ?? [];
+    final agentName    = ref.watch(agentNameProvider).asData?.value ?? '';
+    final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
+
+    final pending    = reminders.where((r) => !r.hecho).toList();
     final urgentCount = pending.where((r) => r.urgente).length;
-    final porRenovar = pending.where((r) => r.tipo == 'renovacion').length;
-    final attention = (mockClients.where((c) => c.diasSinContacto >= 7).toList()
-      ..sort((a, b) => b.diasSinContacto.compareTo(a.diasSinContacto)));
+    final porRenovar  = pending.where((r) => r.tipo == 'RENEWAL').length;
+
+    // Seguimientos: FOLLOW_UP reminders pendientes, ordenados por fecha más próxima
+    final followUps = (pending.where((r) => r.tipo == 'FOLLOW_UP').toList())
+      ..sort((a, b) => a.fecha.compareTo(b.fecha));
 
     return Scaffold(
       body: SafeArea(
@@ -58,17 +64,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             ListView(
               controller: _scrollCtrl,
-              padding: const EdgeInsets.fromLTRB(18, 0, 18, 100),
+              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 const SizedBox(height: 8),
-                HomeHeader(urgentCount: urgentCount),
-                const SizedBox(height: 16),
+                HomeHeader(agentName: agentName, urgentCount: urgentCount),
+                const SizedBox(height: AmDimens.gapM),
                 HomeStatsRow(
-                  polizas: mockStats['polizas']!,
+                  polizas: polizasCount,
                   porRenovar: porRenovar,
-                  seguimientos: attention.length,
+                  seguimientos: followUps.length,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AmDimens.gapL),
                 AmSectionLabel(
                   label: l10n.homePendientes,
                   trailing: GestureDetector(
@@ -78,17 +84,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             color: AmColors.accent)),
                   ),
                 ),
-                const SizedBox(height: 11),
+                const SizedBox(height: AmDimens.gapXS),
                 if (pending.isNotEmpty)
                   HomePendientesCard(reminders: pending.take(4).toList()),
-                const SizedBox(height: 20),
-                AmSectionLabel(label: l10n.homeSeguimientos),
-                const SizedBox(height: 11),
-                ...attention.take(2).map((c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 11),
-                      child: HomeSeguimientoCard(client: c),
-                    )),
-                const SizedBox(height: 6),
+                const SizedBox(height: AmDimens.gapL),
+                if (followUps.isNotEmpty) ...[
+                  AmSectionLabel(label: l10n.homeSeguimientos),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ...followUps.take(2).map((r) => Padding(
+                        padding: const EdgeInsets.only(bottom: 11),
+                        child: HomeSeguimientoCard(reminder: r),
+                      )),
+                  const SizedBox(height: 6),
+                ],
                 AmSectionLabel(
                   label: l10n.homeClientesRecientes,
                   trailing: GestureDetector(
@@ -98,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             color: AmColors.accent)),
                   ),
                 ),
-                const SizedBox(height: 11),
+                const SizedBox(height: AmDimens.gapXS),
                 const HomeClientesRecientes(),
               ],
             ),
@@ -108,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 opacity: _showFloating ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 120),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+                  padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 8, AmDimens.screenH, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

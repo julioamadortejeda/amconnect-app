@@ -30,6 +30,26 @@ class ApiClient {
     return _handle(res);
   }
 
+  Future<Map<String, dynamic>> patch(String path, {Map<String, dynamic>? body}) async {
+    final res = await http.patch(
+      Uri.parse('$_base/$path'),
+      headers: _headers,
+      body: body != null ? jsonEncode(body) : null,
+    );
+    return _handle(res);
+  }
+
+  Future<void> delete(String path) async {
+    final res = await http.delete(Uri.parse('$_base/$path'), headers: _headers);
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      final body = jsonDecode(res.body);
+      throw ApiException(
+        statusCode: res.statusCode,
+        message: (body is Map ? body['error']?.toString() : null) ?? 'Error desconocido',
+      );
+    }
+  }
+
   /// PUT sin Authorization — para URLs firmadas de Supabase Storage.
   Future<void> putFile(String signedUrl, File file, String mimeType) async {
     final bytes = await file.readAsBytes();

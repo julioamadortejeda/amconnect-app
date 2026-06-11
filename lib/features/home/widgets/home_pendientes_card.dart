@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/am_theme.dart';
-import 'package:amconnect/core/mock/mock_data.dart';
+import 'package:amconnect/core/models/reminder.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/features/home/providers/home_provider.dart';
+
+IconData _reminderIcon(String tipo) => switch (tipo) {
+      'PAYMENT'      => Icons.payments_outlined,
+      'RENEWAL'      => Icons.autorenew,
+      'CANCELLATION' => Icons.block,
+      'FOLLOW_UP'    => Icons.flag_outlined,
+      'CALL'         => Icons.phone_outlined,
+      'APPOINTMENT'  => Icons.event_outlined,
+      'ANNIVERSARY'  => Icons.cake,
+      _              => Icons.notifications_outlined,
+    };
 
 class HomePendientesCard extends StatelessWidget {
   const HomePendientesCard({super.key, required this.reminders});
-  final List<MockReminder> reminders;
+  final List<Reminder> reminders;
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +35,43 @@ class HomePendientesCard extends StatelessWidget {
   }
 }
 
-class HomePendingRow extends StatelessWidget {
+class HomePendingRow extends ConsumerWidget {
   const HomePendingRow({super.key, required this.r, required this.isLast});
-  final MockReminder r;
+  final Reminder r;
   final bool isLast;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final am = context.am;
-    final (iconData, iconColor, iconBg) = switch (r.tipo) {
-      'pago'       => (Icons.payments_outlined, am.amber, am.amberWash),
-      'renovacion' => (Icons.autorenew, cs.onPrimaryContainer, cs.primaryContainer),
-      _            => (Icons.phone_outlined, am.green, am.greenWash),
+
+    final (iconBg, iconFg, dotColor, badgeBg, badgeText) = switch (r.priority) {
+      ReminderPriority.urgent => (
+          cs.errorContainer,
+          cs.error,
+          cs.error,
+          cs.errorContainer.withValues(alpha: 0.7),
+          cs.error,
+        ),
+      ReminderPriority.warning => (
+          am.amberWash,
+          am.amber,
+          am.amber,
+          am.amberWash.withValues(alpha: 0.7),
+          am.amber,
+        ),
+      ReminderPriority.normal => (
+          cs.primaryContainer,
+          cs.primary,
+          null as Color?,
+          cs.primaryContainer.withValues(alpha: 0.7),
+          cs.primary,
+        ),
     };
 
     return AmPress(
       onTap: () {
-        final c = clientById(r.clienteId);
-        if (c != null) context.push('/clientes/${c.id}');
+        if (r.contactId != null) context.push('/clientes/${r.contactId}');
       },
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
@@ -50,14 +81,30 @@ class HomePendingRow extends StatelessWidget {
                 border: Border(bottom: BorderSide(color: cs.outlineVariant))),
         child: Row(
           children: [
+            GestureDetector(
+              onTap: () => ref.read(remindersProvider.notifier).toggle(r.id),
+              child: Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  color: r.hecho ? am.green : Colors.transparent,
+                  border: r.hecho ? null : Border.all(color: cs.outline, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: r.hecho
+                    ? const Icon(Icons.check, size: 15, color: Colors.white)
+                    : null,
+              ),
+            ),
+            const SizedBox(width: 10),
             Container(
-              width: 38, height: 38,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
-                color: r.urgente ? cs.errorContainer : iconBg,
+                color: iconBg,
                 borderRadius: BorderRadius.circular(11),
               ),
-              child: Icon(iconData, size: 18,
-                  color: r.urgente ? cs.error : iconColor),
+              child: Icon(_reminderIcon(r.tipo), size: 18, color: iconFg),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -65,7 +112,9 @@ class HomePendingRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(r.titulo,
-                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
+                      style: TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w500,
                           color: cs.onSurface),
                       overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 2),
@@ -75,24 +124,24 @@ class HomePendingRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            if (r.urgente)
+            if (dotColor != null)
               Container(
-                width: 7, height: 7,
+                width: 7,
+                height: 7,
                 margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                    color: cs.error, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
               ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
-                color: r.urgente ? cs.errorContainer : cs.secondaryContainer,
+                color: badgeBg,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(r.fecha,
                   style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w600,
-                    color: r.urgente ? cs.error : cs.tertiary,
-                  )),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: badgeText)),
             ),
           ],
         ),

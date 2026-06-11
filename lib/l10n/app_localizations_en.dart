@@ -127,6 +127,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeGreetingDefault => 'Hello! Good day';
+
+  @override
   String get homeImmediateAttention => 'Immediate attention';
 
   @override
@@ -313,6 +316,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceTapToClose => 'Tap to close';
+
+  @override
+  String get voiceInputHint => 'Ask anything…';
+
+  @override
+  String get voiceSend => 'Send';
 
   @override
   String get chatTitle => 'Assistant';

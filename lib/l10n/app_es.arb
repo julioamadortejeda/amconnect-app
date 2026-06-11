@@ -57,6 +57,7 @@
   "@homeGreeting": {
     "placeholders": { "name": { "type": "String" } }
   },
+  "homeGreetingDefault": "¡Hola! Buen día",
   "homeImmediateAttention": "Atención inmediata",
   "homePortfolio": "Tu cartera",
   "homeNeedAttention": "Necesitan atención",
@@ -146,6 +147,8 @@
   "@_voice": {},
   "voiceListening": "Escuchando…",
   "voiceTapToClose": "Toca para cerrar",
+  "voiceInputHint": "Pregunta…",
+  "voiceSend": "Enviar",
 
   "@_chat": {},
   "chatTitle": "Asistente",

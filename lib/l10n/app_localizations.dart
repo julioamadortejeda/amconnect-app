@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'Hola, {name}'**
   String homeGreeting(String name);
 
+  /// No description provided for @homeGreetingDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Hola! Buen día'**
+  String get homeGreetingDefault;
+
   /// No description provided for @homeImmediateAttention.
   ///
   /// In es, this message translates to:
@@ -667,6 +673,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Toca para cerrar'**
   String get voiceTapToClose;
+
+  /// No description provided for @voiceInputHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregunta…'**
+  String get voiceInputHint;
+
+  /// No description provided for @voiceSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get voiceSend;
 
   /// No description provided for @chatTitle.
   ///

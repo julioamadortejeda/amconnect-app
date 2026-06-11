@@ -194,7 +194,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  AmAvatar(client: c, size: 30, radius: 9),
+                                  AmAvatar(inicial: c.inicial, color: c.color, size: 30, radius: 9),
                                   const SizedBox(width: 8),
                                   Text(c.nombre.split(' ').first,
                                       style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,

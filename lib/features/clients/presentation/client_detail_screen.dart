@@ -1,32 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/mock/mock_data.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
+import 'package:amconnect/core/models/contact.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
 import 'package:amconnect/core/widgets/am_avatar.dart';
 import 'package:amconnect/core/widgets/am_back_bar.dart';
 import 'package:amconnect/core/widgets/am_segmented.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/core/widgets/am_ramo_icon.dart';
+import 'package:amconnect/features/clients/providers/clients_provider.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
-class ClientDetailScreen extends StatefulWidget {
+class ClientDetailScreen extends ConsumerStatefulWidget {
   const ClientDetailScreen({super.key, required this.clientId});
   final String clientId;
 
   @override
-  State<ClientDetailScreen> createState() => _ClientDetailScreenState();
+  ConsumerState<ClientDetailScreen> createState() => _ClientDetailScreenState();
 }
 
-class _ClientDetailScreenState extends State<ClientDetailScreen> {
+class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   int _tabIdx = 0;
 
   @override
   Widget build(BuildContext context) {
+    final contactAsync = ref.watch(contactDetailProvider(widget.clientId));
+
+    return contactAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => Scaffold(
+        body: Stack(
+          children: [
+            const Center(child: Text('No se pudo cargar el cliente')),
+            const AmBackBar(),
+          ],
+        ),
+      ),
+      data: (contact) => _buildBody(context, contact),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, Contact contact) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final client = clientById(widget.clientId) ?? mockClients.first;
+    final firstName = contact.fullName.split(' ').first;
 
     return Scaffold(
       body: Stack(
@@ -34,80 +55,104 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           ListView(
             padding: EdgeInsets.zero,
             children: [
-              // Status bar spacer + back bar height
               const SizedBox(height: 90),
-              // Profile hero
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
+                padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
                 child: Column(
                   children: [
-                    AmAvatar(client: client, size: 76, radius: 24),
+                    AmAvatar(
+                        inicial: contact.inicial,
+                        color: contact.color,
+                        size: 76,
+                        radius: 24),
                     const SizedBox(height: 8),
-                    Text(client.nombre,
+                    Text(contact.fullName,
                         style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600,
                             color: cs.onSurface)),
                     const SizedBox(height: 4),
-                    Text('${client.ocupacion} · ${client.edad} años · ${client.ciudad}',
-                        style: TextStyle(fontSize: 13.5, color: cs.tertiary)),
+                    Text(
+                      [
+                        if (contact.occupation != null && contact.occupation!.isNotEmpty)
+                          contact.occupation!,
+                        if (contact.address != null && contact.address!.isNotEmpty)
+                          contact.address!,
+                      ].join(' · '),
+                      style: TextStyle(fontSize: 13.5, color: cs.tertiary),
+                    ),
                     const SizedBox(height: 6),
-                    AmBadge(label: client.desde, tone: AmBadgeTone.green),
+                    AmBadge(label: contact.desde, tone: AmBadgeTone.green),
                     const SizedBox(height: 18),
-                    // Quick actions
                     Row(
                       children: [
-                        _QuickAction(icon: Icons.phone_outlined, label: l10n.clientsActionCall, onTap: () {}),
-                        const SizedBox(width: 9),
-                        _QuickAction(icon: Icons.chat_bubble_outline, label: l10n.clientsActionMessage, onTap: () {}),
+                        _QuickAction(
+                            icon: Icons.phone_outlined,
+                            label: l10n.clientsActionCall,
+                            onTap: () {}),
                         const SizedBox(width: 9),
                         _QuickAction(
-                          icon: Icons.notifications_outlined, label: l10n.clientsActionRemind,
-                          onTap: () => context.push('/crear-recordatorio?cliente=${widget.clientId}'),
+                            icon: Icons.chat_bubble_outline,
+                            label: l10n.clientsActionMessage,
+                            onTap: () {}),
+                        const SizedBox(width: 9),
+                        _QuickAction(
+                          icon: Icons.notifications_outlined,
+                          label: l10n.clientsActionRemind,
+                          onTap: () => context.push(
+                              '/crear-recordatorio?cliente=${widget.clientId}'),
                         ),
                         const SizedBox(width: 9),
                         _QuickAction(
-                          icon: Icons.auto_awesome, label: l10n.clientsActionAsk,
+                          icon: Icons.auto_awesome,
+                          label: l10n.clientsActionAsk,
                           onTap: () => context.push('/chat'),
                           accent: true,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-                    // Contact card
+                    const SizedBox(height: AmDimens.gapS),
                     AmCard(
                       noPad: true,
                       child: Column(
                         children: [
-                          _ContactRow(icon: Icons.phone_outlined, text: client.tel, hasBorder: true),
-                          _ContactRow(icon: Icons.email_outlined, text: client.email, hasBorder: false),
+                          if (contact.phone != null)
+                            _ContactRow(
+                                icon: Icons.phone_outlined,
+                                text: contact.phone!,
+                                hasBorder: contact.email != null),
+                          if (contact.email != null)
+                            _ContactRow(
+                                icon: Icons.email_outlined,
+                                text: contact.email!,
+                                hasBorder: false),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    // Tabs
+                    const SizedBox(height: AmDimens.gapS),
                     AmSegmented(
                       options: [
-                        l10n.clientsPoliciesTab(client.polizas.length),
-                        l10n.clientsNotesTab(client.notas.length),
+                        l10n.clientsPoliciesTab(0),
+                        l10n.clientsNotesTab(0),
                       ],
                       selected: _tabIdx == 0
-                          ? l10n.clientsPoliciesTab(client.polizas.length)
-                          : l10n.clientsNotesTab(client.notas.length),
-                      onSelect: (v) => setState(() => _tabIdx = v == l10n.clientsPoliciesTab(client.polizas.length) ? 0 : 1),
+                          ? l10n.clientsPoliciesTab(0)
+                          : l10n.clientsNotesTab(0),
+                      onSelect: (v) => setState(
+                          () => _tabIdx = v == l10n.clientsPoliciesTab(0) ? 0 : 1),
                     ),
-                    const SizedBox(height: 14),
-                    // Tab content
+                    const SizedBox(height: AmDimens.gapS),
                     if (_tabIdx == 0)
-                      ...client.polizas.map((p) => Padding(
-                            padding: const EdgeInsets.only(bottom: 11),
-                            child: _PolicyCard(p: p),
-                          ))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Text(l10n.clientsPoliciesTab(0),
+                            style: TextStyle(color: cs.tertiary, fontSize: 13.5)),
+                      )
                     else
-                      ...client.notas.map((n) => Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: _NoteCard(n: n),
-                          )),
-                    const SizedBox(height: 14),
-                    // Ask CTA
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Text(l10n.clientsNotesTab(0),
+                            style: TextStyle(color: cs.tertiary, fontSize: 13.5)),
+                      ),
+                    const SizedBox(height: AmDimens.gapS),
                     AmPress(
                       onTap: () => context.push('/chat'),
                       child: Container(
@@ -117,17 +162,22 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                           color: AmColors.accent,
                           borderRadius: BorderRadius.circular(17),
                           boxShadow: [
-                            BoxShadow(color: AmColors.accent.withValues(alpha: 0.3),
-                                blurRadius: 18, offset: const Offset(0, 6)),
+                            BoxShadow(
+                                color: AmColors.accent.withValues(alpha: 0.3),
+                                blurRadius: 18,
+                                offset: const Offset(0, 6)),
                           ],
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.auto_awesome, color: Colors.white, size: 19),
+                            const Icon(Icons.auto_awesome,
+                                color: Colors.white, size: 19),
                             const SizedBox(width: 10),
-                            Text(l10n.clientsAskAbout(client.nombre.split(' ').first),
-                                style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500,
+                            Text(l10n.clientsAskAbout(firstName),
+                                style: const TextStyle(
+                                    fontSize: 15.5,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white)),
                           ],
                         ),
@@ -139,8 +189,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
               ),
             ],
           ),
-          // Floating back bar
-          AmBackBar(trailing: IconButton(
+          AmBackBar(
+              trailing: IconButton(
             icon: Icon(Icons.more_horiz, color: cs.onSurface),
             onPressed: () {},
           )),
@@ -151,7 +201,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 }
 
 class _ContactRow extends StatelessWidget {
-  const _ContactRow({required this.icon, required this.text, required this.hasBorder});
+  const _ContactRow(
+      {required this.icon, required this.text, required this.hasBorder});
   final IconData icon;
   final String text;
   final bool hasBorder;
@@ -160,16 +211,19 @@ class _ContactRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+      padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH, vertical: 13),
       decoration: hasBorder
-          ? BoxDecoration(border: Border(bottom: BorderSide(color: cs.outlineVariant)))
+          ? BoxDecoration(
+              border: Border(bottom: BorderSide(color: cs.outlineVariant)))
           : null,
       child: Row(
         children: [
           Icon(icon, size: 18, color: cs.onPrimaryContainer),
           const SizedBox(width: 12),
           Text(text,
-              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
+              style: TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w500,
                   color: cs.onSurface)),
         ],
       ),
@@ -179,7 +233,10 @@ class _ContactRow extends StatelessWidget {
 
 class _QuickAction extends StatelessWidget {
   const _QuickAction({
-    required this.icon, required this.label, required this.onTap, this.accent = false,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.accent = false,
   });
   final IconData icon;
   final String label;
@@ -199,174 +256,33 @@ class _QuickAction extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               if (accent)
-                BoxShadow(color: AmColors.accent.withValues(alpha: 0.3), blurRadius: 12)
+                BoxShadow(
+                    color: AmColors.accent.withValues(alpha: 0.3),
+                    blurRadius: 12)
             ],
           ),
           child: Column(
             children: [
               Container(
-                width: 38, height: 38,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: accent ? AmColors.accent : cs.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, size: 19, color: accent ? Colors.white : cs.onPrimaryContainer),
+                child: Icon(icon,
+                    size: 19,
+                    color: accent ? Colors.white : cs.onPrimaryContainer),
               ),
               const SizedBox(height: 7),
               Text(label,
-                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500,
+                  style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
                       color: cs.onSurfaceVariant)),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _PolicyCard extends StatelessWidget {
-  const _PolicyCard({required this.p});
-  final MockPolicy p;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context)!;
-    final tone = switch (p.estado) {
-      'Vigente'      => AmBadgeTone.green,
-      'Por renovar'  => AmBadgeTone.amber,
-      'Pago próximo' => AmBadgeTone.amber,
-      _              => AmBadgeTone.muted,
-    };
-    final badgeLabel = p.dias != null ? '${p.estado} · ${p.dias}d' : p.estado;
-
-    return AmCard(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              AmRamoIcon(ramo: p.ramo, size: 42),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(p.ramo,
-                        style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
-                            color: cs.onSurface)),
-                    Text('${p.aseguradora} · ${p.numero}',
-                        style: TextStyle(fontSize: 12.5, color: cs.tertiary)),
-                  ],
-                ),
-              ),
-              AmBadge(label: badgeLabel, tone: tone),
-            ],
-          ),
-          const SizedBox(height: 13),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: cs.secondaryContainer,
-              borderRadius: BorderRadius.circular(13),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    _PolicyField(label: l10n.clientsPolicySumInsured, value: p.suma),
-                    const SizedBox(width: 14),
-                    _PolicyField(label: l10n.clientsPolicyPremium, value: '${p.prima} · ${p.period}'),
-                  ],
-                ),
-                const SizedBox(height: 11),
-                Row(
-                  children: [
-                    _PolicyField(label: l10n.clientsPolicyNextPayment, value: p.proxPago),
-                    const SizedBox(width: 14),
-                    _PolicyField(label: l10n.clientsPolicyDeductible, value: p.deducible),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PolicyField extends StatelessWidget {
-  const _PolicyField({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label.toUpperCase(),
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
-                  color: cs.tertiary, letterSpacing: 0.04)),
-          const SizedBox(height: 2),
-          Text(value,
-              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w500,
-                  color: cs.onSurface)),
-        ],
-      ),
-    );
-  }
-}
-
-class _NoteCard extends StatelessWidget {
-  const _NoteCard({required this.n});
-  final MockNote n;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final color = switch (n.tipo) {
-      'doc'      => AmColors.srcDoc,
-      'whatsapp' => AmColors.srcWhatsApp,
-      'wave'     => AmColors.srcWave,
-      'image'    => AmColors.srcImage,
-      _          => AmColors.srcNote,
-    };
-    final icon = switch (n.tipo) {
-      'doc'      => Icons.description_outlined,
-      'whatsapp' => Icons.chat_bubble_outline,
-      'wave'     => Icons.graphic_eq,
-      'image'    => Icons.image_outlined,
-      _          => Icons.note_outlined,
-    };
-    final bg = Color.alphaBlend(color.withValues(alpha: 0.14), Colors.white);
-
-    return AmCard(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(11)),
-            child: Icon(icon, size: 18, color: color),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(n.t,
-                    style: TextStyle(fontSize: 14, color: cs.onSurface, height: 1.5)),
-                const SizedBox(height: 6),
-                Text(n.src,
-                    style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
-                        color: cs.tertiary)),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

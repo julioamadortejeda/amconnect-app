@@ -34,6 +34,7 @@ class _AmPressState extends State<AmPress> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: (_) {
         HapticFeedback.lightImpact();
         _ctrl.forward();

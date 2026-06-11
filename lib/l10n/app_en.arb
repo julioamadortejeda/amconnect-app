@@ -46,6 +46,7 @@
 
   "homeTitle": "AMConnect",
   "homeGreeting": "Hello, {name}",
+  "homeGreetingDefault": "Hello! Good day",
   "homeImmediateAttention": "Immediate attention",
   "homePortfolio": "Your portfolio",
   "homeNeedAttention": "Need attention",
@@ -107,6 +108,8 @@
 
   "voiceListening": "Listening…",
   "voiceTapToClose": "Tap to close",
+  "voiceInputHint": "Ask anything…",
+  "voiceSend": "Send",
 
   "chatTitle": "Assistant",
   "chatSubtitle": "Connected to your base",
