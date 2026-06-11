@@ -60,7 +60,10 @@ class IngestRepository {
     );
   }
 
-  Future<({String text, String sessionId})> chat(String message, String sessionId) async {
+  Future<({String text, String sessionId, Map<String, dynamic>? metadata})> chat(
+    String message,
+    String sessionId,
+  ) async {
     final res = await _api.post('ai/chat', body: {
       'message': message,
       'sessionId': sessionId,
@@ -69,6 +72,7 @@ class IngestRepository {
     return (
       text: data['text'] as String,
       sessionId: data['sessionId'] as String,
+      metadata: data['metadata'] as Map<String, dynamic>?,
     );
   }
 

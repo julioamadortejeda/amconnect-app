@@ -5,9 +5,8 @@ import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/feed/providers/ingest_provider.dart';
 
 class IngestChatSheet extends ConsumerStatefulWidget {
-  const IngestChatSheet({super.key, required this.onClose, required this.onSuccess});
+  const IngestChatSheet({super.key, required this.onClose});
   final VoidCallback onClose;
-  final VoidCallback onSuccess;
 
   @override
   ConsumerState<IngestChatSheet> createState() => _IngestChatSheetState();
@@ -50,7 +49,6 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
     final state = ref.watch(ingestProvider);
 
     ref.listen(ingestProvider, (prev, next) {
-      if (next.phase == IngestPhase.success) widget.onSuccess();
       if (next.messages.length != (prev?.messages.length ?? 0)) _scrollToBottom();
     });
 

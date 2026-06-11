@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/widgets/am_card.dart';
 import 'package:amconnect/core/widgets/am_badge.dart';
@@ -10,6 +9,7 @@ import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/features/feed/providers/ingest_provider.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 import 'ingest_chat_sheet.dart';
+import 'policy_success_sheet.dart';
 
 // ── Mock feed data ─────────────────────────────────────────────────────────────
 
@@ -39,11 +39,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final file = File(result.files.single.path!);
     final fileName = result.files.single.name;
     await ref.read(ingestProvider.notifier).process(file, fileName);
-  }
-
-  void _handleSuccess() {
-    ref.read(ingestProvider.notifier).reset();
-    context.push('/chat');
   }
 
   void _handleClose() {
@@ -197,7 +192,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               _ProcessingOverlay(phase: ingest.phase),
             // Chat sheet (chatting)
             if (ingest.phase == IngestPhase.chatting)
-              IngestChatSheet(onClose: _handleClose, onSuccess: _handleSuccess),
+              IngestChatSheet(onClose: _handleClose),
+            // Success sheet (policy created + reminders)
+            if (ingest.phase == IngestPhase.success)
+              PolicySuccessSheet(onClose: _handleClose),
           ],
         ),
       ),

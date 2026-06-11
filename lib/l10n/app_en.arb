@@ -105,6 +105,9 @@
   "remindersRepeatYearly": "Repeat yearly",
   "remindersCreateBtn": "Create reminder",
 
+  "voiceListening": "Listening…",
+  "voiceTapToClose": "Tap to close",
+
   "chatTitle": "Assistant",
   "chatSubtitle": "Connected to your base",
   "chatNewConversation": "New conversation",
@@ -127,5 +130,25 @@
   "feedUploading": "Uploading file…",
   "feedProcessing": "Processing with AI…",
   "feedUploadingDesc": "Sending the PDF to Supabase Storage",
-  "feedProcessingDesc": "AI is extracting policy data"
+  "feedProcessingDesc": "AI is extracting policy data",
+
+  "feedSuccessTitle": "Policy created",
+  "feedSuccessFieldsSaved": "{count} fields saved",
+  "@feedSuccessFieldsSaved": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessNewOne": "1 new reminder",
+  "feedSuccessNewMany": "{count} new reminders",
+  "@feedSuccessNewMany": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessExistingOne": "1 already existed",
+  "feedSuccessExistingMany": "{count} already existed",
+  "@feedSuccessExistingMany": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessRemindersSection": "REMINDERS",
+  "feedSuccessReminderNew": "New",
+  "feedSuccessReminderExisting": "Already existed",
+  "feedSuccessDone": "Done"
 }

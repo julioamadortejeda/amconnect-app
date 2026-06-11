@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
+import 'package:amconnect/features/chat/widgets/voice_overlay.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
 class ShellScreen extends StatelessWidget {
@@ -68,7 +69,7 @@ class ShellScreen extends StatelessWidget {
             right: 0,
             child: Center(
               child: AmPress(
-                onTap: () => context.push('/chat'),
+                onTap: () => VoiceOverlay.show(context),
                 child: Container(
                   width: 60,
                   height: 60,

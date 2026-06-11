@@ -48,6 +48,9 @@ class AmColors {
   static const amberDark = Color(0xFFE0A53C);
   static const amberWashDark = Color(0xFF241A06);
 
+  // Auth screens — fixed (blue background, same in light and dark)
+  static const authSubtitle = Color(0xD1FFFFFF); // white 82% opacity
+
   // Shared
   static const onAccent = Colors.white;
   // color-mix(in srgb, #007AC0 9%, #fff) → subtle accent wash

@@ -309,6 +309,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersCreateBtn => 'Create reminder';
 
   @override
+  String get voiceListening => 'Listening…';
+
+  @override
+  String get voiceTapToClose => 'Tap to close';
+
+  @override
   String get chatTitle => 'Assistant';
 
   @override
@@ -373,4 +379,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedProcessingDesc => 'AI is extracting policy data';
+
+  @override
+  String get feedSuccessTitle => 'Policy created';
+
+  @override
+  String feedSuccessFieldsSaved(int count) {
+    return '$count fields saved';
+  }
+
+  @override
+  String get feedSuccessNewOne => '1 new reminder';
+
+  @override
+  String feedSuccessNewMany(int count) {
+    return '$count new reminders';
+  }
+
+  @override
+  String get feedSuccessExistingOne => '1 already existed';
+
+  @override
+  String feedSuccessExistingMany(int count) {
+    return '$count already existed';
+  }
+
+  @override
+  String get feedSuccessRemindersSection => 'REMINDERS';
+
+  @override
+  String get feedSuccessReminderNew => 'New';
+
+  @override
+  String get feedSuccessReminderExisting => 'Already existed';
+
+  @override
+  String get feedSuccessDone => 'Done';
 }

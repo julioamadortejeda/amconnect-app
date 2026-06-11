@@ -143,6 +143,10 @@
   "remindersRepeatYearly": "Repetir cada año",
   "remindersCreateBtn": "Crear recordatorio",
 
+  "@_voice": {},
+  "voiceListening": "Escuchando…",
+  "voiceTapToClose": "Toca para cerrar",
+
   "@_chat": {},
   "chatTitle": "Asistente",
   "chatSubtitle": "Conectado a tu base",
@@ -167,5 +171,25 @@
   "feedUploading": "Subiendo archivo…",
   "feedProcessing": "Procesando con IA…",
   "feedUploadingDesc": "Enviando el PDF a Supabase Storage",
-  "feedProcessingDesc": "La IA está extrayendo los datos de la póliza"
+  "feedProcessingDesc": "La IA está extrayendo los datos de la póliza",
+
+  "feedSuccessTitle": "Póliza creada",
+  "feedSuccessFieldsSaved": "{count} datos guardados",
+  "@feedSuccessFieldsSaved": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessNewOne": "1 recordatorio nuevo",
+  "feedSuccessNewMany": "{count} recordatorios nuevos",
+  "@feedSuccessNewMany": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessExistingOne": "1 ya existía",
+  "feedSuccessExistingMany": "{count} ya existían",
+  "@feedSuccessExistingMany": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "feedSuccessRemindersSection": "RECORDATORIOS",
+  "feedSuccessReminderNew": "Nuevo",
+  "feedSuccessReminderExisting": "Ya existía",
+  "feedSuccessDone": "Listo"
 }

@@ -111,191 +111,191 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
         top: false,
         bottom: true,
         child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
-            child: Column(
+          padding: EdgeInsets.fromLTRB(
+              28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                // Logo
-                Hero(
-                  tag: 'auth_logo',
-                  child: ColorFiltered(
-                    colorFilter:
-                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    child: Image.asset('assets/logo/logo_t.png',
-                        width: 72 * scale, height: 72 * scale),
-                  ),
+              // Logo
+              Hero(
+                tag: 'auth_logo',
+                child: ColorFiltered(
+                  colorFilter:
+                      const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  child: Image.asset('assets/logo/logo_t.png',
+                      width: 72 * scale, height: 72 * scale),
                 ),
+              ),
 
-                SizedBox(height: 24 * vScale),
+              SizedBox(height: 24 * vScale),
 
-                // Título + subtítulo
-                AnimatedBuilder(
-                  animation: _ctrl,
-                  builder: (_, child) => Opacity(
-                    opacity: _headerOpacity.value,
-                    child: Transform.translate(
-                        offset: Offset(0, _headerDy.value), child: child),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.registerTitle,
-                        style: TextStyle(
-                          fontSize: 38 * scale,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: -1.0,
-                          height: 1.05,
+              // Título + subtítulo
+              AnimatedBuilder(
+                animation: _ctrl,
+                builder: (_, child) => Opacity(
+                  opacity: _headerOpacity.value,
+                  child: Transform.translate(
+                      offset: Offset(0, _headerDy.value), child: child),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.registerTitle,
+                      style: TextStyle(
+                        fontSize: 38 * scale,
+                        fontWeight: FontWeight.w800,
+                        color: AmColors.white,
+                        letterSpacing: -1.0,
+                        height: 1.05,
+                      ),
+                    ),
+                    SizedBox(height: 8 * vScale),
+                    Text(
+                      l10n.registerSubtitle,
+                      style: TextStyle(
+                        fontSize: 15 * scale,
+                        height: 1.55,
+                        color: AmColors.authSubtitle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Spacer(),
+
+              // Campos + botón
+              AnimatedBuilder(
+                animation: _ctrl,
+                builder: (_, child) => Opacity(
+                  opacity: _fieldsOpacity.value,
+                  child: Transform.translate(
+                      offset: Offset(0, _fieldsDy.value), child: child),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AuthField(
+                      controller: _emailCtrl,
+                      hint: l10n.fieldEmail,
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(height: 12 * vScale),
+                    AuthField(
+                      controller: _passCtrl,
+                      hint: l10n.fieldPassword,
+                      icon: Icons.lock_outline,
+                      obscure: _obscurePass,
+                      textInputAction: TextInputAction.next,
+                      suffixIcon: GestureDetector(
+                        onTap: () =>
+                            setState(() => _obscurePass = !_obscurePass),
+                        child: Icon(
+                          _obscurePass
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AmColors.white,
+                          size: 20,
                         ),
                       ),
-                      SizedBox(height: 8 * vScale),
-                      Text(
-                        l10n.registerSubtitle,
-                        style: TextStyle(
-                          fontSize: 15 * scale,
-                          height: 1.55,
-                          color: Colors.white.withValues(alpha: 0.75),
+                    ),
+                    SizedBox(height: 12 * vScale),
+                    AuthField(
+                      controller: _confirmCtrl,
+                      hint: l10n.fieldConfirm,
+                      icon: Icons.lock_outline,
+                      obscure: _obscureConfirm,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _onSubmit(),
+                      suffixIcon: GestureDetector(
+                        onTap: () =>
+                            setState(() => _obscureConfirm = !_obscureConfirm),
+                        child: Icon(
+                          _obscureConfirm
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AmColors.white,
+                          size: 20,
                         ),
+                      ),
+                    ),
+                    if (errorMsg != null) ...[
+                      SizedBox(height: 10 * vScale),
+                      AuthErrorMsg(
+                        message: errorMsg,
+                        scale: scale,
+                        onDismiss: () =>
+                            ref.read(registerProvider.notifier).clearError(),
                       ),
                     ],
-                  ),
+                    SizedBox(height: 20 * vScale),
+                    AuthSubmitBtn(
+                      label: l10n.registerBtn,
+                      enabled: _canSubmit,
+                      isLoading: state.isLoading,
+                      onTap: _onSubmit,
+                    ),
+                  ],
                 ),
+              ),
 
-                const Spacer(),
+              SizedBox(height: 24 * vScale),
 
-                // Campos + botón
-                AnimatedBuilder(
-                  animation: _ctrl,
-                  builder: (_, child) => Opacity(
-                    opacity: _fieldsOpacity.value,
-                    child: Transform.translate(
-                        offset: Offset(0, _fieldsDy.value), child: child),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      AuthField(
-                        controller: _emailCtrl,
-                        hint: l10n.fieldEmail,
-                        icon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      SizedBox(height: 12 * vScale),
-                      AuthField(
-                        controller: _passCtrl,
-                        hint: l10n.fieldPassword,
-                        icon: Icons.lock_outline,
-                        obscure: _obscurePass,
-                        textInputAction: TextInputAction.next,
-                        suffixIcon: GestureDetector(
-                          onTap: () =>
-                              setState(() => _obscurePass = !_obscurePass),
-                          child: Icon(
-                            _obscurePass
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: AmColors.white,
-                            size: 20,
+              // Footer
+              AnimatedBuilder(
+                animation: _ctrl,
+                builder: (_, child) =>
+                    Opacity(opacity: _footerOpacity.value, child: child),
+                child: Column(
+                  children: [
+                    const AuthDivider(),
+                    SizedBox(height: 16 * vScale),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.registerHasAccount,
+                          style: TextStyle(
+                            fontSize: 14 * scale,
+                            color: AmColors.authSubtitle,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 12 * vScale),
-                      AuthField(
-                        controller: _confirmCtrl,
-                        hint: l10n.fieldConfirm,
-                        icon: Icons.lock_outline,
-                        obscure: _obscureConfirm,
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) => _onSubmit(),
-                        suffixIcon: GestureDetector(
-                          onTap: () => setState(
-                              () => _obscureConfirm = !_obscureConfirm),
-                          child: Icon(
-                            _obscureConfirm
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: AmColors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      if (errorMsg != null) ...[
-                        SizedBox(height: 10 * vScale),
-                        AuthErrorMsg(
-                          message: errorMsg,
-                          scale: scale,
-                          onDismiss: () =>
-                              ref.read(registerProvider.notifier).clearError(),
-                        ),
-                      ],
-                      SizedBox(height: 20 * vScale),
-                      AuthSubmitBtn(
-                        label: l10n.registerBtn,
-                        enabled: _canSubmit,
-                        isLoading: state.isLoading,
-                        onTap: _onSubmit,
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 24 * vScale),
-
-                // Footer
-                AnimatedBuilder(
-                  animation: _ctrl,
-                  builder: (_, child) =>
-                      Opacity(opacity: _footerOpacity.value, child: child),
-                  child: Column(
-                    children: [
-                      const AuthDivider(),
-                      SizedBox(height: 16 * vScale),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            l10n.registerHasAccount,
+                        GestureDetector(
+                          onTap: () => context.pop(),
+                          child: Text(
+                            l10n.registerSignIn,
                             style: TextStyle(
                               fontSize: 14 * scale,
-                              color: Colors.white.withValues(alpha: 0.70),
+                              fontWeight: FontWeight.w700,
+                              color: AmColors.white,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AmColors.white,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () => context.pop(),
-                            child: Text(
-                              l10n.registerSignIn,
-                              style: TextStyle(
-                                fontSize: 14 * scale,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 14 * vScale),
-                      Text(
-                        l10n.commonTerms,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12 * scale,
-                          color: Colors.white.withValues(alpha: 0.55),
-                          height: 1.5,
                         ),
+                      ],
+                    ),
+                    SizedBox(height: 14 * vScale),
+                    Text(
+                      l10n.commonTerms,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12 * scale,
+                        color: AmColors.authSubtitle,
+                        height: 1.5,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 1 * vScale),
-              ],
-            ),
+              ),
+              SizedBox(height: 1 * vScale),
+            ],
           ),
         ),
+      ),
     );
   }
 

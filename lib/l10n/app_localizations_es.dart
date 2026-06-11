@@ -310,6 +310,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersCreateBtn => 'Crear recordatorio';
 
   @override
+  String get voiceListening => 'Escuchando…';
+
+  @override
+  String get voiceTapToClose => 'Toca para cerrar';
+
+  @override
   String get chatTitle => 'Asistente';
 
   @override
@@ -375,4 +381,40 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get feedProcessingDesc =>
       'La IA está extrayendo los datos de la póliza';
+
+  @override
+  String get feedSuccessTitle => 'Póliza creada';
+
+  @override
+  String feedSuccessFieldsSaved(int count) {
+    return '$count datos guardados';
+  }
+
+  @override
+  String get feedSuccessNewOne => '1 recordatorio nuevo';
+
+  @override
+  String feedSuccessNewMany(int count) {
+    return '$count recordatorios nuevos';
+  }
+
+  @override
+  String get feedSuccessExistingOne => '1 ya existía';
+
+  @override
+  String feedSuccessExistingMany(int count) {
+    return '$count ya existían';
+  }
+
+  @override
+  String get feedSuccessRemindersSection => 'RECORDATORIOS';
+
+  @override
+  String get feedSuccessReminderNew => 'Nuevo';
+
+  @override
+  String get feedSuccessReminderExisting => 'Ya existía';
+
+  @override
+  String get feedSuccessDone => 'Listo';
 }

@@ -656,6 +656,18 @@ abstract class AppLocalizations {
   /// **'Crear recordatorio'**
   String get remindersCreateBtn;
 
+  /// No description provided for @voiceListening.
+  ///
+  /// In es, this message translates to:
+  /// **'Escuchando…'**
+  String get voiceListening;
+
+  /// No description provided for @voiceTapToClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para cerrar'**
+  String get voiceTapToClose;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:
@@ -787,6 +799,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La IA está extrayendo los datos de la póliza'**
   String get feedProcessingDesc;
+
+  /// No description provided for @feedSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza creada'**
+  String get feedSuccessTitle;
+
+  /// No description provided for @feedSuccessFieldsSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} datos guardados'**
+  String feedSuccessFieldsSaved(int count);
+
+  /// No description provided for @feedSuccessNewOne.
+  ///
+  /// In es, this message translates to:
+  /// **'1 recordatorio nuevo'**
+  String get feedSuccessNewOne;
+
+  /// No description provided for @feedSuccessNewMany.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} recordatorios nuevos'**
+  String feedSuccessNewMany(int count);
+
+  /// No description provided for @feedSuccessExistingOne.
+  ///
+  /// In es, this message translates to:
+  /// **'1 ya existía'**
+  String get feedSuccessExistingOne;
+
+  /// No description provided for @feedSuccessExistingMany.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} ya existían'**
+  String feedSuccessExistingMany(int count);
+
+  /// No description provided for @feedSuccessRemindersSection.
+  ///
+  /// In es, this message translates to:
+  /// **'RECORDATORIOS'**
+  String get feedSuccessRemindersSection;
+
+  /// No description provided for @feedSuccessReminderNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo'**
+  String get feedSuccessReminderNew;
+
+  /// No description provided for @feedSuccessReminderExisting.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existía'**
+  String get feedSuccessReminderExisting;
+
+  /// No description provided for @feedSuccessDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get feedSuccessDone;
 }
 
 class _AppLocalizationsDelegate

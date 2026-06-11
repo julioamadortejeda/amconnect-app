@@ -13,6 +13,77 @@ class IngestMessage {
   const IngestMessage({required this.role, required this.text});
 }
 
+class GeneratedReminder {
+  final String id;
+  final String typeCode;
+  final String typeName;
+  final String title;
+  final String dueDate;
+  final bool isNew;
+
+  const GeneratedReminder({
+    required this.id,
+    required this.typeCode,
+    required this.typeName,
+    required this.title,
+    required this.dueDate,
+    required this.isNew,
+  });
+
+  factory GeneratedReminder.fromMap(Map<String, dynamic> m) => GeneratedReminder(
+        id: m['id'] as String,
+        typeCode: m['typeCode'] as String,
+        typeName: m['typeName'] as String,
+        title: m['title'] as String,
+        dueDate: m['dueDate'] as String,
+        isNew: m['isNew'] as bool,
+      );
+}
+
+class PolicyConfirmedData {
+  final String policyId;
+  final String? policyNumber;
+  final String? carrierName;
+  final String? branchName;
+  final String? holderName;
+  final int fieldCount;
+  final List<GeneratedReminder> remindersCreated;
+  final List<GeneratedReminder> remindersExisting;
+
+  const PolicyConfirmedData({
+    required this.policyId,
+    this.policyNumber,
+    this.carrierName,
+    this.branchName,
+    this.holderName,
+    required this.fieldCount,
+    required this.remindersCreated,
+    required this.remindersExisting,
+  });
+
+  List<GeneratedReminder> get allReminders => [...remindersCreated, ...remindersExisting];
+
+  factory PolicyConfirmedData.fromMap(Map<String, dynamic> m) {
+    final reminders = m['reminders'] as Map<String, dynamic>? ?? {};
+    final created = (reminders['created'] as List<dynamic>? ?? [])
+        .map((r) => GeneratedReminder.fromMap(r as Map<String, dynamic>))
+        .toList();
+    final existing = (reminders['existing'] as List<dynamic>? ?? [])
+        .map((r) => GeneratedReminder.fromMap(r as Map<String, dynamic>))
+        .toList();
+    return PolicyConfirmedData(
+      policyId: m['policyId'] as String,
+      policyNumber: m['policyNumber'] as String?,
+      carrierName: m['carrierName'] as String?,
+      branchName: m['branchName'] as String?,
+      holderName: m['holderName'] as String?,
+      fieldCount: (m['fieldCount'] as num?)?.toInt() ?? 0,
+      remindersCreated: created,
+      remindersExisting: existing,
+    );
+  }
+}
+
 class IngestState {
   final IngestPhase phase;
   final String? sessionId;
@@ -21,6 +92,7 @@ class IngestState {
   final List<IngestMessage> messages;
   final bool isSending;
   final String? error;
+  final PolicyConfirmedData? confirmedPolicy;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -30,6 +102,7 @@ class IngestState {
     this.messages = const [],
     this.isSending = false,
     this.error,
+    this.confirmedPolicy,
   });
 
   IngestState copyWith({
@@ -40,15 +113,18 @@ class IngestState {
     List<IngestMessage>? messages,
     bool? isSending,
     String? error,
-  }) => IngestState(
-    phase: phase ?? this.phase,
-    sessionId: sessionId ?? this.sessionId,
-    documentMetadataId: documentMetadataId ?? this.documentMetadataId,
-    extraction: extraction ?? this.extraction,
-    messages: messages ?? this.messages,
-    isSending: isSending ?? this.isSending,
-    error: error,
-  );
+    PolicyConfirmedData? confirmedPolicy,
+  }) =>
+      IngestState(
+        phase: phase ?? this.phase,
+        sessionId: sessionId ?? this.sessionId,
+        documentMetadataId: documentMetadataId ?? this.documentMetadataId,
+        extraction: extraction ?? this.extraction,
+        messages: messages ?? this.messages,
+        isSending: isSending ?? this.isSending,
+        error: error,
+        confirmedPolicy: confirmedPolicy ?? this.confirmedPolicy,
+      );
 }
 
 class IngestNotifier extends Notifier<IngestState> {
@@ -97,12 +173,19 @@ class IngestNotifier extends Notifier<IngestState> {
     );
     try {
       final result = await _repo.chat(text, state.sessionId!);
-      final aiText = result.text;
-      final isSuccess = _detectSuccess(aiText);
+      final metadata = result.metadata;
+      final isSuccess = metadata != null && metadata['type'] == 'policy_confirmed';
+
+      PolicyConfirmedData? confirmedPolicy;
+      if (isSuccess) {
+        confirmedPolicy = PolicyConfirmedData.fromMap(metadata);
+      }
+
       state = state.copyWith(
-        messages: [...state.messages, IngestMessage(role: 'ai', text: aiText)],
+        messages: [...state.messages, IngestMessage(role: 'ai', text: result.text)],
         isSending: false,
         phase: isSuccess ? IngestPhase.success : IngestPhase.chatting,
+        confirmedPolicy: confirmedPolicy,
       );
     } catch (e) {
       state = state.copyWith(
@@ -115,20 +198,11 @@ class IngestNotifier extends Notifier<IngestState> {
   Future<void> reset() async {
     final sid = state.sessionId;
     if (sid != null) {
-      try { await _repo.cancelSession(sid); } catch (_) {}
+      try {
+        await _repo.cancelSession(sid);
+      } catch (_) {}
     }
     state = const IngestState();
-  }
-
-  // Detecta si la IA confirmó la creación de la póliza
-  bool _detectSuccess(String text) {
-    final lower = text.toLowerCase();
-    return lower.contains('póliza creada') ||
-        lower.contains('poliza creada') ||
-        lower.contains('guardada exitosamente') ||
-        lower.contains('registrada correctamente') ||
-        lower.contains('policy created') ||
-        lower.contains('successfully created');
   }
 }
 

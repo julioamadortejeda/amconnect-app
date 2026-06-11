@@ -117,7 +117,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         style: TextStyle(
                           fontSize: 15 * scale,
                           height: 1.55,
-                          color: Colors.white.withValues(alpha: 0.75),
+                          color: AmColors.authSubtitle,
                         ),
                       ),
                     ],
@@ -164,7 +164,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         l10n.emailLoginForgot,
                         style: TextStyle(
                           fontSize: 13 * scale,
-                          color: Colors.white.withValues(alpha: 0.75),
+                          color: AmColors.authSubtitle,
                         ),
                       ),
                       if (errorMsg != null) ...[
@@ -205,7 +205,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                             l10n.emailLoginNoAccount,
                             style: TextStyle(
                               fontSize: 14 * scale,
-                              color: Colors.white.withValues(alpha: 0.70),
+                              color: AmColors.authSubtitle,
                             ),
                           ),
                           GestureDetector(
@@ -229,7 +229,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12 * scale,
-                          color: Colors.white.withValues(alpha: 0.55),
+                          color: AmColors.authSubtitle,
                           height: 1.5,
                         ),
                       ),
