@@ -11,6 +11,7 @@ class Reminder {
     required this.hecho,
     required this.priority,
     this.contactId,
+    this.dueDate,
   });
 
   final String id;
@@ -26,6 +27,7 @@ class Reminder {
   final String hora;
   final bool hecho;
   final ReminderPriority priority;
+  final DateTime? dueDate;
 
   bool get urgente => priority == ReminderPriority.urgent;
 
@@ -97,6 +99,7 @@ class Reminder {
       hora: _formatHora(dueDate),
       hecho: isDone,
       priority: _resolvePriority(json, dueDate, isDone),
+      dueDate: dueDate != null ? DateTime.tryParse(dueDate)?.toLocal() : null,
     );
   }
 
@@ -110,5 +113,6 @@ class Reminder {
         hora: hora,
         priority: priority,
         hecho: hecho ?? this.hecho,
+        dueDate: dueDate,
       );
 }

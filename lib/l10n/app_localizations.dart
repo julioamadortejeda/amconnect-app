@@ -128,6 +128,24 @@ abstract class AppLocalizations {
   /// **'Cargando...'**
   String get commonLoading;
 
+  /// No description provided for @homeEmptyPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin recordatorios pendientes'**
+  String get homeEmptyPendientes;
+
+  /// No description provided for @homeEmptySeguimientos.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin seguimientos activos'**
+  String get homeEmptySeguimientos;
+
+  /// No description provided for @homeEmptyClientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no tienes clientes registrados'**
+  String get homeEmptyClientes;
+
   /// No description provided for @homeViewAllCount.
   ///
   /// In es, this message translates to:
@@ -607,6 +625,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Llamadas'**
   String get remindersFilterCalls;
+
+  /// No description provided for @remindersEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin recordatorios para mostrar'**
+  String get remindersEmpty;
+
+  /// No description provided for @remindersError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar recordatorios'**
+  String get remindersError;
+
+  /// No description provided for @calendarToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get calendarToday;
+
+  /// No description provided for @calendarSun.
+  ///
+  /// In es, this message translates to:
+  /// **'D'**
+  String get calendarSun;
+
+  /// No description provided for @calendarMon.
+  ///
+  /// In es, this message translates to:
+  /// **'L'**
+  String get calendarMon;
+
+  /// No description provided for @calendarTue.
+  ///
+  /// In es, this message translates to:
+  /// **'M'**
+  String get calendarTue;
+
+  /// No description provided for @calendarWed.
+  ///
+  /// In es, this message translates to:
+  /// **'M'**
+  String get calendarWed;
+
+  /// No description provided for @calendarThu.
+  ///
+  /// In es, this message translates to:
+  /// **'J'**
+  String get calendarThu;
+
+  /// No description provided for @calendarFri.
+  ///
+  /// In es, this message translates to:
+  /// **'V'**
+  String get calendarFri;
+
+  /// No description provided for @calendarSat.
+  ///
+  /// In es, this message translates to:
+  /// **'S'**
+  String get calendarSat;
 
   /// No description provided for @remindersNewTitle.
   ///

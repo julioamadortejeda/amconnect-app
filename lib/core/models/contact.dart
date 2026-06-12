@@ -23,20 +23,15 @@ class Contact {
   final String? notes;
   final String? createdAt;
 
-  static const _avatarColors = [
-    Color(0xFF007AC0),
-    Color(0xFF0E7C42),
-    Color(0xFFB9791A),
-    Color(0xFF7A4FD0),
-    Color(0xFFD8453F),
-  ];
-
   String get inicial {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     return parts.take(2).map((w) => w.isEmpty ? '' : w[0].toUpperCase()).join();
   }
 
-  Color get color => _avatarColors[id.hashCode.abs() % _avatarColors.length];
+  Color get color {
+    final hue = (id.hashCode.abs() % 360).toDouble();
+    return HSLColor.fromAHSL(1.0, hue, 0.60, 0.40).toColor();
+  }
 
   String get desde {
     final year = createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;

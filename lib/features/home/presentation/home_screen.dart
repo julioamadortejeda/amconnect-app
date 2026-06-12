@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
 import 'package:amconnect/core/theme/app_dimensions.dart';
+import 'package:amconnect/core/widgets/am_loader.dart';
 import 'package:amconnect/core/widgets/am_section_label.dart';
 import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/features/clients/providers/clients_provider.dart';
 import 'package:amconnect/features/home/widgets/home_clientes_recientes.dart';
-import 'package:amconnect/core/widgets/am_loader.dart';
+import 'package:amconnect/features/home/widgets/home_empty_section.dart';
 import 'package:amconnect/features/home/widgets/home_floating_btn.dart';
 import 'package:amconnect/features/home/widgets/home_header.dart';
 import 'package:amconnect/features/home/widgets/home_pendientes_card.dart';
-import 'package:amconnect/features/home/widgets/home_seguimiento_card.dart';
+import 'package:amconnect/features/home/widgets/home_section_trailing.dart';
 import 'package:amconnect/features/home/widgets/home_stats_row.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
 
@@ -48,21 +47,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
-    final ready = ref.watch(homeReadyProvider);
-    if (!ready.hasValue) return const AmLoader();
+    if (!ref.watch(homeReadyProvider).hasValue) return const AmLoader();
 
-    final reminders    = ref.watch(remindersProvider).asData?.value ?? [];
-    final agentName    = ref.watch(agentNameProvider).asData?.value ?? '';
-    final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
-    final clientsCount = ref.watch(clientsProvider).asData?.value?.length ?? 0;
-
-    final pending    = reminders.where((r) => !r.hecho).toList();
-    final urgentCount = pending.where((r) => r.urgente).length;
-    final porRenovar  = pending.where((r) => r.tipo == 'RENEWAL').length;
-
-    // Seguimientos: FOLLOW_UP reminders pendientes, ordenados por fecha más próxima
-    final followUps = (pending.where((r) => r.tipo == 'FOLLOW_UP').toList())
-      ..sort((a, b) => a.fecha.compareTo(b.fecha));
+    final data = ref.watch(homeDashboardProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -73,65 +60,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 const SizedBox(height: 8),
-                HomeHeader(agentName: agentName, urgentCount: urgentCount),
+                HomeHeader(agentName: data.agentName, urgentCount: data.urgentCount),
                 const SizedBox(height: AmDimens.gapM),
                 HomeStatsRow(
-                  polizas: polizasCount,
-                  porRenovar: porRenovar,
-                  seguimientos: followUps.length,
+                  polizas: data.polizasCount,
+                  porRenovar: data.porRenovar,
+                  seguimientos: data.followUps.length,
                 ),
                 const SizedBox(height: AmDimens.gapL),
                 AmSectionLabel(
                   label: l10n.homePendientes,
-                  trailing: GestureDetector(
+                  trailing: HomeSectionTrailing(
+                    label: data.pending.length > 4
+                        ? l10n.homeViewAllCount(data.pending.length)
+                        : l10n.homeViewAgenda,
                     onTap: () => context.push('/agenda'),
-                    child: Text(
-                      pending.length > 4
-                          ? l10n.homeViewAllCount(pending.length)
-                          : l10n.homeViewAgenda,
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                          color: AmColors.accent),
-                    ),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),
-                if (pending.isNotEmpty)
-                  HomePendientesCard(reminders: pending.take(4).toList()),
+                if (data.pending.isNotEmpty)
+                  HomePendientesCard(reminders: data.pending.take(4).toList())
+                else
+                  HomeEmptySection(message: l10n.homeEmptyPendientes),
                 const SizedBox(height: AmDimens.gapL),
-                if (followUps.isNotEmpty) ...[
-                  AmSectionLabel(
-                    label: l10n.homeSeguimientos,
-                    trailing: followUps.length > 3 ? GestureDetector(
-                      onTap: () => context.push('/agenda'),
-                      child: Text(
-                        l10n.homeViewAllCount(followUps.length),
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                            color: AmColors.accent),
-                      ),
-                    ) : null,
-                  ),
-                  const SizedBox(height: AmDimens.gapXS),
-                  ...followUps.take(3).map((r) => Padding(
-                        padding: const EdgeInsets.only(bottom: 11),
-                        child: HomeSeguimientoCard(reminder: r),
-                      )),
-                  const SizedBox(height: 6),
-                ],
+                AmSectionLabel(
+                  label: l10n.homeSeguimientos,
+                  trailing: data.followUps.length > 3 ? HomeSectionTrailing(
+                    label: l10n.homeViewAllCount(data.followUps.length),
+                    onTap: () => context.push('/agenda'),
+                  ) : null,
+                ),
+                const SizedBox(height: AmDimens.gapXS),
+                if (data.followUps.isNotEmpty) ...[
+                  HomePendientesCard(reminders: data.followUps.take(3).toList()),
+                  const SizedBox(height: AmDimens.gapL),
+                ] else
+                  HomeEmptySection(message: l10n.homeEmptySeguimientos),
                 AmSectionLabel(
                   label: l10n.homeClientesRecientes,
-                  trailing: GestureDetector(
+                  trailing: HomeSectionTrailing(
+                    label: data.clientsCount > 0
+                        ? l10n.homeViewAllCount(data.clientsCount)
+                        : l10n.homeViewAll,
                     onTap: () => context.go('/clientes'),
-                    child: Text(
-                      clientsCount > 0
-                          ? l10n.homeViewAllCount(clientsCount)
-                          : l10n.homeViewAll,
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                          color: AmColors.accent),
-                    ),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),
-                const HomeClientesRecientes(),
+                if (data.clientsCount > 0)
+                  const HomeClientesRecientes()
+                else
+                  HomeEmptySection(message: l10n.homeEmptyClientes),
               ],
             ),
             IgnorePointer(
@@ -152,7 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       HomeFloatingBtn(
                         onTap: () => context.push('/agenda'),
-                        dot: urgentCount > 0,
+                        dot: data.urgentCount > 0,
                         child: Icon(Icons.notifications_outlined,
                             size: 20, color: cs.onSurface),
                       ),

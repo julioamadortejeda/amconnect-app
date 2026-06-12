@@ -25,6 +25,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commonLoading => 'Cargando...';
 
   @override
+  String get homeEmptyPendientes => 'Sin recordatorios pendientes';
+
+  @override
+  String get homeEmptySeguimientos => 'Sin seguimientos activos';
+
+  @override
+  String get homeEmptyClientes => 'Aún no tienes clientes registrados';
+
+  @override
   String homeViewAllCount(int count) {
     return 'Ver todos ($count)';
   }
@@ -285,6 +294,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersFilterCalls => 'Llamadas';
+
+  @override
+  String get remindersEmpty => 'Sin recordatorios para mostrar';
+
+  @override
+  String get remindersError => 'Error al cargar recordatorios';
+
+  @override
+  String get calendarToday => 'Hoy';
+
+  @override
+  String get calendarSun => 'D';
+
+  @override
+  String get calendarMon => 'L';
+
+  @override
+  String get calendarTue => 'M';
+
+  @override
+  String get calendarWed => 'M';
+
+  @override
+  String get calendarThu => 'J';
+
+  @override
+  String get calendarFri => 'V';
+
+  @override
+  String get calendarSat => 'S';
 
   @override
   String get remindersNewTitle => 'Nuevo recordatorio';

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:amconnect/core/models/reminder.dart';
+import 'package:amconnect/core/models/reminder_type.dart';
 import 'package:amconnect/core/network/api_client.dart';
 import 'package:amconnect/core/repositories/reminder_repository.dart';
 
@@ -18,6 +19,15 @@ class SupabaseReminderRepository implements ReminderRepository {
   @override
   Future<void> setDone(String id, bool isDone) async {
     await _client.patch('reminders/$id', body: {'isDone': isDone});
+  }
+
+  @override
+  Future<List<ReminderType>> getTypes() async {
+    final res = await _client.get('catalog/reminder-types');
+    final items = res['data'] as List<dynamic>;
+    return items
+        .map((e) => ReminderType.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
 

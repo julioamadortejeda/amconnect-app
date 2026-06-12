@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:amconnect/core/models/reminder_type.dart';
+import 'package:amconnect/core/theme/app_dimensions.dart';
+import 'package:amconnect/core/widgets/am_card.dart';
+import 'package:amconnect/features/reminders/providers/reminders_provider.dart';
+import 'package:amconnect/features/reminders/widgets/reminder_filter_chip.dart';
+import 'package:amconnect/features/reminders/widgets/reminder_item.dart';
+import 'package:amconnect/l10n/app_localizations.dart';
+
+const _typeOrder = [
+  'PAYMENT', 'RENEWAL', 'CANCELLATION',
+  'FOLLOW_UP', 'CALL', 'APPOINTMENT', 'ANNIVERSARY', 'OTHER',
+];
+
+int _typePriority(ReminderType t) {
+  final i = _typeOrder.indexOf(t.code);
+  return i == -1 ? _typeOrder.length : i;
+}
+
+class ReminderListView extends ConsumerWidget {
+  const ReminderListView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final ui = ref.watch(remindersUiProvider);
+    final reminders = ref.watch(filteredRemindersProvider);
+    final typesAsync = ref.watch(reminderTypesProvider);
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ReminderFilterChip(
+                    label: l10n.remindersFilterAll,
+                    active: ui.filter == 'todos',
+                    onTap: () =>
+                        ref.read(remindersUiProvider.notifier).setFilter('todos'),
+                  ),
+                ),
+                ...typesAsync.maybeWhen(
+                  data: (types) => (List.of(types)
+                        ..sort((a, b) => _typePriority(a).compareTo(_typePriority(b))))
+                      .map((t) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ReminderFilterChip(
+                          label: t.name,
+                          active: ui.filter == t.code,
+                          onTap: () => ref
+                              .read(remindersUiProvider.notifier)
+                              .setFilter(t.code),
+                        ),
+                      )),
+                  orElse: () => [],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+            child: reminders.isEmpty
+                ? Text(
+                    l10n.remindersEmpty,
+                    style: TextStyle(fontSize: 14, color: cs.tertiary),
+                  )
+                : AmCard(
+                    noPad: true,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (int i = 0; i < reminders.length; i++) ...[
+                          if (i > 0)
+                            Divider(
+                              height: 0,
+                              indent: AmDimens.screenH,
+                              endIndent: AmDimens.screenH,
+                              color: cs.outlineVariant,
+                            ),
+                          ReminderItem(reminder: reminders[i]),
+                        ],
+                      ],
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+}
