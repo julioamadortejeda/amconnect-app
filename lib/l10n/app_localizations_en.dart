@@ -471,4 +471,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Done';
+
+  @override
+  String get remindersActionDone => 'Mark done';
+
+  @override
+  String get remindersActionInProgress => 'In progress';
+
+  @override
+  String get remindersActionReschedule => 'Reschedule';
+
+  @override
+  String get remindersActionCancel => 'Cancel';
+
+  @override
+  String get remindersActionCancelTitle => 'Cancel reminder';
+
+  @override
+  String get remindersActionCancelHint => 'Why is it being cancelled?';
+
+  @override
+  String get remindersActionCancelBtn => 'Confirm cancellation';
+
+  @override
+  String get remindersActionCommentRequired =>
+      'A comment is required to cancel';
 }

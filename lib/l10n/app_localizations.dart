@@ -967,6 +967,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Listo'**
   String get feedSuccessDone;
+
+  /// No description provided for @remindersActionDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar'**
+  String get remindersActionDone;
+
+  /// No description provided for @remindersActionInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'En proceso'**
+  String get remindersActionInProgress;
+
+  /// No description provided for @remindersActionReschedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Reagendar'**
+  String get remindersActionReschedule;
+
+  /// No description provided for @remindersActionCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get remindersActionCancel;
+
+  /// No description provided for @remindersActionCancelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar recordatorio'**
+  String get remindersActionCancelTitle;
+
+  /// No description provided for @remindersActionCancelHint.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué se cancela?'**
+  String get remindersActionCancelHint;
+
+  /// No description provided for @remindersActionCancelBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar cancelación'**
+  String get remindersActionCancelBtn;
+
+  /// No description provided for @remindersActionCommentRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'El comentario es obligatorio para cancelar'**
+  String get remindersActionCommentRequired;
 }
 
 class _AppLocalizationsDelegate

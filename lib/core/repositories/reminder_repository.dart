@@ -5,4 +5,6 @@ abstract class ReminderRepository {
   Future<List<Reminder>> getAll();
   Future<void> setDone(String id, bool isDone);
   Future<List<ReminderType>> getTypes();
+  Future<Reminder?> updateStatus(String id, String statusCode, {String? comment});
+  Future<Reminder?> reschedule(String id, DateTime dueDate);
 }

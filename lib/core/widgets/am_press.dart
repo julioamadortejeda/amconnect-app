@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AmPress extends StatefulWidget {
-  const AmPress({super.key, required this.child, this.onTap, this.scale = 0.96});
+  const AmPress({super.key, required this.child, this.onTap, this.onLongPress, this.scale = 0.96});
 
   final Widget child;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final double scale;
 
   @override
@@ -44,6 +45,18 @@ class _AmPressState extends State<AmPress> with SingleTickerProviderStateMixin {
         widget.onTap?.call();
       },
       onTapCancel: () => _ctrl.reverse(),
+      onLongPressStart: widget.onLongPress != null
+          ? (_) {
+              HapticFeedback.mediumImpact();
+              _ctrl.forward();
+            }
+          : null,
+      onLongPress: widget.onLongPress != null
+          ? () {
+              _ctrl.reverse();
+              widget.onLongPress!();
+            }
+          : null,
       child: ScaleTransition(scale: _anim, child: widget.child),
     );
   }

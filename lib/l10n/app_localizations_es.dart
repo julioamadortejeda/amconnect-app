@@ -473,4 +473,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Listo';
+
+  @override
+  String get remindersActionDone => 'Finalizar';
+
+  @override
+  String get remindersActionInProgress => 'En proceso';
+
+  @override
+  String get remindersActionReschedule => 'Reagendar';
+
+  @override
+  String get remindersActionCancel => 'Cancelar';
+
+  @override
+  String get remindersActionCancelTitle => 'Cancelar recordatorio';
+
+  @override
+  String get remindersActionCancelHint => '¿Por qué se cancela?';
+
+  @override
+  String get remindersActionCancelBtn => 'Confirmar cancelación';
+
+  @override
+  String get remindersActionCommentRequired =>
+      'El comentario es obligatorio para cancelar';
 }

@@ -214,5 +214,15 @@
   "feedSuccessRemindersSection": "RECORDATORIOS",
   "feedSuccessReminderNew": "Nuevo",
   "feedSuccessReminderExisting": "Ya existía",
-  "feedSuccessDone": "Listo"
+  "feedSuccessDone": "Listo",
+
+  "@_reminderActions": {},
+  "remindersActionDone": "Finalizar",
+  "remindersActionInProgress": "En proceso",
+  "remindersActionReschedule": "Reagendar",
+  "remindersActionCancel": "Cancelar",
+  "remindersActionCancelTitle": "Cancelar recordatorio",
+  "remindersActionCancelHint": "¿Por qué se cancela?",
+  "remindersActionCancelBtn": "Confirmar cancelación",
+  "remindersActionCommentRequired": "El comentario es obligatorio para cancelar"
 }

@@ -173,5 +173,14 @@
   "feedSuccessRemindersSection": "REMINDERS",
   "feedSuccessReminderNew": "New",
   "feedSuccessReminderExisting": "Already existed",
-  "feedSuccessDone": "Done"
+  "feedSuccessDone": "Done",
+
+  "remindersActionDone": "Mark done",
+  "remindersActionInProgress": "In progress",
+  "remindersActionReschedule": "Reschedule",
+  "remindersActionCancel": "Cancel",
+  "remindersActionCancelTitle": "Cancel reminder",
+  "remindersActionCancelHint": "Why is it being cancelled?",
+  "remindersActionCancelBtn": "Confirm cancellation",
+  "remindersActionCommentRequired": "A comment is required to cancel"
 }

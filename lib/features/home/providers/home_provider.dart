@@ -15,6 +15,24 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     return _repo.getAll();
   }
 
+  Future<void> updateStatus(String id, String statusCode, {String? comment}) async {
+    final updated = await _repo.updateStatus(id, statusCode, comment: comment);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
+  Future<void> reschedule(String id, DateTime dueDate) async {
+    final updated = await _repo.reschedule(id, dueDate);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
   Future<void> toggle(String id) async {
     final list = state.asData?.value;
     final current = list?.firstWhere(

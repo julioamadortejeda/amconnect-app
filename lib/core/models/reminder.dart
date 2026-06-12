@@ -12,10 +12,12 @@ class Reminder {
     required this.priority,
     this.contactId,
     this.dueDate,
+    this.statusCode = '',
   });
 
   final String id;
   final String? contactId;
+  final String statusCode;
 
   /// Código del catálogo reminder_types: PAYMENT | RENEWAL | CANCELLATION |
   /// FOLLOW_UP | CALL | APPOINTMENT | ANNIVERSARY | OTHER
@@ -83,7 +85,9 @@ class Reminder {
 
   factory Reminder.fromJson(Map<String, dynamic> json) {
     final dueDate = json['dueDate'] as String?;
-    final isDone = json['isDone'] as bool? ?? false;
+    final statusMap = json['status'] as Map<String, dynamic>?;
+    final statusCode = statusMap?['code'] as String? ?? '';
+    final isDone = statusCode == 'DONE' || (json['isDone'] as bool? ?? false);
     final contact = json['contact'] as Map<String, dynamic>?;
     final description = json['description'] as String?;
 
@@ -98,12 +102,13 @@ class Reminder {
       fecha: _formatFecha(dueDate),
       hora: _formatHora(dueDate),
       hecho: isDone,
+      statusCode: statusCode,
       priority: _resolvePriority(json, dueDate, isDone),
       dueDate: dueDate != null ? DateTime.tryParse(dueDate)?.toLocal() : null,
     );
   }
 
-  Reminder copyWith({bool? hecho}) => Reminder(
+  Reminder copyWith({bool? hecho, String? statusCode}) => Reminder(
         id: id,
         contactId: contactId,
         tipo: tipo,
@@ -113,6 +118,7 @@ class Reminder {
         hora: hora,
         priority: priority,
         hecho: hecho ?? this.hecho,
+        statusCode: statusCode ?? this.statusCode,
         dueDate: dueDate,
       );
 }

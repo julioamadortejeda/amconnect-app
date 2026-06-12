@@ -22,6 +22,24 @@ class SupabaseReminderRepository implements ReminderRepository {
   }
 
   @override
+  Future<Reminder?> updateStatus(String id, String statusCode, {String? comment}) async {
+    final body = <String, dynamic>{'status': statusCode};
+    if (comment != null && comment.isNotEmpty) body['comment'] = comment;
+    final res = await _client.patch('reminders/$id', body: body);
+    final data = res['data'] as Map<String, dynamic>?;
+    return data != null ? Reminder.fromJson(data) : null;
+  }
+
+  @override
+  Future<Reminder?> reschedule(String id, DateTime dueDate) async {
+    final res = await _client.patch('reminders/$id', body: {
+      'dueDate': dueDate.toUtc().toIso8601String(),
+    });
+    final data = res['data'] as Map<String, dynamic>?;
+    return data != null ? Reminder.fromJson(data) : null;
+  }
+
+  @override
   Future<List<ReminderType>> getTypes() async {
     final res = await _client.get('catalog/reminder-types');
     final items = res['data'] as List<dynamic>;
