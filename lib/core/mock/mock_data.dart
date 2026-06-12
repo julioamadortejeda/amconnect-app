@@ -69,29 +69,7 @@ class MockClient {
   final List<MockNote> notas;
 }
 
-class MockReminder {
-  MockReminder({
-    required this.id,
-    required this.clienteId,
-    required this.tipo,
-    required this.titulo,
-    required this.sub,
-    required this.fecha,
-    required this.hora,
-    required this.urgente,
-    this.hecho = false,
-  });
 
-  final String id;
-  final String clienteId;
-  final String tipo; // pago | renovacion | llamada | otro
-  final String titulo;
-  final String sub;
-  final String fecha;
-  final String hora;
-  final bool urgente;
-  bool hecho;
-}
 
 class MockMessage {
   const MockMessage({
@@ -246,33 +224,7 @@ final mockClients = <MockClient>[
   ),
 ];
 
-final mockReminders = <MockReminder>[
-  MockReminder(
-    id: 'r1', clienteId: 'mariana', tipo: 'renovacion',
-    titulo: 'Renovación Auto — Mariana Torres',
-    sub: 'AUT-552190 · GNP', fecha: 'Hoy', hora: '11:00', urgente: true,
-  ),
-  MockReminder(
-    id: 'r2', clienteId: 'javier', tipo: 'pago',
-    titulo: 'Pago GMM — Javier Mendoza',
-    sub: 'GMM-990341 · GNP', fecha: 'Hoy', hora: '—', urgente: false,
-  ),
-  MockReminder(
-    id: 'r3', clienteId: 'mariana', tipo: 'llamada',
-    titulo: 'Llamar a Mariana Torres',
-    sub: 'Seguimiento renovación auto', fecha: 'Mañana', hora: '10:00', urgente: false,
-  ),
-  MockReminder(
-    id: 'r4', clienteId: 'javier', tipo: 'renovacion',
-    titulo: 'Renovación GMM — Javier',
-    sub: 'GMM-990341 · GNP', fecha: '10 jun', hora: '—', urgente: false,
-  ),
-  MockReminder(
-    id: 'r5', clienteId: 'sofia', tipo: 'llamada',
-    titulo: 'Llamar a Sofía Ramírez',
-    sub: 'Primera cita — prospecto vida', fecha: '12 jun', hora: '16:30', urgente: false,
-  ),
-];
+
 
 final mockChatThread = <MockMessage>[
   MockMessage(

@@ -22,7 +22,7 @@ class RemindersScreen extends ConsumerWidget {
     final ui = ref.watch(remindersUiProvider);
 
     final pendingCount = remindersAsync.asData?.value
-            .where((r) => !r.hecho)
+            .where((r) => !r.done)
             .length ??
         0;
 

@@ -1015,6 +1015,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El comentario es obligatorio para cancelar'**
   String get remindersActionCommentRequired;
+
+  /// No description provided for @remindersConfirmDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar Recordatorio'**
+  String get remindersConfirmDoneTitle;
+
+  /// No description provided for @remindersConfirmDoneMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas marcar este recordatorio como completado?'**
+  String get remindersConfirmDoneMessage;
+
+  /// No description provided for @remindersConfirmDoneBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar'**
+  String get remindersConfirmDoneBtn;
+
+  /// No description provided for @remindersConfirmCancelBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get remindersConfirmCancelBtn;
+
+  /// No description provided for @remindersConfirmInProgressTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar en Progreso'**
+  String get remindersConfirmInProgressTitle;
+
+  /// No description provided for @remindersConfirmInProgressMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Deseas marcar este recordatorio como \"En Progreso\"?'**
+  String get remindersConfirmInProgressMessage;
+
+  /// No description provided for @remindersConfirmInProgressBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get remindersConfirmInProgressBtn;
+
+  /// No description provided for @remindersRescheduleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reprogramar Recordatorio'**
+  String get remindersRescheduleTitle;
+
+  /// No description provided for @remindersRescheduleMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona la nueva fecha y hora para realizar esta tarea.'**
+  String get remindersRescheduleMessage;
+
+  /// No description provided for @remindersRescheduleSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get remindersRescheduleSave;
+
+  /// No description provided for @remindersFieldDateUpper.
+  ///
+  /// In es, this message translates to:
+  /// **'FECHA'**
+  String get remindersFieldDateUpper;
+
+  /// No description provided for @remindersFieldTimeUpper.
+  ///
+  /// In es, this message translates to:
+  /// **'HORA'**
+  String get remindersFieldTimeUpper;
+
+  /// No description provided for @remindersCancelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar Recordatorio'**
+  String get remindersCancelTitle;
+
+  /// No description provided for @remindersCancelHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el motivo de la cancelación...'**
+  String get remindersCancelHint;
+
+  /// No description provided for @remindersCancelConfirmBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get remindersCancelConfirmBtn;
 }
 
 class _AppLocalizationsDelegate

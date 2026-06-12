@@ -28,10 +28,10 @@ class ShellScreen extends ConsumerWidget {
   final String location;
 
   static const _tabs = [
-    _Tab(path: '/home',     icon: Icons.home_outlined),
-    _Tab(path: '/agenda',   icon: Icons.calendar_today_outlined),
-    _Tab(path: '/clientes', icon: Icons.group_outlined),
-    _Tab(path: '/datos',    icon: Icons.folder_outlined),
+    _Tab(path: '/home',     icon: Icons.home_outlined,            activeIcon: Icons.home),
+    _Tab(path: '/agenda',   icon: Icons.calendar_today_outlined,  activeIcon: Icons.calendar_today),
+    _Tab(path: '/clientes', icon: Icons.group_outlined,           activeIcon: Icons.group),
+    _Tab(path: '/datos',    icon: Icons.folder_outlined,          activeIcon: Icons.folder),
   ];
 
   String get _activeTab {
@@ -77,9 +77,10 @@ class ShellScreen extends ConsumerWidget {
 }
 
 class _Tab {
-  const _Tab({required this.path, required this.icon});
+  const _Tab({required this.path, required this.icon, required this.activeIcon});
   final String path;
   final IconData icon;
+  final IconData activeIcon;
 }
 
 /// Barra píldora con indicador deslizante estilo iOS.
@@ -174,7 +175,7 @@ class _TabItem extends StatelessWidget {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               child: Icon(
-                t.icon,
+                active ? t.activeIcon : t.icon,
                 key: ValueKey(active),
                 size: 22,
                 color: active ? AmColors.accent : cs.tertiary,

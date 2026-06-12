@@ -7,28 +7,11 @@ import 'package:amconnect/core/theme/am_theme.dart';
 import 'package:amconnect/core/theme/app_dimensions.dart';
 import 'package:amconnect/core/widgets/am_press.dart';
 import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_comment_sheet.dart';
+import 'package:amconnect/core/utils/reminder_utils.dart';
 import 'package:amconnect/l10n/app_localizations.dart';
-
-IconData reminderIcon(String tipo) => switch (tipo) {
-      'PAYMENT'      => Icons.payments_outlined,
-      'RENEWAL'      => Icons.autorenew,
-      'CANCELLATION' => Icons.block,
-      'FOLLOW_UP'    => Icons.flag_outlined,
-      'CALL'         => Icons.phone_outlined,
-      'APPOINTMENT'  => Icons.event_outlined,
-      'ANNIVERSARY'  => Icons.cake,
-      _              => Icons.notifications_outlined,
-    };
-
-enum ReminderMenuType {
-  contextMenu, // Original CupertinoContextMenu
-  actionSheet, // CupertinoActionSheet on long press
-  bottomSheet, // Custom premium Material 3 bottom sheet
-}
-
-// TOGGLE MENU TYPE HERE:
-const _menuType = ReminderMenuType.bottomSheet;
+import 'package:amconnect/core/widgets/am_confirm_dialog.dart';
+import 'package:amconnect/core/widgets/am_reschedule_dialog.dart';
+import 'package:amconnect/core/widgets/am_cancel_dialog.dart';
 
 class ReminderItem extends ConsumerWidget {
   const ReminderItem({super.key, required this.reminder});
@@ -43,9 +26,24 @@ class ReminderItem extends ConsumerWidget {
     final r = reminder;
 
     final (iconFg, iconBg, badgeBg, badgeFg) = switch (r.priority) {
-      ReminderPriority.urgent  => (cs.error,    cs.errorContainer,   cs.errorContainer.withValues(alpha: 0.7),   cs.error),
-      ReminderPriority.warning => (am.amber,    am.amberWash,        am.amberWash.withValues(alpha: 0.7),        am.amber),
-      ReminderPriority.normal  => (cs.primary,  cs.primaryContainer, cs.primaryContainer.withValues(alpha: 0.7), cs.primary),
+      ReminderPriority.urgent => (
+          cs.error,
+          cs.errorContainer,
+          cs.errorContainer.withValues(alpha: 0.7),
+          cs.error
+        ),
+      ReminderPriority.warning => (
+          am.amber,
+          am.amberWash,
+          am.amberWash.withValues(alpha: 0.7),
+          am.amber
+        ),
+      ReminderPriority.normal => (
+          cs.primary,
+          cs.primaryContainer,
+          cs.primaryContainer.withValues(alpha: 0.7),
+          cs.primary
+        ),
     };
 
     final today = DateTime.now();
@@ -57,47 +55,33 @@ class ReminderItem extends ConsumerWidget {
         : null;
 
     void onReschedule() {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
-        final initial = r.dueDate ?? DateTime.now().add(const Duration(days: 1));
-        final date = await showDatePicker(
+        showDialog(
           context: context,
-          initialDate: initial,
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 365 * 3)),
+          builder: (_) => AmRescheduleDialog(
+            initialDateTime: r.dueDate ?? DateTime.now().add(const Duration(days: 1)),
+            onConfirm: (newDt) {
+              ref.read(remindersProvider.notifier).reschedule(r.id, newDt);
+            },
+          ),
         );
-        if (date == null || !context.mounted) return;
-        final time = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.fromDateTime(initial),
-        );
-        if (!context.mounted) return;
-        final dt = DateTime(
-          date.year, date.month, date.day,
-          time?.hour ?? initial.hour,
-          time?.minute ?? initial.minute,
-        );
-        ref.read(remindersProvider.notifier).reschedule(r.id, dt);
       });
     }
 
     void onCancel() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
-        showModalBottomSheet(
+        showDialog(
           context: context,
-          isScrollControlled: true,
-          backgroundColor: cs.surface,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          builder: (ctx) => ReminderCommentSheet(
-            title: r.titulo,
+          builder: (_) => AmCancelDialog(
+            title: r.title,
             onConfirm: (comment) {
-              Navigator.pop(ctx);
               ref.read(remindersProvider.notifier).updateStatus(
-                r.id, 'CANCELLED', comment: comment,
-              );
+                    r.id,
+                    'CANCELLED',
+                    comment: comment,
+                  );
             },
           ),
         );
@@ -105,7 +89,7 @@ class ReminderItem extends ConsumerWidget {
     }
 
     final content = Opacity(
-      opacity: r.hecho ? 0.55 : 1.0,
+      opacity: r.done ? 0.55 : 1.0,
       child: AmPress(
         onTap: () {
           if (r.contactId != null) context.push('/clientes/${r.contactId}');
@@ -120,7 +104,7 @@ class ReminderItem extends ConsumerWidget {
                 height: 38,
                 decoration: BoxDecoration(
                     color: iconBg, borderRadius: BorderRadius.circular(11)),
-                child: Icon(reminderIcon(r.tipo), size: 18, color: iconFg),
+                child: Icon(reminderIcon(r.type), size: 18, color: iconFg),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -131,18 +115,19 @@ class ReminderItem extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        r.titulo,
+                        r.title,
                         style: TextStyle(
                           fontSize: 14.5,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                           color: cs.onSurface,
-                          decoration: r.hecho ? TextDecoration.lineThrough : null,
+                          decoration:
+                              r.done ? TextDecoration.lineThrough : null,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                       Text(
-                        r.hora != '—' ? '${r.sub} · ${r.hora}' : r.sub,
+                        r.time != '—' ? '${r.sub} · ${r.time}' : r.sub,
                         style: TextStyle(fontSize: 12.5, color: cs.tertiary),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -159,12 +144,13 @@ class ReminderItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
                         color: badgeBg,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(r.fecha,
+                      child: Text(r.date,
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -173,16 +159,17 @@ class ReminderItem extends ConsumerWidget {
                     if (daysLeft != null && daysLeft != 0) ...[
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 3),
                         decoration: BoxDecoration(
-                          color: cs.secondaryContainer,
+                          color: badgeBg,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text('${daysLeft}d',
                             style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
-                                color: cs.onSurfaceVariant)),
+                                color: badgeFg)),
                       ),
                     ],
                   ],
@@ -193,53 +180,6 @@ class ReminderItem extends ConsumerWidget {
         ),
       ),
     );
-
-    void showActionSheetMenu(BuildContext context) {
-      showCupertinoModalPopup(
-        context: context,
-        builder: (ctx) => CupertinoActionSheet(
-          title: Text(r.titulo),
-          message: r.sub.isNotEmpty ? Text(r.hora != '—' ? '${r.sub} · ${r.hora}' : r.sub) : null,
-          actions: [
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(ctx);
-                ref.read(remindersProvider.notifier).updateStatus(r.id, 'DONE');
-              },
-              child: Text(l10n.remindersActionDone),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(ctx);
-                ref.read(remindersProvider.notifier).updateStatus(r.id, 'IN_PROGRESS');
-              },
-              child: Text(l10n.remindersActionInProgress),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(ctx);
-                onReschedule();
-              },
-              child: Text(l10n.remindersActionReschedule),
-            ),
-            CupertinoActionSheetAction(
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(ctx);
-                onCancel();
-              },
-              child: Text(l10n.remindersActionCancel),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: Text(l10n.remindersActionCancel),
-            onPressed: () {
-              Navigator.pop(ctx);
-            },
-          ),
-        ),
-      );
-    }
 
     void showMaterialBottomSheetMenu(BuildContext context) {
       Widget buildGridItem({
@@ -262,7 +202,8 @@ class ReminderItem extends ConsumerWidget {
               borderRadius: BorderRadius.circular(16),
               onTap: onTap,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -327,7 +268,7 @@ class ReminderItem extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    r.titulo,
+                    r.title,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -340,7 +281,7 @@ class ReminderItem extends ConsumerWidget {
                   if (r.sub.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
-                      r.hora != '—' ? '${r.sub} · ${r.hora}' : r.sub,
+                      r.time != '—' ? '${r.sub} · ${r.time}' : r.sub,
                       style: TextStyle(
                         fontSize: 12.5,
                         color: cs.tertiary,
@@ -359,7 +300,23 @@ class ReminderItem extends ConsumerWidget {
                         label: l10n.remindersActionDone,
                         onTap: () {
                           Navigator.pop(ctx);
-                          ref.read(remindersProvider.notifier).updateStatus(r.id, 'DONE');
+                          showDialog(
+                            context: context,
+                            builder: (_) => AmConfirmDialog(
+                              title: l10n.remindersConfirmDoneTitle,
+                              message: l10n.remindersConfirmDoneMessage,
+                              confirmLabel: l10n.remindersConfirmDoneBtn,
+                              cancelLabel: l10n.remindersConfirmCancelBtn,
+                              icon: Icons.check,
+                              iconBgColor: am.greenWash,
+                              iconFgColor: am.green,
+                              onConfirm: () {
+                                ref
+                                    .read(remindersProvider.notifier)
+                                    .updateStatus(r.id, 'DONE');
+                              },
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(width: 12),
@@ -369,7 +326,23 @@ class ReminderItem extends ConsumerWidget {
                         label: l10n.remindersActionInProgress,
                         onTap: () {
                           Navigator.pop(ctx);
-                          ref.read(remindersProvider.notifier).updateStatus(r.id, 'IN_PROGRESS');
+                          showDialog(
+                            context: context,
+                            builder: (_) => AmConfirmDialog(
+                              title: l10n.remindersConfirmInProgressTitle,
+                              message: l10n.remindersConfirmInProgressMessage,
+                              confirmLabel: l10n.remindersConfirmInProgressBtn,
+                              cancelLabel: l10n.remindersConfirmCancelBtn,
+                              icon: Icons.access_time_filled_rounded,
+                              iconBgColor: am.amberWash,
+                              iconFgColor: am.amber,
+                              onConfirm: () {
+                                ref
+                                    .read(remindersProvider.notifier)
+                                    .updateStatus(r.id, 'IN_PROGRESS');
+                              },
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -408,73 +381,10 @@ class ReminderItem extends ConsumerWidget {
       );
     }
 
-    if (_menuType == ReminderMenuType.actionSheet) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPress: () => showActionSheetMenu(context),
-        child: content,
-      );
-    }
-
-    if (_menuType == ReminderMenuType.bottomSheet) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPress: () => showMaterialBottomSheetMenu(context),
-        child: content,
-      );
-    }
-
-    final actions = [
-      CupertinoContextMenuAction(
-        onPressed: () {
-          Navigator.pop(context);
-          ref.read(remindersProvider.notifier).updateStatus(r.id, 'DONE');
-        },
-        trailingIcon: CupertinoIcons.checkmark_circle,
-        child: Text(l10n.remindersActionDone),
-      ),
-      CupertinoContextMenuAction(
-        onPressed: () {
-          Navigator.pop(context);
-          ref.read(remindersProvider.notifier).updateStatus(r.id, 'IN_PROGRESS');
-        },
-        trailingIcon: CupertinoIcons.clock,
-        child: Text(l10n.remindersActionInProgress),
-      ),
-      CupertinoContextMenuAction(
-        onPressed: () {
-          Navigator.pop(context);
-          onReschedule();
-        },
-        trailingIcon: CupertinoIcons.calendar,
-        child: Text(l10n.remindersActionReschedule),
-      ),
-      CupertinoContextMenuAction(
-        isDestructiveAction: true,
-        onPressed: () {
-          Navigator.pop(context);
-          onCancel();
-        },
-        trailingIcon: CupertinoIcons.xmark_circle,
-        child: Text(l10n.remindersActionCancel),
-      ),
-    ];
-
-    return CupertinoContextMenu.builder(
-      actions: actions,
-      builder: (ctx, animation) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color.lerp(Colors.transparent, cs.surface, animation.value),
-            borderRadius: BorderRadius.circular(16 * animation.value),
-          ),
-          child: Material(
-            type: MaterialType.transparency,
-            child: content,
-          ),
-        );
-      },
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () => showMaterialBottomSheetMenu(context),
+      child: content,
     );
   }
 }

@@ -42,9 +42,9 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     if (current == null) return;
     state = AsyncData([
       for (final r in state.requireValue)
-        if (r.id == id) r.copyWith(hecho: !r.hecho) else r,
+        if (r.id == id) r.copyWith(done: !r.done) else r,
     ]);
-    await _repo.setDone(id, !current.hecho);
+    await _repo.setDone(id, !current.done);
   }
 }
 
@@ -100,11 +100,11 @@ final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
   final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
   final clientsCount = ref.watch(clientsProvider).asData?.value.length ?? 0;
 
-  final pending      = reminders.where((r) => !r.hecho).toList();
-  final urgentCount  = pending.where((r) => r.urgente).length;
-  final porRenovar   = pending.where((r) => r.tipo == 'RENEWAL').length;
-  final followUps    = (pending.where((r) => r.tipo == 'FOLLOW_UP').toList())
-    ..sort((a, b) => a.fecha.compareTo(b.fecha));
+  final pending      = reminders.where((r) => !r.done).toList();
+  final urgentCount  = pending.where((r) => r.isUrgent).length;
+  final porRenovar   = pending.where((r) => r.type == 'RENEWAL').length;
+  final followUps    = (pending.where((r) => r.type == 'FOLLOW_UP').toList())
+    ..sort((a, b) => a.date.compareTo(b.date));
 
   return HomeDashboardData(
     agentName: agentName,

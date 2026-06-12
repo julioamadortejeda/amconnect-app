@@ -182,5 +182,20 @@
   "remindersActionCancelTitle": "Cancel reminder",
   "remindersActionCancelHint": "Why is it being cancelled?",
   "remindersActionCancelBtn": "Confirm cancellation",
-  "remindersActionCommentRequired": "A comment is required to cancel"
+  "remindersActionCommentRequired": "A comment is required to cancel",
+  "remindersConfirmDoneTitle": "Complete Reminder",
+  "remindersConfirmDoneMessage": "Are you sure you want to mark this reminder as completed?",
+  "remindersConfirmDoneBtn": "Complete",
+  "remindersConfirmCancelBtn": "Cancel",
+  "remindersConfirmInProgressTitle": "Set In Progress",
+  "remindersConfirmInProgressMessage": "Do you want to mark this reminder as \"In Progress\"?",
+  "remindersConfirmInProgressBtn": "OK",
+  "remindersRescheduleTitle": "Reschedule Reminder",
+  "remindersRescheduleMessage": "Select the new date and time for this task.",
+  "remindersRescheduleSave": "Save",
+  "remindersFieldDateUpper": "DATE",
+  "remindersFieldTimeUpper": "TIME",
+  "remindersCancelTitle": "Cancel Reminder",
+  "remindersCancelHint": "Type the reason for cancellation...",
+  "remindersCancelConfirmBtn": "Confirm"
 }

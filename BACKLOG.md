@@ -29,6 +29,12 @@
 - [ ] Subida real de archivos en FeedScreen
 - [ ] Notificaciones push para recordatorios
 
+## Limpieza de Mocks / Datos Simulados
+
+- [ ] **Eliminar datos simulados y mocks en el cliente**
+  - Conectar `CreateReminderScreen` al proveedor real de clientes (`clientsProvider`) para cargar los contactos reales de la base de datos.
+  - Eliminar por completo el archivo `mock_data.dart` y asegurar que no haya referencias a datos simulados en toda la aplicación.
+
 ## Completado
 
 - [x] i18n — ES + EN via ARB + flutter_localizations

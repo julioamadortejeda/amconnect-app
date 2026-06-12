@@ -19,9 +19,9 @@ class AmColors {
   static const lineSoftLight = Color(0xFFEEEFF1);
   static const greenLight = Color(0xFF0E7C42);
   static const greenWashLight = Color(0xFFEAF2EF);
-  static const redLight = Color(0xFFD8453F);
+  static const redLight = Color(0xFFEF4444);
   static const redWashLight = Color(0xFFF9EFEE);
-  static const amberLight = Color(0xFFB9791A);
+  static const amberLight = Color(0xFFF59E0B);
   static const amberWashLight = Color(0xFFF4EFE6);
 
   // Lines (dark)
@@ -43,9 +43,9 @@ class AmColors {
   static const muted2Dark = Color(0xFF5C6775);
   static const greenDark = Color(0xFF34C77B);
   static const greenWashDark = Color(0xFF133228);
-  static const redDark = Color(0xFFF2685F);
+  static const redDark = Color(0xFFF87171);
   static const redWashDark = Color(0xFF2A1010);
-  static const amberDark = Color(0xFFE0A53C);
+  static const amberDark = Color(0xFFFBBF24);
   static const amberWashDark = Color(0xFF241A06);
 
   // Auth screens — fixed (blue background, same in light and dark)

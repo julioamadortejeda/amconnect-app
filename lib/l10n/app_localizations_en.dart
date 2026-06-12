@@ -496,4 +496,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remindersActionCommentRequired =>
       'A comment is required to cancel';
+
+  @override
+  String get remindersConfirmDoneTitle => 'Complete Reminder';
+
+  @override
+  String get remindersConfirmDoneMessage =>
+      'Are you sure you want to mark this reminder as completed?';
+
+  @override
+  String get remindersConfirmDoneBtn => 'Complete';
+
+  @override
+  String get remindersConfirmCancelBtn => 'Cancel';
+
+  @override
+  String get remindersConfirmInProgressTitle => 'Set In Progress';
+
+  @override
+  String get remindersConfirmInProgressMessage =>
+      'Do you want to mark this reminder as \"In Progress\"?';
+
+  @override
+  String get remindersConfirmInProgressBtn => 'OK';
+
+  @override
+  String get remindersRescheduleTitle => 'Reschedule Reminder';
+
+  @override
+  String get remindersRescheduleMessage =>
+      'Select the new date and time for this task.';
+
+  @override
+  String get remindersRescheduleSave => 'Save';
+
+  @override
+  String get remindersFieldDateUpper => 'DATE';
+
+  @override
+  String get remindersFieldTimeUpper => 'TIME';
+
+  @override
+  String get remindersCancelTitle => 'Cancel Reminder';
+
+  @override
+  String get remindersCancelHint => 'Type the reason for cancellation...';
+
+  @override
+  String get remindersCancelConfirmBtn => 'Confirm';
 }

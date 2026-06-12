@@ -57,7 +57,7 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final filter = ref.watch(remindersUiProvider).filter;
   if (filter == 'todos') return reminders;
-  return reminders.where((r) => r.tipo == filter).toList();
+  return reminders.where((r) => r.type == filter).toList();
 });
 
 /// Recordatorios del día seleccionado para la vista calendario.

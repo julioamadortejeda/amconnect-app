@@ -3,12 +3,12 @@ enum ReminderPriority { urgent, warning, normal }
 class Reminder {
   const Reminder({
     required this.id,
-    required this.tipo,
-    required this.titulo,
+    required this.type,
+    required this.title,
     required this.sub,
-    required this.fecha,
-    required this.hora,
-    required this.hecho,
+    required this.date,
+    required this.time,
+    required this.done,
     required this.priority,
     this.contactId,
     this.dueDate,
@@ -21,17 +21,17 @@ class Reminder {
 
   /// Código del catálogo reminder_types: PAYMENT | RENEWAL | CANCELLATION |
   /// FOLLOW_UP | CALL | APPOINTMENT | ANNIVERSARY | OTHER
-  final String tipo;
+  final String type;
 
-  final String titulo;
+  final String title;
   final String sub;
-  final String fecha;
-  final String hora;
-  final bool hecho;
+  final String date;
+  final String time;
+  final bool done;
   final ReminderPriority priority;
   final DateTime? dueDate;
 
-  bool get urgente => priority == ReminderPriority.urgent;
+  bool get isUrgent => priority == ReminderPriority.urgent;
 
   static const _months = [
     'ene','feb','mar','abr','may','jun',
@@ -94,30 +94,30 @@ class Reminder {
     return Reminder(
       id: json['id'] as String,
       contactId: json['contactId'] as String?,
-      tipo: (json['type'] as Map<String, dynamic>?)?['code'] as String? ?? 'OTHER',
-      titulo: json['title'] as String,
+      type: (json['type'] as Map<String, dynamic>?)?['code'] as String? ?? 'OTHER',
+      title: json['title'] as String,
       sub: description?.isNotEmpty == true
           ? description!
           : contact?['fullName'] as String? ?? '',
-      fecha: _formatFecha(dueDate),
-      hora: _formatHora(dueDate),
-      hecho: isDone,
+      date: _formatFecha(dueDate),
+      time: _formatHora(dueDate),
+      done: isDone,
       statusCode: statusCode,
       priority: _resolvePriority(json, dueDate, isDone),
       dueDate: dueDate != null ? DateTime.tryParse(dueDate)?.toLocal() : null,
     );
   }
 
-  Reminder copyWith({bool? hecho, String? statusCode}) => Reminder(
+  Reminder copyWith({bool? done, String? statusCode}) => Reminder(
         id: id,
         contactId: contactId,
-        tipo: tipo,
-        titulo: titulo,
+        type: type,
+        title: title,
         sub: sub,
-        fecha: fecha,
-        hora: hora,
+        date: date,
+        time: time,
         priority: priority,
-        hecho: hecho ?? this.hecho,
+        done: done ?? this.done,
         statusCode: statusCode ?? this.statusCode,
         dueDate: dueDate,
       );

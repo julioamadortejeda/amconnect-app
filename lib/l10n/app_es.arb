@@ -224,5 +224,20 @@
   "remindersActionCancelTitle": "Cancelar recordatorio",
   "remindersActionCancelHint": "¿Por qué se cancela?",
   "remindersActionCancelBtn": "Confirmar cancelación",
-  "remindersActionCommentRequired": "El comentario es obligatorio para cancelar"
+  "remindersActionCommentRequired": "El comentario es obligatorio para cancelar",
+  "remindersConfirmDoneTitle": "Completar Recordatorio",
+  "remindersConfirmDoneMessage": "¿Estás seguro de que deseas marcar este recordatorio como completado?",
+  "remindersConfirmDoneBtn": "Completar",
+  "remindersConfirmCancelBtn": "Cancelar",
+  "remindersConfirmInProgressTitle": "Marcar en Progreso",
+  "remindersConfirmInProgressMessage": "¿Deseas marcar este recordatorio como \"En Progreso\"?",
+  "remindersConfirmInProgressBtn": "Aceptar",
+  "remindersRescheduleTitle": "Reprogramar Recordatorio",
+  "remindersRescheduleMessage": "Selecciona la nueva fecha y hora para realizar esta tarea.",
+  "remindersRescheduleSave": "Guardar",
+  "remindersFieldDateUpper": "FECHA",
+  "remindersFieldTimeUpper": "HORA",
+  "remindersCancelTitle": "Cancelar Recordatorio",
+  "remindersCancelHint": "Escribe el motivo de la cancelación...",
+  "remindersCancelConfirmBtn": "Confirmar"
 }

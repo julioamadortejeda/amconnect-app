@@ -498,4 +498,52 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get remindersActionCommentRequired =>
       'El comentario es obligatorio para cancelar';
+
+  @override
+  String get remindersConfirmDoneTitle => 'Completar Recordatorio';
+
+  @override
+  String get remindersConfirmDoneMessage =>
+      '¿Estás seguro de que deseas marcar este recordatorio como completado?';
+
+  @override
+  String get remindersConfirmDoneBtn => 'Completar';
+
+  @override
+  String get remindersConfirmCancelBtn => 'Cancelar';
+
+  @override
+  String get remindersConfirmInProgressTitle => 'Marcar en Progreso';
+
+  @override
+  String get remindersConfirmInProgressMessage =>
+      '¿Deseas marcar este recordatorio como \"En Progreso\"?';
+
+  @override
+  String get remindersConfirmInProgressBtn => 'Aceptar';
+
+  @override
+  String get remindersRescheduleTitle => 'Reprogramar Recordatorio';
+
+  @override
+  String get remindersRescheduleMessage =>
+      'Selecciona la nueva fecha y hora para realizar esta tarea.';
+
+  @override
+  String get remindersRescheduleSave => 'Guardar';
+
+  @override
+  String get remindersFieldDateUpper => 'FECHA';
+
+  @override
+  String get remindersFieldTimeUpper => 'HORA';
+
+  @override
+  String get remindersCancelTitle => 'Cancelar Recordatorio';
+
+  @override
+  String get remindersCancelHint => 'Escribe el motivo de la cancelación...';
+
+  @override
+  String get remindersCancelConfirmBtn => 'Confirmar';
 }
