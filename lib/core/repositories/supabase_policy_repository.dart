@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/core/repositories/policy_repository.dart';
+import '../network/api_client.dart';
+import 'policy_repository.dart';
 
 class SupabasePolicyRepository implements PolicyRepository {
   SupabasePolicyRepository(this._client);

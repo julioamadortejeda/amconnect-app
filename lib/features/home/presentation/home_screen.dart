@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
-import 'package:amconnect/core/widgets/am_loader.dart';
-import 'package:amconnect/core/widgets/am_section_label.dart';
-import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/features/home/widgets/home_clientes_recientes.dart';
-import 'package:amconnect/features/home/widgets/home_empty_section.dart';
-import 'package:amconnect/features/home/widgets/home_floating_btn.dart';
-import 'package:amconnect/features/home/widgets/home_header.dart';
-import 'package:amconnect/features/home/widgets/home_pendientes_card.dart';
-import 'package:amconnect/features/home/widgets/home_section_trailing.dart';
-import 'package:amconnect/features/home/widgets/home_stats_row.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_section_label.dart';
+import '../providers/home_provider.dart';
+import '../widgets/home_clientes_recientes.dart';
+import '../widgets/home_empty_section.dart';
+import '../widgets/home_floating_btn.dart';
+import '../widgets/home_header.dart';
+import '../widgets/home_pendientes_card.dart';
+import '../widgets/home_section_trailing.dart';
+import '../widgets/home_stats_row.dart';
+import '../../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

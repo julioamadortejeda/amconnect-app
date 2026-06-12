@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/contact.dart';
-import 'package:amconnect/core/repositories/contact_repository.dart';
-import 'package:amconnect/core/repositories/supabase_contact_repository.dart';
+import '../../../core/models/contact.dart';
+import '../../../core/repositories/contact_repository.dart';
+import '../../../core/repositories/supabase_contact_repository.dart';
 
 class ClientsNotifier extends AsyncNotifier<List<Contact>> {
   late final ContactRepository _repo;

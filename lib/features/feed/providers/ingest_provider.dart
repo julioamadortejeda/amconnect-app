@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/features/feed/data/ingest_repository.dart';
+import '../../../core/network/api_client.dart';
+import '../data/ingest_repository.dart';
 
 export 'package:amconnect/features/feed/data/ingest_repository.dart' show IngestPolicyResponse;
 

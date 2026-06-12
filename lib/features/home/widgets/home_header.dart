@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/widgets/am_icon_btn.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/widgets/am_icon_btn.dart';
+import '../../../l10n/app_localizations.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({

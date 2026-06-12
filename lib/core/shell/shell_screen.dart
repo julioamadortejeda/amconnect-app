@@ -2,11 +2,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/chat/widgets/voice_overlay.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../features/home/providers/home_provider.dart';
+import '../theme/app_colors.dart';
+import '../widgets/am_press.dart';
+import '../../features/chat/widgets/voice_overlay.dart';
+import '../../l10n/app_localizations.dart';
 
 const _kMicSize = 64.0;
 const _kMicRight = 16.0;

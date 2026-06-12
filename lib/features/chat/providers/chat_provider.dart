@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/features/chat/data/chat_repository.dart';
+import '../../../core/network/api_client.dart';
+import '../data/chat_repository.dart';
 
 export 'package:amconnect/features/chat/data/chat_repository.dart' show ChatMessage;
 

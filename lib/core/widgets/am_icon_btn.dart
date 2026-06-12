@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
+import '../theme/app_colors.dart';
 import 'am_press.dart';
 
 enum AmIconBtnTone { soft, sunken, accent, ghost }

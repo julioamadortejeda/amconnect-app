@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/shell/shell_screen.dart';
-import 'package:amconnect/core/providers/auth_provider.dart';
-import 'package:amconnect/features/onboarding/presentation/splash_screen.dart';
-import 'package:amconnect/features/onboarding/presentation/login_screen.dart';
-import 'package:amconnect/features/home/presentation/home_screen.dart';
-import 'package:amconnect/features/clients/presentation/clients_screen.dart';
-import 'package:amconnect/features/clients/presentation/client_detail_screen.dart';
-import 'package:amconnect/features/reminders/presentation/reminders_screen.dart';
-import 'package:amconnect/features/reminders/presentation/create_reminder_screen.dart';
-import 'package:amconnect/features/chat/presentation/chat_screen.dart';
-import 'package:amconnect/features/feed/presentation/feed_screen.dart';
-import 'package:amconnect/features/onboarding/presentation/email_login_screen.dart';
-import 'package:amconnect/features/onboarding/presentation/register_screen.dart';
+import '../shell/shell_screen.dart';
+import '../providers/auth_provider.dart';
+import '../../features/onboarding/presentation/splash_screen.dart';
+import '../../features/onboarding/presentation/login_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/clients/presentation/clients_screen.dart';
+import '../../features/clients/presentation/client_detail_screen.dart';
+import '../../features/reminders/presentation/reminders_screen.dart';
+import '../../features/reminders/presentation/create_reminder_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
+import '../../features/feed/presentation/feed_screen.dart';
+import '../../features/onboarding/presentation/email_login_screen.dart';
+import '../../features/onboarding/presentation/register_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);

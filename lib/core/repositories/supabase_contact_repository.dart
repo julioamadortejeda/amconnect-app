@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/contact.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/core/repositories/contact_repository.dart';
+import '../models/contact.dart';
+import '../network/api_client.dart';
+import 'contact_repository.dart';
 
 class SupabaseContactRepository implements ContactRepository {
   SupabaseContactRepository(this._client);

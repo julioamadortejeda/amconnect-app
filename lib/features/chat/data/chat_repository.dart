@@ -1,4 +1,4 @@
-import 'package:amconnect/core/network/api_client.dart';
+import '../../../core/network/api_client.dart';
 
 class ChatMessage {
   final String role; // 'user' | 'ai'

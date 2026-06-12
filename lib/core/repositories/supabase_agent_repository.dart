@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/core/repositories/agent_repository.dart';
+import '../network/api_client.dart';
+import 'agent_repository.dart';
 
 class SupabaseAgentRepository implements AgentRepository {
   SupabaseAgentRepository(this._client);

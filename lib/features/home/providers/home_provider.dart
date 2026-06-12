@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/repositories/reminder_repository.dart';
-import 'package:amconnect/core/repositories/supabase_agent_repository.dart';
-import 'package:amconnect/core/repositories/supabase_policy_repository.dart';
-import 'package:amconnect/core/repositories/supabase_reminder_repository.dart';
-import 'package:amconnect/features/clients/providers/clients_provider.dart';
+import '../../../core/models/reminder.dart';
+import '../../../core/repositories/reminder_repository.dart';
+import '../../../core/repositories/supabase_agent_repository.dart';
+import '../../../core/repositories/supabase_policy_repository.dart';
+import '../../../core/repositories/supabase_reminder_repository.dart';
+import '../../clients/providers/clients_provider.dart';
 
 class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
   late final ReminderRepository _repo;

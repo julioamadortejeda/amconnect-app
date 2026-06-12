@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
-import 'package:amconnect/core/widgets/am_card.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_item.dart';
+import '../../../core/models/reminder.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_card.dart';
+import '../../reminders/widgets/reminder_item.dart';
 
 class HomePendientesCard extends StatelessWidget {
   const HomePendientesCard({super.key, required this.reminders});

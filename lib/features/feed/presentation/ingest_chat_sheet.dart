@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/feed/providers/ingest_provider.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/am_press.dart';
+import '../providers/ingest_provider.dart';
 
 class IngestChatSheet extends ConsumerStatefulWidget {
   const IngestChatSheet({super.key, required this.onClose});

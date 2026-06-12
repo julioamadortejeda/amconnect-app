@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/models/reminder_type.dart';
-import 'package:amconnect/core/repositories/supabase_reminder_repository.dart';
-import 'package:amconnect/features/home/providers/home_provider.dart';
+import '../../../core/models/reminder.dart';
+import '../../../core/models/reminder_type.dart';
+import '../../../core/repositories/supabase_reminder_repository.dart';
+import '../../home/providers/home_provider.dart';
 
 enum RemindersViewMode { list, calendar }
 

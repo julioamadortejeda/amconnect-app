@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:amconnect/core/config/env.dart';
+import '../config/env.dart';
 
 class ApiClient {
   String get _base => Env.apiBaseUrl;

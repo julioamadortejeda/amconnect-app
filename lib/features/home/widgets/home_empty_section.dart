@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/widgets/am_card.dart';
+import '../../../core/widgets/am_card.dart';
 
 class HomeEmptySection extends StatelessWidget {
   const HomeEmptySection({super.key, required this.message});

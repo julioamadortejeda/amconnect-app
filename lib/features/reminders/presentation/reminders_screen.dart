@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
-import 'package:amconnect/core/widgets/am_loader.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/features/reminders/providers/reminders_provider.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_calendar_view.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_list_view.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_press.dart';
+import '../../home/providers/home_provider.dart';
+import '../providers/reminders_provider.dart';
+import '../widgets/reminder_calendar_view.dart';
+import '../widgets/reminder_list_view.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RemindersScreen extends ConsumerWidget {
   const RemindersScreen({super.key});

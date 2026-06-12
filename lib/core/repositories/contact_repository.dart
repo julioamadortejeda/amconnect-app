@@ -1,4 +1,4 @@
-import 'package:amconnect/core/models/contact.dart';
+import '../models/contact.dart';
 
 abstract class ContactRepository {
   Future<List<Contact>> getAll({String? query});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/am_press.dart';
 
 class AuthSubmitBtn extends StatelessWidget {
   const AuthSubmitBtn({

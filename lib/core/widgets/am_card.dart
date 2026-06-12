@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
+import '../theme/app_dimensions.dart';
 import 'am_press.dart';
 
 class AmCard extends StatelessWidget {

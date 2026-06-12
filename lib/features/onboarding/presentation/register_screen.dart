@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/features/onboarding/providers/register_provider.dart';
-import 'package:amconnect/features/onboarding/widgets/auth_app_bar.dart';
-import 'package:amconnect/features/onboarding/widgets/auth_divider.dart';
-import 'package:amconnect/features/onboarding/widgets/auth_error_msg.dart';
-import 'package:amconnect/features/onboarding/widgets/auth_field.dart';
-import 'package:amconnect/features/onboarding/widgets/auth_submit_btn.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../providers/register_provider.dart';
+import '../widgets/auth_app_bar.dart';
+import '../widgets/auth_divider.dart';
+import '../widgets/auth_error_msg.dart';
+import '../widgets/auth_field.dart';
+import '../widgets/auth_submit_btn.dart';
+import '../../../l10n/app_localizations.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});

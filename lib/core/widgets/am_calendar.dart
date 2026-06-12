@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/widgets/am_card.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../theme/app_colors.dart';
+import 'am_card.dart';
+import 'am_press.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Calendario mensual genérico.
 ///

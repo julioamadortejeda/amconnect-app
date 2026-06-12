@@ -1,5 +1,5 @@
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/models/reminder_type.dart';
+import '../models/reminder.dart';
+import '../models/reminder_type.dart';
 
 abstract class ReminderRepository {
   Future<List<Reminder>> getAll();

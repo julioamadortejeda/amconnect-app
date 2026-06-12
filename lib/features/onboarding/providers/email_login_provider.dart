@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/providers/auth_provider.dart';
+import '../../../core/providers/auth_provider.dart';
 
 enum EmailLoginError { emptyFields, wrongCredentials }
 

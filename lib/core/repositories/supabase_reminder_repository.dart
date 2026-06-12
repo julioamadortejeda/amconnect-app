@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/models/reminder_type.dart';
-import 'package:amconnect/core/network/api_client.dart';
-import 'package:amconnect/core/repositories/reminder_repository.dart';
+import '../models/reminder.dart';
+import '../models/reminder_type.dart';
+import '../network/api_client.dart';
+import 'reminder_repository.dart';
 
 class SupabaseReminderRepository implements ReminderRepository {
   SupabaseReminderRepository(this._client);

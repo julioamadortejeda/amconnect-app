@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/am_theme.dart';
+import '../theme/am_theme.dart';
 
 enum AmBadgeTone { accent, green, red, amber, muted }
 

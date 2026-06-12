@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
+import '../../../core/widgets/am_press.dart';
 
 class AuthAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AuthAppBar({super.key});

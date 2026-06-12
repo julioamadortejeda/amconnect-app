@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
+import '../../../core/widgets/am_press.dart';
 
 class HomeFloatingBtn extends StatelessWidget {
   const HomeFloatingBtn({

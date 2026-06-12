@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/theme/am_theme.dart';
-import 'package:amconnect/core/mock/mock_data.dart';
-import 'package:amconnect/core/widgets/am_avatar.dart';
-import 'package:amconnect/core/widgets/am_back_bar.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_theme.dart';
+import '../../../core/mock/mock_data.dart';
+import '../../../core/widgets/am_avatar.dart';
+import '../../../core/widgets/am_back_bar.dart';
+import '../../../core/widgets/am_press.dart';
+import '../../../l10n/app_localizations.dart';
 
 class CreateReminderScreen extends ConsumerStatefulWidget {
   const CreateReminderScreen({super.key, this.clienteId});

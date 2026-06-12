@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/widgets/am_avatar.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/clients/providers/clients_provider.dart';
+import '../../../core/widgets/am_avatar.dart';
+import '../../../core/widgets/am_press.dart';
+import '../../clients/providers/clients_provider.dart';
 
 class HomeClientesRecientes extends ConsumerWidget {
   const HomeClientesRecientes({super.key});

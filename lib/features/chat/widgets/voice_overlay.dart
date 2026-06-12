@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/widgets/am_aurora.dart';
-import 'package:amconnect/features/chat/widgets/voice_pulsing_mic.dart';
-import 'package:amconnect/features/chat/widgets/voice_waveform_bars.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/widgets/am_aurora.dart';
+import 'voice_pulsing_mic.dart';
+import 'voice_waveform_bars.dart';
+import '../../../l10n/app_localizations.dart';
 
 class VoiceOverlay extends StatefulWidget {
   const VoiceOverlay({super.key});

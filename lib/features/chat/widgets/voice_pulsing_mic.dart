@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 
 class VoicePulsingMic extends StatefulWidget {
   const VoicePulsingMic({super.key});

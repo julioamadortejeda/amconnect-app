@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/models/reminder.dart';
-import 'package:amconnect/core/theme/am_theme.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/features/home/providers/home_provider.dart';
-import 'package:amconnect/core/utils/reminder_utils.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
-import 'package:amconnect/core/widgets/am_confirm_dialog.dart';
-import 'package:amconnect/core/widgets/am_reschedule_dialog.dart';
-import 'package:amconnect/core/widgets/am_cancel_dialog.dart';
+import '../../../core/models/reminder.dart';
+import '../../../core/theme/am_theme.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_press.dart';
+import '../../home/providers/home_provider.dart';
+import '../../../core/utils/reminder_utils.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../core/widgets/am_confirm_dialog.dart';
+import '../../../core/widgets/am_reschedule_dialog.dart';
+import '../../../core/widgets/am_cancel_dialog.dart';
 
 class ReminderItem extends ConsumerWidget {
   const ReminderItem({super.key, required this.reminder});
@@ -193,7 +193,7 @@ class ReminderItem extends ConsumerWidget {
           child: Card(
             elevation: 0,
             margin: EdgeInsets.zero,
-            color: cs.surfaceVariant.withValues(alpha: 0.3),
+            color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/core/widgets/am_badge.dart';
-import 'package:amconnect/core/widgets/am_section_label.dart';
-import 'package:amconnect/features/feed/providers/ingest_provider.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/am_badge.dart';
+import '../../../core/widgets/am_section_label.dart';
+import '../providers/ingest_provider.dart';
+import '../../../l10n/app_localizations.dart';
 
 class PolicySuccessSheet extends ConsumerWidget {
   const PolicySuccessSheet({super.key, required this.onClose});

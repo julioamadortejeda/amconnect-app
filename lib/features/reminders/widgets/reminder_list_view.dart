@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:amconnect/core/models/reminder_type.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
-import 'package:amconnect/core/widgets/am_card.dart';
-import 'package:amconnect/features/reminders/providers/reminders_provider.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_filter_chip.dart';
-import 'package:amconnect/features/reminders/widgets/reminder_item.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/models/reminder_type.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_card.dart';
+import '../providers/reminders_provider.dart';
+import 'reminder_filter_chip.dart';
+import 'reminder_item.dart';
+import '../../../l10n/app_localizations.dart';
 
 const _typeOrder = [
   'PAYMENT', 'RENEWAL', 'CANCELLATION',

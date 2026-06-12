@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:amconnect/core/repositories/auth_repository.dart';
-import 'package:amconnect/core/repositories/supabase_auth_repository.dart';
+import '../repositories/auth_repository.dart';
+import '../repositories/supabase_auth_repository.dart';
 
 /// Stream del usuario autenticado — escuchado por el router para redirigir.
 final authUserProvider = StreamProvider<User?>((ref) {

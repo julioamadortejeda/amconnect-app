@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/widgets/am_press.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
-import 'package:amconnect/core/theme/app_dimensions.dart';
+import 'am_press.dart';
+import '../../l10n/app_localizations.dart';
+import '../theme/app_dimensions.dart';
 
 class AmRescheduleDialog extends StatefulWidget {
   const AmRescheduleDialog({

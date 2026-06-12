@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:amconnect/core/theme/app_colors.dart';
-import 'package:amconnect/features/onboarding/providers/login_provider.dart';
-import 'package:amconnect/features/onboarding/widgets/login_social_btn.dart';
-import 'package:amconnect/features/onboarding/widgets/login_email_btn.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../providers/login_provider.dart';
+import '../widgets/login_social_btn.dart';
+import '../widgets/login_email_btn.dart';
+import '../../../l10n/app_localizations.dart';
 
 const _kBg = Color(0xFF1278C5);
 

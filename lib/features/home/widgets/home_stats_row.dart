@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:amconnect/core/widgets/am_card.dart';
-import 'package:amconnect/l10n/app_localizations.dart';
+import '../../../core/widgets/am_card.dart';
+import '../../../l10n/app_localizations.dart';
 
 class HomeStatsRow extends StatelessWidget {
   const HomeStatsRow({
