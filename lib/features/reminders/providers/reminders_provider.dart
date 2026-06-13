@@ -57,9 +57,9 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final filter = ref.watch(remindersUiProvider).filter;
   if (filter == 'eliminados') {
-    return reminders.where((r) => r.statusCode == 'CANCELLED').toList();
+    return reminders.where((r) => r.cancelled).toList();
   }
-  final active = reminders.where((r) => r.statusCode != 'CANCELLED').toList();
+  final active = reminders.where((r) => r.isActive).toList();
   if (filter == 'todos') return active;
   return active.where((r) => r.type == filter).toList();
 });

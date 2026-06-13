@@ -10,6 +10,7 @@ class Reminder {
     required this.date,
     required this.time,
     required this.done,
+    required this.cancelled,
     required this.priority,
     this.contactId,
     this.dueDate,
@@ -32,10 +33,15 @@ class Reminder {
   final String date;
   final String time;
   final bool done;
+  final bool cancelled;
   final ReminderPriority priority;
   final DateTime? dueDate;
 
-  bool get isUrgent => priority == ReminderPriority.urgent;
+  bool get isUrgent   => priority == ReminderPriority.urgent;
+  bool get isActive   => !done && !cancelled;
+  bool get isRenewal  => type == 'RENEWAL';
+  bool get isFollowUp => type == 'FOLLOW_UP';
+  bool get isPayment  => type == 'PAYMENT';
 
   static const _months = [
     'ene','feb','mar','abr','may','jun',
@@ -61,8 +67,6 @@ class Reminder {
     return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
-  // Cuando el backend envíe `priority` ('urgent' | 'warning' | 'normal')
-  // lo usa directo. Si no viene, calcula con umbrales: urgent ≤3d, warning ≤7d.
   static ReminderPriority _resolvePriority(
     Map<String, dynamic> json,
     String? dueDate,
@@ -92,6 +96,7 @@ class Reminder {
     final statusMap = json['status'] as Map<String, dynamic>?;
     final statusCode = statusMap?['code'] as String? ?? '';
     final isDone = statusCode == 'DONE' || (json['isDone'] as bool? ?? false);
+    final isCancelled = statusCode == 'CANCELLED';
     final contact = json['contact'] as Map<String, dynamic>?;
     final description = json['description'] as String?;
     final typeMap = json['type'] as Map<String, dynamic>?;
@@ -108,13 +113,14 @@ class Reminder {
       date: _formatFecha(dueDate),
       time: _formatHora(dueDate),
       done: isDone,
+      cancelled: isCancelled,
       statusCode: statusCode,
       priority: _resolvePriority(json, dueDate, isDone),
       dueDate: dueDate != null ? DateTime.tryParse(dueDate)?.toLocal() : null,
     );
   }
 
-  Reminder copyWith({bool? done, String? statusCode}) => Reminder(
+  Reminder copyWith({bool? done, bool? cancelled, String? statusCode}) => Reminder(
         id: id,
         contactId: contactId,
         type: type,
@@ -125,6 +131,7 @@ class Reminder {
         time: time,
         priority: priority,
         done: done ?? this.done,
+        cancelled: cancelled ?? this.cancelled,
         statusCode: statusCode ?? this.statusCode,
         dueDate: dueDate,
       );

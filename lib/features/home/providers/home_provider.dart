@@ -100,10 +100,10 @@ final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
   final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
   final clientsCount = ref.watch(clientsProvider).asData?.value.length ?? 0;
 
-  final pending      = reminders.where((r) => !r.done).toList();
+  final pending      = reminders.where((r) => r.isActive).toList();
   final urgentCount  = pending.where((r) => r.isUrgent).length;
-  final porRenovar   = pending.where((r) => r.type == 'RENEWAL').length;
-  final followUps    = (pending.where((r) => r.type == 'FOLLOW_UP').toList())
+  final porRenovar   = pending.where((r) => r.isRenewal).length;
+  final followUps    = (pending.where((r) => r.isFollowUp).toList())
     ..sort((a, b) => a.date.compareTo(b.date));
 
   return HomeDashboardData(
