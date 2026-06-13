@@ -198,13 +198,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeViewAll => 'View all';
 
   @override
+  String get currencyMXN => 'Mexican Peso';
+
+  @override
+  String get currencyUSD => 'US Dollar';
+
+  @override
+  String get paymentMethodDirectDebit => 'Direct Debit';
+
+  @override
+  String get paymentMethodBankTransfer => 'Bank Transfer';
+
+  @override
+  String get paymentMethodCheck => 'Check';
+
+  @override
+  String get paymentMethodCash => 'Cash';
+
+  @override
+  String get paymentMethodCreditCard => 'Credit Card';
+
+  @override
+  String get paymentFrequencyMonthly => 'Monthly';
+
+  @override
+  String get paymentFrequencyQuarterly => 'Quarterly';
+
+  @override
+  String get paymentFrequencySemiannual => 'Semiannual';
+
+  @override
+  String get paymentFrequencyAnnual => 'Annual';
+
+  @override
+  String get participantRoleHolder => 'Holder';
+
+  @override
+  String get participantRoleInsured => 'Insured';
+
+  @override
+  String get participantRolePolicyholder => 'Policyholder';
+
+  @override
+  String get participantRoleDependent => 'Dependent';
+
+  @override
+  String get policyStatusActive => 'Active';
+
+  @override
+  String get policyStatusCancelled => 'Cancelled';
+
+  @override
+  String get policyStatusExpired => 'Expired';
+
+  @override
+  String get policyStatusPending => 'Pending';
+
+  @override
+  String get policyStatusSuspended => 'Suspended';
+
+  @override
+  String get reminderStatusCreated => 'Created';
+
+  @override
+  String get reminderStatusPending => 'Pending';
+
+  @override
+  String get reminderStatusInProgress => 'In Progress';
+
+  @override
+  String get reminderStatusDone => 'Done';
+
+  @override
+  String get reminderStatusCancelled => 'Cancelled';
+
+  @override
   String get reminderTypePayment => 'Payment';
 
   @override
   String get reminderTypeRenewal => 'Renewal';
 
   @override
+  String get reminderTypeCancellation => 'Cancellation';
+
+  @override
+  String get reminderTypeFollowUp => 'Follow-up';
+
+  @override
   String get reminderTypeCall => 'Call';
+
+  @override
+  String get reminderTypeAppointment => 'Appointment';
+
+  @override
+  String get reminderTypeAnniversary => 'Policy Anniversary';
 
   @override
   String get reminderTypeOther => 'Other';
@@ -293,6 +380,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersFilterCalls => 'Calls';
+
+  @override
+  String get remindersFilterDeleted => 'Deleted';
+
+  @override
+  String get remindersDeletedWarning => 'Deleted reminders cannot be restored.';
 
   @override
   String get remindersEmpty => 'No reminders to show';

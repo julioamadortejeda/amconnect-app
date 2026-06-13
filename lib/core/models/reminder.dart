@@ -4,6 +4,7 @@ class Reminder {
   const Reminder({
     required this.id,
     required this.type,
+    required this.typeName,
     required this.title,
     required this.sub,
     required this.date,
@@ -22,6 +23,9 @@ class Reminder {
   /// Código del catálogo reminder_types: PAYMENT | RENEWAL | CANCELLATION |
   /// FOLLOW_UP | CALL | APPOINTMENT | ANNIVERSARY | OTHER
   final String type;
+
+  /// Nombre localizado del tipo (e.g. "Pago", "Renovación")
+  final String typeName;
 
   final String title;
   final String sub;
@@ -90,11 +94,13 @@ class Reminder {
     final isDone = statusCode == 'DONE' || (json['isDone'] as bool? ?? false);
     final contact = json['contact'] as Map<String, dynamic>?;
     final description = json['description'] as String?;
+    final typeMap = json['type'] as Map<String, dynamic>?;
 
     return Reminder(
       id: json['id'] as String,
       contactId: json['contactId'] as String?,
-      type: (json['type'] as Map<String, dynamic>?)?['code'] as String? ?? 'OTHER',
+      type: typeMap?['code'] as String? ?? 'OTHER',
+      typeName: typeMap?['name'] as String? ?? typeMap?['code'] as String? ?? 'Otro',
       title: json['title'] as String,
       sub: description?.isNotEmpty == true
           ? description!
@@ -112,6 +118,7 @@ class Reminder {
         id: id,
         contactId: contactId,
         type: type,
+        typeName: typeName,
         title: title,
         sub: sub,
         date: date,

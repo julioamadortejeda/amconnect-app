@@ -90,12 +90,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onTap: () => context.push('/agenda'),
                   ) : null,
                 ),
-                const SizedBox(height: AmDimens.gapXS),
-                if (data.followUps.isNotEmpty) ...[
-                  HomePendientesCard(reminders: data.followUps.take(3).toList()),
-                  const SizedBox(height: AmDimens.gapL),
-                ] else
+                if (data.followUps.isNotEmpty)
+                  HomePendientesCard(reminders: data.followUps.take(3).toList())
+                else
                   HomeEmptySection(message: l10n.homeEmptySeguimientos),
+                const SizedBox(height: AmDimens.gapL),
                 AmSectionLabel(
                   label: l10n.homeClientesRecientes,
                   trailing: HomeSectionTrailing(

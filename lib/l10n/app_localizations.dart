@@ -452,6 +452,156 @@ abstract class AppLocalizations {
   /// **'Ver todos'**
   String get homeViewAll;
 
+  /// No description provided for @currencyMXN.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso Mexicano'**
+  String get currencyMXN;
+
+  /// No description provided for @currencyUSD.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar Americano'**
+  String get currencyUSD;
+
+  /// No description provided for @paymentMethodDirectDebit.
+  ///
+  /// In es, this message translates to:
+  /// **'Domiciliación'**
+  String get paymentMethodDirectDebit;
+
+  /// No description provided for @paymentMethodBankTransfer.
+  ///
+  /// In es, this message translates to:
+  /// **'Transferencia Bancaria'**
+  String get paymentMethodBankTransfer;
+
+  /// No description provided for @paymentMethodCheck.
+  ///
+  /// In es, this message translates to:
+  /// **'Cheque'**
+  String get paymentMethodCheck;
+
+  /// No description provided for @paymentMethodCash.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo'**
+  String get paymentMethodCash;
+
+  /// No description provided for @paymentMethodCreditCard.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarjeta de Crédito'**
+  String get paymentMethodCreditCard;
+
+  /// No description provided for @paymentFrequencyMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensual'**
+  String get paymentFrequencyMonthly;
+
+  /// No description provided for @paymentFrequencyQuarterly.
+  ///
+  /// In es, this message translates to:
+  /// **'Trimestral'**
+  String get paymentFrequencyQuarterly;
+
+  /// No description provided for @paymentFrequencySemiannual.
+  ///
+  /// In es, this message translates to:
+  /// **'Semestral'**
+  String get paymentFrequencySemiannual;
+
+  /// No description provided for @paymentFrequencyAnnual.
+  ///
+  /// In es, this message translates to:
+  /// **'Anual'**
+  String get paymentFrequencyAnnual;
+
+  /// No description provided for @participantRoleHolder.
+  ///
+  /// In es, this message translates to:
+  /// **'Titular'**
+  String get participantRoleHolder;
+
+  /// No description provided for @participantRoleInsured.
+  ///
+  /// In es, this message translates to:
+  /// **'Asegurado'**
+  String get participantRoleInsured;
+
+  /// No description provided for @participantRolePolicyholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Contratante'**
+  String get participantRolePolicyholder;
+
+  /// No description provided for @participantRoleDependent.
+  ///
+  /// In es, this message translates to:
+  /// **'Dependiente'**
+  String get participantRoleDependent;
+
+  /// No description provided for @policyStatusActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigente'**
+  String get policyStatusActive;
+
+  /// No description provided for @policyStatusCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelada'**
+  String get policyStatusCancelled;
+
+  /// No description provided for @policyStatusExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencida'**
+  String get policyStatusExpired;
+
+  /// No description provided for @policyStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get policyStatusPending;
+
+  /// No description provided for @policyStatusSuspended.
+  ///
+  /// In es, this message translates to:
+  /// **'Suspendida'**
+  String get policyStatusSuspended;
+
+  /// No description provided for @reminderStatusCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Creado'**
+  String get reminderStatusCreated;
+
+  /// No description provided for @reminderStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get reminderStatusPending;
+
+  /// No description provided for @reminderStatusInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'En Proceso'**
+  String get reminderStatusInProgress;
+
+  /// No description provided for @reminderStatusDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Completado'**
+  String get reminderStatusDone;
+
+  /// No description provided for @reminderStatusCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelado'**
+  String get reminderStatusCancelled;
+
   /// No description provided for @reminderTypePayment.
   ///
   /// In es, this message translates to:
@@ -464,11 +614,35 @@ abstract class AppLocalizations {
   /// **'Renovación'**
   String get reminderTypeRenewal;
 
+  /// No description provided for @reminderTypeCancellation.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelación'**
+  String get reminderTypeCancellation;
+
+  /// No description provided for @reminderTypeFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento'**
+  String get reminderTypeFollowUp;
+
   /// No description provided for @reminderTypeCall.
   ///
   /// In es, this message translates to:
   /// **'Llamada'**
   String get reminderTypeCall;
+
+  /// No description provided for @reminderTypeAppointment.
+  ///
+  /// In es, this message translates to:
+  /// **'Cita'**
+  String get reminderTypeAppointment;
+
+  /// No description provided for @reminderTypeAnniversary.
+  ///
+  /// In es, this message translates to:
+  /// **'Aniversario de Póliza'**
+  String get reminderTypeAnniversary;
 
   /// No description provided for @reminderTypeOther.
   ///
@@ -625,6 +799,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Llamadas'**
   String get remindersFilterCalls;
+
+  /// No description provided for @remindersFilterDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminados'**
+  String get remindersFilterDeleted;
+
+  /// No description provided for @remindersDeletedWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Los recordatorios eliminados no pueden restaurarse.'**
+  String get remindersDeletedWarning;
 
   /// No description provided for @remindersEmpty.
   ///

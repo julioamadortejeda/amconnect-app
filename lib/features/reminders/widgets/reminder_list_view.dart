@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/catalog_l10n.dart';
 import '../../../core/widgets/am_card.dart';
 import '../providers/reminders_provider.dart';
+import 'deleted_reminders_view.dart';
 import 'reminder_filter_chip.dart';
 import 'reminder_item.dart';
 import '../../../l10n/app_localizations.dart';
@@ -54,7 +56,7 @@ class ReminderListView extends ConsumerWidget {
                       .map((t) => Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ReminderFilterChip(
-                          label: t.name,
+                          label: l10n.reminderType(t.code),
                           active: ui.filter == t.code,
                           onTap: () => ref
                               .read(remindersUiProvider.notifier)
@@ -63,37 +65,74 @@ class ReminderListView extends ConsumerWidget {
                       )),
                   orElse: () => [],
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ReminderFilterChip(
+                    label: l10n.remindersFilterDeleted,
+                    active: ui.filter == 'eliminados',
+                    danger: true,
+                    onTap: () => ref
+                        .read(remindersUiProvider.notifier)
+                        .setFilter('eliminados'),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-            child: reminders.isEmpty
-                ? Text(
-                    l10n.remindersEmpty,
-                    style: TextStyle(fontSize: 14, color: cs.tertiary),
-                  )
-                : AmCard(
-                    noPad: true,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (int i = 0; i < reminders.length; i++) ...[
-                          if (i > 0)
-                            Divider(
-                              height: 0,
-                              indent: AmDimens.screenH,
-                              endIndent: AmDimens.screenH,
-                              color: cs.outlineVariant,
-                            ),
-                          ReminderItem(reminder: reminders[i]),
-                        ],
-                      ],
+          if (ui.filter == 'eliminados') ...[
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded,
+                      size: 14, color: cs.error),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.remindersDeletedWarning,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: cs.error,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-          ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          if (ui.filter == 'eliminados')
+            const DeletedRemindersView()
+          else
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              child: reminders.isEmpty
+                  ? Text(
+                      l10n.remindersEmpty,
+                      style: TextStyle(fontSize: 14, color: cs.tertiary),
+                    )
+                  : AmCard(
+                      noPad: true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (int i = 0; i < reminders.length; i++) ...[
+                            if (i > 0)
+                              Divider(
+                                height: 0,
+                                indent: AmDimens.screenH,
+                                endIndent: AmDimens.screenH,
+                                color: cs.outlineVariant,
+                              ),
+                            ReminderItem(reminder: reminders[i]),
+                          ],
+                        ],
+                      ),
+                    ),
+            ),
           const SizedBox(height: 16),
         ],
       ),

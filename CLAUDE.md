@@ -281,6 +281,20 @@ AmColors.srcDoc / srcWhatsApp / srcWave / srcImage / srcNote  // iconos de fuent
 
 `TextStyle`, `BoxDecoration`, etc. con colores del theme **no pueden ser `const`**. Quitar `const` del widget afectado.
 
+### Dimensiones y Espaciados (`AmDimens`)
+
+La app define tokens de espaciado, paddings y radios en `lib/core/theme/app_dimensions.dart`.
+- **Nunca** usar valores numéricos crudos (hardcoded) para paddings, margins, gaps o radios.
+- Utilizar `AmDimens.screenH` (18.0) para paddings horizontales de pantallas o márgenes exteriores de diálogos (`AmDimens.screenH * 1.5`).
+- Utilizar `AmDimens.cardRadius` (18.0) para el radio de borde de tarjetas, diálogos y contenedores principales.
+- Utilizar los gaps definidos (`AmDimens.gapL` (20.0), `AmDimens.gapM` (16.0), `AmDimens.gapS` (14.0), `AmDimens.gapXS` (11.0)) para mantener la consistencia vertical y horizontal.
+
+### Creación de Widgets Reusables y Diálogos Premium
+
+- Si un widget o diálogo se usa en más de una pantalla o representa un patrón común (como confirmaciones de alertas o selectores), debe colocarse en `lib/core/widgets/` con el prefijo `am_` (ej. `AmConfirmDialog`, `AmCancelDialog`, `AmRescheduleDialog`).
+- Evitar duplicación de lógica de UI o layouts en hojas modales; preferir la encapsulación en widgets reusables e internacionalizados.
+- Todos los diálogos personalizados con animaciones (escala y opacidad) deben asegurar que la opacidad calculada esté limitada con `.clamp(0.0, 1.0)` para evitar crashes cuando se usan curvas que sobrepasan los límites (como `Curves.easeOutBack`).
+
 ---
 
 ## Datos mock (mock_data.dart)

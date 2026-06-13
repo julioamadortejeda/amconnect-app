@@ -73,9 +73,44 @@
     }
   },
 
+  "currencyMXN": "Mexican Peso",
+  "currencyUSD": "US Dollar",
+
+  "paymentMethodDirectDebit": "Direct Debit",
+  "paymentMethodBankTransfer": "Bank Transfer",
+  "paymentMethodCheck": "Check",
+  "paymentMethodCash": "Cash",
+  "paymentMethodCreditCard": "Credit Card",
+
+  "paymentFrequencyMonthly": "Monthly",
+  "paymentFrequencyQuarterly": "Quarterly",
+  "paymentFrequencySemiannual": "Semiannual",
+  "paymentFrequencyAnnual": "Annual",
+
+  "participantRoleHolder": "Holder",
+  "participantRoleInsured": "Insured",
+  "participantRolePolicyholder": "Policyholder",
+  "participantRoleDependent": "Dependent",
+
+  "policyStatusActive": "Active",
+  "policyStatusCancelled": "Cancelled",
+  "policyStatusExpired": "Expired",
+  "policyStatusPending": "Pending",
+  "policyStatusSuspended": "Suspended",
+
+  "reminderStatusCreated": "Created",
+  "reminderStatusPending": "Pending",
+  "reminderStatusInProgress": "In Progress",
+  "reminderStatusDone": "Done",
+  "reminderStatusCancelled": "Cancelled",
+
   "reminderTypePayment": "Payment",
   "reminderTypeRenewal": "Renewal",
+  "reminderTypeCancellation": "Cancellation",
+  "reminderTypeFollowUp": "Follow-up",
   "reminderTypeCall": "Call",
+  "reminderTypeAppointment": "Appointment",
+  "reminderTypeAnniversary": "Policy Anniversary",
   "reminderTypeOther": "Other",
 
   "clientsTitle": "Clients",
@@ -104,6 +139,8 @@
   "remindersFilterPayments": "Payments",
   "remindersFilterRenewals": "Renewals",
   "remindersFilterCalls": "Calls",
+  "remindersFilterDeleted": "Deleted",
+  "remindersDeletedWarning": "Deleted reminders cannot be restored.",
   "remindersEmpty": "No reminders to show",
   "remindersError": "Error loading reminders",
   "calendarToday": "Today",
