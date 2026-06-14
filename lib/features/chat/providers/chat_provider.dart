@@ -51,7 +51,7 @@ class ChatNotifier extends Notifier<ChatState> {
     try {
       final result = await _repo.sendMessage(text, sessionId: state.sessionId);
       state = state.copyWith(
-        messages: [...state.messages, ChatMessage(role: 'ai', text: result.text)],
+        messages: [...state.messages, ChatMessage(role: 'ai', text: result.text, metadata: result.metadata)],
         sessionId: result.sessionId,
         isLoading: false,
       );

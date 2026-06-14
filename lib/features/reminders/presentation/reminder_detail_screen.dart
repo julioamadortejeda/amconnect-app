@@ -7,6 +7,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_reschedule_dialog.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
+import '../../../core/widgets/am_top_bar.dart';
 import '../../home/providers/home_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/reminder_comment_bubble.dart';
@@ -95,8 +96,6 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
     );
   }
 
-
-
   void _reschedule(BuildContext ctx, Reminder r) {
     showDialog(
       context: ctx,
@@ -133,7 +132,8 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                 onPressed: _saving ? null : () => _save(r),
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
@@ -180,30 +180,15 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
           );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          l10n.remindersDetailTitle,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: cs.onSurface,
-            letterSpacing: -0.01,
-          ),
-        ),
-        centerTitle: false,
+      appBar: AmTopBar(
+        title: l10n.remindersDetailTitle,
+        showBack: true,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: trailingBar,
           ),
         ],
-        backgroundColor: cs.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 26),
-          color: cs.onSurface,
-          onPressed: () => context.pop(),
-        ),
       ),
       body: SafeArea(
         child: ListView(
@@ -238,7 +223,8 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                   useRootNavigator: true,
                   backgroundColor: cs.surface,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(24)),
                   ),
                   builder: (_) => AmReminderActionsSheet(
                     reminder: r,

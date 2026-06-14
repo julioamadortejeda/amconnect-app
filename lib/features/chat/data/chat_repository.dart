@@ -3,14 +3,15 @@ import '../../../core/network/api_client.dart';
 class ChatMessage {
   final String role; // 'user' | 'ai'
   final String text;
-  const ChatMessage({required this.role, required this.text});
+  final Map<String, dynamic>? metadata;
+  const ChatMessage({required this.role, required this.text, this.metadata});
 }
 
 class ChatRepository {
   final ApiClient _api;
   ChatRepository(this._api);
 
-  Future<({String text, String sessionId})> sendMessage(
+  Future<({String text, String sessionId, Map<String, dynamic>? metadata})> sendMessage(
     String message, {
     String? sessionId,
   }) async {
@@ -19,9 +20,11 @@ class ChatRepository {
       if (sessionId != null) 'sessionId': sessionId,
     });
     final data = res['data'] as Map<String, dynamic>;
+    final rawMeta = data['metadata'];
     return (
       text: data['text'] as String,
       sessionId: data['sessionId'] as String,
+      metadata: rawMeta is Map<String, dynamic> ? rawMeta : null,
     );
   }
 

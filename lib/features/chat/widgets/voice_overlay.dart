@@ -1,11 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/widgets/am_aurora.dart';
 import 'voice_pulsing_mic.dart';
 import 'voice_waveform_bars.dart';
 import '../../../l10n/app_localizations.dart';
+import '../providers/chat_provider.dart';
 
-class VoiceOverlay extends StatefulWidget {
+class VoiceOverlay extends ConsumerStatefulWidget {
   const VoiceOverlay({super.key});
 
   static Future<void> show(BuildContext context) {
@@ -24,10 +27,10 @@ class VoiceOverlay extends StatefulWidget {
   }
 
   @override
-  State<VoiceOverlay> createState() => _VoiceOverlayState();
+  ConsumerState<VoiceOverlay> createState() => _VoiceOverlayState();
 }
 
-class _VoiceOverlayState extends State<VoiceOverlay> {
+class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
   String _transcript = '';
   final _textCtrl = TextEditingController();
   bool _hasText = false;
@@ -52,6 +55,24 @@ class _VoiceOverlayState extends State<VoiceOverlay> {
       if (!mounted) return;
       setState(() => _transcript = _mockPhrase.substring(0, i));
       await Future.delayed(const Duration(milliseconds: 52));
+    }
+  }
+
+  /// Sends [text] to the chat provider, closes the overlay, and navigates to /chat.
+  void _submitToChat(String text) {
+    if (text.trim().isEmpty) return;
+
+    // Send the message via Riverpod
+    ref.read(chatProvider.notifier).send(text.trim());
+
+    // Close the voice overlay
+    Navigator.of(context).pop();
+
+    // Navigate to chat screen if not already there
+    final router = GoRouter.of(context);
+    final currentLocation = router.routeInformationProvider.value.uri.path;
+    if (currentLocation != '/chat') {
+      router.push('/chat');
     }
   }
 
@@ -105,32 +126,47 @@ class _VoiceOverlayState extends State<VoiceOverlay> {
                               ),
                             ),
 
-                            // Mic + waveform — IgnorePointer so taps fall through to close
-                            IgnorePointer(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Spacer(flex: 5),
-                                  const VoicePulsingMic(),
-                                  const SizedBox(height: 28),
-                                  Text(
-                                    l10n.voiceListening,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.white.withValues(alpha: 0.6),
-                                      letterSpacing: 0.4,
-                                    ),
+                            // Mic + waveform + transcript
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Spacer(flex: 5),
+                                // Tappable mic — sends transcript when tapped
+                                GestureDetector(
+                                  onTap: () {
+                                    if (_transcript.isNotEmpty) {
+                                      _submitToChat(_transcript);
+                                    }
+                                  },
+                                  child: const VoicePulsingMic(),
+                                ),
+                                const SizedBox(height: 28),
+                                Text(
+                                  _transcript.isNotEmpty
+                                      ? l10n.voiceListening
+                                      : l10n.voiceListening,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white.withValues(alpha: 0.6),
+                                    letterSpacing: 0.4,
                                   ),
-                                  const SizedBox(height: 36),
-                                  const VoiceWaveformBars(),
-                                  const SizedBox(height: 32),
-                                  SizedBox(
-                                    height: 88,
-                                    child: AnimatedOpacity(
-                                      opacity: _transcript.isNotEmpty ? 1.0 : 0.0,
-                                      duration: const Duration(milliseconds: 220),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 36),
+                                ),
+                                const SizedBox(height: 36),
+                                const VoiceWaveformBars(),
+                                const SizedBox(height: 32),
+                                SizedBox(
+                                  height: 88,
+                                  child: AnimatedOpacity(
+                                    opacity: _transcript.isNotEmpty ? 1.0 : 0.0,
+                                    duration: const Duration(milliseconds: 220),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 36),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_transcript.isNotEmpty) {
+                                            _submitToChat(_transcript);
+                                          }
+                                        },
                                         child: SizedBox(
                                           width: double.infinity,
                                           child: Text(
@@ -149,9 +185,9 @@ class _VoiceOverlayState extends State<VoiceOverlay> {
                                       ),
                                     ),
                                   ),
-                                  const Spacer(flex: 4),
-                                ],
-                              ),
+                                ),
+                                const Spacer(flex: 4),
+                              ],
                             ),
                           ],
                         ),
@@ -242,6 +278,6 @@ class _VoiceOverlayState extends State<VoiceOverlay> {
     _textCtrl.clear();
     setState(() => _hasText = false);
     FocusScope.of(context).unfocus();
-    // TODO: wire up to AI chat
+    _submitToChat(text);
   }
 }

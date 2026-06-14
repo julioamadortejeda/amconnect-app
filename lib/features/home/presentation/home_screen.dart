@@ -90,6 +90,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onTap: () => context.push('/reminders'),
                   ) : null,
                 ),
+                const SizedBox(height: AmDimens.gapXS),
                 if (data.followUps.isNotEmpty)
                   HomePendientesCard(reminders: data.followUps.take(3).toList())
                 else

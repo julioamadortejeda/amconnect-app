@@ -10,9 +10,22 @@ class ApiClient {
 
   Map<String, String> get _headers {
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
+    // Compute timezone offset string (e.g., "-06:00")
+    final now = DateTime.now();
+    final offset = now.timeZoneOffset;
+    final sign = offset.isNegative ? '-' : '+';
+    final hours = offset.inHours.abs().toString().padLeft(2, '0');
+    final minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+    final tzOffset = '$sign$hours:$minutes';
+    // Use the IANA timezone name when available, fall back to offset
+    final tzName = now.timeZoneName; // e.g. "CST" or "America/Mexico_City"
+    final locale = Platform.localeName; // e.g. "es_MX"
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
+      'x-timezone': tzName,
+      'x-timezone-offset': tzOffset,
+      'Accept-Language': locale,
     };
   }
 

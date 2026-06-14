@@ -7,6 +7,8 @@ import '../../../core/mock/mock_data.dart';
 import '../../../core/widgets/am_press.dart';
 import '../providers/chat_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../widgets/voice_overlay.dart';
+import 'widgets/chat_cards.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -122,7 +124,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 itemBuilder: (_, i) {
                   if (i == chat.messages.length) return const _TypingBubble();
                   final msg = chat.messages[i];
-                  return _Bubble(role: msg.role, text: msg.text);
+                  return _Bubble(role: msg.role, text: msg.text, metadata: msg.metadata);
                 },
               ),
             ),
@@ -199,7 +201,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  _ActionBtn(icon: Icons.mic_none_outlined, onTap: () {}),
+                  _ActionBtn(icon: Icons.mic_none_outlined, onTap: () => VoiceOverlay.show(context)),
                   const SizedBox(width: 6),
                   _ActionBtn(
                     icon: Icons.arrow_upward,
@@ -217,9 +219,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 }
 
 class _Bubble extends StatelessWidget {
-  const _Bubble({required this.role, required this.text});
+  const _Bubble({required this.role, required this.text, this.metadata});
   final String role;
   final String text;
+  final Map<String, dynamic>? metadata;
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +247,10 @@ class _Bubble extends StatelessWidget {
         ),
       );
     }
+
+    // Check if there's a premium card to render
+    final card = metadata != null ? buildChatCard(metadata!, context) : null;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -257,18 +264,30 @@ class _Bubble extends StatelessWidget {
         ),
         const SizedBox(width: 9),
         Expanded(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(6), topRight: Radius.circular(18),
-                bottomLeft: Radius.circular(18), bottomRight: Radius.circular(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Text bubble
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(6), topRight: Radius.circular(18),
+                    bottomLeft: Radius.circular(18), bottomRight: Radius.circular(18),
+                  ),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
+                ),
+                child: Text(text,
+                    style: TextStyle(fontSize: 15, color: cs.onSurface, height: 1.5)),
               ),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
-            ),
-            child: Text(text,
-                style: TextStyle(fontSize: 15, color: cs.onSurface, height: 1.5)),
+              // Premium card below the text bubble
+              if (card != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: card,
+                ),
+            ],
           ),
         ),
       ],
