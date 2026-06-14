@@ -99,10 +99,10 @@
   "policyStatusSuspended": "Suspended",
 
   "reminderStatusCreated": "Created",
-  "reminderStatusPending": "Pending",
   "reminderStatusInProgress": "In Progress",
   "reminderStatusDone": "Done",
   "reminderStatusCancelled": "Cancelled",
+  "reminderStatusPaused": "Paused",
 
   "reminderTypePayment": "Payment",
   "reminderTypeRenewal": "Renewal",
@@ -234,5 +234,37 @@
   "remindersFieldTimeUpper": "TIME",
   "remindersCancelTitle": "Cancel Reminder",
   "remindersCancelHint": "Type the reason for cancellation...",
-  "remindersCancelConfirmBtn": "Confirm"
+  "remindersCancelConfirmBtn": "Confirm",
+
+  "remindersDetailTitle": "Reminder",
+  "remindersDetailEdit": "Edit",
+  "remindersDetailSave": "Save",
+  "remindersDetailNotes": "Notes",
+  "remindersDetailNoNotes": "No notes",
+  "remindersDetailNoClient": "No client assigned",
+  "remindersDetailSaved": "Changes saved",
+  "remindersDetailStatus": "Status",
+  "remindersDetailDatetime": "Date & time",
+  "remindersDetailActions": "Actions",
+  "reminderPriorityUrgent": "Urgent",
+  "reminderPriorityWarning": "Soon",
+  "reminderPriorityNormal": "Normal",
+  "remindersDetailDueDate": "Due date",
+  "remindersDetailCreatedAt": "Created on",
+  "remindersDetailPolicy": "Policy",
+  "remindersDetailSelectType": "Reminder type",
+  "remindersDetailSelectStatus": "Reminder status",
+  "remindersDetailComments": "Comments",
+  "remindersDetailNoComments": "No comments",
+  "remindersDetailNoDescription": "No description",
+  "remindersDetailRelations": "Relations",
+  "remindersDetailTomorrow": "Tomorrow",
+  "remindersDetailDaysLeft": "{count}d",
+  "@remindersDetailDaysLeft": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "remindersDetailDaysOverdue": "{count}d overdue",
+  "@remindersDetailDaysOverdue": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

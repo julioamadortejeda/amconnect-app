@@ -98,7 +98,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                           icon: Icons.notifications_outlined,
                           label: l10n.clientsActionRemind,
                           onTap: () => context.push(
-                              '/crear-recordatorio?cliente=${widget.clientId}'),
+                              '/create-reminder?cliente=${widget.clientId}'),
                         ),
                         const SizedBox(width: 9),
                         _QuickAction(

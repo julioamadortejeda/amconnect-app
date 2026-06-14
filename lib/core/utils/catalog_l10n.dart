@@ -49,9 +49,9 @@ extension CatalogL10n on AppLocalizations {
 
   String reminderStatus(String code) => {
     'CREATED':     reminderStatusCreated,
-    'PENDING':     reminderStatusPending,
     'IN_PROGRESS': reminderStatusInProgress,
     'DONE':        reminderStatusDone,
     'CANCELLED':   reminderStatusCancelled,
+    'PAUSED':      reminderStatusPaused,
   }[code] ?? code;
 }

@@ -31,111 +31,113 @@ class ReminderListView extends ConsumerWidget {
     final reminders = ref.watch(filteredRemindersProvider);
     final typesAsync = ref.watch(reminderTypesProvider);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+    return Column(
+      children: [
+        SizedBox(
+          height: 40,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding:
+                const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ReminderFilterChip(
+                  label: l10n.remindersFilterAll,
+                  active: ui.filter == 'todos',
+                  onTap: () =>
+                      ref.read(remindersUiProvider.notifier).setFilter('todos'),
+                ),
+              ),
+              ...typesAsync.maybeWhen(
+                data: (types) => (List.of(types)
+                      ..sort((a, b) => _typePriority(a).compareTo(_typePriority(b))))
+                    .map((t) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ReminderFilterChip(
+                        label: l10n.reminderType(t.code),
+                        active: ui.filter == t.code,
+                        onTap: () => ref
+                            .read(remindersUiProvider.notifier)
+                            .setFilter(t.code),
+                      ),
+                    )),
+                orElse: () => [],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ReminderFilterChip(
+                  label: l10n.remindersFilterDeleted,
+                  active: ui.filter == 'eliminados',
+                  danger: true,
+                  onTap: () => ref
+                      .read(remindersUiProvider.notifier)
+                      .setFilter('eliminados'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (ui.filter == 'eliminados') ...[
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ReminderFilterChip(
-                    label: l10n.remindersFilterAll,
-                    active: ui.filter == 'todos',
-                    onTap: () =>
-                        ref.read(remindersUiProvider.notifier).setFilter('todos'),
-                  ),
-                ),
-                ...typesAsync.maybeWhen(
-                  data: (types) => (List.of(types)
-                        ..sort((a, b) => _typePriority(a).compareTo(_typePriority(b))))
-                      .map((t) => Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: ReminderFilterChip(
-                          label: l10n.reminderType(t.code),
-                          active: ui.filter == t.code,
-                          onTap: () => ref
-                              .read(remindersUiProvider.notifier)
-                              .setFilter(t.code),
-                        ),
-                      )),
-                  orElse: () => [],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ReminderFilterChip(
-                    label: l10n.remindersFilterDeleted,
-                    active: ui.filter == 'eliminados',
-                    danger: true,
-                    onTap: () => ref
-                        .read(remindersUiProvider.notifier)
-                        .setFilter('eliminados'),
+                Icon(Icons.info_outline_rounded,
+                    size: 14, color: cs.error),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.remindersDeletedWarning,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: cs.error,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          if (ui.filter == 'eliminados') ...[
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline_rounded,
-                      size: 14, color: cs.error),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l10n.remindersDeletedWarning,
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        color: cs.error,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          if (ui.filter == 'eliminados')
-            const DeletedRemindersView()
-          else
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-              child: reminders.isEmpty
-                  ? Text(
-                      l10n.remindersEmpty,
-                      style: TextStyle(fontSize: 14, color: cs.tertiary),
-                    )
-                  : AmCard(
-                      noPad: true,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (int i = 0; i < reminders.length; i++) ...[
-                            if (i > 0)
-                              Divider(
-                                height: 0,
-                                indent: AmDimens.screenH,
-                                endIndent: AmDimens.screenH,
-                                color: cs.outlineVariant,
-                              ),
-                            ReminderItem(reminder: reminders[i]),
-                          ],
-                        ],
-                      ),
-                    ),
-            ),
-          const SizedBox(height: 16),
         ],
-      ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: reminders.isEmpty
+              ? Center(
+                  child: Text(
+                    l10n.remindersEmpty,
+                    style: TextStyle(fontSize: 14, color: cs.tertiary),
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: ui.filter == 'eliminados'
+                      ? const DeletedRemindersView()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                          child: AmCard(
+                            noPad: true,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (int i = 0; i < reminders.length; i++) ...[
+                                  if (i > 0)
+                                    Divider(
+                                      height: 0,
+                                      indent: AmDimens.screenH,
+                                      endIndent: AmDimens.screenH,
+                                      color: cs.outlineVariant,
+                                    ),
+                                  ReminderItem(reminder: reminders[i]),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

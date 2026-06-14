@@ -74,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: data.pending.length > 4
                         ? l10n.homeViewAllCount(data.pending.length)
                         : l10n.homeViewAgenda,
-                    onTap: () => context.push('/agenda'),
+                    onTap: () => context.push('/reminders'),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),
@@ -87,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   label: l10n.homeSeguimientos,
                   trailing: data.followUps.length > 3 ? HomeSectionTrailing(
                     label: l10n.homeViewAllCount(data.followUps.length),
-                    onTap: () => context.push('/agenda'),
+                    onTap: () => context.push('/reminders'),
                   ) : null,
                 ),
                 if (data.followUps.isNotEmpty)
@@ -101,7 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: data.clientsCount > 0
                         ? l10n.homeViewAllCount(data.clientsCount)
                         : l10n.homeViewAll,
-                    onTap: () => context.go('/clientes'),
+                    onTap: () => context.go('/clients'),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapXS),
@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: Image.asset('assets/logo/logo_t.png', width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
-                        onTap: () => context.push('/agenda'),
+                        onTap: () => context.push('/reminders'),
                         dot: data.urgentCount > 0,
                         child: Icon(Icons.notifications_outlined,
                             size: 20, color: cs.onSurface),

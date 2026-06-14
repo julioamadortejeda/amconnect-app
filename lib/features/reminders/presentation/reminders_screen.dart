@@ -79,7 +79,7 @@ class RemindersScreen extends ConsumerWidget {
                     ),
                   ),
                   AmPress(
-                    onTap: () => context.push('/crear-recordatorio'),
+                    onTap: () => context.push('/create-reminder'),
                     child: Container(
                       width: 36,
                       height: 36,

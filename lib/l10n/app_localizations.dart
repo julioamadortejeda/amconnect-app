@@ -578,12 +578,6 @@ abstract class AppLocalizations {
   /// **'Creado'**
   String get reminderStatusCreated;
 
-  /// No description provided for @reminderStatusPending.
-  ///
-  /// In es, this message translates to:
-  /// **'Pendiente'**
-  String get reminderStatusPending;
-
   /// No description provided for @reminderStatusInProgress.
   ///
   /// In es, this message translates to:
@@ -601,6 +595,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cancelado'**
   String get reminderStatusCancelled;
+
+  /// No description provided for @reminderStatusPaused.
+  ///
+  /// In es, this message translates to:
+  /// **'En Pausa'**
+  String get reminderStatusPaused;
 
   /// No description provided for @reminderTypePayment.
   ///
@@ -1291,6 +1291,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Confirmar'**
   String get remindersCancelConfirmBtn;
+
+  /// No description provided for @remindersDetailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get remindersDetailTitle;
+
+  /// No description provided for @remindersDetailEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar'**
+  String get remindersDetailEdit;
+
+  /// No description provided for @remindersDetailSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get remindersDetailSave;
+
+  /// No description provided for @remindersDetailNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get remindersDetailNotes;
+
+  /// No description provided for @remindersDetailNoNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin notas'**
+  String get remindersDetailNoNotes;
+
+  /// No description provided for @remindersDetailNoClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cliente asignado'**
+  String get remindersDetailNoClient;
+
+  /// No description provided for @remindersDetailSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios guardados'**
+  String get remindersDetailSaved;
+
+  /// No description provided for @remindersDetailStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get remindersDetailStatus;
+
+  /// No description provided for @remindersDetailDatetime.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora'**
+  String get remindersDetailDatetime;
+
+  /// No description provided for @remindersDetailActions.
+  ///
+  /// In es, this message translates to:
+  /// **'Acciones'**
+  String get remindersDetailActions;
+
+  /// No description provided for @reminderPriorityUrgent.
+  ///
+  /// In es, this message translates to:
+  /// **'Urgente'**
+  String get reminderPriorityUrgent;
+
+  /// No description provided for @reminderPriorityWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronto'**
+  String get reminderPriorityWarning;
+
+  /// No description provided for @reminderPriorityNormal.
+  ///
+  /// In es, this message translates to:
+  /// **'Normal'**
+  String get reminderPriorityNormal;
+
+  /// No description provided for @remindersDetailDueDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha límite'**
+  String get remindersDetailDueDate;
+
+  /// No description provided for @remindersDetailCreatedAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Creado el'**
+  String get remindersDetailCreatedAt;
+
+  /// No description provided for @remindersDetailPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza'**
+  String get remindersDetailPolicy;
+
+  /// No description provided for @remindersDetailSelectType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de recordatorio'**
+  String get remindersDetailSelectType;
+
+  /// No description provided for @remindersDetailSelectStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del recordatorio'**
+  String get remindersDetailSelectStatus;
+
+  /// No description provided for @remindersDetailComments.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios'**
+  String get remindersDetailComments;
+
+  /// No description provided for @remindersDetailNoComments.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin comentarios'**
+  String get remindersDetailNoComments;
+
+  /// No description provided for @remindersDetailNoDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin descripción'**
+  String get remindersDetailNoDescription;
+
+  /// No description provided for @remindersDetailRelations.
+  ///
+  /// In es, this message translates to:
+  /// **'Relaciones'**
+  String get remindersDetailRelations;
+
+  /// No description provided for @remindersDetailTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana'**
+  String get remindersDetailTomorrow;
+
+  /// No description provided for @remindersDetailDaysLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'{count}d'**
+  String remindersDetailDaysLeft(int count);
+
+  /// No description provided for @remindersDetailDaysOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'{count}d venc.'**
+  String remindersDetailDaysOverdue(int count);
 }
 
 class _AppLocalizationsDelegate

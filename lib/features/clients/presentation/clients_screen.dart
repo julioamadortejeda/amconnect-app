@@ -152,7 +152,7 @@ class _ClientRow extends StatelessWidget {
     ].join(' · ');
 
     return AmCard(
-      onTap: () => context.push('/clientes/${contact.id}'),
+      onTap: () => context.push('/clients/${contact.id}'),
       child: Row(
         children: [
           AmAvatar(inicial: contact.inicial, color: contact.color, size: 48, radius: 15),

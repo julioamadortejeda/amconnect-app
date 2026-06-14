@@ -33,6 +33,24 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     ]);
   }
 
+  Future<void> updateType(String id, String typeId) async {
+    final updated = await _repo.updateType(id, typeId);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
+  Future<void> updateDetails(String id, {String? title, String? description}) async {
+    final updated = await _repo.updateDetails(id, title: title, description: description);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
   Future<void> toggle(String id) async {
     final list = state.asData?.value;
     final current = list?.firstWhere(

@@ -29,9 +29,9 @@ class ShellScreen extends ConsumerWidget {
 
   static const _tabs = [
     _Tab(path: '/home',     icon: Icons.home_outlined,            activeIcon: Icons.home),
-    _Tab(path: '/agenda',   icon: Icons.calendar_today_outlined,  activeIcon: Icons.calendar_today),
-    _Tab(path: '/clientes', icon: Icons.group_outlined,           activeIcon: Icons.group),
-    _Tab(path: '/datos',    icon: Icons.folder_outlined,          activeIcon: Icons.folder),
+    _Tab(path: '/reminders', icon: Icons.calendar_today_outlined,  activeIcon: Icons.calendar_today),
+    _Tab(path: '/clients',   icon: Icons.group_outlined,           activeIcon: Icons.group),
+    _Tab(path: '/data',      icon: Icons.folder_outlined,          activeIcon: Icons.folder),
   ];
 
   String get _activeTab {
@@ -153,11 +153,11 @@ class _TabItem extends StatelessWidget {
   final bool active;
 
   String _label(AppLocalizations l10n) => switch (t.path) {
-        '/home'     => l10n.shellHome,
-        '/agenda'   => l10n.shellAgenda,
-        '/clientes' => l10n.shellClients,
-        '/datos'    => l10n.shellData,
-        _           => '',
+        '/home'      => l10n.shellHome,
+        '/reminders' => l10n.shellAgenda,
+        '/clients'   => l10n.shellClients,
+        '/data'      => l10n.shellData,
+        _            => '',
       };
 
   @override

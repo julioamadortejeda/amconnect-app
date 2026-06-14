@@ -10,6 +10,8 @@ import '../../features/clients/presentation/clients_screen.dart';
 import '../../features/clients/presentation/client_detail_screen.dart';
 import '../../features/reminders/presentation/reminders_screen.dart';
 import '../../features/reminders/presentation/create_reminder_screen.dart';
+import '../../features/reminders/presentation/reminder_detail_screen.dart';
+import '../../core/models/reminder.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
@@ -45,23 +47,30 @@ final routerProvider = Provider<GoRouter>((ref) {
             ShellScreen(location: state.uri.path, child: child),
         routes: [
           GoRoute(path: '/home',     builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/agenda',   builder: (_, __) => const RemindersScreen()),
-          GoRoute(path: '/clientes', builder: (_, __) => const ClientsScreen()),
-          GoRoute(path: '/datos',    builder: (_, __) => const FeedScreen()),
+          GoRoute(path: '/reminders', builder: (_, __) => const RemindersScreen()),
+          GoRoute(path: '/clients',   builder: (_, __) => const ClientsScreen()),
+          GoRoute(path: '/data',      builder: (_, __) => const FeedScreen()),
         ],
       ),
 
       GoRoute(
-        path: '/clientes/:id',
+        path: '/clients/:id',
         pageBuilder: (_, state) => _slide(
           ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
           state,
         ),
       ),
       GoRoute(
-        path: '/crear-recordatorio',
+        path: '/create-reminder',
         pageBuilder: (_, state) => _slide(
           CreateReminderScreen(clienteId: state.uri.queryParameters['cliente']),
+          state,
+        ),
+      ),
+      GoRoute(
+        path: '/reminder/:id',
+        pageBuilder: (_, state) => _slide(
+          ReminderDetailScreen(reminder: state.extra as Reminder),
           state,
         ),
       ),

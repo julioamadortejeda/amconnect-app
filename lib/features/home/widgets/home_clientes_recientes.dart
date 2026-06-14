@@ -22,7 +22,7 @@ class HomeClientesRecientes extends ConsumerWidget {
         itemBuilder: (_, i) {
           final c = contacts[i];
           return AmPress(
-            onTap: () => context.push('/clientes/${c.id}'),
+            onTap: () => context.push('/clients/${c.id}'),
             child: Column(
               children: [
                 AmAvatar(inicial: c.inicial, color: c.color, size: 48, radius: 16),

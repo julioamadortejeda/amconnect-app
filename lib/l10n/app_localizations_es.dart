@@ -262,9 +262,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reminderStatusCreated => 'Creado';
 
   @override
-  String get reminderStatusPending => 'Pendiente';
-
-  @override
   String get reminderStatusInProgress => 'En Proceso';
 
   @override
@@ -272,6 +269,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reminderStatusCancelled => 'Cancelado';
+
+  @override
+  String get reminderStatusPaused => 'En Pausa';
 
   @override
   String get reminderTypePayment => 'Pago';
@@ -640,4 +640,83 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersCancelConfirmBtn => 'Confirmar';
+
+  @override
+  String get remindersDetailTitle => 'Recordatorio';
+
+  @override
+  String get remindersDetailEdit => 'Editar';
+
+  @override
+  String get remindersDetailSave => 'Guardar';
+
+  @override
+  String get remindersDetailNotes => 'Notas';
+
+  @override
+  String get remindersDetailNoNotes => 'Sin notas';
+
+  @override
+  String get remindersDetailNoClient => 'Sin cliente asignado';
+
+  @override
+  String get remindersDetailSaved => 'Cambios guardados';
+
+  @override
+  String get remindersDetailStatus => 'Estado';
+
+  @override
+  String get remindersDetailDatetime => 'Fecha y hora';
+
+  @override
+  String get remindersDetailActions => 'Acciones';
+
+  @override
+  String get reminderPriorityUrgent => 'Urgente';
+
+  @override
+  String get reminderPriorityWarning => 'Pronto';
+
+  @override
+  String get reminderPriorityNormal => 'Normal';
+
+  @override
+  String get remindersDetailDueDate => 'Fecha límite';
+
+  @override
+  String get remindersDetailCreatedAt => 'Creado el';
+
+  @override
+  String get remindersDetailPolicy => 'Póliza';
+
+  @override
+  String get remindersDetailSelectType => 'Tipo de recordatorio';
+
+  @override
+  String get remindersDetailSelectStatus => 'Estado del recordatorio';
+
+  @override
+  String get remindersDetailComments => 'Comentarios';
+
+  @override
+  String get remindersDetailNoComments => 'Sin comentarios';
+
+  @override
+  String get remindersDetailNoDescription => 'Sin descripción';
+
+  @override
+  String get remindersDetailRelations => 'Relaciones';
+
+  @override
+  String get remindersDetailTomorrow => 'Mañana';
+
+  @override
+  String remindersDetailDaysLeft(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String remindersDetailDaysOverdue(int count) {
+    return '${count}d venc.';
+  }
 }

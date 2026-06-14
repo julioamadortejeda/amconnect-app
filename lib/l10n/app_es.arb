@@ -125,10 +125,10 @@
 
   "@_reminderStatuses": {},
   "reminderStatusCreated": "Creado",
-  "reminderStatusPending": "Pendiente",
   "reminderStatusInProgress": "En Proceso",
   "reminderStatusDone": "Completado",
   "reminderStatusCancelled": "Cancelado",
+  "reminderStatusPaused": "En Pausa",
 
   "@_reminderTypes": {},
   "reminderTypePayment": "Pago",
@@ -282,5 +282,38 @@
   "remindersFieldTimeUpper": "HORA",
   "remindersCancelTitle": "Cancelar Recordatorio",
   "remindersCancelHint": "Escribe el motivo de la cancelación...",
-  "remindersCancelConfirmBtn": "Confirmar"
+  "remindersCancelConfirmBtn": "Confirmar",
+
+  "@_reminderDetail": {},
+  "remindersDetailTitle": "Recordatorio",
+  "remindersDetailEdit": "Editar",
+  "remindersDetailSave": "Guardar",
+  "remindersDetailNotes": "Notas",
+  "remindersDetailNoNotes": "Sin notas",
+  "remindersDetailNoClient": "Sin cliente asignado",
+  "remindersDetailSaved": "Cambios guardados",
+  "remindersDetailStatus": "Estado",
+  "remindersDetailDatetime": "Fecha y hora",
+  "remindersDetailActions": "Acciones",
+  "reminderPriorityUrgent": "Urgente",
+  "reminderPriorityWarning": "Pronto",
+  "reminderPriorityNormal": "Normal",
+  "remindersDetailDueDate": "Fecha límite",
+  "remindersDetailCreatedAt": "Creado el",
+  "remindersDetailPolicy": "Póliza",
+  "remindersDetailSelectType": "Tipo de recordatorio",
+  "remindersDetailSelectStatus": "Estado del recordatorio",
+  "remindersDetailComments": "Comentarios",
+  "remindersDetailNoComments": "Sin comentarios",
+  "remindersDetailNoDescription": "Sin descripción",
+  "remindersDetailRelations": "Relaciones",
+  "remindersDetailTomorrow": "Mañana",
+  "remindersDetailDaysLeft": "{count}d",
+  "@remindersDetailDaysLeft": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "remindersDetailDaysOverdue": "{count}d venc.",
+  "@remindersDetailDaysOverdue": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }
