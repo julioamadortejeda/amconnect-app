@@ -54,8 +54,9 @@ class DeletedRemindersView extends ConsumerWidget {
                           endIndent: AmDimens.screenH,
                           color: cs.outlineVariant,
                         ),
-                      IgnorePointer(
-                        child: ReminderItem(reminder: entry.value[i]),
+                      ReminderItem(
+                        reminder: entry.value[i],
+                        showContextMenu: false,
                       ),
                     ],
                   ],

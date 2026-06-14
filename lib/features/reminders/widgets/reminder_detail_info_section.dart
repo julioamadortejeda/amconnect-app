@@ -12,15 +12,15 @@ class ReminderDetailInfoSection extends StatelessWidget {
   const ReminderDetailInfoSection({
     super.key,
     required this.reminder,
-    required this.onTapType,
-    required this.onTapStatus,
-    required this.onTapReschedule,
+    this.onTapType,
+    this.onTapStatus,
+    this.onTapReschedule,
   });
 
   final Reminder reminder;
-  final VoidCallback onTapType;
-  final VoidCallback onTapStatus;
-  final VoidCallback onTapReschedule;
+  final VoidCallback? onTapType;
+  final VoidCallback? onTapStatus;
+  final VoidCallback? onTapReschedule;
 
   static String _fmtDate(DateTime? dt) {
     if (dt == null) return '—';

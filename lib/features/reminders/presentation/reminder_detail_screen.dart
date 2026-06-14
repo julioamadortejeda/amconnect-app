@@ -116,7 +116,9 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
-    final trailingBar = _editing
+    final trailingBar = r.cancelled
+        ? const SizedBox.shrink()
+        : _editing
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -205,7 +207,7 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
               editing: _editing,
               titleCtrl: _titleCtrl,
               descCtrl: _descCtrl,
-              onEdit: () => _enterEdit(r),
+              onEdit: r.cancelled ? null : () => _enterEdit(r),
             ),
             const SizedBox(height: AmDimens.gapM),
 
@@ -214,25 +216,27 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             const SizedBox(height: AmDimens.gapXS),
             ReminderDetailInfoSection(
               reminder: r,
-              onTapType: types.isEmpty
-                  ? () {}
+              onTapType: r.cancelled || types.isEmpty
+                  ? null
                   : () => _showTypeSheet(context, r, types, l10n, cs),
-              onTapStatus: () {
-                showModalBottomSheet(
-                  context: context,
-                  useRootNavigator: true,
-                  backgroundColor: cs.surface,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(24)),
-                  ),
-                  builder: (_) => AmReminderActionsSheet(
-                    reminder: r,
-                    showReschedule: false,
-                  ),
-                );
-              },
-              onTapReschedule: () => _reschedule(context, r),
+              onTapStatus: r.cancelled
+                  ? null
+                  : () {
+                      showModalBottomSheet(
+                        context: context,
+                        useRootNavigator: true,
+                        backgroundColor: cs.surface,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(24)),
+                        ),
+                        builder: (_) => AmReminderActionsSheet(
+                          reminder: r,
+                          showReschedule: false,
+                        ),
+                      );
+                    },
+              onTapReschedule: r.cancelled ? null : () => _reschedule(context, r),
             ),
             const SizedBox(height: AmDimens.gapM),
 
