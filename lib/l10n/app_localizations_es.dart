@@ -309,6 +309,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsSearchHint => 'Buscar cliente…';
 
   @override
+  String get clientsEmpty => 'Sin clientes registrados';
+
+  @override
+  String get clientsError => 'Error al cargar clientes';
+
+  @override
+  String get clientsContactSection => 'Contacto';
+
+  @override
+  String get clientsNoPolicies => 'Sin pólizas registradas';
+
+  @override
+  String get clientsNoNotes => 'Sin notas';
+
+  @override
   String get clientsStatusProspect => 'Prospecto';
 
   @override
@@ -356,6 +371,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsPolicyDeductible => 'Deducible';
+
+  @override
+  String get clientsPolicyEndDate => 'Vencimiento';
 
   @override
   String clientsAskAbout(String name) {

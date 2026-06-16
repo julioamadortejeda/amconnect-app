@@ -48,10 +48,12 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
             callback: (p) => _onDelete(p.oldRecord),
           )
           .subscribe((status, error) {
-            debugPrint('[RT:reminders] $status $error');
-          });
+        debugPrint('[RT:reminders] $status $error');
+      });
 
-      ref.onDispose(() { _channel?.unsubscribe(); });
+      ref.onDispose(() {
+        _channel?.unsubscribe();
+      });
     }
 
     return initial;
@@ -79,7 +81,8 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
       return;
     }
     state = AsyncData([
-      for (final r in state.requireValue) if (r.id == id) reminder else r,
+      for (final r in state.requireValue)
+        if (r.id == id) reminder else r,
     ]);
   }
 
@@ -89,7 +92,8 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData(state.requireValue.where((r) => r.id != id).toList());
   }
 
-  Future<void> updateStatus(String id, String statusCode, {String? comment}) async {
+  Future<void> updateStatus(String id, String statusCode,
+      {String? comment}) async {
     final updated = await _repo.updateStatus(id, statusCode, comment: comment);
     if (updated == null) return;
     state = AsyncData([
@@ -116,8 +120,10 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     ]);
   }
 
-  Future<void> updateDetails(String id, {String? title, String? description}) async {
-    final updated = await _repo.updateDetails(id, title: title, description: description);
+  Future<void> updateDetails(String id,
+      {String? title, String? description}) async {
+    final updated =
+        await _repo.updateDetails(id, title: title, description: description);
     if (updated == null) return;
     state = AsyncData([
       for (final r in state.requireValue)
@@ -177,18 +183,20 @@ class PoliciesCountNotifier extends AsyncNotifier<int> {
             },
           )
           .subscribe((status, error) {
-            debugPrint('[RT:policies] $status $error');
-          });
+        debugPrint('[RT:policies] $status $error');
+      });
 
-      ref.onDispose(() { _channel?.unsubscribe(); });
+      ref.onDispose(() {
+        _channel?.unsubscribe();
+      });
     }
 
     return count;
   }
 }
 
-final policiesCountProvider =
-    AsyncNotifierProvider<PoliciesCountNotifier, int>(PoliciesCountNotifier.new);
+final policiesCountProvider = AsyncNotifierProvider<PoliciesCountNotifier, int>(
+    PoliciesCountNotifier.new);
 
 /// True cuando todos los datos del dashboard cargaron Y pasaron al menos 150ms.
 final homeReadyProvider = FutureProvider<bool>((ref) async {
@@ -196,7 +204,7 @@ final homeReadyProvider = FutureProvider<bool>((ref) async {
     ref.watch(remindersProvider.future),
     ref.watch(agentNameProvider.future),
     ref.watch(policiesCountProvider.future),
-    Future.delayed(const Duration(milliseconds: 150)),
+    Future.delayed(const Duration(milliseconds: 3000)),
   ]);
   return true;
 });
@@ -223,15 +231,15 @@ class HomeDashboardData {
 
 /// Datos computados del dashboard — lógica de filtrado y derivación fuera de la pantalla.
 final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
-  final reminders    = ref.watch(remindersProvider).asData?.value ?? [];
-  final agentName    = ref.watch(agentNameProvider).asData?.value ?? '';
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final agentName = ref.watch(agentNameProvider).asData?.value ?? '';
   final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
   final clientsCount = ref.watch(clientsProvider).asData?.value.length ?? 0;
 
-  final pending      = reminders.where((r) => r.isActive).toList();
-  final urgentCount  = pending.where((r) => r.isUrgent).length;
-  final porRenovar   = pending.where((r) => r.isRenewal).length;
-  final followUps    = (pending.where((r) => r.isFollowUp).toList())
+  final pending = reminders.where((r) => r.isActive).toList();
+  final urgentCount = pending.where((r) => r.isUrgent).length;
+  final porRenovar = pending.where((r) => r.isRenewal).length;
+  final followUps = (pending.where((r) => r.isFollowUp).toList())
     ..sort((a, b) => a.date.compareTo(b.date));
 
   return HomeDashboardData(

@@ -35,27 +35,15 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
   final _textCtrl = TextEditingController();
   bool _hasText = false;
 
-  static const _mockPhrase = 'Busca el contrato de Mariana Torres';
-
   @override
   void initState() {
     super.initState();
-    _startMockTyping();
   }
 
   @override
   void dispose() {
     _textCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _startMockTyping() async {
-    await Future.delayed(const Duration(milliseconds: 1100));
-    for (var i = 1; i <= _mockPhrase.length; i++) {
-      if (!mounted) return;
-      setState(() => _transcript = _mockPhrase.substring(0, i));
-      await Future.delayed(const Duration(milliseconds: 52));
-    }
   }
 
   /// Sends [text] to the chat provider, closes the overlay, and navigates to /chat.
@@ -154,31 +142,36 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                                 const SizedBox(height: 36),
                                 const VoiceWaveformBars(),
                                 const SizedBox(height: 32),
-                                SizedBox(
-                                  height: 88,
-                                  child: AnimatedOpacity(
-                                    opacity: _transcript.isNotEmpty ? 1.0 : 0.0,
-                                    duration: const Duration(milliseconds: 220),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 36),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if (_transcript.isNotEmpty) {
-                                            _submitToChat(_transcript);
-                                          }
-                                        },
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Text(
-                                            _transcript,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 23,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                              height: 1.4,
+                                AnimatedOpacity(
+                                  opacity: _transcript.isNotEmpty ? 1.0 : 0.0,
+                                  duration: const Duration(milliseconds: 280),
+                                  child: SizedBox(
+                                    height: 96,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 36),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (_transcript.isNotEmpty) {
+                                              _submitToChat(_transcript);
+                                            }
+                                          },
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 180),
+                                            transitionBuilder: (child, anim) =>
+                                                FadeTransition(opacity: anim, child: child),
+                                            child: Text(
+                                              _transcript,
+                                              key: ValueKey(_transcript),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 23,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                                height: 1.4,
+                                              ),
                                             ),
                                           ),
                                         ),

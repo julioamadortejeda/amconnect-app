@@ -2,8 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/contact.dart';
+import '../../../core/models/policy.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
+import '../../../core/repositories/supabase_policy_repository.dart';
+
+class _SearchNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}
+
+final clientSearchProvider =
+    NotifierProvider<_SearchNotifier, String>(_SearchNotifier.new);
 
 class ClientsNotifier extends AsyncNotifier<List<Contact>> {
   late final ContactRepository _repo;
@@ -93,3 +104,49 @@ final contactDetailProvider =
     FutureProvider.family<Contact, String>((ref, id) async {
   return ref.read(contactRepositoryProvider).getById(id);
 });
+
+final contactPoliciesProvider =
+    FutureProvider.family<List<Policy>, String>((ref, contactId) async {
+  return ref.read(policyRepositoryProvider).getByContactId(contactId);
+});
+
+class AgentNote {
+  const AgentNote({
+    required this.id,
+    required this.contactId,
+    required this.policyId,
+    required this.sourceType,
+    required this.content,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String? contactId;
+  final String? policyId;
+  final String sourceType;
+  final String content;
+  final String createdAt;
+
+  factory AgentNote.fromJson(Map<String, dynamic> json) => AgentNote(
+        id: json['id'] as String,
+        contactId: json['contact_id'] as String?,
+        policyId: json['policy_id'] as String?,
+        sourceType: json['source_type'] as String? ?? 'text',
+        content: (json['content'] ?? json['ai_content'] ?? '') as String,
+        createdAt: json['created_at'] as String,
+      );
+}
+
+final contactNotesProvider =
+    FutureProvider.family<List<AgentNote>, String>((ref, contactId) async {
+  final res = await Supabase.instance.client
+      .from('agent_notes')
+      .select('*')
+      .eq('contact_id', contactId)
+      .eq('is_active', true)
+      .order('created_at', ascending: false);
+  
+  final list = res as List<dynamic>? ?? [];
+  return list.map((e) => AgentNote.fromJson(e as Map<String, dynamic>)).toList();
+});
+

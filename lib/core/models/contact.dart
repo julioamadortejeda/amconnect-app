@@ -33,9 +33,21 @@ class Contact {
     return HSLColor.fromAHSL(1.0, hue, 0.60, 0.40).toColor();
   }
 
+  int? get age {
+    if (birthdate == null) return null;
+    final dt = DateTime.tryParse(birthdate!);
+    if (dt == null) return null;
+    final now = DateTime.now();
+    int years = now.year - dt.year;
+    if (now.month < dt.month || (now.month == dt.month && now.day < dt.day)) {
+      years--;
+    }
+    return years;
+  }
+
   String get desde {
     final year = createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;
-    return year != null ? 'Cliente $year' : 'Cliente';
+    return year != null ? 'Cliente desde $year' : 'Cliente';
   }
 
   int get diasSinContacto => 0;

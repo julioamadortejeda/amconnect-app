@@ -147,6 +147,11 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "clientsSearchHint": "Buscar cliente…",
+  "clientsEmpty": "Sin clientes registrados",
+  "clientsError": "Error al cargar clientes",
+  "clientsContactSection": "Contacto",
+  "clientsNoPolicies": "Sin pólizas registradas",
+  "clientsNoNotes": "Sin notas",
   "clientsStatusProspect": "Prospecto",
   "clientsStatusToRenew": "Por renovar",
   "clientsStatusPaymentDue": "Pago próximo",
@@ -168,6 +173,7 @@
   "clientsPolicyPremium": "Prima",
   "clientsPolicyNextPayment": "Próximo pago",
   "clientsPolicyDeductible": "Deducible",
+  "clientsPolicyEndDate": "Vencimiento",
   "clientsAskAbout": "Preguntar sobre {name}",
   "@clientsAskAbout": {
     "placeholders": { "name": { "type": "String" } }

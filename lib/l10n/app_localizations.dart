@@ -668,6 +668,36 @@ abstract class AppLocalizations {
   /// **'Buscar cliente…'**
   String get clientsSearchHint;
 
+  /// No description provided for @clientsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin clientes registrados'**
+  String get clientsEmpty;
+
+  /// No description provided for @clientsError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar clientes'**
+  String get clientsError;
+
+  /// No description provided for @clientsContactSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get clientsContactSection;
+
+  /// No description provided for @clientsNoPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin pólizas registradas'**
+  String get clientsNoPolicies;
+
+  /// No description provided for @clientsNoNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin notas'**
+  String get clientsNoNotes;
+
   /// No description provided for @clientsStatusProspect.
   ///
   /// In es, this message translates to:
@@ -757,6 +787,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Deducible'**
   String get clientsPolicyDeductible;
+
+  /// No description provided for @clientsPolicyEndDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencimiento'**
+  String get clientsPolicyEndDate;
 
   /// No description provided for @clientsAskAbout.
   ///

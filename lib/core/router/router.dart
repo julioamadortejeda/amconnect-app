@@ -31,52 +31,73 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/', builder: (_, __) => const SplashScreen()),
-      GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(
+        path: '/',
+        pageBuilder: (_, state) => amTransitionPage(child: const SplashScreen(), state: state, type: 'fade'),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (_, state) => amTransitionPage(child: const LoginScreen(), state: state, type: 'fade'),
+      ),
       GoRoute(
         path: '/email-login',
-        pageBuilder: (_, state) => _slide(const EmailLoginScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(child: const EmailLoginScreen(), state: state, type: 'push'),
       ),
       GoRoute(
         path: '/register',
-        pageBuilder: (_, state) => _slide(const RegisterScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(child: const RegisterScreen(), state: state, type: 'push'),
       ),
 
       ShellRoute(
         builder: (context, state, child) =>
             ShellScreen(location: state.uri.path, child: child),
         routes: [
-          GoRoute(path: '/home',     builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/reminders', builder: (_, __) => const RemindersScreen()),
-          GoRoute(path: '/clients',   builder: (_, __) => const ClientsScreen()),
-          GoRoute(path: '/data',      builder: (_, __) => const FeedScreen()),
+          GoRoute(
+            path: '/home',
+            pageBuilder: (_, state) => amTransitionPage(child: const HomeScreen(), state: state, type: 'fade'),
+          ),
+          GoRoute(
+            path: '/reminders',
+            pageBuilder: (_, state) => amTransitionPage(child: const RemindersScreen(), state: state, type: 'fade'),
+          ),
+          GoRoute(
+            path: '/clients',
+            pageBuilder: (_, state) => amTransitionPage(child: const ClientsScreen(), state: state, type: 'fade'),
+          ),
+          GoRoute(
+            path: '/data',
+            pageBuilder: (_, state) => amTransitionPage(child: const FeedScreen(), state: state, type: 'fade'),
+          ),
         ],
       ),
 
       GoRoute(
         path: '/clients/:id',
-        pageBuilder: (_, state) => _slide(
-          ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/create-reminder',
-        pageBuilder: (_, state) => _slide(
-          CreateReminderScreen(clienteId: state.uri.queryParameters['cliente']),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreateReminderScreen(clienteId: state.uri.queryParameters['cliente']),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/reminder/:id',
-        pageBuilder: (_, state) => _slide(
-          ReminderDetailScreen(reminder: state.extra as Reminder),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: ReminderDetailScreen(reminder: state.extra as Reminder),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/chat',
-        pageBuilder: (_, state) => _slide(const ChatScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(child: const ChatScreen(), state: state, type: 'push'),
       ),
     ],
   );
@@ -89,16 +110,62 @@ class _AuthNotifier extends ChangeNotifier {
   }
 }
 
-CustomTransitionPage<void> _slide(Widget child, GoRouterState state) {
-  return CustomTransitionPage<void>(
+CustomTransitionPage<T> amTransitionPage<T>({
+  required Widget child,
+  required GoRouterState state,
+  required String type, // 'push' | 'pop' | 'fade'
+}) {
+  return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, _, child) => SlideTransition(
-      position: animation.drive(
-        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
-      ),
-      child: child,
-    ),
+    transitionDuration: const Duration(milliseconds: 420),
+    reverseTransitionDuration: const Duration(milliseconds: 420),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (MediaQuery.of(context).disableAnimations) {
+        return child;
+      }
+
+      switch (type) {
+        case 'push':
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              final opacity = animation.value;
+              final dx = (1.0 - Curves.easeOutCubic.transform(animation.value)) * 34.0;
+              return Opacity(
+                opacity: opacity,
+                child: Transform.translate(
+                  offset: Offset(dx, 0),
+                  child: child,
+                ),
+              );
+            },
+            child: child,
+          );
+        case 'pop':
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              final opacity = animation.value;
+              final dx = -(1.0 - Curves.easeOutCubic.transform(animation.value)) * 34.0;
+              return Opacity(
+                opacity: opacity,
+                child: Transform.translate(
+                  offset: Offset(dx, 0),
+                  child: child,
+                ),
+              );
+            },
+            child: child,
+          );
+        case 'fade':
+        default:
+          return FadeTransition(
+            opacity: animation.drive(CurveTween(curve: Curves.ease)),
+            child: child,
+          );
+      }
+    },
   );
 }
+
