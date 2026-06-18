@@ -361,6 +361,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsNoteTypeText => 'WhatsApp';
 
   @override
+  String get clientsNoteOpenFile => 'Ver archivo';
+
+  @override
   String get clientsActionCall => 'Llamar';
 
   @override

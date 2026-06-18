@@ -360,6 +360,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsNoteTypeText => 'Chat message';
 
   @override
+  String get clientsNoteOpenFile => 'Open file';
+
+  @override
   String get clientsActionCall => 'Call';
 
   @override

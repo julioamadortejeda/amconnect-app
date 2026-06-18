@@ -169,6 +169,7 @@
   "clientsNoteTypeAudio": "Nota de voz",
   "clientsNoteTypeImage": "Imagen",
   "clientsNoteTypeText": "WhatsApp",
+  "clientsNoteOpenFile": "Ver archivo",
   "clientsActionCall": "Llamar",
   "clientsActionMessage": "Mensaje",
   "clientsActionRemind": "Recordar",

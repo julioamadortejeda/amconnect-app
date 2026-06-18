@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimensions.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ClientQuickActions extends StatelessWidget {
@@ -31,18 +31,6 @@ class ClientQuickActions extends StatelessWidget {
           label: l10n.clientsActionRemind,
           onTap: () => context.push('/create-reminder?cliente=$clientId'),
         ),
-        const SizedBox(width: 9),
-        _Action(
-          customIcon: Image.asset(
-            'assets/logo/logo_t.png',
-            color: Colors.white,
-            width: 20,
-            height: 20,
-          ),
-          label: l10n.clientsActionAsk,
-          onTap: () => context.push('/chat'),
-          accent: true,
-        ),
       ],
     );
   }
@@ -50,18 +38,14 @@ class ClientQuickActions extends StatelessWidget {
 
 class _Action extends StatefulWidget {
   const _Action({
-    this.icon,
-    this.customIcon,
+    required this.icon,
     required this.label,
     required this.onTap,
-    this.accent = false,
   });
 
-  final IconData? icon;
-  final Widget? customIcon;
+  final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final bool accent;
 
   @override
   State<_Action> createState() => _ActionState();
@@ -87,16 +71,14 @@ class _ActionState extends State<_Action> {
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 13),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: cs.surface,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(AmDimens.cardRadius - 3),
             boxShadow: [
               BoxShadow(
-                color: widget.accent
-                    ? AmColors.accent.withValues(alpha: 0.25)
-                    : Colors.black.withValues(alpha: 0.055),
-                blurRadius: widget.accent ? 12 : 16,
+                color: cs.shadow.withValues(alpha: 0.055),
+                blurRadius: 16,
               ),
             ],
           ),
@@ -107,29 +89,22 @@ class _ActionState extends State<_Action> {
                 duration: const Duration(milliseconds: 110),
                 curve: Curves.easeOutCubic,
                 child: Container(
-                  width: 38,
-                  height: 38,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
-                    color: widget.accent ? AmColors.accent : cs.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
+                    color: cs.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: widget.customIcon ??
-                        Icon(
-                          widget.icon,
-                          size: 19,
-                          color: widget.accent
-                              ? Colors.white
-                              : cs.onPrimaryContainer,
-                        ),
+                    child: Icon(widget.icon, size: 16, color: cs.onPrimaryContainer),
                   ),
                 ),
               ),
-              const SizedBox(height: 7),
+              const SizedBox(height: 5),
               Text(
                 widget.label,
                 style: TextStyle(
-                  fontSize: 11.5,
+                  fontSize: 10.5,
                   fontWeight: FontWeight.w500,
                   color: cs.onSurfaceVariant,
                 ),

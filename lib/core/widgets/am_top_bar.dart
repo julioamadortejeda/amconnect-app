@@ -9,14 +9,14 @@ import '../theme/app_dimensions.dart';
 class AmTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AmTopBar({
     super.key,
-    required this.title,
+    this.title,
     this.subtitle,
     this.actions = const [],
     this.showBack = false,
     this.onBack,
   });
 
-  final String title;
+  final String? title;
 
   /// Texto pequeño encima del título (ej. "7 pendientes").
   /// Cuando se provee, la altura del AppBar aumenta a 64.
@@ -50,8 +50,23 @@ class AmTopBar extends StatelessWidget implements PreferredSizeWidget {
                   color: cs.tertiary,
                 ),
               ),
-              Text(
-                title,
+              title != null
+                  ? Text(
+                      title!,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: cs.onSurface,
+                        letterSpacing: -0.01,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : const SizedBox(),
+            ],
+          )
+        : title != null
+            ? Text(
+                title!,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -59,19 +74,8 @@ class AmTopBar extends StatelessWidget implements PreferredSizeWidget {
                   letterSpacing: -0.01,
                 ),
                 overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          )
-        : Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurface,
-              letterSpacing: -0.01,
-            ),
-            overflow: TextOverflow.ellipsis,
-          );
+              )
+            : const SizedBox();
 
     return AppBar(
       backgroundColor: Colors.transparent,

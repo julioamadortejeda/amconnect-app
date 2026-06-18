@@ -5,6 +5,7 @@ import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../providers/clients_provider.dart';
+import '../widgets/client_ai_button.dart';
 import '../widgets/client_detail_body.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -19,7 +20,7 @@ class ClientDetailScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final appBar = AmTopBar(
-      title: l10n.clientsTitle,
+      //title: l10n.clientsTitle,
       showBack: true,
       actions: [
         AmPress(
@@ -29,36 +30,40 @@ class ClientDetailScreen extends ConsumerWidget {
             height: 36,
             decoration: BoxDecoration(
               color: cs.secondaryContainer,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
             ),
             child: Icon(Icons.more_horiz, size: 20, color: cs.onSurfaceVariant),
           ),
         ),
-        SizedBox(width: AmDimens.screenH),
+        const SizedBox(width: AmDimens.screenH),
       ],
     );
 
-    // Usa el contacto ya cargado en memoria — navegación instantánea
-    final cached = ref.watch(clientsProvider).asData?.value
+    final cached = ref
+        .watch(clientsProvider)
+        .asData
+        ?.value
         .where((c) => c.id == clientId)
         .firstOrNull;
 
     if (cached != null) {
       return Scaffold(
         appBar: appBar,
+        bottomNavigationBar: ClientAiButton(contact: cached),
         body: ClientDetailBody(contact: cached, clientId: clientId),
       );
     }
 
-    // Fallback para deep links (antes de que cargue el listado)
     final contactAsync = ref.watch(contactDetailProvider(clientId));
     return Scaffold(
       appBar: appBar,
+      bottomNavigationBar: contactAsync.asData?.value != null
+          ? ClientAiButton(contact: contactAsync.asData!.value)
+          : null,
       body: contactAsync.when(
         loading: () => const AmLoader(),
         error: (_, __) => Center(
-          child: Text(l10n.clientsError,
-              style: TextStyle(color: cs.tertiary)),
+          child: Text(l10n.clientsError, style: TextStyle(color: cs.tertiary)),
         ),
         data: (contact) =>
             ClientDetailBody(contact: contact, clientId: clientId),

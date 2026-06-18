@@ -59,12 +59,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             ListView(
               controller: _scrollCtrl,
-              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
+              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0,
+                  AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 const SizedBox(height: 8),
                 AmAnimateIn(
                   index: aniIdx++,
-                  child: HomeHeader(agentName: data.agentName, urgentCount: data.urgentCount),
+                  child: HomeHeader(
+                      agentName: data.agentName, urgentCount: data.urgentCount),
                 ),
                 const SizedBox(height: AmDimens.gapM),
                 AmAnimateIn(
@@ -92,7 +94,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       const SizedBox(height: AmDimens.gapXS),
                       if (data.pending.isNotEmpty)
-                        HomePendientesCard(reminders: data.pending.take(4).toList())
+                        HomePendientesCard(
+                            reminders: data.pending.take(4).toList())
                       else
                         HomeEmptySection(message: l10n.homeEmptyPendientes),
                     ],
@@ -106,14 +109,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       AmSectionLabel(
                         label: l10n.homeSeguimientos,
-                        trailing: data.followUps.length > 3 ? HomeSectionTrailing(
-                          label: l10n.homeViewAllCount(data.followUps.length),
-                          onTap: () => context.push('/reminders'),
-                        ) : null,
+                        trailing: data.followUps.length > 3
+                            ? HomeSectionTrailing(
+                                label: l10n
+                                    .homeViewAllCount(data.followUps.length),
+                                onTap: () => context.push('/reminders'),
+                              )
+                            : null,
                       ),
                       const SizedBox(height: AmDimens.gapXS),
                       if (data.followUps.isNotEmpty)
-                        HomePendientesCard(reminders: data.followUps.take(3).toList())
+                        HomePendientesCard(
+                            reminders: data.followUps.take(3).toList())
                       else
                         HomeEmptySection(message: l10n.homeEmptySeguimientos),
                     ],
@@ -150,7 +157,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 opacity: _showFloating ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 120),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 8, AmDimens.screenH, 0),
+                  padding: const EdgeInsets.fromLTRB(
+                      AmDimens.screenH, 8, AmDimens.screenH, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -158,7 +166,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         onTap: () => _scrollCtrl.animateTo(0,
                             duration: const Duration(milliseconds: 400),
                             curve: Curves.easeOut),
-                        child: Image.asset('assets/logo/logo_t.png', width: 32, height: 32),
+                        child: Image.asset('assets/logo/logo.png',
+                            width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
                         onTap: () => context.push('/reminders'),

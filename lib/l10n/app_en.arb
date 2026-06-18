@@ -138,6 +138,7 @@
   "clientsNoteTypeAudio": "Voice note",
   "clientsNoteTypeImage": "Image",
   "clientsNoteTypeText": "Chat message",
+  "clientsNoteOpenFile": "Open file",
   "clientsActionCall": "Call",
   "clientsActionMessage": "Message",
   "clientsActionRemind": "Remind",

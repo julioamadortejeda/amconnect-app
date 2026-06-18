@@ -83,7 +83,7 @@ class ReminderListView extends ConsumerWidget {
           ),
         ),
         if (ui.filter == 'eliminados') ...[
-          const SizedBox(height: 10),
+          const SizedBox(height: AmDimens.gapXS),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
             child: Row(
@@ -105,7 +105,7 @@ class ReminderListView extends ConsumerWidget {
             ),
           ),
         ],
-        const SizedBox(height: 12),
+        const SizedBox(height: AmDimens.gapS),
         Expanded(
           child: reminders.isEmpty
               ? Center(

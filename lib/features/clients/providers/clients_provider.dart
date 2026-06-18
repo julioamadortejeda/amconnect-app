@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/models/agent_note.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
+import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
 import '../../home/providers/home_provider.dart';
 
@@ -125,43 +127,49 @@ final contactPoliciesProvider =
   return ref.read(policyRepositoryProvider).getByContactId(contactId);
 });
 
-class AgentNote {
-  const AgentNote({
-    required this.id,
-    required this.contactId,
-    required this.policyId,
-    required this.sourceType,
-    required this.content,
-    required this.createdAt,
-  });
-
-  final String id;
-  final String? contactId;
-  final String? policyId;
-  final String sourceType;
-  final String content;
-  final String createdAt;
-
-  factory AgentNote.fromJson(Map<String, dynamic> json) => AgentNote(
-        id: json['id'] as String,
-        contactId: json['contact_id'] as String?,
-        policyId: json['policy_id'] as String?,
-        sourceType: json['source_type'] as String? ?? 'text',
-        content: (json['content'] ?? json['ai_content'] ?? '') as String,
-        createdAt: json['created_at'] as String,
-      );
-}
+// Watching this provider activates Realtime for policies of a contact.
+// autoDispose ensures the channel closes when the screen is popped.
+final contactPoliciesRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, contactId) {
+  final channel = Supabase.instance.client
+      .channel('policies:contact:$contactId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'policies',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'contact_id',
+          value: contactId,
+        ),
+        callback: (_) => ref.invalidate(contactPoliciesProvider(contactId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
+});
 
 final contactNotesProvider =
     FutureProvider.family<List<AgentNote>, String>((ref, contactId) async {
-  final res = await Supabase.instance.client
-      .from('agent_notes')
-      .select('*')
-      .eq('contact_id', contactId)
-      .eq('is_active', true)
-      .order('created_at', ascending: false);
-  
-  final list = res as List<dynamic>? ?? [];
-  return list.map((e) => AgentNote.fromJson(e as Map<String, dynamic>)).toList();
+  return ref.read(noteRepositoryProvider).getByContactId(contactId);
+});
+
+// Watching this provider activates Realtime for notes of a contact.
+final contactNotesRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, contactId) {
+  final channel = Supabase.instance.client
+      .channel('notes:contact:$contactId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'agent_notes',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'contact_id',
+          value: contactId,
+        ),
+        callback: (_) => ref.invalidate(contactNotesProvider(contactId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
 });
 

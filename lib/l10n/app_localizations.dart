@@ -764,6 +764,12 @@ abstract class AppLocalizations {
   /// **'WhatsApp'**
   String get clientsNoteTypeText;
 
+  /// No description provided for @clientsNoteOpenFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver archivo'**
+  String get clientsNoteOpenFile;
+
   /// No description provided for @clientsActionCall.
   ///
   /// In es, this message translates to:
