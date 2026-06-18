@@ -17,8 +17,7 @@ class SupabasePolicyRepository implements PolicyRepository {
   @override
   Future<List<Policy>> getByContactId(String contactId) async {
     final res = await _client.get('contacts/$contactId/policies');
-    final wrapper = res['data'] as Map<String, dynamic>;
-    final items = wrapper['data'] as List<dynamic>;
+    final items = res['data'] as List<dynamic>;
     return items
         .map((e) => Policy.fromJson(e as Map<String, dynamic>))
         .toList();

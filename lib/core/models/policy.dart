@@ -9,6 +9,7 @@ class Policy {
     this.renewalDate,
     this.nextPaymentDate,
     this.notes,
+    this.deductible,
     this.product,
     this.status,
     this.currency,
@@ -24,6 +25,7 @@ class Policy {
   final String? renewalDate;
   final String? nextPaymentDate;
   final String? notes;
+  final String? deductible;
   final PolicyProduct? product;
   final PolicyCatalog? status;
   final PolicyCurrency? currency;
@@ -52,6 +54,7 @@ class Policy {
       renewalDate:     json['renewalDate'] as String?,
       nextPaymentDate: json['nextPaymentDate'] as String?,
       notes:           json['notes'] as String?,
+      deductible:      json['deductible'] as String?,
       product:  product  != null ? PolicyProduct.fromJson(product)  : null,
       status:   status   != null ? PolicyCatalog.fromJson(status)   : null,
       currency: currency != null ? PolicyCurrency.fromJson(currency) : null,

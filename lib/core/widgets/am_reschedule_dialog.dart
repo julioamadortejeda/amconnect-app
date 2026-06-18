@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'am_press.dart';
 import '../../l10n/app_localizations.dart';
+import '../utils/formatters.dart';
 import '../theme/app_dimensions.dart';
 
 class AmRescheduleDialog extends StatefulWidget {
@@ -27,23 +28,12 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
     _selectedDateTime = widget.initialDateTime;
   }
 
-  static const _months = [
-    'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-    'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
-  ];
-
   String _formatDate(DateTime dt) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final d = DateTime(dt.year, dt.month, dt.day);
-    if (d == today) return 'Hoy';
-    if (d == today.add(const Duration(days: 1))) return 'Mañana';
-    return '${dt.day} ${_months[dt.month - 1]} ${dt.year}';
+    final l10n = AppLocalizations.of(context)!;
+    return fmtSmartDate(dt, l10n, showYear: true);
   }
 
-  String _formatTime(DateTime dt) {
-    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-  }
+  String _formatTime(DateTime dt) => fmtTime(dt, fallback: '');
 
   Future<void> _selectDate() async {
     final date = await showDatePicker(

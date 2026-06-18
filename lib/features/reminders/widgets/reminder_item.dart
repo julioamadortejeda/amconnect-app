@@ -5,6 +5,7 @@ import '../../../core/models/reminder.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/utils/reminder_utils.dart';
 import '../../../l10n/app_localizations.dart';
 import 'am_reminder_actions_sheet.dart';
@@ -155,7 +156,7 @@ class ReminderItem extends ConsumerWidget {
                         color: badgeBg,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(r.date,
+                      child: Text(fmtSmartDate(r.dueDate, l10n),
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,

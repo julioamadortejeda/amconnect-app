@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../../core/models/policy.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_ramo_icon.dart';
 import '../../../l10n/app_localizations.dart';
@@ -80,11 +80,11 @@ class ClientPolicyCard extends StatelessWidget {
                   children: [
                     _DataCell(
                       label: l10n.clientsPolicySumInsured,
-                      value: _fmtCurrency(policy.sumInsured),
+                      value: fmtCurrency(policy.sumInsured),
                     ),
                     _DataCell(
                       label: l10n.clientsPolicyPremium,
-                      value: _fmtPremium(policy.premium, policy.frequencyLabel),
+                      value: fmtPremium(policy.premium, policy.frequencyLabel),
                     ),
                   ],
                 ),
@@ -93,11 +93,11 @@ class ClientPolicyCard extends StatelessWidget {
                   children: [
                     _DataCell(
                       label: l10n.clientsPolicyNextPayment,
-                      value: _fmtDate(policy.nextPaymentDate),
+                      value: fmtDateFromIso(policy.nextPaymentDate),
                     ),
                     _DataCell(
                       label: l10n.clientsPolicyDeductible,
-                      value: _fmtDeductible(policy),
+                      value: policy.deductible ?? '—',
                     ),
                   ],
                 ),
@@ -115,40 +115,6 @@ class ClientPolicyCard extends StatelessWidget {
       if (p.policyNumber?.isNotEmpty == true) p.policyNumber!,
     ];
     return parts.join(' · ');
-  }
-
-  String _fmtCurrency(double? v) {
-    if (v == null) return '—';
-    return '\$${NumberFormat('#,##0', 'es_MX').format(v)}';
-  }
-
-  String _fmtPremium(double? v, String freq) {
-    if (v == null) return '—';
-    final s = '\$${NumberFormat('#,##0', 'es_MX').format(v)}';
-    return freq.isNotEmpty ? '$s · $freq' : s;
-  }
-
-  String _fmtDate(String? s) {
-    if (s == null) return '—';
-    final dt = DateTime.tryParse(s);
-    if (dt == null) return '—';
-    return DateFormat.yMMMd().format(dt);
-  }
-
-  String _fmtDeductible(Policy p) {
-    if (p.notes == null) return '—';
-    final regex = RegExp(r'(?:deducible|deductible)\s*:\s*\$?([\d,]+(?:\.\d+)?)', caseSensitive: false);
-    final match = regex.firstMatch(p.notes!);
-    if (match != null) {
-      final val = match.group(1);
-      if (val != null) {
-        if (val.contains(',')) return '\$$val';
-        final d = double.tryParse(val.replaceAll(',', ''));
-        if (d != null) return '\$${NumberFormat('#,##0', 'es_MX').format(d)}';
-        return '\$$val';
-      }
-    }
-    return '—';
   }
 }
 

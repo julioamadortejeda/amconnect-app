@@ -343,6 +343,32 @@ AmColors.authBg      // solo pantallas de login
 
 ---
 
+## Formatters (`core/utils/formatters.dart`)
+
+Funciones globales de formato. **Nunca usar `NumberFormat` o `DateFormat` directamente en widgets** — siempre usar estas funciones para consistencia visual.
+
+```dart
+import 'package:amconnect/core/utils/formatters.dart';
+```
+
+| Función | Input | Output | Uso |
+|---|---|---|---|
+| `fmtCurrency(v)` | `double?` | `"$150,000"` | Suma asegurada, primas, montos |
+| `fmtPremium(v, freq)` | `double?, String` | `"$3,615 · Annual"` | Prima con frecuencia |
+| `fmtDate(dt)` | `DateTime?` | `"13 jun 2026"` | Fechas de pólizas y general |
+| `fmtDate(dt, showYear: false)` | `DateTime?` | `"13 jun"` | Fechas compactas en listas |
+| `fmtDateFromIso(iso)` | `String?` | `"13 jun 2026"` | Fechas ISO del API |
+| `fmtSmartDate(dt, l10n)` | `DateTime?, l10n` | `"Hoy"` / `"Mañana"` / `"13 jun"` | Recordatorios en listas |
+| `fmtDateWithWeekday(dt)` | `DateTime?` | `"lun 13 jun 2026"` | Timestamps de comentarios/detalle |
+| `fmtTime(dt)` | `DateTime?` | `"10:30"` / `"—"` | Hora de recordatorios |
+| `fmtTime(dt, fallback: '')` | `DateTime?` | `"10:30"` / `""` | Hora cuando vacío no muestra nada |
+
+**Reglas:**
+- `fmtSmartDate` requiere `AppLocalizations` — solo usar en widgets con `BuildContext`
+- "Hoy" y "Mañana" **solo** via `fmtSmartDate` con `l10n` — nunca hardcodear esos strings
+
+---
+
 ## Dimensiones y espaciados (`AmDimens`)
 
 Definidos en `lib/core/theme/app_dimensions.dart`. **Nunca valores numéricos crudos.**
