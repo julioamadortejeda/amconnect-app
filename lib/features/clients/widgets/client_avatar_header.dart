@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/widgets/am_avatar.dart';
+import '../../../l10n/app_localizations.dart';
 
 class ClientAvatarHeader extends StatelessWidget {
   const ClientAvatarHeader({super.key, required this.contact});
@@ -10,23 +11,24 @@ class ClientAvatarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
 
     final subtitleParts = <String>[
       if (contact.occupation?.isNotEmpty == true) contact.occupation!,
-      if (contact.age != null) '${contact.age} años',
       if (contact.address?.isNotEmpty == true) contact.address!,
+      if (contact.age != null) l10n.clientsAge(contact.age!),
     ];
     final subtitle = subtitleParts.join(' · ');
 
-    final year = contact.createdAt != null ? DateTime.tryParse(contact.createdAt!)?.year : null;
+    final year = contact.memberSinceYear;
     final isGold = year != null && year <= 2019;
     final badgeColor = isGold ? const Color(0xFFB9791A) : const Color(0xFF0E7C42);
-    final badgeBg = badgeColor.withOpacity(0.08);
+    final badgeBg = badgeColor.withValues(alpha: 0.08);
 
     return Column(
       children: [
         AmAvatar(
-          inicial: contact.inicial,
+          initials: contact.initials,
           color: contact.color,
           size: 76,
           radius: 38,
@@ -60,7 +62,7 @@ class ClientAvatarHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            contact.desde,
+            year != null ? l10n.clientsMemberSince(year) : l10n.clientsNewClient,
             style: TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w600,

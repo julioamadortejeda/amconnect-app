@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shell/shell_screen.dart';
 import '../providers/auth_provider.dart';
+import '../theme/app_animations.dart';
 import '../../features/onboarding/presentation/splash_screen.dart';
 import '../../features/onboarding/presentation/login_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -118,53 +119,30 @@ CustomTransitionPage<T> amTransitionPage<T>({
   return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionDuration: const Duration(milliseconds: 420),
-    reverseTransitionDuration: const Duration(milliseconds: 420),
+    transitionDuration: AmAnims.transitionDuration,
+    reverseTransitionDuration: AmAnims.transitionDuration,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       if (MediaQuery.of(context).disableAnimations) {
         return child;
       }
 
-      switch (type) {
-        case 'push':
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              final opacity = animation.value;
-              final dx = (1.0 - Curves.easeOutCubic.transform(animation.value)) * 34.0;
-              return Opacity(
-                opacity: opacity,
-                child: Transform.translate(
-                  offset: Offset(dx, 0),
-                  child: child,
-                ),
-              );
-            },
-            child: child,
-          );
-        case 'pop':
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              final opacity = animation.value;
-              final dx = -(1.0 - Curves.easeOutCubic.transform(animation.value)) * 34.0;
-              return Opacity(
-                opacity: opacity,
-                child: Transform.translate(
-                  offset: Offset(dx, 0),
-                  child: child,
-                ),
-              );
-            },
-            child: child,
-          );
-        case 'fade':
-        default:
-          return FadeTransition(
-            opacity: animation.drive(CurveTween(curve: Curves.ease)),
-            child: child,
-          );
+      if (type == 'fade') {
+        return FadeTransition(
+          opacity: animation.drive(CurveTween(curve: AmAnims.fadeCurve)),
+          child: child,
+        );
       }
+
+      // Slide transition: slides in from right to left, and slides out from left to right.
+      return SlideTransition(
+        position: animation.drive(
+          Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: AmAnims.transitionCurve)),
+        ),
+        child: child,
+      );
     },
   );
 }

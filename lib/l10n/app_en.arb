@@ -125,6 +125,19 @@
   "clientsStatusToRenew": "To renew",
   "clientsStatusPaymentDue": "Payment due",
   "clientsStatusUpToDate": "Up to date",
+  "clientsAge": "{count} years old",
+  "@clientsAge": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsMemberSince": "Client since {year}",
+  "@clientsMemberSince": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "clientsNewClient": "Client",
+  "clientsNoteTypePdf": "PDF document",
+  "clientsNoteTypeAudio": "Voice note",
+  "clientsNoteTypeImage": "Image",
+  "clientsNoteTypeText": "Chat message",
   "clientsActionCall": "Call",
   "clientsActionMessage": "Message",
   "clientsActionRemind": "Remind",

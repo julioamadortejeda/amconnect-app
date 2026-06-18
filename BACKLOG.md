@@ -35,6 +35,18 @@
   - Conectar `CreateReminderScreen` al proveedor real de clientes (`clientsProvider`) para cargar los contactos reales de la base de datos.
   - Eliminar por completo el archivo `mock_data.dart` y asegurar que no haya referencias a datos simulados en toda la aplicación.
 
+## Ideas de Negocio y Crecimiento Futuro (AI & Monetización)
+
+- [ ] **WhatsApp con Plantillas Dinámicas por IA (Mensajes del Asesor)**
+  - Tabla `message_templates` vinculada a `agent_id` con *placeholders* (`{{client_name}}`, `{{policy_product}}`).
+  - Al pedir a la IA generar un mensaje, ésta rellena la plantilla del asesor e incorpora variaciones de tono (formal, amigable) solicitadas en el chat.
+- [ ] **AI Cross-Selling Basado en Oferta Real (RAG de Planes)**
+  - Permitir al asesor subir folletos y tarifas generales de aseguradoras a su base de conocimiento sin vincularlos a clientes.
+  - La IA realiza una búsqueda vectorial (RAG) en esos productos para sugerir de forma específica qué planes ofrecer al cliente según las brechas detectadas.
+- [ ] **Workspace de Agencia Multi-Agente (Compartición RLS)**
+  - Tabla `agencies` en la base de datos y columna `agency_id` en `agents`.
+  - Actualizar políticas RLS de Supabase en `contacts`, `policies`, `agent_notes` y `reminders` para permitir lectura/escritura a nivel agencia.
+
 ## Completado
 
 - [x] i18n — ES + EN via ARB + flutter_localizations

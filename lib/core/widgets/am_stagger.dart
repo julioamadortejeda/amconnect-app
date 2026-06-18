@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import '../theme/app_animations.dart';
 
 class AmStagger extends StatefulWidget {
   const AmStagger({
     super.key,
     required this.children,
     this.delay = const Duration(milliseconds: 30),
-    this.staggerDelay = const Duration(milliseconds: 60),
-    this.duration = const Duration(milliseconds: 500),
+    this.staggerDelay = AmAnims.staggerDelay,
+    this.duration = AmAnims.staggerDuration,
   });
 
   final List<Widget> children;
@@ -113,8 +114,8 @@ class AmAnimateIn extends StatefulWidget {
     required this.child,
     required this.index,
     this.delay = const Duration(milliseconds: 30),
-    this.staggerDelay = const Duration(milliseconds: 60),
-    this.duration = const Duration(milliseconds: 500),
+    this.staggerDelay = AmAnims.staggerDelay,
+    this.duration = AmAnims.staggerDuration,
   });
 
   final Widget child;

@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
+import '../../../core/models/reminder.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
+import '../../home/providers/home_provider.dart';
 
 class _SearchNotifier extends Notifier<String> {
   @override
@@ -99,6 +101,19 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
 
 final clientsProvider =
     AsyncNotifierProvider<ClientsNotifier, List<Contact>>(ClientsNotifier.new);
+
+/// Agrupa recordatorios activos por contactId — sin red, derivado de remindersProvider.
+final contactRemindersMapProvider = Provider<Map<String, List<Reminder>>>((ref) {
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final map = <String, List<Reminder>>{};
+  for (final r in reminders) {
+    if (!r.isActive) continue;
+    final cid = r.contactId;
+    if (cid == null) continue;
+    (map[cid] ??= []).add(r);
+  }
+  return map;
+});
 
 final contactDetailProvider =
     FutureProvider.family<Contact, String>((ref, id) async {

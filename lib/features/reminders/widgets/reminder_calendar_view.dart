@@ -7,6 +7,7 @@ import '../../../core/widgets/am_calendar.dart';
 import '../../../core/widgets/am_card.dart';
 import '../providers/reminders_provider.dart';
 import 'reminder_item.dart';
+import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 
 const _kAmber = Color(0xFFD97706);
@@ -76,53 +77,65 @@ class _ReminderCalendarViewState extends ConsumerState<ReminderCalendarView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-          child: AmCalendar(
-            visibleMonth: _visibleMonth,
-            selectedDate: ui.selectedDate,
-            events: events,
-            onDaySelected: (d) =>
-                ref.read(remindersUiProvider.notifier).selectDate(d),
-            onPrevMonth: _prevMonth,
-            onNextMonth: _nextMonth,
-            onToday: _goToToday,
+          AmAnimateIn(
+            index: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              child: AmCalendar(
+                visibleMonth: _visibleMonth,
+                selectedDate: ui.selectedDate,
+                events: events,
+                onDaySelected: (d) =>
+                    ref.read(remindersUiProvider.notifier).selectDate(d),
+                onPrevMonth: _prevMonth,
+                onNextMonth: _nextMonth,
+                onToday: _goToToday,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        if (ui.selectedDate != null)
+          const SizedBox(height: 16),
+          if (ui.selectedDate != null)
+            AmAnimateIn(
+              index: 1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                child: _DayHeader(date: ui.selectedDate!, l10n: l10n),
+              ),
+            ),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-            child: _DayHeader(date: ui.selectedDate!, l10n: l10n),
-          ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-          child: dayReminders.isEmpty
-              ? Text(
-                  l10n.remindersEmpty,
-                  style: TextStyle(fontSize: 14, color: cs.tertiary),
-                )
-              : AmCard(
-                  noPad: true,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (int i = 0; i < dayReminders.length; i++) ...[
-                        if (i > 0)
-                          Divider(
-                            height: 0,
-                            indent: AmDimens.screenH,
-                            endIndent: AmDimens.screenH,
-                            color: cs.outlineVariant,
-                          ),
-                        ReminderItem(reminder: dayReminders[i]),
-                      ],
-                    ],
+            child: dayReminders.isEmpty
+                ? AmAnimateIn(
+                    index: 2,
+                    child: Text(
+                      l10n.remindersEmpty,
+                      style: TextStyle(fontSize: 14, color: cs.tertiary),
+                    ),
+                  )
+                : AmAnimateIn(
+                    index: 2,
+                    child: AmCard(
+                      noPad: true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (int i = 0; i < dayReminders.length; i++) ...[
+                            if (i > 0)
+                              Divider(
+                                height: 0,
+                                indent: AmDimens.screenH,
+                                endIndent: AmDimens.screenH,
+                                color: cs.outlineVariant,
+                              ),
+                            ReminderItem(reminder: dayReminders[i]),
+                          ],
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-        ),
-        const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 16),
         ],
       ),
     );

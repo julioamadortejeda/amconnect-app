@@ -21,6 +21,7 @@ class RemindersScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final remindersAsync = ref.watch(remindersProvider);
     final ui = ref.watch(remindersUiProvider);
+    ref.watch(reminderTypesProvider); // pre-warm para evitar flash en filtros
 
     final pendingCount =
         remindersAsync.asData?.value.where((r) => !r.done).length ?? 0;

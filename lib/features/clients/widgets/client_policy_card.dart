@@ -52,7 +52,7 @@ class ClientPolicyCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? const Color(0xFF0E7C42).withOpacity(0.08)
+                      ? const Color(0xFF0E7C42).withValues(alpha: 0.08)
                       : cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -132,8 +132,7 @@ class ClientPolicyCard extends StatelessWidget {
     if (s == null) return '—';
     final dt = DateTime.tryParse(s);
     if (dt == null) return '—';
-    const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
+    return DateFormat.yMMMd().format(dt);
   }
 
   String _fmtDeductible(Policy p) {

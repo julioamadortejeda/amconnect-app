@@ -335,6 +335,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsStatusUpToDate => 'Up to date';
 
   @override
+  String clientsAge(int count) {
+    return '$count years old';
+  }
+
+  @override
+  String clientsMemberSince(int year) {
+    return 'Client since $year';
+  }
+
+  @override
+  String get clientsNewClient => 'Client';
+
+  @override
+  String get clientsNoteTypePdf => 'PDF document';
+
+  @override
+  String get clientsNoteTypeAudio => 'Voice note';
+
+  @override
+  String get clientsNoteTypeImage => 'Image';
+
+  @override
+  String get clientsNoteTypeText => 'Chat message';
+
+  @override
   String get clientsActionCall => 'Call';
 
   @override

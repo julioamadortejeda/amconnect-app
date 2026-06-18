@@ -7,6 +7,7 @@ class Contact {
     this.email,
     this.phone,
     this.occupation,
+    this.city,
     this.address,
     this.birthdate,
     this.notes,
@@ -18,12 +19,13 @@ class Contact {
   final String? email;
   final String? phone;
   final String? occupation;
+  final String? city;
   final String? address;
   final String? birthdate;
   final String? notes;
   final String? createdAt;
 
-  String get inicial {
+  String get initials {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     return parts.take(2).map((w) => w.isEmpty ? '' : w[0].toUpperCase()).join();
   }
@@ -45,12 +47,10 @@ class Contact {
     return years;
   }
 
-  String get desde {
-    final year = createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;
-    return year != null ? 'Cliente desde $year' : 'Cliente';
-  }
+  int? get memberSinceYear =>
+      createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;
 
-  int get diasSinContacto => 0;
+  int get daysSinceContact => 0;
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
         id: json['id'] as String,
@@ -58,6 +58,7 @@ class Contact {
         email: json['email'] as String?,
         phone: json['phone'] as String?,
         occupation: json['occupation'] as String?,
+        city: json['city'] as String?,
         address: json['address'] as String?,
         birthdate: json['birthdate'] as String?,
         notes: json['notes'] as String?,

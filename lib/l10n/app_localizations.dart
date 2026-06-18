@@ -722,6 +722,48 @@ abstract class AppLocalizations {
   /// **'Al día'**
   String get clientsStatusUpToDate;
 
+  /// No description provided for @clientsAge.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} años'**
+  String clientsAge(int count);
+
+  /// No description provided for @clientsMemberSince.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente desde {year}'**
+  String clientsMemberSince(int year);
+
+  /// No description provided for @clientsNewClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get clientsNewClient;
+
+  /// No description provided for @clientsNoteTypePdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento PDF'**
+  String get clientsNoteTypePdf;
+
+  /// No description provided for @clientsNoteTypeAudio.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota de voz'**
+  String get clientsNoteTypeAudio;
+
+  /// No description provided for @clientsNoteTypeImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Imagen'**
+  String get clientsNoteTypeImage;
+
+  /// No description provided for @clientsNoteTypeText.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get clientsNoteTypeText;
+
   /// No description provided for @clientsActionCall.
   ///
   /// In es, this message translates to:

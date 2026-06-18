@@ -8,6 +8,7 @@ import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_badge.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../providers/ingest_provider.dart';
+import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 import 'ingest_chat_sheet.dart';
 import 'policy_success_sheet.dart';
@@ -51,6 +52,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final ingest = ref.watch(ingestProvider);
+    int aniIdx = 0;
 
     final feedTypes = [
       _InputType('doc',   Icons.description_outlined, AmColors.srcDoc,     l10n.feedTypePolicyPdf,   l10n.feedTypePolicyPdfDesc),
@@ -66,94 +68,116 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             ListView(
               padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 12, AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.feedTitle,
-                        style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w500,
-                            color: cs.tertiary)),
-                    Text(l10n.feedSubtitle,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: cs.onSurface,
-                            letterSpacing: -0.01)),
-                  ],
-                ),
-                const SizedBox(height: AmDimens.gapS),
-                AmSectionLabel(label: l10n.feedQuestion),
-                const SizedBox(height: AmDimens.gapXS),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.35,
-                  children: feedTypes
-                      .map((t) => _TypeCard(
-                            t: t,
-                            onTap: t.key == 'doc' ? _pickAndProcessPdf : () {},
-                          ))
-                      .toList(),
-                ),
-                const SizedBox(height: 12),
-                AmCard(
-                  onTap: () {},
-                  child: Row(
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: Color.alphaBlend(
-                              AmColors.srcWhatsApp.withValues(alpha: 0.14),
-                              Colors.white),
-                          borderRadius: BorderRadius.circular(13),
-                        ),
-                        child: const Icon(Icons.chat_bubble_outline,
-                            size: 24, color: AmColors.srcWhatsApp),
-                      ),
-                      const SizedBox(width: 13),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(l10n.feedTypeWhatsapp,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: cs.onSurface)),
-                            const SizedBox(height: 2),
-                            Text(l10n.feedTypeWhatsappDesc,
-                                style: TextStyle(
-                                    fontSize: 12.5,
-                                    color: cs.tertiary)),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.chevron_right,
-                          color: cs.onSurfaceVariant, size: 18),
+                      Text(l10n.feedTitle,
+                          style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                              color: cs.tertiary)),
+                      Text(l10n.feedSubtitle,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurface,
+                              letterSpacing: -0.01)),
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
-                AmSectionLabel(
-                  label: l10n.feedRecentlyUploaded,
-                  trailing: AmBadge(
-                      label: '${_recentDocs.length}', tone: AmBadgeTone.accent),
-                ),
-                const SizedBox(height: 10),
-                AmCard(
-                  noPad: true,
+                const SizedBox(height: AmDimens.gapS),
+                AmAnimateIn(
+                  index: aniIdx++,
                   child: Column(
-                    children: _recentDocs.asMap().entries.map((e) {
-                      final d = e.value;
-                      final isLast = e.key == _recentDocs.length - 1;
-                      return _DocRow(doc: d, isLast: isLast);
-                    }).toList(),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AmSectionLabel(label: l10n.feedQuestion),
+                      const SizedBox(height: AmDimens.gapXS),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 1.35,
+                        children: feedTypes
+                            .map((t) => _TypeCard(
+                                  t: t,
+                                  onTap: t.key == 'doc' ? _pickAndProcessPdf : () {},
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: AmCard(
+                    onTap: () {},
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Color.alphaBlend(
+                                AmColors.srcWhatsApp.withValues(alpha: 0.14),
+                                Colors.white),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          child: const Icon(Icons.chat_bubble_outline,
+                              size: 24, color: AmColors.srcWhatsApp),
+                        ),
+                        const SizedBox(width: 13),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(l10n.feedTypeWhatsapp,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: cs.onSurface)),
+                              const SizedBox(height: 2),
+                              Text(l10n.feedTypeWhatsappDesc,
+                                  style: TextStyle(
+                                      fontSize: 12.5,
+                                      color: cs.tertiary)),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right,
+                            color: cs.onSurfaceVariant, size: 18),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AmSectionLabel(
+                        label: l10n.feedRecentlyUploaded,
+                        trailing: AmBadge(
+                            label: '${_recentDocs.length}', tone: AmBadgeTone.accent),
+                      ),
+                      const SizedBox(height: 10),
+                      AmCard(
+                        noPad: true,
+                        child: Column(
+                          children: _recentDocs.asMap().entries.map((e) {
+                            final d = e.value;
+                            final isLast = e.key == _recentDocs.length - 1;
+                            return _DocRow(doc: d, isLast: isLast);
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 // Error state

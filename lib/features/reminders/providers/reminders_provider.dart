@@ -79,6 +79,7 @@ final selectedDayRemindersProvider = Provider<List<Reminder>>((ref) {
 
 /// Tipos de recordatorio del catálogo.
 final reminderTypesProvider = FutureProvider<List<ReminderType>>((ref) {
+  ref.keepAlive();
   return ref.read(reminderRepositoryProvider).getTypes();
 });
 

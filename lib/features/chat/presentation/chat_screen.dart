@@ -3,12 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/am_theme.dart';
-import '../../../core/mock/mock_data.dart';
 import '../../../core/widgets/am_press.dart';
 import '../providers/chat_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/voice_overlay.dart';
 import 'widgets/chat_cards.dart';
+
+const _chatSuggestions = [
+  '¿Quién vence pronto?',
+  '¿Cuánto cobra Javier?',
+  'Recuérdame llamar mañana',
+  '¿Pagos esta semana?',
+];
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -154,7 +160,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-                  children: mockSuggestions.map((s) => Padding(
+                  children: _chatSuggestions.map((s) => Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: AmPress(
                       onTap: () { _ctrl.text = s; _send(); },

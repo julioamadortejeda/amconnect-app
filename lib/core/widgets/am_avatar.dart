@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class AmAvatar extends StatelessWidget {
   const AmAvatar({
     super.key,
-    required this.inicial,
+    required this.initials,
     required this.color,
     this.size = 44,
     this.radius = 14,
   });
 
-  final String inicial;
+  final String initials;
   final Color color;
   final double size;
   final double radius;
@@ -26,7 +26,7 @@ class AmAvatar extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Text(
-        inicial,
+        initials,
         style: TextStyle(
           fontSize: size * 0.36,
           fontWeight: FontWeight.w600,

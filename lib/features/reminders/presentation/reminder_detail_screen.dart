@@ -16,6 +16,7 @@ import '../widgets/reminder_detail_info_section.dart';
 import '../widgets/reminder_detail_relations_section.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
+import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ReminderDetailScreen extends ConsumerStatefulWidget {
@@ -115,6 +116,7 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
     final types = ref.watch(reminderTypesProvider).asData?.value ?? [];
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
+    int aniIdx = 0;
 
     final trailingBar = r.cancelled
         ? const SizedBox.shrink()
@@ -202,72 +204,99 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
           ),
           children: [
             // ── HERO: Título + Descripción ──────────────────────
-            ReminderDetailHero(
-              reminder: r,
-              editing: _editing,
-              titleCtrl: _titleCtrl,
-              descCtrl: _descCtrl,
-              onEdit: r.cancelled ? null : () => _enterEdit(r),
+            AmAnimateIn(
+              index: aniIdx++,
+              child: ReminderDetailHero(
+                reminder: r,
+                editing: _editing,
+                titleCtrl: _titleCtrl,
+                descCtrl: _descCtrl,
+                onEdit: r.cancelled ? null : () => _enterEdit(r),
+              ),
             ),
             const SizedBox(height: AmDimens.gapM),
 
             // ── DETALLES ─────────────────────────────────────────
-            AmSectionLabel(label: l10n.remindersDetailStatus),
-            const SizedBox(height: AmDimens.gapXS),
-            ReminderDetailInfoSection(
-              reminder: r,
-              onTapType: r.cancelled || types.isEmpty
-                  ? null
-                  : () => _showTypeSheet(context, r, types, l10n, cs),
-              onTapStatus: r.cancelled
-                  ? null
-                  : () {
-                      showModalBottomSheet(
-                        context: context,
-                        useRootNavigator: true,
-                        backgroundColor: cs.surface,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(24)),
-                        ),
-                        builder: (_) => AmReminderActionsSheet(
-                          reminder: r,
-                          showReschedule: false,
-                        ),
-                      );
-                    },
-              onTapReschedule: r.cancelled ? null : () => _reschedule(context, r),
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(label: l10n.remindersDetailStatus),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ReminderDetailInfoSection(
+                    reminder: r,
+                    onTapType: r.cancelled || types.isEmpty
+                        ? null
+                        : () => _showTypeSheet(context, r, types, l10n, cs),
+                    onTapStatus: r.cancelled
+                        ? null
+                        : () {
+                            showModalBottomSheet(
+                              context: context,
+                              useRootNavigator: true,
+                              backgroundColor: cs.surface,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.vertical(top: Radius.circular(24)),
+                              ),
+                              builder: (_) => AmReminderActionsSheet(
+                                reminder: r,
+                                showReschedule: false,
+                              ),
+                            );
+                          },
+                    onTapReschedule: r.cancelled ? null : () => _reschedule(context, r),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AmDimens.gapM),
 
             // ── RELACIONES ────────────────────────────────────────
             if (r.policyNumber != null || r.contactId != null) ...[
-              AmSectionLabel(label: l10n.remindersDetailRelations),
-              const SizedBox(height: AmDimens.gapXS),
-              ReminderDetailRelationsSection(
-                reminder: r,
-                onTapClient: () => context.push('/clients/${r.contactId}'),
+              AmAnimateIn(
+                index: aniIdx++,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AmSectionLabel(label: l10n.remindersDetailRelations),
+                    const SizedBox(height: AmDimens.gapXS),
+                    ReminderDetailRelationsSection(
+                      reminder: r,
+                      onTapClient: () => context.push('/clients/${r.contactId}'),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: AmDimens.gapM),
             ],
 
             // ── COMENTARIOS ──────────────────────────────────────
-            AmSectionLabel(
-              label: r.comments.isNotEmpty
-                  ? '${l10n.remindersDetailComments} (${r.comments.length})'
-                  : l10n.remindersDetailComments,
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(
+                    label: r.comments.isNotEmpty
+                        ? '${l10n.remindersDetailComments} (${r.comments.length})'
+                        : l10n.remindersDetailComments,
+                  ),
+                  const SizedBox(height: AmDimens.gapXS),
+                  if (r.comments.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Text(
+                        l10n.remindersDetailNoComments,
+                        style: TextStyle(fontSize: 14, color: cs.tertiary),
+                      ),
+                    )
+                  else
+                    ...r.comments.map((c) => ReminderCommentBubble(comment: c)),
+                ],
+              ),
             ),
-            const SizedBox(height: AmDimens.gapXS),
-            if (r.comments.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Text(
-                  l10n.remindersDetailNoComments,
-                  style: TextStyle(fontSize: 14, color: cs.tertiary),
-                ),
-              )
-            else
-              ...r.comments.map((c) => ReminderCommentBubble(comment: c)),
           ],
         ),
       ),

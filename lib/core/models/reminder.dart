@@ -64,7 +64,7 @@ class Reminder {
     'jul','ago','sep','oct','nov','dic',
   ];
 
-  static String _formatFecha(String? isoDate) {
+  static String _formatDate(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return '—';
     final dt = DateTime.tryParse(isoDate)?.toLocal();
     if (dt == null) return '—';
@@ -76,7 +76,7 @@ class Reminder {
     return '${dt.day} ${_months[dt.month - 1]}';
   }
 
-  static String _formatHora(String? isoDate) {
+  static String _formatTime(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return '—';
     final dt = DateTime.tryParse(isoDate)?.toLocal();
     if (dt == null || (dt.hour == 0 && dt.minute == 0)) return '—';
@@ -134,8 +134,8 @@ class Reminder {
       sub: description?.isNotEmpty == true
           ? description!
           : contactName ?? '',
-      date: _formatFecha(dueDate),
-      time: _formatHora(dueDate),
+      date: _formatDate(dueDate),
+      time: _formatTime(dueDate),
       done: isDone,
       cancelled: isCancelled,
       statusCode: statusCode,

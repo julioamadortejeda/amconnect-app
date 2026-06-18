@@ -204,7 +204,7 @@ final homeReadyProvider = FutureProvider<bool>((ref) async {
     ref.watch(remindersProvider.future),
     ref.watch(agentNameProvider.future),
     ref.watch(policiesCountProvider.future),
-    Future.delayed(const Duration(milliseconds: 3000)),
+    Future.delayed(const Duration(milliseconds: 150)),
   ]);
   return true;
 });

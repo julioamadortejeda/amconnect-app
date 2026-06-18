@@ -25,7 +25,7 @@ class HomeClientesRecientes extends ConsumerWidget {
             onTap: () => context.push('/clients/${c.id}'),
             child: Column(
               children: [
-                AmAvatar(inicial: c.inicial, color: c.color, size: 48, radius: 16),
+                AmAvatar(initials: c.initials, color: c.color, size: 48, radius: 16),
                 const SizedBox(height: 5),
                 Text(c.fullName.split(' ').first,
                     style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500,

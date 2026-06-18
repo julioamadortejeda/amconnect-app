@@ -156,6 +156,19 @@
   "clientsStatusToRenew": "Por renovar",
   "clientsStatusPaymentDue": "Pago próximo",
   "clientsStatusUpToDate": "Al día",
+  "clientsAge": "{count} años",
+  "@clientsAge": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsMemberSince": "Cliente desde {year}",
+  "@clientsMemberSince": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "clientsNewClient": "Cliente",
+  "clientsNoteTypePdf": "Documento PDF",
+  "clientsNoteTypeAudio": "Nota de voz",
+  "clientsNoteTypeImage": "Imagen",
+  "clientsNoteTypeText": "WhatsApp",
   "clientsActionCall": "Llamar",
   "clientsActionMessage": "Mensaje",
   "clientsActionRemind": "Recordar",
