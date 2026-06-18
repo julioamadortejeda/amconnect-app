@@ -30,6 +30,7 @@ class MyApp extends ConsumerWidget {
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,
       routerConfig: router,
+      scrollBehavior: const _BouncingScrollBehavior(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -38,5 +39,14 @@ class MyApp extends ConsumerWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
     );
+  }
+}
+
+class _BouncingScrollBehavior extends MaterialScrollBehavior {
+  const _BouncingScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
   }
 }

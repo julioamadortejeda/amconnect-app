@@ -75,6 +75,7 @@ class _ReminderCalendarViewState extends ConsumerState<ReminderCalendarView> {
     };
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: AmDimens.scrollBottomPad),
       child: Column(
         children: [
           AmAnimateIn(

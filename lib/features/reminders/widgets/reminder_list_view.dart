@@ -115,6 +115,7 @@ class ReminderListView extends ConsumerWidget {
                   ),
                 )
               : SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: AmDimens.scrollBottomPad),
                   child: ui.filter == 'eliminados'
                       ? const DeletedRemindersView()
                       : Padding(

@@ -52,6 +52,16 @@ class Contact {
 
   int get daysSinceContact => 0;
 
+  bool matchesQuery(String q) {
+    if (q.isEmpty) return true;
+    final lower = q.toLowerCase();
+    return fullName.toLowerCase().contains(lower) ||
+        (email?.toLowerCase().contains(lower) ?? false) ||
+        (phone?.contains(lower) ?? false) ||
+        (occupation?.toLowerCase().contains(lower) ?? false) ||
+        (address?.toLowerCase().contains(lower) ?? false);
+  }
+
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
         id: json['id'] as String,
         fullName: json['fullName'] as String,

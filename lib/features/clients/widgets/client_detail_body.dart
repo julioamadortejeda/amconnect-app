@@ -59,7 +59,7 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
       top: false,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(
-            AmDimens.screenH, AmDimens.gapL, AmDimens.screenH, 40),
+            AmDimens.screenH, AmDimens.gapL, AmDimens.screenH, AmDimens.detailScrollBottomPad),
         children: [
           AmAnimateIn(
             index: idx++,

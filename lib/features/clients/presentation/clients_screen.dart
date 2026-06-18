@@ -21,11 +21,7 @@ class ClientsScreen extends ConsumerWidget {
     final q = ref.watch(clientSearchProvider);
     final contactsAsync = ref.watch(clientsProvider);
     final allContacts = contactsAsync.asData?.value ?? [];
-    final list = q.isEmpty
-        ? allContacts
-        : allContacts
-            .where((c) => c.fullName.toLowerCase().contains(q.toLowerCase()))
-            .toList();
+    final list = allContacts.where((c) => c.matchesQuery(q)).toList();
 
     return Scaffold(
       appBar: AmTopBar(
