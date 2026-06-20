@@ -153,6 +153,11 @@ final contactNotesProvider =
   return ref.read(noteRepositoryProvider).getByContactId(contactId);
 });
 
+final policyNotesProvider =
+    FutureProvider.family<List<AgentNote>, String>((ref, policyId) async {
+  return ref.read(noteRepositoryProvider).getByPolicyId(policyId);
+});
+
 // Watching this provider activates Realtime for notes of a contact.
 final contactNotesRealtimeProvider =
     Provider.autoDispose.family<void, String>((ref, contactId) {

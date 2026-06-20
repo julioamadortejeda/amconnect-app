@@ -10,6 +10,8 @@ import '../../../core/models/agent_note.dart';
 import '../providers/clients_provider.dart';
 import 'client_avatar_header.dart';
 import 'client_contact_info.dart';
+import 'client_contact_notes.dart';
+import 'client_fiscal_info.dart';
 import 'client_note_row.dart';
 import 'client_policy_card.dart';
 import 'client_quick_actions.dart';
@@ -48,9 +50,6 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
     final notesAsync = ref.watch(contactNotesProvider(widget.clientId));
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
 
-    final hasContact =
-        contact.phone?.isNotEmpty == true || contact.email?.isNotEmpty == true;
-
     final policiesLabel = l10n.clientsPoliciesTab(policies.length);
     final notesLabel = l10n.clientsNotesTab(notes.length);
 
@@ -76,13 +75,22 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
             child: ClientQuickActions(clientId: widget.clientId),
           ),
           const SizedBox(height: AmDimens.gapM),
-          if (hasContact) ...[
-            AmAnimateIn(
-              index: idx++,
-              child: ClientContactInfo(contact: contact),
-            ),
+          AmAnimateIn(
+            index: idx++,
+            child: ClientContactInfo(contact: contact),
+          ),
+          const SizedBox(height: AmDimens.gapM),
+          AmAnimateIn(
+            index: idx++,
+            child: ClientFiscalInfo(contact: contact),
+          ),
+          const SizedBox(height: AmDimens.gapM),
+          AmAnimateIn(
+            index: idx++,
+            child: ClientContactNotes(contact: contact),
+          ),
+          if (contact.notes?.isNotEmpty == true)
             const SizedBox(height: AmDimens.gapM),
-          ],
           AmAnimateIn(
             index: idx++,
             child: AmSegmented(

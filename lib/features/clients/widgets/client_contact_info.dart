@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_card.dart';
 
 class ClientContactInfo extends StatelessWidget {
@@ -12,25 +13,40 @@ class ClientContactInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    final List<String> phones = contact.phone
+    final phoneEntries = contact.phone
             ?.split(RegExp(r'[,\/;]'))
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
             .toList() ??
         [];
-    final List<String> emails = contact.email
+    final emailEntries = contact.email
             ?.split(RegExp(r'[,\/;]'))
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
             .toList() ??
         [];
 
-    final rows = <({IconData icon, String text})>[
-      ...phones.map((p) => (icon: Icons.phone_outlined, text: p)),
-      ...emails.map((e) => (icon: Icons.email_outlined, text: e)),
+    final birthdateText = contact.birthdate != null
+        ? fmtDateFromIso(contact.birthdate)
+        : null;
+
+    final List<({IconData icon, String text, bool muted})> rows = [
+      if (phoneEntries.isEmpty)
+        (icon: Icons.phone_outlined, text: '—', muted: true)
+      else
+        for (final p in phoneEntries)
+          (icon: Icons.phone_outlined, text: p, muted: false),
+      if (emailEntries.isEmpty)
+        (icon: Icons.chat_bubble_outline_rounded, text: '—', muted: true)
+      else
+        for (final e in emailEntries)
+          (icon: Icons.chat_bubble_outline_rounded, text: e, muted: false),
+      (
+        icon: Icons.cake_outlined,
+        text: birthdateText ?? '—',
+        muted: birthdateText == null,
+      ),
     ];
-
-    if (rows.isEmpty) return const SizedBox.shrink();
 
     return AmCard(
       noPad: true,
@@ -51,7 +67,8 @@ class ClientContactInfo extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(rows[i].icon, size: 17, color: cs.primary),
+                  Icon(rows[i].icon, size: 17,
+                      color: rows[i].muted ? cs.outlineVariant : cs.primary),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -59,7 +76,7 @@ class ClientContactInfo extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w500,
-                        color: cs.onSurface,
+                        color: rows[i].muted ? cs.tertiary : cs.onSurface,
                       ),
                     ),
                   ),

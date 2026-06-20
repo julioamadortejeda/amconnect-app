@@ -173,7 +173,7 @@ class _ClientNoteRowState extends State<ClientNoteRow> {
       'image'             => l10n.clientsNoteTypeImage,
       'text' || _         => l10n.clientsNoteTypeText,
     };
-    final dt = DateTime.tryParse(widget.note.createdAt);
+    final dt = DateTime.tryParse(widget.note.createdAt)?.toLocal();
     if (dt == null) return label;
     return '$label · ${DateFormat.MMMd().format(dt)}';
   }

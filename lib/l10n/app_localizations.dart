@@ -110,6 +110,18 @@ abstract class AppLocalizations {
   /// **'Cerrar'**
   String get commonClose;
 
+  /// No description provided for @commonCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get commonCancel;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get commonDelete;
+
   /// No description provided for @commonAccount.
   ///
   /// In es, this message translates to:
@@ -841,6 +853,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Vencimiento'**
   String get clientsPolicyEndDate;
+
+  /// No description provided for @clientsPolicyFiles.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos'**
+  String get clientsPolicyFiles;
+
+  /// No description provided for @clientsPolicyFileObsolete.
+  ///
+  /// In es, this message translates to:
+  /// **'Obsoleto'**
+  String get clientsPolicyFileObsolete;
+
+  /// No description provided for @clientsPolicyOldVersions.
+  ///
+  /// In es, this message translates to:
+  /// **'Versiones anteriores ({count})'**
+  String clientsPolicyOldVersions(int count);
+
+  /// No description provided for @clientsPolicyDeleteNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar archivo'**
+  String get clientsPolicyDeleteNoteTitle;
+
+  /// No description provided for @clientsPolicyDeleteNoteMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta versión ya no está activa. ¿Deseas eliminarla?'**
+  String get clientsPolicyDeleteNoteMsg;
 
   /// No description provided for @clientsAskAbout.
   ///

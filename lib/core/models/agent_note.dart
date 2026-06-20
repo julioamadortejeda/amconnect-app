@@ -9,6 +9,7 @@ class AgentNote {
     this.summary,
     this.storagePath,
     this.fileName,
+    this.isObsolete = false,
   });
 
   final String id;
@@ -20,6 +21,7 @@ class AgentNote {
   final String? summary;
   final String? storagePath;
   final String? fileName;
+  final bool isObsolete;
 
   factory AgentNote.fromJson(Map<String, dynamic> json) {
     final dm = json['document_metadata'] as Map<String, dynamic>?;
@@ -33,6 +35,7 @@ class AgentNote {
       summary: json['summary'] as String?,
       storagePath: dm?['storage_path'] as String?,
       fileName: dm?['file_name'] as String?,
+      isObsolete: json['isObsolete'] as bool? ?? false,
     );
   }
 }

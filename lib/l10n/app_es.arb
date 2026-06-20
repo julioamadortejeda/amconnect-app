@@ -4,6 +4,8 @@
   "@_common": {},
   "commonTerms": "Al continuar, aceptas los Términos y la Política de Privacidad.",
   "commonClose": "Cerrar",
+  "commonCancel": "Cancelar",
+  "commonDelete": "Eliminar",
   "commonAccount": "Cuenta",
   "commonSignOut": "Cerrar sesión",
   "commonLoading": "Cargando...",
@@ -188,6 +190,14 @@
   "clientsPolicyNextPayment": "Próximo pago",
   "clientsPolicyDeductible": "Deducible",
   "clientsPolicyEndDate": "Vencimiento",
+  "clientsPolicyFiles": "Archivos",
+  "clientsPolicyFileObsolete": "Obsoleto",
+  "clientsPolicyOldVersions": "Versiones anteriores ({count})",
+  "@clientsPolicyOldVersions": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsPolicyDeleteNoteTitle": "Eliminar archivo",
+  "clientsPolicyDeleteNoteMsg": "Esta versión ya no está activa. ¿Deseas eliminarla?",
   "clientsAskAbout": "Preguntar sobre {name}",
   "@clientsAskAbout": {
     "placeholders": { "name": { "type": "String" } }

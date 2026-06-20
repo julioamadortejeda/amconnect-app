@@ -7,9 +7,10 @@ class Contact {
     this.email,
     this.phone,
     this.occupation,
-    this.city,
     this.address,
     this.birthdate,
+    this.rfc,
+    this.curp,
     this.notes,
     this.createdAt,
   });
@@ -19,9 +20,10 @@ class Contact {
   final String? email;
   final String? phone;
   final String? occupation;
-  final String? city;
   final String? address;
   final String? birthdate;
+  final String? rfc;
+  final String? curp;
   final String? notes;
   final String? createdAt;
 
@@ -59,7 +61,8 @@ class Contact {
         (email?.toLowerCase().contains(lower) ?? false) ||
         (phone?.contains(lower) ?? false) ||
         (occupation?.toLowerCase().contains(lower) ?? false) ||
-        (address?.toLowerCase().contains(lower) ?? false);
+        (address?.toLowerCase().contains(lower) ?? false) ||
+        (rfc?.toLowerCase().contains(lower) ?? false);
   }
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
@@ -68,9 +71,10 @@ class Contact {
         email: json['email'] as String?,
         phone: json['phone'] as String?,
         occupation: json['occupation'] as String?,
-        city: json['city'] as String?,
         address: json['address'] as String?,
         birthdate: json['birthdate'] as String?,
+        rfc: json['rfc'] as String?,
+        curp: json['curp'] as String?,
         notes: json['notes'] as String?,
         createdAt: json['createdAt'] as String?,
       );

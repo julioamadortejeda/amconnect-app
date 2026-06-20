@@ -16,6 +16,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClose => 'Close';
 
   @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
   String get commonAccount => 'Account';
 
   @override
@@ -401,6 +407,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsPolicyEndDate => 'End date';
+
+  @override
+  String get clientsPolicyFiles => 'Files';
+
+  @override
+  String get clientsPolicyFileObsolete => 'Obsolete';
+
+  @override
+  String clientsPolicyOldVersions(int count) {
+    return 'Previous versions ($count)';
+  }
+
+  @override
+  String get clientsPolicyDeleteNoteTitle => 'Delete file';
+
+  @override
+  String get clientsPolicyDeleteNoteMsg =>
+      'This version is no longer active. Do you want to delete it?';
 
   @override
   String clientsAskAbout(String name) {

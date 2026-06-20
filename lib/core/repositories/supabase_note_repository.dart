@@ -16,6 +16,21 @@ class SupabaseNoteRepository implements NoteRepository {
         .map((e) => AgentNote.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+
+  @override
+  Future<List<AgentNote>> getByPolicyId(String policyId) async {
+    final res = await _client.get('policies/$policyId/notes');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items
+        .map((e) => AgentNote.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<void> deleteNote(String noteId) async {
+    await _client.delete('notes/$noteId');
+  }
 }
 
 final noteRepositoryProvider = Provider<NoteRepository>((ref) {

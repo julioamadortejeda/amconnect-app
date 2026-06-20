@@ -3,6 +3,8 @@
 
   "commonTerms": "By continuing, you accept the Terms and Privacy Policy.",
   "commonClose": "Close",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
   "commonAccount": "Account",
   "commonSignOut": "Sign out",
   "commonLoading": "Loading...",
@@ -151,6 +153,14 @@
   "clientsPolicyNextPayment": "Next payment",
   "clientsPolicyDeductible": "Deductible",
   "clientsPolicyEndDate": "End date",
+  "clientsPolicyFiles": "Files",
+  "clientsPolicyFileObsolete": "Obsolete",
+  "clientsPolicyOldVersions": "Previous versions ({count})",
+  "@clientsPolicyOldVersions": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "clientsPolicyDeleteNoteTitle": "Delete file",
+  "clientsPolicyDeleteNoteMsg": "This version is no longer active. Do you want to delete it?",
   "clientsAskAbout": "Ask about {name}",
 
   "remindersTitle": "Agenda",
