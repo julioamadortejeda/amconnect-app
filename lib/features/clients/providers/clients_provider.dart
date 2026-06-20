@@ -9,6 +9,7 @@ import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
+import '../../chat/data/chat_context.dart';
 import '../../home/providers/home_provider.dart';
 
 class _SearchNotifier extends Notifier<String> {
@@ -176,5 +177,24 @@ final contactNotesRealtimeProvider =
       )
       .subscribe();
   ref.onDispose(() => channel.unsubscribe());
+});
+
+/// Contexto de IA listo para enviar al chat, construido con los datos
+/// ya cargados en pantalla (contacto + pólizas + notas).
+final contactAiContextProvider =
+    Provider.family<AiChatContext, String>((ref, contactId) {
+  final contact = ref.watch(clientsProvider).asData?.value
+          .where((c) => c.id == contactId)
+          .firstOrNull ??
+      ref.watch(contactDetailProvider(contactId)).asData?.value;
+
+  if (contact == null) {
+    return AiChatContext(type: 'contact', id: contactId, data: {});
+  }
+
+  final policies = ref.watch(contactPoliciesProvider(contactId)).asData?.value;
+  final notes = ref.watch(contactNotesProvider(contactId)).asData?.value;
+
+  return AiChatContext.fromContact(contact, policies: policies, notes: notes);
 });
 

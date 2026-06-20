@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../l10n/app_localizations.dart';
+import '../providers/clients_provider.dart';
 
-class ClientAiButton extends StatelessWidget {
+class ClientAiButton extends ConsumerWidget {
   const ClientAiButton({super.key, required this.contact});
 
   final Contact contact;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final firstName = contact.fullName.split(' ').first;
+    final aiContext = ref.watch(contactAiContextProvider(contact.id));
 
     return SafeArea(
       top: false,
@@ -26,7 +29,7 @@ class ClientAiButton extends StatelessWidget {
           AmDimens.gapM,
         ),
         child: AmPress(
-          onTap: () => context.push('/chat'),
+          onTap: () => context.push('/chat', extra: aiContext),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: AmDimens.gapM),

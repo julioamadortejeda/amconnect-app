@@ -17,7 +17,9 @@ const _chatSuggestions = [
 ];
 
 class ChatScreen extends ConsumerStatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({super.key, this.initialContext});
+
+  final AiChatContext? initialContext;
 
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
@@ -26,6 +28,18 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _ctrl = TextEditingController();
   final _scrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialContext != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(chatProvider.notifier).resetWithContext(widget.initialContext!);
+        }
+      });
+    }
+  }
 
   void _send() {
     final text = _ctrl.text.trim();

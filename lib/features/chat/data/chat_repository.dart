@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../../../core/network/api_client.dart';
+import 'chat_context.dart';
 
 class ChatMessage {
   final String role; // 'user' | 'ai'
@@ -14,11 +17,15 @@ class ChatRepository {
   Future<({String text, String sessionId, Map<String, dynamic>? metadata})> sendMessage(
     String message, {
     String? sessionId,
+    AiChatContext? context,
   }) async {
-    final res = await _api.post('ai/chat', body: {
+    final body = {
       'message': message,
       if (sessionId != null) 'sessionId': sessionId,
-    });
+      if (context != null) 'context': context.toJson(),
+    };
+    debugPrint('[ai/chat] ${const JsonEncoder.withIndent('  ').convert(body)}');
+    final res = await _api.post('ai/chat', body: body);
     final data = res['data'] as Map<String, dynamic>;
     final rawMeta = data['metadata'];
     return (
