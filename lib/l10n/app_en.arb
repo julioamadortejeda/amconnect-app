@@ -197,6 +197,9 @@
   "voiceTapToClose": "Tap to close",
   "voiceInputHint": "Ask anything…",
   "voiceSend": "Send",
+  "voiceTapToSend": "Tap to send",
+  "voiceTapToStart": "Tap to speak",
+  "voiceNotAvailable": "Voice not available",
 
   "chatTitle": "Assistant",
   "chatSubtitle": "Connected to your base",

@@ -534,6 +534,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceSend => 'Send';
 
   @override
+  String get voiceTapToSend => 'Tap to send';
+
+  @override
+  String get voiceTapToStart => 'Tap to speak';
+
+  @override
+  String get voiceNotAvailable => 'Voice not available';
+
+  @override
   String get chatTitle => 'Assistant';
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/agent_note.dart';
 import '../network/api_client.dart';
+import '../../features/feed/data/feed_item.dart';
 import 'note_repository.dart';
 
 class SupabaseNoteRepository implements NoteRepository {
@@ -30,6 +31,16 @@ class SupabaseNoteRepository implements NoteRepository {
   @override
   Future<void> deleteNote(String noteId) async {
     await _client.delete('notes/$noteId');
+  }
+
+  @override
+  Future<List<FeedItem>> getRecent({int limit = 20}) async {
+    final res = await _client.get('notes/recent?limit=$limit');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items
+        .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
 

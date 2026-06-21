@@ -1088,6 +1088,24 @@ abstract class AppLocalizations {
   /// **'Enviar'**
   String get voiceSend;
 
+  /// No description provided for @voiceTapToSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para enviar'**
+  String get voiceTapToSend;
+
+  /// No description provided for @voiceTapToStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para hablar'**
+  String get voiceTapToStart;
+
+  /// No description provided for @voiceNotAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Voz no disponible'**
+  String get voiceNotAvailable;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:

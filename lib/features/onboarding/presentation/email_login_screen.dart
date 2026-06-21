@@ -76,58 +76,67 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
         body: SafeArea(
           top: false,
           bottom: true,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Logo animado con Hero
-                Hero(
-                  tag: 'auth_logo',
-                  child: ColorFiltered(
-                    colorFilter:
-                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    child: Image.asset('assets/logo/logo_t.png',
-                        width: 72 * scale, height: 72 * scale),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
                   ),
-                ),
-
-                SizedBox(height: 24 * vScale),
-
-                // Título + subtítulo reutilizando la animación Fade
-                AmFadeAnimation(
-                  delayMs: 100,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.emailLoginTitle,
-                        style: TextStyle(
-                          fontSize: 38 * scale,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: -1.0,
-                          height: 1.05,
-                        ),
-                      ),
-                      SizedBox(height: 8 * vScale),
-                      Text(
-                        l10n.emailLoginSubtitle,
-                        style: TextStyle(
-                          fontSize: 15 * scale,
-                          height: 1.55,
-                          color: AmColors.authSubtitle,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                // Campos + botón
-                AmFadeAnimation(
+                  child: IntrinsicHeight(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Logo animado con Hero
+                          Hero(
+                            tag: 'auth_logo',
+                            child: ColorFiltered(
+                              colorFilter:
+                                  const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                              child: Image.asset('assets/logo/logo_t.png',
+                                  width: 72 * scale, height: 72 * scale),
+                            ),
+                          ),
+          
+                          SizedBox(height: 24 * vScale),
+          
+                          // Título + subtítulo reutilizando la animación Fade
+                          AmFadeAnimation(
+                            delayMs: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l10n.emailLoginTitle,
+                                  style: TextStyle(
+                                    fontSize: 38 * scale,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                    letterSpacing: -1.0,
+                                    height: 1.05,
+                                  ),
+                                ),
+                                SizedBox(height: 8 * vScale),
+                                Text(
+                                  l10n.emailLoginSubtitle,
+                                  style: TextStyle(
+                                    fontSize: 15 * scale,
+                                    height: 1.55,
+                                    color: AmColors.authSubtitle,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+          
+                          const Spacer(),
+  
+                  // Campos + botón
+                  AmFadeAnimation(
                   delayMs: 250,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -240,7 +249,13 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
+  },
+),
+),
+);
   }
 
   void _onSubmit() => ref

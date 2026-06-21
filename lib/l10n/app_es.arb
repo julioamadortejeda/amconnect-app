@@ -242,6 +242,9 @@
   "voiceTapToClose": "Toca para cerrar",
   "voiceInputHint": "Pregunta…",
   "voiceSend": "Enviar",
+  "voiceTapToSend": "Toca para enviar",
+  "voiceTapToStart": "Toca para hablar",
+  "voiceNotAvailable": "Voz no disponible",
 
   "@_chat": {},
   "chatTitle": "Asistente",

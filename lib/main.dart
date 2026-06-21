@@ -29,6 +29,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,
+      themeMode: ThemeMode.light,
       routerConfig: router,
       scrollBehavior: const _BouncingScrollBehavior(),
       localizationsDelegates: const [

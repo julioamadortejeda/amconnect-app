@@ -536,6 +536,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceSend => 'Enviar';
 
   @override
+  String get voiceTapToSend => 'Toca para enviar';
+
+  @override
+  String get voiceTapToStart => 'Toca para hablar';
+
+  @override
+  String get voiceNotAvailable => 'Voz no disponible';
+
+  @override
   String get chatTitle => 'Asistente';
 
   @override

@@ -3,22 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/am_aurora.dart';
+import '../providers/chat_provider.dart';
+import '../providers/stt_provider.dart';
 import 'voice_pulsing_mic.dart';
 import 'voice_waveform_bars.dart';
 import '../../../l10n/app_localizations.dart';
-import '../providers/chat_provider.dart';
 
 class VoiceOverlay extends ConsumerStatefulWidget {
-  const VoiceOverlay({super.key});
+  const VoiceOverlay({
+    super.key,
+    this.initialContext,
+    this.continueSession = false,
+    this.navigateToChat = true,
+  });
 
-  static Future<void> show(BuildContext context) {
+  final AiChatContext? initialContext;
+  final bool continueSession;
+
+  /// Si es false, al enviar solo cierra el overlay sin navegar a /chat.
+  /// Usar cuando el overlay ya se abrió desde la pantalla de chat.
+  final bool navigateToChat;
+
+  static Future<void> show(
+    BuildContext context, {
+    AiChatContext? initialContext,
+    bool continueSession = false,
+    bool navigateToChat = true,
+  }) {
     return showGeneralDialog(
       context: context,
       barrierDismissible: false,
       barrierLabel: 'voice',
       barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (ctx, _, __) => const VoiceOverlay(),
+      pageBuilder: (ctx, _, __) => VoiceOverlay(
+        initialContext: initialContext,
+        continueSession: continueSession,
+        navigateToChat: navigateToChat,
+      ),
       transitionBuilder: (ctx, anim, _, child) => FadeTransition(
         opacity: CurvedAnimation(parent: anim, curve: Curves.easeOut),
         child: child,
@@ -31,63 +53,105 @@ class VoiceOverlay extends ConsumerStatefulWidget {
 }
 
 class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
-  String _transcript = '';
   final _textCtrl = TextEditingController();
   bool _hasText = false;
+
+  // Guardamos referencias en initState para poder usarlas en dispose
+  // sin tocar ref (unsafe después de unmount).
+  late final SttNotifier _stt;
+  late final ChatNotifier _chat;
 
   @override
   void initState() {
     super.initState();
+    _stt = ref.read(sttProvider.notifier);
+    _chat = ref.read(chatProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      if (widget.initialContext != null) {
+        await _chat.resetWithContext(widget.initialContext!);
+      } else if (!widget.continueSession) {
+        await _chat.reset();
+      }
+      if (!mounted) return;
+      _stt.startListening();
+    });
   }
 
   @override
   void dispose() {
+    _stt.cancel(); // sin ref — seguro en dispose
     _textCtrl.dispose();
     super.dispose();
   }
 
-  /// Sends [text] to the chat provider, closes the overlay, and navigates to /chat.
+  void _onMicTap(SttState stt) {
+    if (stt.transcript.isNotEmpty && !stt.isListening) {
+      _submitToChat(stt.transcript);
+    } else if (stt.isListening) {
+      _stt.stop();
+    } else {
+      _stt.startListening();
+    }
+  }
+
   void _submitToChat(String text) {
     if (text.trim().isEmpty) return;
-
-    // Send the message via Riverpod
-    ref.read(chatProvider.notifier).send(text.trim());
-
-    // Close the voice overlay
+    _stt.cancel();
+    _chat.send(text.trim());
     Navigator.of(context).pop();
-
-    // Navigate to chat screen if not already there
-    final router = GoRouter.of(context);
-    final currentLocation = router.routeInformationProvider.value.uri.path;
-    if (currentLocation != '/chat') {
-      router.push('/chat');
+    if (widget.navigateToChat) {
+      GoRouter.of(context).push('/chat');
     }
+  }
+
+  void _sendText() {
+    final text = _textCtrl.text.trim();
+    if (text.isEmpty) return;
+    _textCtrl.clear();
+    setState(() => _hasText = false);
+    FocusScope.of(context).unfocus();
+    _submitToChat(text);
+  }
+
+  String _statusText(SttState stt, AppLocalizations l10n) {
+    if (stt.error != null) return l10n.voiceNotAvailable;
+    if (stt.transcript.isNotEmpty && !stt.isListening) return l10n.voiceTapToSend;
+    if (stt.isListening) return l10n.voiceListening;
+    return l10n.voiceTapToStart;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final stt = ref.watch(sttProvider);
 
     return Material(
       color: Colors.transparent,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            Navigator.of(context).pop();
-          },
-          child: Container(
-            color: const Color(0xFF003B7A).withValues(alpha: 0.52),
-            child: Stack(
-              children: [
-                const AmAurora(delay: Duration(milliseconds: 300)),
+        child: Stack(
+          children: [
+            // Capa de fondo — cierra el overlay al tocar fuera del contenido
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  color: const Color(0xFF003B7A).withValues(alpha: 0.52),
+                ),
+              ),
+            ),
 
-                SafeArea(
-                  child: Column(
-                    children: [
+            const AmAurora(delay: Duration(milliseconds: 300)),
+
+            // Contenido — captura sus propios taps sin dejar pasar al fondo
+            SafeArea(
+              child: Column(
+                children: [
                       // ── Main content area ─────────────────────────────
                       Expanded(
                         child: Stack(
@@ -119,31 +183,38 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Spacer(flex: 5),
-                                // Tappable mic — sends transcript when tapped
+
                                 GestureDetector(
-                                  onTap: () {
-                                    if (_transcript.isNotEmpty) {
-                                      _submitToChat(_transcript);
-                                    }
-                                  },
+                                  onTap: () => _onMicTap(stt),
                                   child: const VoicePulsingMic(),
                                 ),
                                 const SizedBox(height: 28),
-                                Text(
-                                  _transcript.isNotEmpty
-                                      ? l10n.voiceListening
-                                      : l10n.voiceListening,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white.withValues(alpha: 0.6),
-                                    letterSpacing: 0.4,
+
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Text(
+                                    _statusText(stt, l10n),
+                                    key: ValueKey(_statusText(stt, l10n)),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: (stt.transcript.isNotEmpty && !stt.isListening)
+                                          ? Colors.white.withValues(alpha: 0.9)
+                                          : Colors.white.withValues(alpha: 0.6),
+                                      fontWeight: (stt.transcript.isNotEmpty && !stt.isListening)
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                      letterSpacing: 0.4,
+                                    ),
                                   ),
                                 ),
+
                                 const SizedBox(height: 36),
                                 const VoiceWaveformBars(),
                                 const SizedBox(height: 32),
+
+                                // Transcript
                                 AnimatedOpacity(
-                                  opacity: _transcript.isNotEmpty ? 1.0 : 0.0,
+                                  opacity: stt.transcript.isNotEmpty ? 1.0 : 0.0,
                                   duration: const Duration(milliseconds: 280),
                                   child: SizedBox(
                                     height: 96,
@@ -152,8 +223,8 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                                         padding: const EdgeInsets.symmetric(horizontal: 36),
                                         child: GestureDetector(
                                           onTap: () {
-                                            if (_transcript.isNotEmpty) {
-                                              _submitToChat(_transcript);
+                                            if (stt.transcript.isNotEmpty && !stt.isListening) {
+                                              _submitToChat(stt.transcript);
                                             }
                                           },
                                           child: AnimatedSwitcher(
@@ -161,15 +232,17 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                                             transitionBuilder: (child, anim) =>
                                                 FadeTransition(opacity: anim, child: child),
                                             child: Text(
-                                              _transcript,
-                                              key: ValueKey(_transcript),
+                                              stt.transcript,
+                                              key: ValueKey(stt.transcript),
                                               textAlign: TextAlign.center,
                                               maxLines: 3,
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 23,
                                                 fontWeight: FontWeight.w600,
-                                                color: Colors.white,
+                                                color: !stt.isListening
+                                                    ? Colors.white
+                                                    : Colors.white.withValues(alpha: 0.75),
                                                 height: 1.4,
                                               ),
                                             ),
@@ -179,6 +252,7 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                                     ),
                                   ),
                                 ),
+
                                 const Spacer(flex: 4),
                               ],
                             ),
@@ -260,17 +334,6 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
               ],
             ),
           ),
-        ),
-      ),
     );
-  }
-
-  void _sendText() {
-    final text = _textCtrl.text.trim();
-    if (text.isEmpty) return;
-    _textCtrl.clear();
-    setState(() => _hasText = false);
-    FocusScope.of(context).unfocus();
-    _submitToChat(text);
   }
 }
