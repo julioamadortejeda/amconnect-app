@@ -51,11 +51,12 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<List<FeedItem>> searchNotes({int limit = 20, String? query}) async {
-    final url = query != null && query.trim().isNotEmpty
-        ? 'notes/search?limit=$limit&search=${Uri.encodeComponent(query)}'
-        : 'notes/search?limit=$limit';
-    final res = await _client.get(url);
+  Future<List<FeedItem>> searchNotes({int limit = 20, int offset = 0, String? query}) async {
+    final buf = StringBuffer('notes/search?limit=$limit&offset=$offset');
+    if (query != null && query.trim().isNotEmpty) {
+      buf.write('&search=${Uri.encodeComponent(query)}');
+    }
+    final res = await _client.get(buf.toString());
     final wrapper = res['data'] as Map<String, dynamic>;
     final items = wrapper['data'] as List<dynamic>;
     return items
