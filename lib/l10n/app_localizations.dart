@@ -110,6 +110,18 @@ abstract class AppLocalizations {
   /// **'Cerrar'**
   String get commonClose;
 
+  /// No description provided for @commonCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get commonCancel;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get commonDelete;
+
   /// No description provided for @commonAccount.
   ///
   /// In es, this message translates to:
@@ -668,6 +680,36 @@ abstract class AppLocalizations {
   /// **'Buscar cliente…'**
   String get clientsSearchHint;
 
+  /// No description provided for @clientsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin clientes registrados'**
+  String get clientsEmpty;
+
+  /// No description provided for @clientsError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar clientes'**
+  String get clientsError;
+
+  /// No description provided for @clientsContactSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get clientsContactSection;
+
+  /// No description provided for @clientsNoPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin pólizas registradas'**
+  String get clientsNoPolicies;
+
+  /// No description provided for @clientsNoNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin notas'**
+  String get clientsNoNotes;
+
   /// No description provided for @clientsStatusProspect.
   ///
   /// In es, this message translates to:
@@ -691,6 +733,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Al día'**
   String get clientsStatusUpToDate;
+
+  /// No description provided for @clientsAge.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} años'**
+  String clientsAge(int count);
+
+  /// No description provided for @clientsMemberSince.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente desde {year}'**
+  String clientsMemberSince(int year);
+
+  /// No description provided for @clientsNewClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get clientsNewClient;
+
+  /// No description provided for @clientsNoteTypePdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento PDF'**
+  String get clientsNoteTypePdf;
+
+  /// No description provided for @clientsNoteTypeAudio.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota de voz'**
+  String get clientsNoteTypeAudio;
+
+  /// No description provided for @clientsNoteTypeImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Imagen'**
+  String get clientsNoteTypeImage;
+
+  /// No description provided for @clientsNoteTypeText.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get clientsNoteTypeText;
+
+  /// No description provided for @clientsNoteOpenFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver archivo'**
+  String get clientsNoteOpenFile;
 
   /// No description provided for @clientsActionCall.
   ///
@@ -757,6 +847,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Deducible'**
   String get clientsPolicyDeductible;
+
+  /// No description provided for @clientsPolicyEndDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencimiento'**
+  String get clientsPolicyEndDate;
+
+  /// No description provided for @clientsPolicyFiles.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos'**
+  String get clientsPolicyFiles;
+
+  /// No description provided for @clientsPolicyFileObsolete.
+  ///
+  /// In es, this message translates to:
+  /// **'Obsoleto'**
+  String get clientsPolicyFileObsolete;
+
+  /// No description provided for @clientsPolicyOldVersions.
+  ///
+  /// In es, this message translates to:
+  /// **'Versiones anteriores ({count})'**
+  String clientsPolicyOldVersions(int count);
+
+  /// No description provided for @clientsPolicyDeleteNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar archivo'**
+  String get clientsPolicyDeleteNoteTitle;
+
+  /// No description provided for @clientsPolicyDeleteNoteMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta versión ya no está activa. ¿Deseas eliminarla?'**
+  String get clientsPolicyDeleteNoteMsg;
 
   /// No description provided for @clientsAskAbout.
   ///
@@ -962,6 +1088,24 @@ abstract class AppLocalizations {
   /// **'Enviar'**
   String get voiceSend;
 
+  /// No description provided for @voiceTapToSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para enviar'**
+  String get voiceTapToSend;
+
+  /// No description provided for @voiceTapToStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para hablar'**
+  String get voiceTapToStart;
+
+  /// No description provided for @voiceNotAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Voz no disponible'**
+  String get voiceNotAvailable;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:
@@ -1064,6 +1208,30 @@ abstract class AppLocalizations {
   /// **'Exporta y sube la conversación'**
   String get feedTypeWhatsappDesc;
 
+  /// No description provided for @feedTypeKnowledgeImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Imagen / captura'**
+  String get feedTypeKnowledgeImage;
+
+  /// No description provided for @feedTypeKnowledgeImageDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto, captura de pantalla o imagen'**
+  String get feedTypeKnowledgeImageDesc;
+
+  /// No description provided for @feedTypeDocument.
+  ///
+  /// In es, this message translates to:
+  /// **'PDF de conocimiento'**
+  String get feedTypeDocument;
+
+  /// No description provided for @feedTypeDocumentDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento, manual, contrato…'**
+  String get feedTypeDocumentDesc;
+
   /// No description provided for @feedRecentlyUploaded.
   ///
   /// In es, this message translates to:
@@ -1093,6 +1261,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La IA está extrayendo los datos de la póliza'**
   String get feedProcessingDesc;
+
+  /// No description provided for @feedStepGettingUrl.
+  ///
+  /// In es, this message translates to:
+  /// **'Obteniendo enlace de subida…'**
+  String get feedStepGettingUrl;
+
+  /// No description provided for @feedStepUploading.
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo archivo al servidor…'**
+  String get feedStepUploading;
+
+  /// No description provided for @feedStepProcessing.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesando archivo con IA…'**
+  String get feedStepProcessing;
+
+  /// No description provided for @feedViewModeIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingestar'**
+  String get feedViewModeIngest;
+
+  /// No description provided for @feedViewModeKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Conocimiento'**
+  String get feedViewModeKnowledge;
+
+  /// No description provided for @feedStatsPDFs.
+  ///
+  /// In es, this message translates to:
+  /// **'PDFs'**
+  String get feedStatsPDFs;
+
+  /// No description provided for @feedStatsImages.
+  ///
+  /// In es, this message translates to:
+  /// **'Imágenes'**
+  String get feedStatsImages;
+
+  /// No description provided for @feedStatsAudios.
+  ///
+  /// In es, this message translates to:
+  /// **'Audios'**
+  String get feedStatsAudios;
+
+  /// No description provided for @feedStatsNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get feedStatsNotes;
+
+  /// No description provided for @feedStatsChats.
+  ///
+  /// In es, this message translates to:
+  /// **'Chats'**
+  String get feedStatsChats;
+
+  /// No description provided for @feedSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar en base de conocimiento...'**
+  String get feedSearchHint;
+
+  /// No description provided for @feedSearchNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron notas o documentos.'**
+  String get feedSearchNoResults;
+
+  /// No description provided for @feedStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen de conocimiento'**
+  String get feedStatsTitle;
+
+  /// No description provided for @feedAllNotesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las notas'**
+  String get feedAllNotesTitle;
 
   /// No description provided for @feedSuccessTitle.
   ///
@@ -1153,6 +1405,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Listo'**
   String get feedSuccessDone;
+
+  /// No description provided for @feedKnowledgeSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Guardado!'**
+  String get feedKnowledgeSuccessTitle;
+
+  /// No description provided for @feedKnowledgeDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get feedKnowledgeDone;
+
+  /// No description provided for @feedTextInputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar nota o texto'**
+  String get feedTextInputTitle;
+
+  /// No description provided for @feedWhatsappInputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar conversación'**
+  String get feedWhatsappInputTitle;
+
+  /// No description provided for @feedTextInputHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el texto, notas o conversación…'**
+  String get feedTextInputHint;
+
+  /// No description provided for @feedTextInputSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesar'**
+  String get feedTextInputSubmit;
 
   /// No description provided for @remindersActionDone.
   ///

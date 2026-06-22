@@ -12,6 +12,7 @@ import '../widgets/home_header.dart';
 import '../widgets/home_pendientes_card.dart';
 import '../widgets/home_section_trailing.dart';
 import '../widgets/home_stats_row.dart';
+import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -50,6 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (!ref.watch(homeReadyProvider).hasValue) return const AmLoader();
 
     final data = ref.watch(homeDashboardProvider);
+    int aniIdx = 0;
 
     return Scaffold(
       body: SafeArea(
@@ -57,58 +59,96 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             ListView(
               controller: _scrollCtrl,
-              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
+              padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0,
+                  AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 const SizedBox(height: 8),
-                HomeHeader(agentName: data.agentName, urgentCount: data.urgentCount),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: HomeHeader(
+                      agentName: data.agentName, urgentCount: data.urgentCount),
+                ),
                 const SizedBox(height: AmDimens.gapM),
-                HomeStatsRow(
-                  polizas: data.polizasCount,
-                  porRenovar: data.porRenovar,
-                  seguimientos: data.followUps.length,
-                ),
-                const SizedBox(height: AmDimens.gapL),
-                AmSectionLabel(
-                  label: l10n.homePendientes,
-                  trailing: HomeSectionTrailing(
-                    label: data.pending.length > 4
-                        ? l10n.homeViewAllCount(data.pending.length)
-                        : l10n.homeViewAgenda,
-                    onTap: () => context.push('/reminders'),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: HomeStatsRow(
+                    polizas: data.polizasCount,
+                    porRenovar: data.porRenovar,
+                    seguimientos: data.followUps.length,
                   ),
                 ),
-                const SizedBox(height: AmDimens.gapXS),
-                if (data.pending.isNotEmpty)
-                  HomePendientesCard(reminders: data.pending.take(4).toList())
-                else
-                  HomeEmptySection(message: l10n.homeEmptyPendientes),
                 const SizedBox(height: AmDimens.gapL),
-                AmSectionLabel(
-                  label: l10n.homeSeguimientos,
-                  trailing: data.followUps.length > 3 ? HomeSectionTrailing(
-                    label: l10n.homeViewAllCount(data.followUps.length),
-                    onTap: () => context.push('/reminders'),
-                  ) : null,
-                ),
-                if (data.followUps.isNotEmpty)
-                  HomePendientesCard(reminders: data.followUps.take(3).toList())
-                else
-                  HomeEmptySection(message: l10n.homeEmptySeguimientos),
-                const SizedBox(height: AmDimens.gapL),
-                AmSectionLabel(
-                  label: l10n.homeClientesRecientes,
-                  trailing: HomeSectionTrailing(
-                    label: data.clientsCount > 0
-                        ? l10n.homeViewAllCount(data.clientsCount)
-                        : l10n.homeViewAll,
-                    onTap: () => context.go('/clients'),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AmSectionLabel(
+                        label: l10n.homePendientes,
+                        trailing: HomeSectionTrailing(
+                          label: data.pending.length > 4
+                              ? l10n.homeViewAllCount(data.pending.length)
+                              : l10n.homeViewAgenda,
+                          onTap: () => context.push('/reminders'),
+                        ),
+                      ),
+                      const SizedBox(height: AmDimens.gapXS),
+                      if (data.pending.isNotEmpty)
+                        HomePendientesCard(
+                            reminders: data.pending.take(4).toList())
+                      else
+                        HomeEmptySection(message: l10n.homeEmptyPendientes),
+                    ],
                   ),
                 ),
-                const SizedBox(height: AmDimens.gapXS),
-                if (data.clientsCount > 0)
-                  const HomeClientesRecientes()
-                else
-                  HomeEmptySection(message: l10n.homeEmptyClientes),
+                const SizedBox(height: AmDimens.gapL),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AmSectionLabel(
+                        label: l10n.homeSeguimientos,
+                        trailing: data.followUps.length > 3
+                            ? HomeSectionTrailing(
+                                label: l10n
+                                    .homeViewAllCount(data.followUps.length),
+                                onTap: () => context.push('/reminders'),
+                              )
+                            : null,
+                      ),
+                      const SizedBox(height: AmDimens.gapXS),
+                      if (data.followUps.isNotEmpty)
+                        HomePendientesCard(
+                            reminders: data.followUps.take(3).toList())
+                      else
+                        HomeEmptySection(message: l10n.homeEmptySeguimientos),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AmDimens.gapL),
+                AmAnimateIn(
+                  index: aniIdx++,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AmSectionLabel(
+                        label: l10n.homeClientesRecientes,
+                        trailing: HomeSectionTrailing(
+                          label: data.clientsCount > 0
+                              ? l10n.homeViewAllCount(data.clientsCount)
+                              : l10n.homeViewAll,
+                          onTap: () => context.go('/clients'),
+                        ),
+                      ),
+                      const SizedBox(height: AmDimens.gapXS),
+                      if (data.clientsCount > 0)
+                        const HomeClientesRecientes()
+                      else
+                        HomeEmptySection(message: l10n.homeEmptyClientes),
+                    ],
+                  ),
+                ),
               ],
             ),
             IgnorePointer(
@@ -117,7 +157,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 opacity: _showFloating ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 120),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 8, AmDimens.screenH, 0),
+                  padding: const EdgeInsets.fromLTRB(
+                      AmDimens.screenH, 8, AmDimens.screenH, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -125,7 +166,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         onTap: () => _scrollCtrl.animateTo(0,
                             duration: const Duration(milliseconds: 400),
                             curve: Curves.easeOut),
-                        child: Image.asset('assets/logo/logo_t.png', width: 32, height: 32),
+                        child: Image.asset('assets/logo/logo.png',
+                            width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
                         onTap: () => context.push('/reminders'),

@@ -5,14 +5,20 @@ import '../../../core/models/reminder.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/utils/reminder_utils.dart';
 import '../../../l10n/app_localizations.dart';
 import 'am_reminder_actions_sheet.dart';
 
 class ReminderItem extends ConsumerWidget {
-  const ReminderItem({super.key, required this.reminder});
+  const ReminderItem({
+    super.key,
+    required this.reminder,
+    this.showContextMenu = true,
+  });
 
   final Reminder reminder;
+  final bool showContextMenu;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,7 +156,7 @@ class ReminderItem extends ConsumerWidget {
                         color: badgeBg,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(r.date,
+                      child: Text(fmtSmartDate(r.dueDate, l10n),
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -183,20 +189,22 @@ class ReminderItem extends ConsumerWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          useRootNavigator: true,
-          backgroundColor: cs.surface,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          builder: (_) => AmReminderActionsSheet(
-            reminder: r,
-            showReschedule: true,
-          ),
-        );
-      },
+      onLongPress: showContextMenu
+          ? () {
+              showModalBottomSheet(
+                context: context,
+                useRootNavigator: true,
+                backgroundColor: cs.surface,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                builder: (_) => AmReminderActionsSheet(
+                  reminder: r,
+                  showReschedule: true,
+                ),
+              );
+            }
+          : null,
       child: content,
     );
   }

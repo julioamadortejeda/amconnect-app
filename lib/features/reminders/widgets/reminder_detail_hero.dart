@@ -14,14 +14,14 @@ class ReminderDetailHero extends StatelessWidget {
     required this.editing,
     required this.titleCtrl,
     required this.descCtrl,
-    required this.onEdit,
+    this.onEdit,
   });
 
   final Reminder reminder;
   final bool editing;
   final TextEditingController titleCtrl;
   final TextEditingController descCtrl;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {

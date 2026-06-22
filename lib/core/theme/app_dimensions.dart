@@ -5,6 +5,9 @@ abstract final class AmDimens {
   /// Padding inferior en listas con scroll (espacio para la barra + mic)
   static const scrollBottomPad = 100.0;
 
+  /// Padding inferior en pantallas de detalle con botón flotante al final (80px)
+  static const detailScrollBottomPad = 80.0;
+
   /// Padding interno de AmCard
   static const cardPad = 18.0;
 

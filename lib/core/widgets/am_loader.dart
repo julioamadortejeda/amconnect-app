@@ -33,31 +33,29 @@ class _AmLoaderState extends State<AmLoader> with SingleTickerProviderStateMixin
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScaleTransition(
-              scale: _pulseCtrl,
-              child: Image.asset(
-                'assets/logo/logo_t.png',
-                width: 64,
-                height: 64,
-                color: cs.primary,
-              ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ScaleTransition(
+            scale: _pulseCtrl,
+            child: Image.asset(
+              'assets/logo/logo_t.png',
+              width: 64,
+              height: 64,
+              color: cs.primary,
             ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.commonLoading,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: cs.onSurfaceVariant,
-              ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.commonLoading,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: cs.onSurfaceVariant,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

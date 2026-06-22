@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shell/shell_screen.dart';
 import '../providers/auth_provider.dart';
+import '../theme/app_animations.dart';
 import '../../features/onboarding/presentation/splash_screen.dart';
 import '../../features/onboarding/presentation/login_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -12,6 +13,7 @@ import '../../features/reminders/presentation/reminders_screen.dart';
 import '../../features/reminders/presentation/create_reminder_screen.dart';
 import '../../features/reminders/presentation/reminder_detail_screen.dart';
 import '../../core/models/reminder.dart';
+import '../../features/chat/data/chat_context.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
@@ -31,52 +33,85 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/', builder: (_, __) => const SplashScreen()),
-      GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(
+        path: '/',
+        pageBuilder: (_, state) => amTransitionPage(child: const SplashScreen(), state: state, type: 'fade'),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (_, state) => amTransitionPage(child: const LoginScreen(), state: state, type: 'fade'),
+      ),
       GoRoute(
         path: '/email-login',
-        pageBuilder: (_, state) => _slide(const EmailLoginScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(child: const EmailLoginScreen(), state: state, type: 'push'),
       ),
       GoRoute(
         path: '/register',
-        pageBuilder: (_, state) => _slide(const RegisterScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(child: const RegisterScreen(), state: state, type: 'push'),
       ),
 
-      ShellRoute(
-        builder: (context, state, child) =>
-            ShellScreen(location: state.uri.path, child: child),
-        routes: [
-          GoRoute(path: '/home',     builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/reminders', builder: (_, __) => const RemindersScreen()),
-          GoRoute(path: '/clients',   builder: (_, __) => const ClientsScreen()),
-          GoRoute(path: '/data',      builder: (_, __) => const FeedScreen()),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            ShellScreen(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/home',
+              pageBuilder: (_, state) => const NoTransitionPage(child: HomeScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/reminders',
+              pageBuilder: (_, state) => const NoTransitionPage(child: RemindersScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/clients',
+              pageBuilder: (_, state) => const NoTransitionPage(child: ClientsScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/data',
+              pageBuilder: (_, state) => const NoTransitionPage(child: FeedScreen()),
+            ),
+          ]),
         ],
       ),
 
       GoRoute(
         path: '/clients/:id',
-        pageBuilder: (_, state) => _slide(
-          ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/create-reminder',
-        pageBuilder: (_, state) => _slide(
-          CreateReminderScreen(clienteId: state.uri.queryParameters['cliente']),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreateReminderScreen(clienteId: state.uri.queryParameters['cliente']),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/reminder/:id',
-        pageBuilder: (_, state) => _slide(
-          ReminderDetailScreen(reminder: state.extra as Reminder),
-          state,
+        pageBuilder: (_, state) => amTransitionPage(
+          child: ReminderDetailScreen(reminder: state.extra as Reminder),
+          state: state,
+          type: 'push',
         ),
       ),
       GoRoute(
         path: '/chat',
-        pageBuilder: (_, state) => _slide(const ChatScreen(), state),
+        pageBuilder: (_, state) => amTransitionPage(
+          child: ChatScreen(initialContext: state.extra as AiChatContext?),
+          state: state,
+          type: 'push',
+        ),
       ),
     ],
   );
@@ -89,16 +124,39 @@ class _AuthNotifier extends ChangeNotifier {
   }
 }
 
-CustomTransitionPage<void> _slide(Widget child, GoRouterState state) {
-  return CustomTransitionPage<void>(
+CustomTransitionPage<T> amTransitionPage<T>({
+  required Widget child,
+  required GoRouterState state,
+  required String type, // 'push' | 'pop' | 'fade'
+}) {
+  return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, _, child) => SlideTransition(
-      position: animation.drive(
-        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
-      ),
-      child: child,
-    ),
+    transitionDuration: AmAnims.transitionDuration,
+    reverseTransitionDuration: AmAnims.transitionDuration,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (MediaQuery.of(context).disableAnimations) {
+        return child;
+      }
+
+      if (type == 'fade') {
+        return FadeTransition(
+          opacity: animation.drive(CurveTween(curve: AmAnims.fadeCurve)),
+          child: child,
+        );
+      }
+
+      // Slide transition: slides in from right to left, and slides out from left to right.
+      return SlideTransition(
+        position: animation.drive(
+          Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: AmAnims.transitionCurve)),
+        ),
+        child: child,
+      );
+    },
   );
 }
+

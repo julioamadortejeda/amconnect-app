@@ -8,6 +8,7 @@ import '../providers/reminders_provider.dart';
 import 'deleted_reminders_view.dart';
 import 'reminder_filter_chip.dart';
 import 'reminder_item.dart';
+import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 
 const _typeOrder = [
@@ -33,53 +34,56 @@ class ReminderListView extends ConsumerWidget {
 
     return Column(
       children: [
-        SizedBox(
-          height: 40,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding:
-                const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ReminderFilterChip(
-                  label: l10n.remindersFilterAll,
-                  active: ui.filter == 'todos',
-                  onTap: () =>
-                      ref.read(remindersUiProvider.notifier).setFilter('todos'),
+        AmAnimateIn(
+          index: 0,
+          child: SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ReminderFilterChip(
+                    label: l10n.remindersFilterAll,
+                    active: ui.filter == 'todos',
+                    onTap: () =>
+                        ref.read(remindersUiProvider.notifier).setFilter('todos'),
+                  ),
                 ),
-              ),
-              ...typesAsync.maybeWhen(
-                data: (types) => (List.of(types)
-                      ..sort((a, b) => _typePriority(a).compareTo(_typePriority(b))))
-                    .map((t) => Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ReminderFilterChip(
-                        label: l10n.reminderType(t.code),
-                        active: ui.filter == t.code,
-                        onTap: () => ref
-                            .read(remindersUiProvider.notifier)
-                            .setFilter(t.code),
-                      ),
-                    )),
-                orElse: () => [],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ReminderFilterChip(
-                  label: l10n.remindersFilterDeleted,
-                  active: ui.filter == 'eliminados',
-                  danger: true,
-                  onTap: () => ref
-                      .read(remindersUiProvider.notifier)
-                      .setFilter('eliminados'),
+                ...typesAsync.maybeWhen(
+                  data: (types) => (List.of(types)
+                        ..sort((a, b) => _typePriority(a).compareTo(_typePriority(b))))
+                      .map((t) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ReminderFilterChip(
+                          label: l10n.reminderType(t.code),
+                          active: ui.filter == t.code,
+                          onTap: () => ref
+                              .read(remindersUiProvider.notifier)
+                              .setFilter(t.code),
+                        ),
+                      )),
+                  orElse: () => [],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ReminderFilterChip(
+                    label: l10n.remindersFilterDeleted,
+                    active: ui.filter == 'eliminados',
+                    danger: true,
+                    onTap: () => ref
+                        .read(remindersUiProvider.notifier)
+                        .setFilter('eliminados'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         if (ui.filter == 'eliminados') ...[
-          const SizedBox(height: 10),
+          const SizedBox(height: AmDimens.gapXS),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
             child: Row(
@@ -101,7 +105,7 @@ class ReminderListView extends ConsumerWidget {
             ),
           ),
         ],
-        const SizedBox(height: 12),
+        const SizedBox(height: AmDimens.gapS),
         Expanded(
           child: reminders.isEmpty
               ? Center(
@@ -111,6 +115,7 @@ class ReminderListView extends ConsumerWidget {
                   ),
                 )
               : SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: AmDimens.scrollBottomPad),
                   child: ui.filter == 'eliminados'
                       ? const DeletedRemindersView()
                       : Padding(
@@ -128,7 +133,10 @@ class ReminderListView extends ConsumerWidget {
                                       endIndent: AmDimens.screenH,
                                       color: cs.outlineVariant,
                                     ),
-                                  ReminderItem(reminder: reminders[i]),
+                                  AmAnimateIn(
+                                    index: i + 1,
+                                    child: ReminderItem(reminder: reminders[i]),
+                                  ),
                                 ],
                               ],
                             ),

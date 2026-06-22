@@ -16,6 +16,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClose => 'Close';
 
   @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
   String get commonAccount => 'Account';
 
   @override
@@ -308,6 +314,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsSearchHint => 'Search client…';
 
   @override
+  String get clientsEmpty => 'No registered clients';
+
+  @override
+  String get clientsError => 'Error loading clients';
+
+  @override
+  String get clientsContactSection => 'Contact';
+
+  @override
+  String get clientsNoPolicies => 'No registered policies';
+
+  @override
+  String get clientsNoNotes => 'No notes';
+
+  @override
   String get clientsStatusProspect => 'Prospect';
 
   @override
@@ -318,6 +339,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsStatusUpToDate => 'Up to date';
+
+  @override
+  String clientsAge(int count) {
+    return '$count years old';
+  }
+
+  @override
+  String clientsMemberSince(int year) {
+    return 'Client since $year';
+  }
+
+  @override
+  String get clientsNewClient => 'Client';
+
+  @override
+  String get clientsNoteTypePdf => 'PDF document';
+
+  @override
+  String get clientsNoteTypeAudio => 'Voice note';
+
+  @override
+  String get clientsNoteTypeImage => 'Image';
+
+  @override
+  String get clientsNoteTypeText => 'Chat message';
+
+  @override
+  String get clientsNoteOpenFile => 'Open file';
 
   @override
   String get clientsActionCall => 'Call';
@@ -355,6 +404,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsPolicyDeductible => 'Deductible';
+
+  @override
+  String get clientsPolicyEndDate => 'End date';
+
+  @override
+  String get clientsPolicyFiles => 'Files';
+
+  @override
+  String get clientsPolicyFileObsolete => 'Obsolete';
+
+  @override
+  String clientsPolicyOldVersions(int count) {
+    return 'Previous versions ($count)';
+  }
+
+  @override
+  String get clientsPolicyDeleteNoteTitle => 'Delete file';
+
+  @override
+  String get clientsPolicyDeleteNoteMsg =>
+      'This version is no longer active. Do you want to delete it?';
 
   @override
   String clientsAskAbout(String name) {
@@ -464,6 +534,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceSend => 'Send';
 
   @override
+  String get voiceTapToSend => 'Tap to send';
+
+  @override
+  String get voiceTapToStart => 'Tap to speak';
+
+  @override
+  String get voiceNotAvailable => 'Voice not available';
+
+  @override
   String get chatTitle => 'Assistant';
 
   @override
@@ -515,6 +594,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedTypeWhatsappDesc => 'Export and upload the conversation';
 
   @override
+  String get feedTypeKnowledgeImage => 'Image / screenshot';
+
+  @override
+  String get feedTypeKnowledgeImageDesc => 'Photo, screenshot or image file';
+
+  @override
+  String get feedTypeDocument => 'Knowledge PDF';
+
+  @override
+  String get feedTypeDocumentDesc => 'Document, manual, contract…';
+
+  @override
   String get feedRecentlyUploaded => 'Recently uploaded';
 
   @override
@@ -528,6 +619,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedProcessingDesc => 'AI is extracting policy data';
+
+  @override
+  String get feedStepGettingUrl => 'Getting upload link…';
+
+  @override
+  String get feedStepUploading => 'Uploading file to server…';
+
+  @override
+  String get feedStepProcessing => 'Processing file with AI…';
+
+  @override
+  String get feedViewModeIngest => 'Ingest';
+
+  @override
+  String get feedViewModeKnowledge => 'Knowledge';
+
+  @override
+  String get feedStatsPDFs => 'PDFs';
+
+  @override
+  String get feedStatsImages => 'Images';
+
+  @override
+  String get feedStatsAudios => 'Audios';
+
+  @override
+  String get feedStatsNotes => 'Notes';
+
+  @override
+  String get feedStatsChats => 'Chats';
+
+  @override
+  String get feedSearchHint => 'Search knowledge base...';
+
+  @override
+  String get feedSearchNoResults => 'No notes or documents found.';
+
+  @override
+  String get feedStatsTitle => 'Knowledge Summary';
+
+  @override
+  String get feedAllNotesTitle => 'All Notes';
 
   @override
   String get feedSuccessTitle => 'Policy created';
@@ -564,6 +697,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Done';
+
+  @override
+  String get feedKnowledgeSuccessTitle => 'Saved!';
+
+  @override
+  String get feedKnowledgeDone => 'Close';
+
+  @override
+  String get feedTextInputTitle => 'Add note or text';
+
+  @override
+  String get feedWhatsappInputTitle => 'Import conversation';
+
+  @override
+  String get feedTextInputHint =>
+      'Paste your text, notes or conversation here…';
+
+  @override
+  String get feedTextInputSubmit => 'Process';
 
   @override
   String get remindersActionDone => 'Mark done';

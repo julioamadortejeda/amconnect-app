@@ -70,6 +70,7 @@ final selectedDayRemindersProvider = Provider<List<Reminder>>((ref) {
   final selected = ref.watch(remindersUiProvider).selectedDate;
   if (selected == null) return [];
   return reminders.where((r) {
+    if (!r.isActive) return false;
     final d = r.dueDate;
     if (d == null) return false;
     return d.year == selected.year && d.month == selected.month && d.day == selected.day;
@@ -78,6 +79,7 @@ final selectedDayRemindersProvider = Provider<List<Reminder>>((ref) {
 
 /// Tipos de recordatorio del catálogo.
 final reminderTypesProvider = FutureProvider<List<ReminderType>>((ref) {
+  ref.keepAlive();
   return ref.read(reminderRepositoryProvider).getTypes();
 });
 
@@ -86,6 +88,7 @@ final remindersByDateProvider = Provider<Map<DateTime, List<Reminder>>>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final map = <DateTime, List<Reminder>>{};
   for (final r in reminders) {
+    if (!r.isActive) continue;
     final d = r.dueDate;
     if (d == null) continue;
     final key = DateTime(d.year, d.month, d.day);

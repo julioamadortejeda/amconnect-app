@@ -10,9 +10,22 @@ class ApiClient {
 
   Map<String, String> get _headers {
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
+    // Compute timezone offset string (e.g., "-06:00")
+    final now = DateTime.now();
+    final offset = now.timeZoneOffset;
+    final sign = offset.isNegative ? '-' : '+';
+    final hours = offset.inHours.abs().toString().padLeft(2, '0');
+    final minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+    final tzOffset = '$sign$hours:$minutes';
+    // Use the IANA timezone name when available, fall back to offset
+    final tzName = now.timeZoneName; // e.g. "CST" or "America/Mexico_City"
+    final locale = Platform.localeName; // e.g. "es_MX"
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
+      'x-timezone': tzName,
+      'x-timezone-offset': tzOffset,
+      'Accept-Language': locale,
     };
   }
 
@@ -52,9 +65,25 @@ class ApiClient {
 
   /// PUT sin Authorization — para URLs firmadas de Supabase Storage.
   Future<void> putFile(String signedUrl, File file, String mimeType) async {
+    String targetUrl = signedUrl;
+    try {
+      final supabaseUri = Uri.parse(Env.supabaseUrl);
+      final signedUri = Uri.parse(signedUrl);
+      if (signedUri.host == '127.0.0.1' || signedUri.host == 'localhost' || signedUri.host == 'kong') {
+        targetUrl = signedUri.replace(
+          scheme: supabaseUri.scheme,
+          host: supabaseUri.host,
+          port: supabaseUri.port,
+        ).toString();
+      }
+    } catch (e) {
+      // Si falla el parsing por alguna razón, conservamos la URL original
+      targetUrl = signedUrl;
+    }
+
     final bytes = await file.readAsBytes();
     final res = await http.put(
-      Uri.parse(signedUrl),
+      Uri.parse(targetUrl),
       headers: {'Content-Type': mimeType},
       body: bytes,
     );

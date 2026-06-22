@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder_comment.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/formatters.dart';
 
 class ReminderCommentBubble extends StatelessWidget {
   const ReminderCommentBubble({super.key, required this.comment});
 
   final ReminderComment comment;
 
-  static String _fmtDate(DateTime dt) {
-    const wd = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
-    const mo = ['ene', 'feb', 'mar', 'abr', 'may', 'jun',
-                 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    return '${wd[dt.weekday - 1]} ${dt.day} ${mo[dt.month - 1]} ${dt.year}';
-  }
+  static String _fmtDate(DateTime dt) => fmtDateWithWeekday(dt);
 
   @override
   Widget build(BuildContext context) {

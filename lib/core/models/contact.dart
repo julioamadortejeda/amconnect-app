@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/formatters.dart';
 
 class Contact {
   const Contact({
@@ -9,6 +10,8 @@ class Contact {
     this.occupation,
     this.address,
     this.birthdate,
+    this.rfc,
+    this.curp,
     this.notes,
     this.createdAt,
   });
@@ -20,25 +23,45 @@ class Contact {
   final String? occupation;
   final String? address;
   final String? birthdate;
+  final String? rfc;
+  final String? curp;
   final String? notes;
   final String? createdAt;
 
-  String get inicial {
-    final parts = fullName.trim().split(RegExp(r'\s+'));
-    return parts.take(2).map((w) => w.isEmpty ? '' : w[0].toUpperCase()).join();
-  }
+  String get initials => getInitials(fullName);
 
   Color get color {
     final hue = (id.hashCode.abs() % 360).toDouble();
     return HSLColor.fromAHSL(1.0, hue, 0.60, 0.40).toColor();
   }
 
-  String get desde {
-    final year = createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;
-    return year != null ? 'Cliente $year' : 'Cliente';
+  int? get age {
+    if (birthdate == null) return null;
+    final dt = DateTime.tryParse(birthdate!);
+    if (dt == null) return null;
+    final now = DateTime.now();
+    int years = now.year - dt.year;
+    if (now.month < dt.month || (now.month == dt.month && now.day < dt.day)) {
+      years--;
+    }
+    return years;
   }
 
-  int get diasSinContacto => 0;
+  int? get memberSinceYear =>
+      createdAt != null ? DateTime.tryParse(createdAt!)?.year : null;
+
+  int get daysSinceContact => 0;
+
+  bool matchesQuery(String q) {
+    if (q.isEmpty) return true;
+    final lower = q.toLowerCase();
+    return fullName.toLowerCase().contains(lower) ||
+        (email?.toLowerCase().contains(lower) ?? false) ||
+        (phone?.contains(lower) ?? false) ||
+        (occupation?.toLowerCase().contains(lower) ?? false) ||
+        (address?.toLowerCase().contains(lower) ?? false) ||
+        (rfc?.toLowerCase().contains(lower) ?? false);
+  }
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
         id: json['id'] as String,
@@ -48,6 +71,8 @@ class Contact {
         occupation: json['occupation'] as String?,
         address: json['address'] as String?,
         birthdate: json['birthdate'] as String?,
+        rfc: json['rfc'] as String?,
+        curp: json['curp'] as String?,
         notes: json['notes'] as String?,
         createdAt: json['createdAt'] as String?,
       );

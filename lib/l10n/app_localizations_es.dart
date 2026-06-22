@@ -16,6 +16,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commonClose => 'Cerrar';
 
   @override
+  String get commonCancel => 'Cancelar';
+
+  @override
+  String get commonDelete => 'Eliminar';
+
+  @override
   String get commonAccount => 'Cuenta';
 
   @override
@@ -309,6 +315,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsSearchHint => 'Buscar cliente…';
 
   @override
+  String get clientsEmpty => 'Sin clientes registrados';
+
+  @override
+  String get clientsError => 'Error al cargar clientes';
+
+  @override
+  String get clientsContactSection => 'Contacto';
+
+  @override
+  String get clientsNoPolicies => 'Sin pólizas registradas';
+
+  @override
+  String get clientsNoNotes => 'Sin notas';
+
+  @override
   String get clientsStatusProspect => 'Prospecto';
 
   @override
@@ -319,6 +340,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsStatusUpToDate => 'Al día';
+
+  @override
+  String clientsAge(int count) {
+    return '$count años';
+  }
+
+  @override
+  String clientsMemberSince(int year) {
+    return 'Cliente desde $year';
+  }
+
+  @override
+  String get clientsNewClient => 'Cliente';
+
+  @override
+  String get clientsNoteTypePdf => 'Documento PDF';
+
+  @override
+  String get clientsNoteTypeAudio => 'Nota de voz';
+
+  @override
+  String get clientsNoteTypeImage => 'Imagen';
+
+  @override
+  String get clientsNoteTypeText => 'WhatsApp';
+
+  @override
+  String get clientsNoteOpenFile => 'Ver archivo';
 
   @override
   String get clientsActionCall => 'Llamar';
@@ -356,6 +405,27 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsPolicyDeductible => 'Deducible';
+
+  @override
+  String get clientsPolicyEndDate => 'Vencimiento';
+
+  @override
+  String get clientsPolicyFiles => 'Archivos';
+
+  @override
+  String get clientsPolicyFileObsolete => 'Obsoleto';
+
+  @override
+  String clientsPolicyOldVersions(int count) {
+    return 'Versiones anteriores ($count)';
+  }
+
+  @override
+  String get clientsPolicyDeleteNoteTitle => 'Eliminar archivo';
+
+  @override
+  String get clientsPolicyDeleteNoteMsg =>
+      'Esta versión ya no está activa. ¿Deseas eliminarla?';
 
   @override
   String clientsAskAbout(String name) {
@@ -466,6 +536,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceSend => 'Enviar';
 
   @override
+  String get voiceTapToSend => 'Toca para enviar';
+
+  @override
+  String get voiceTapToStart => 'Toca para hablar';
+
+  @override
+  String get voiceNotAvailable => 'Voz no disponible';
+
+  @override
   String get chatTitle => 'Asistente';
 
   @override
@@ -517,6 +596,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedTypeWhatsappDesc => 'Exporta y sube la conversación';
 
   @override
+  String get feedTypeKnowledgeImage => 'Imagen / captura';
+
+  @override
+  String get feedTypeKnowledgeImageDesc => 'Foto, captura de pantalla o imagen';
+
+  @override
+  String get feedTypeDocument => 'PDF de conocimiento';
+
+  @override
+  String get feedTypeDocumentDesc => 'Documento, manual, contrato…';
+
+  @override
   String get feedRecentlyUploaded => 'Subido recientemente';
 
   @override
@@ -531,6 +622,48 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get feedProcessingDesc =>
       'La IA está extrayendo los datos de la póliza';
+
+  @override
+  String get feedStepGettingUrl => 'Obteniendo enlace de subida…';
+
+  @override
+  String get feedStepUploading => 'Subiendo archivo al servidor…';
+
+  @override
+  String get feedStepProcessing => 'Procesando archivo con IA…';
+
+  @override
+  String get feedViewModeIngest => 'Ingestar';
+
+  @override
+  String get feedViewModeKnowledge => 'Conocimiento';
+
+  @override
+  String get feedStatsPDFs => 'PDFs';
+
+  @override
+  String get feedStatsImages => 'Imágenes';
+
+  @override
+  String get feedStatsAudios => 'Audios';
+
+  @override
+  String get feedStatsNotes => 'Notas';
+
+  @override
+  String get feedStatsChats => 'Chats';
+
+  @override
+  String get feedSearchHint => 'Buscar en base de conocimiento...';
+
+  @override
+  String get feedSearchNoResults => 'No se encontraron notas o documentos.';
+
+  @override
+  String get feedStatsTitle => 'Resumen de conocimiento';
+
+  @override
+  String get feedAllNotesTitle => 'Todas las notas';
 
   @override
   String get feedSuccessTitle => 'Póliza creada';
@@ -567,6 +700,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Listo';
+
+  @override
+  String get feedKnowledgeSuccessTitle => '¡Guardado!';
+
+  @override
+  String get feedKnowledgeDone => 'Cerrar';
+
+  @override
+  String get feedTextInputTitle => 'Agregar nota o texto';
+
+  @override
+  String get feedWhatsappInputTitle => 'Importar conversación';
+
+  @override
+  String get feedTextInputHint => 'Pega aquí el texto, notas o conversación…';
+
+  @override
+  String get feedTextInputSubmit => 'Procesar';
 
   @override
   String get remindersActionDone => 'Finalizar';

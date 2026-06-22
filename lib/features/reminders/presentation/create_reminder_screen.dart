@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/am_theme.dart';
-import '../../../core/mock/mock_data.dart';
 import '../../../core/widgets/am_avatar.dart';
 import '../../../core/widgets/am_back_bar.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../clients/providers/clients_provider.dart';
 
 class CreateReminderScreen extends ConsumerStatefulWidget {
   const CreateReminderScreen({super.key, this.clienteId});
@@ -39,7 +39,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
   @override
   void initState() {
     super.initState();
-    _clienteId = widget.clienteId ?? mockClients.first.id;
+    _clienteId = widget.clienteId ?? '';
   }
 
   @override
@@ -173,38 +173,46 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                   label: l10n.remindersFieldClient,
                   child: SizedBox(
                     height: 56,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: mockClients.map((c) {
-                        final active = c.id == _clienteId;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: AmPress(
-                            onTap: () => setState(() => _clienteId = c.id),
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(7, 7, 13, 7),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: active ? AmColors.accent : Colors.transparent,
-                                  width: 2,
+                    child: Builder(
+                      builder: (context) {
+                        final clients = ref.watch(clientsProvider).value ?? [];
+                        final activeClienteId = _clienteId.isNotEmpty
+                            ? _clienteId
+                            : (clients.isNotEmpty ? clients.first.id : '');
+                        return ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: clients.map((c) {
+                            final active = c.id == activeClienteId;
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: AmPress(
+                                onTap: () => setState(() => _clienteId = c.id),
+                                child: Container(
+                                  padding: const EdgeInsets.fromLTRB(7, 7, 13, 7),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: active ? AmColors.accent : Colors.transparent,
+                                      width: 2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(13),
+                                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      AmAvatar(initials: c.initials, color: c.color, size: 30, radius: 9),
+                                      const SizedBox(width: 8),
+                                      Text(c.fullName.split(' ').first,
+                                          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,
+                                              color: cs.onSurface)),
+                                    ],
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(13),
-                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
                               ),
-                              child: Row(
-                                children: [
-                                  AmAvatar(inicial: c.inicial, color: c.color, size: 30, radius: 9),
-                                  const SizedBox(width: 8),
-                                  Text(c.nombre.split(' ').first,
-                                      style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,
-                                          color: cs.onSurface)),
-                                ],
-                              ),
-                            ),
-                          ),
+                            );
+                          }).toList(),
                         );
-                      }).toList(),
+                      }
                     ),
                   ),
                 ),

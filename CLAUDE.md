@@ -24,63 +24,42 @@ lib/l10n/
 l10n.yaml                   # arb-dir, template, output file
 ```
 
-### Cómo usar en cualquier pantalla o widget
+### Cómo usar
 
 ```dart
 import 'package:amconnect/l10n/app_localizations.dart';
 
-@override
-Widget build(BuildContext context) {
-  final l10n = AppLocalizations.of(context)!;
-  return Text(l10n.algoClave);
-}
+final l10n = AppLocalizations.of(context)!;
+Text(l10n.algoClave)
 ```
 
 - **Nunca** hardcodear strings visibles al usuario. Siempre `l10n.xxx`.
-- Cada sub-widget con `BuildContext` propio (clases separadas) necesita su propio `AppLocalizations.of(context)!`.
-- En callbacks con contexto diferente (e.g., `showModalBottomSheet builder: (ctx)`), usar `AppLocalizations.of(ctx)!`.
+- Cada sub-widget con `BuildContext` propio necesita su propio `AppLocalizations.of(context)!`.
+- En callbacks con contexto diferente (`showModalBottomSheet builder: (ctx)`), usar `AppLocalizations.of(ctx)!`.
 
 ### Organización de claves ARB
 
-Las claves siguen el prefijo del feature al que pertenecen:
-
 | Prefijo | Feature |
 |---|---|
-| `login*` | Pantalla de login (social) |
-| `emailLogin*` | Pantalla email/password |
-| `register*` | Pantalla de registro |
+| `login*` | Login social |
+| `emailLogin*` | Login email/password |
+| `register*` | Registro |
 | `shell*` | Bottom tab bar |
 | `home*` | Dashboard |
 | `clients*` | Lista y detalle de clientes |
-| `reminders*` | Agenda y crear recordatorio |
-| `chat*` | Pantalla de chat IA |
+| `reminders*` / `reminder*` / `calendar*` | Agenda y detalle de recordatorio |
+| `chat*` | Chat IA |
 | `feed*` | Base de conocimiento |
 | `field*` | Labels de campos de formulario |
 | `err*` | Mensajes de error |
-| `common*` | Strings reutilizables (cerrar, cuenta, etc.) |
-
-### Strings con parámetros
-
-```arb
-"homeGreeting": "Hola, {name}",
-"@homeGreeting": { "placeholders": { "name": { "type": "String" } } }
-```
-
-```dart
-l10n.homeGreeting('Daniel')   // → "Hola, Daniel"
-l10n.clientsTotal(5)          // → "5 en total"
-```
+| `common*` | Strings reutilizables |
 
 ### Agregar una nueva string
 
-1. Agregar la clave en `lib/l10n/app_es.arb` (con `@key` si tiene parámetros).
-2. Agregar la traducción en `lib/l10n/app_en.arb`.
-3. Ejecutar `flutter gen-l10n` (o `flutter run` que lo hace automáticamente).
+1. Agregar en `lib/l10n/app_es.arb` (con `@key` si tiene parámetros).
+2. Agregar traducción en `lib/l10n/app_en.arb`.
+3. Ejecutar `flutter gen-l10n`.
 4. Usar `l10n.nuevaClave` en el widget.
-
-### Agregar un nuevo idioma
-
-Crear `lib/l10n/app_<locale>.arb` con las mismas claves que `app_es.arb` y agregar el locale a `supportedLocales` en `main.dart`.
 
 ---
 
@@ -89,50 +68,24 @@ Crear `lib/l10n/app_<locale>.arb` con las mismas claves que `app_es.arb` y agreg
 ```
 lib/
 ├── core/
-│   ├── mock/
-│   │   └── mock_data.dart          # Datos de prueba: clientes, pólizas, recordatorios, chat
-│   ├── router/
-│   │   └── router.dart             # GoRouter: shell + push routes
-│   ├── shell/
-│   │   └── shell_screen.dart       # Scaffold con bottom tab bar + FAB micrófono central
+│   ├── models/               # Contact, Reminder, ReminderType, Policy…
+│   ├── repositories/         # Interfaces abstractas + implementaciones Supabase
+│   ├── network/              # ApiClient (HTTP al Edge Function)
+│   ├── router/router.dart    # GoRouter
+│   ├── shell/shell_screen.dart   # Bottom tab bar + FAB micrófono
 │   ├── theme/
-│   │   ├── app_colors.dart         # Design tokens: AmColors — constantes light/dark + fijas
-│   │   ├── am_theme.dart           # AmTheme ThemeExtension + extensión context.am
-│   │   └── theme.dart              # AzulProTheme.lightTheme + AzulProTheme.darkTheme
-│   └── widgets/                    # Widgets reutilizables (ver detalle abajo)
-│       ├── am_avatar.dart
-│       ├── am_back_bar.dart
-│       ├── am_badge.dart
-│       ├── am_card.dart
-│       ├── am_icon_btn.dart
-│       ├── am_press.dart
-│       ├── am_ramo_icon.dart
-│       ├── am_section_label.dart
-│       ├── am_segmented.dart
-│       └── am_text_field.dart      # Campo de texto estilizado (reutilizable en forms)
+│   │   ├── app_colors.dart   # AmColors — tokens fijos
+│   │   ├── am_theme.dart     # AmTheme ThemeExtension + context.am
+│   │   └── theme.dart        # AzulProTheme.lightTheme/darkTheme
+│   ├── utils/                # reminder_utils.dart, catalog_l10n.dart…
+│   └── widgets/              # (ver tabla de widgets reutilizables abajo)
 └── features/
-    ├── onboarding/
-    │   ├── presentation/
-    │   │   ├── splash_screen.dart  # Logo animado con rings pulsantes → auto-navega a /login
-    │   │   └── login_screen.dart   # Gradiente azul, botones Apple/Google/invitado
-    │   ├── providers/
-    │   │   └── login_provider.dart # LoginNotifier: signInWithGoogle/Apple/Guest/Email
-    │   └── widgets/
-    │       ├── login_social_btn.dart   # Botón blanco con icon + texto azul (Apple/Google)
-    │       ├── login_guest_btn.dart    # Botón transparente "Explorar como invitado"
-    │       └── email_login_sheet.dart  # Bottom sheet con form email/contraseña
-    ├── home/presentation/
-    │   └── home_screen.dart        # Dashboard del asesor: alertas, action cards, AI bar, stats
-    ├── clients/presentation/
-    │   ├── clients_screen.dart     # Lista con búsqueda (Riverpod)
-    │   └── client_detail_screen.dart  # Perfil, tabs pólizas/notas, acciones rápidas
-    ├── reminders/presentation/
-    │   ├── reminders_screen.dart   # Lista con filtros chips y checkbox toggle
-    │   └── create_reminder_screen.dart  # Form con selector tipo/cliente/fecha, toggle repetir
-    ├── chat/presentation/
-    │   └── chat_screen.dart        # Chat IA con typing dots, tarjetas de respuesta, bullets
-    └── feed/presentation/
-        └── feed_screen.dart        # Grid de tipos de carga + hoja de procesamiento animada
+    ├── onboarding/           # splash, login, email_login, register
+    ├── home/                 # dashboard + providers + widgets
+    ├── clients/              # lista, detalle, provider, widgets
+    ├── reminders/            # agenda, detalle, crear, provider, widgets
+    ├── chat/                 # chat IA, voice overlay, widgets
+    └── feed/                 # ingesta de documentos
 ```
 
 ---
@@ -143,29 +96,41 @@ lib/
 |---|---|---|
 | `/` | SplashScreen | full |
 | `/login` | LoginScreen | full |
+| `/email-login` | EmailLoginScreen | full |
+| `/register` | RegisterScreen | full |
 | `/home` | HomeScreen | shell tab |
-| `/agenda` | RemindersScreen | shell tab |
-| `/clientes` | ClientsScreen | shell tab |
-| `/datos` | FeedScreen | shell tab |
-| `/clientes/:id` | ClientDetailScreen | push slide |
-| `/crear-recordatorio` | CreateReminderScreen | push slide |
+| `/reminders` | RemindersScreen | shell tab |
+| `/clients` | ClientsScreen | shell tab |
+| `/data` | FeedScreen | shell tab |
+| `/clients/:id` | ClientDetailScreen | push slide |
+| `/create-reminder` | CreateReminderScreen | push slide |
+| `/reminder/:id` | ReminderDetailScreen | push slide |
 | `/chat` | ChatScreen | push slide |
 
 ---
 
-## Widgets reutilizables
+## Widgets reutilizables (`core/widgets/`)
 
 | Widget | Props clave | Notas |
 |---|---|---|
-| `AmPress` | `onTap`, `scale` | Animación 0.96 escala al presionar |
-| `AmCard` | `onTap`, `noPad`, `padding` | Shadow + radius 22 |
+| `AmPress` | `onTap`, `scale` | Animación 0.96 al presionar |
+| `AmCard` | `onTap`, `noPad`, `padding` | Shadow + radius `AmDimens.cardRadius` |
 | `AmBadge` | `label`, `tone` (accent/green/red/amber/muted), `icon` | |
-| `AmAvatar` | `client` (MockClient), `size`, `radius` | Iniciales + color del cliente |
-| `AmIconBtn` | `icon`, `tone` (soft/sunken/accent/ghost), `dim`, `dot` | |
+| `AmAvatar` | `inicial`, `color`, `size`, `radius` | Iniciales + color derivado del id |
+| `AmIconBtn` | `icon`, `tone`, `dim`, `dot` | Tones: soft/sunken/accent/ghost/onPrimary |
 | `AmSegmented` | `options`, `selected`, `onSelect` | Tabs estilo iOS |
-| `AmSectionLabel` | `label`, `trailing` | Label en mayúsculas |
-| `AmBackBar` | `title`, `subtitle`, `trailing`, `onBack` | Blur + sticky top |
-| `AmRamoIcon` | `ramo`, `size` | Icono coloreado: Auto/GMM/Vida/Hogar |
+| `AmSectionLabel` | `label`, `trailing` | Label en uppercase |
+| `AmTopBar` | `title`, `subtitle`, `actions`, `showBack`, `onBack` | AppBar estándar — usar en toda pantalla nueva |
+| `AmBackBar` | `title`, `trailing`, `onBack` | Blur+glass — legacy, no usar en nuevas pantallas |
+| `AmLoader` | — | Indicador de carga estándar (reemplaza CircularProgressIndicator) |
+| `AmCalendar` | `visibleMonth`, `selectedDate`, `events`, callbacks | Calendario mensual con dots de eventos |
+| `AmAurora` | `delay` | Fondo animado para VoiceOverlay |
+| `AmRamoIcon` | `ramo`, `size` | Icono coloreado por tipo de póliza |
+| `AmConfirmDialog` | `title`, `message`, `onConfirm` | Diálogo de confirmación animado |
+| `AmCancelDialog` | `reminder`, `onConfirm` | Diálogo de cancelación con motivo |
+| `AmRescheduleDialog` | `initialDateTime`, `onConfirm` | Picker fecha/hora |
+| `AmFadeAnimation` | `child`, `delay` | Fade + slide in de entrada |
+| `AmTextField` | — | Campo de texto estilizado para formularios |
 
 ---
 
@@ -173,154 +138,304 @@ lib/
 
 ### Separación pantalla / lógica
 
-**Las pantallas solo presentan. Toda lógica va en providers.**
+- Las **pantallas** solo hacen `ref.watch` / `ref.read` + renderizan.
+- Toda lógica va en el **provider** de la feature (`features/<nombre>/providers/<nombre>_provider.dart`).
+- No hay funciones async inline en `build`, ni acceso directo a SDKs desde pantallas.
 
-- Cada feature tiene su propio provider en `features/<nombre>/providers/<nombre>_provider.dart`
-- La pantalla (`presentation/`) solo hace `ref.watch` / `ref.read` + renderiza
-- No hay funciones async inline en `build`, ni llamadas directas a `authProvider` u otros providers core desde la pantalla — pasan por el provider de la feature
-- Los errores los decide el provider (expone un enum de error); la pantalla convierte ese enum en string para mostrarlo
+### Widgets — un archivo por widget, sin clases privadas en pantallas
 
-### Widgets sin guión bajo — cada uno en su propio archivo
-
-- **Nunca** clases privadas con `_` en un archivo de pantalla
-- Si el widget es reutilizable en otras pantallas → `core/widgets/am_<nombre>.dart`
-- Si el widget es específico de una feature → `features/<feature>/widgets/<nombre>.dart`
-- Convención de nombre: `LoginSocialBtn`, `EmailLoginSheet`, `AmTextField` (sin prefijo `_`)
+- **Nunca** clases privadas con `_` en un archivo de pantalla (`presentation/`).
+- Clases auxiliares privadas (`_Action`, `_Row`…) son aceptables dentro de archivos de **widget** (no de pantalla) como detalle de implementación.
+- Widget reutilizable entre features → `core/widgets/am_<nombre>.dart`
+- Widget específico de un feature → `features/<feature>/widgets/<nombre>.dart`
 
 ### Estructura de un feature completo
 
 ```
 features/<nombre>/
 ├── presentation/
-│   └── <nombre>_screen.dart    # solo UI, sin lógica
+│   └── <nombre>_screen.dart       # solo UI
 ├── providers/
-│   └── <nombre>_provider.dart  # NotifierProvider con toda la lógica
+│   └── <nombre>_provider.dart     # Notifier + providers derivados + UI state
 └── widgets/
-    └── <widget_name>.dart      # un archivo por widget
+    └── <widget_name>.dart         # un archivo por widget
 ```
+
+### Providers UI en el archivo de provider
+
+Los `Notifier` de estado de UI (filtros, selección de tab, búsqueda…) van en el archivo `<feature>_provider.dart`, no en el archivo de pantalla. Ejemplo: `clientSearchProvider` está en `clients_provider.dart`.
 
 ---
 
 ## Estado con Riverpod 3.x
 
-**IMPORTANTE:** Riverpod 3.x eliminó `StateProvider`. Usar siempre `Notifier` + `NotifierProvider`.
+**Riverpod 3.x eliminó `StateProvider`.** Usar siempre `Notifier` + `NotifierProvider`.
 
 ```dart
-// Correcto en Riverpod 3.x
-class MyNotifier extends Notifier<MyType> {
+class MyNotifier extends Notifier<MyState> {
   @override
-  MyType build() => initialValue;
-  void update(MyType val) => state = val;
+  MyState build() => MyState();
+  void update(MyState s) => state = s;
 }
-final myProvider = NotifierProvider<MyNotifier, MyType>(MyNotifier.new);
-
-// ❌ NO usar — StateProvider fue removido en Riverpod 3.x
-final myProvider = StateProvider<String>((ref) => '');
+final myProvider = NotifierProvider<MyNotifier, MyState>(MyNotifier.new);
 ```
 
 ### Providers existentes
 
 | Provider | Tipo | Dónde |
 |---|---|---|
-| `remindersProvider` | `NotifierProvider<RemindersNotifier, List<MockReminder>>` | `home/providers/home_provider.dart` |
-| `clientSearchProvider` | `NotifierProvider<_SearchNotifier, String>` | `clients_screen.dart` |
+| `remindersProvider` | `AsyncNotifierProvider<RemindersNotifier, List<Reminder>>` | `home/providers/home_provider.dart` |
+| `remindersUiProvider` | `NotifierProvider<RemindersNotifier, RemindersState>` | `reminders/providers/reminders_provider.dart` |
+| `filteredRemindersProvider` | `Provider<List<Reminder>>` | `reminders/providers/reminders_provider.dart` |
+| `selectedDayRemindersProvider` | `Provider<List<Reminder>>` | `reminders/providers/reminders_provider.dart` |
+| `remindersByDateProvider` | `Provider<Map<DateTime,List<Reminder>>>` | `reminders/providers/reminders_provider.dart` |
+| `reminderTypesProvider` | `FutureProvider<List<ReminderType>>` | `reminders/providers/reminders_provider.dart` |
+| `agentNameProvider` | `FutureProvider<String>` | `home/providers/home_provider.dart` |
+| `policiesCountProvider` | `AsyncNotifierProvider<PoliciesCountNotifier, int>` | `home/providers/home_provider.dart` |
+| `homeReadyProvider` | `FutureProvider<bool>` | `home/providers/home_provider.dart` |
+| `homeDashboardProvider` | `Provider<HomeDashboardData>` | `home/providers/home_provider.dart` |
+| `clientsProvider` | `AsyncNotifierProvider<ClientsNotifier, List<Contact>>` | `clients/providers/clients_provider.dart` |
+| `clientSearchProvider` | `NotifierProvider<_SearchNotifier, String>` | `clients/providers/clients_provider.dart` |
+| `contactDetailProvider` | `FutureProvider.family<Contact, String>` | `clients/providers/clients_provider.dart` |
 
-`RemindersNotifier` expone `.toggle(id)` para marcar hecho/pendiente. Es compartido entre HomeScreen y RemindersScreen — importar desde `home/providers/home_provider.dart`.
+### Realtime (Supabase)
+
+`reminders`, `contacts` y `policies` tienen suscripciones Realtime activas. El patrón en cada `AsyncNotifier`:
+
+```dart
+RealtimeChannel? _channel;
+
+@override
+Future<List<T>> build() async {
+  _repo = ref.read(repositoryProvider);
+  final initial = await _repo.getAll();
+  final userId = Supabase.instance.client.auth.currentUser?.id;
+  if (userId != null) {
+    _channel = Supabase.instance.client
+        .channel('tabla:$userId')
+        .onPostgresChanges(/* INSERT/UPDATE/DELETE */)
+        .subscribe();
+    ref.onDispose(() { _channel?.unsubscribe(); });
+  }
+  return initial;
+}
+```
+
+- **INSERT**: guardar en lista solo si no existe ya (guard de echo optimista).
+- **UPDATE con `is_active == false`**: tratar como soft-delete → remover de lista.
+- **UPDATE normal**: refetch por id via `_repo.getById(id)` y reemplazar en lista.
+- **DELETE**: remover por id.
+
+### `ref` en closures async
+
+Capturar el notifier **antes** de cualquier `Navigator.pop` o `await`, para evitar uso de `ref` después de que el widget sea disposed:
+
+```dart
+// ✅ Correcto
+final notifier = ref.read(remindersProvider.notifier);
+Navigator.pop(context);
+notifier.updateStatus(id, 'DONE');
+
+// ❌ Incorrecto — ref puede estar disposed
+Navigator.pop(context);
+ref.read(remindersProvider.notifier).updateStatus(id, 'DONE');
+```
+
+---
+
+## Patrón de pantalla estándar
+
+### Con AppBar (`AmTopBar`)
+
+```dart
+return Scaffold(
+  appBar: AmTopBar(
+    title: l10n.myTitle,
+    subtitle: l10n.mySubtitle,         // opcional
+    showBack: true,                     // para pantallas push
+    actions: [ /* botones */ SizedBox(width: AmDimens.screenH) ],
+  ),
+  body: SafeArea(
+    top: false,                         // AmTopBar ya cubre el status bar
+    child: /* contenido */,
+  ),
+);
+```
+
+- Usar `AmTopBar` para todas las pantallas nuevas. `AmBackBar` es legacy.
+- El último elemento de `actions` siempre es `SizedBox(width: AmDimens.screenH)` para el margen derecho.
+- `body` siempre con `SafeArea(top: false)`.
+
+### Pantalla de detalle
+
+```dart
+body: SafeArea(
+  top: false,
+  child: ListView(
+    padding: const EdgeInsets.fromLTRB(
+        AmDimens.screenH, AmDimens.gapM, AmDimens.screenH, 40),
+    children: [
+      HeroWidget(...),
+      const SizedBox(height: AmDimens.gapM),
+      AmSectionLabel(label: l10n.section),
+      const SizedBox(height: AmDimens.gapXS),
+      ContentWidget(...),
+    ],
+  ),
+),
+```
+
+### Estados de carga/error
+
+Usar `AmLoader()` en lugar de `CircularProgressIndicator`. En `AsyncValue.when`:
+
+```dart
+loading: () => const AmLoader(),
+error: (_, __) => Center(child: Text(l10n.myError, style: TextStyle(color: cs.tertiary))),
+```
 
 ---
 
 ## Sistema de color adaptativo
 
-La app tiene light y dark theme. **Nunca hardcodear `AmColors.xxxLight`** en widgets — usar siempre la capa más alta disponible:
+La app tiene light y dark theme. **Nunca hardcodear colores fijos** en widgets — usar:
 
-### 1. `Theme.of(context).colorScheme` (la mayoría de colores)
+### 1. `Theme.of(context).colorScheme`
 
 ```dart
 final cs = Theme.of(context).colorScheme;
-cs.onSurface          // texto principal (inkLight / inkDark)
-cs.onSurfaceVariant   // texto secundario (inkSoftLight / inkSoftDark)
-cs.tertiary           // texto muted (mutedLight / mutedDark)
-cs.surface            // fondo de cards (cardLight / cardDark)
-cs.secondaryContainer // fondo sunken (cardSunkenLight / cardSunkenDark)
-cs.outline            // bordes (lineLight / lineDark)
-cs.outlineVariant     // bordes sutiles
-cs.error              // rojo (redLight / redDark)
-cs.errorContainer     // fondo rojo suave
-cs.primary            // azul principal #007AC0
-cs.primaryContainer   // fondo badge accent
-cs.onPrimaryContainer // texto sobre badge accent
+cs.onSurface          // texto principal
+cs.onSurfaceVariant   // texto secundario
+cs.tertiary           // texto muted / labels
+cs.surface            // fondo de cards
+cs.secondaryContainer // fondo sunken (chips, iconos inactivos)
+cs.outlineVariant     // bordes sutiles (divisores)
+cs.outline            // bordes normales
+cs.error / cs.errorContainer
+cs.primary            // azul #007AC0
+cs.primaryContainer / cs.onPrimaryContainer
+cs.onPrimary          // blanco sobre primario
 ```
 
-### 2. `context.am` (colores no en ColorScheme: green, amber, muted2, bg, card2)
+### 2. `context.am` (colores fuera del ColorScheme)
 
 ```dart
 import 'package:amconnect/core/theme/am_theme.dart';
-
 final am = context.am;
-am.green / am.greenWash   // verde (llamadas, éxito)
-am.amber / am.amberWash   // ámbar (pagos, alertas)
-am.muted2                 // gris más suave
-am.bg                     // fondo scaffold (rara vez — el theme lo aplica solo)
-am.card2                  // superficie secundaria de cards
+am.green / am.greenWash   // éxito, al día
+am.amber / am.amberWash   // advertencia, pagos
+am.muted2 / am.bg / am.card2
 ```
 
-### 3. `AmColors.xxx` — solo constantes fijas (mismo valor en ambos temas)
+### 3. `AmColors.xxx` — solo constantes absolutas
 
 ```dart
-AmColors.accent      // #007AC0 — ok para box shadows, FABs
+AmColors.accent      // #007AC0 — shadows de FABs y botones primarios
 AmColors.onAccent    // blanco sobre azul
 AmColors.authBg      // solo pantallas de login
-AmColors.srcDoc / srcWhatsApp / srcWave / srcImage / srcNote  // iconos de fuente
 ```
 
-### Regla de Scaffold
+### Reglas
 
-**NO** poner `backgroundColor` en `Scaffold`. La `scaffoldBackgroundColor` está en el theme y se aplica automáticamente.
-
-### Regla de const
-
-`TextStyle`, `BoxDecoration`, etc. con colores del theme **no pueden ser `const`**. Quitar `const` del widget afectado.
-
-### Dimensiones y Espaciados (`AmDimens`)
-
-La app define tokens de espaciado, paddings y radios en `lib/core/theme/app_dimensions.dart`.
-- **Nunca** usar valores numéricos crudos (hardcoded) para paddings, margins, gaps o radios.
-- Utilizar `AmDimens.screenH` (18.0) para paddings horizontales de pantallas o márgenes exteriores de diálogos (`AmDimens.screenH * 1.5`).
-- Utilizar `AmDimens.cardRadius` (18.0) para el radio de borde de tarjetas, diálogos y contenedores principales.
-- Utilizar los gaps definidos (`AmDimens.gapL` (20.0), `AmDimens.gapM` (16.0), `AmDimens.gapS` (14.0), `AmDimens.gapXS` (11.0)) para mantener la consistencia vertical y horizontal.
-
-### Creación de Widgets Reusables y Diálogos Premium
-
-- Si un widget o diálogo se usa en más de una pantalla o representa un patrón común (como confirmaciones de alertas o selectores), debe colocarse en `lib/core/widgets/` con el prefijo `am_` (ej. `AmConfirmDialog`, `AmCancelDialog`, `AmRescheduleDialog`).
-- Evitar duplicación de lógica de UI o layouts en hojas modales; preferir la encapsulación en widgets reusables e internacionalizados.
-- Todos los diálogos personalizados con animaciones (escala y opacidad) deben asegurar que la opacidad calculada esté limitada con `.clamp(0.0, 1.0)` para evitar crashes cuando se usan curvas que sobrepasan los límites (como `Curves.easeOutBack`).
+- **No** poner `backgroundColor` en `Scaffold` (lo aplica el theme).
+- `TextStyle`, `BoxDecoration` con colores del theme **no pueden ser `const`**.
+- Colores sobre fondo primario (`cs.primary`): usar `Colors.white` y `Colors.white.withValues(alpha: x)`. `AmIconBtn` tiene el tone `onPrimary` para este caso.
 
 ---
 
-## Datos mock (mock_data.dart)
+## Formatters (`core/utils/formatters.dart`)
 
-Modelos: `MockClient`, `MockPolicy`, `MockNote`, `MockReminder`, `MockMessage`, `MockMsgCard`
+Funciones globales de formato. **Nunca usar `NumberFormat` o `DateFormat` directamente en widgets** — siempre usar estas funciones para consistencia visual.
 
-Datos disponibles:
-- `mockClients` — 5 clientes (Mariana Torres, Javier Mendoza, Lucía García, Carlos Reyes, Sofía Ramírez)
-- `mockReminders` — 5 recordatorios (renovacion/pago/llamada, con urgente y fecha)
-- `mockChatThread` — hilo de chat inicial
-- `mockSuggestions` — sugerencias de preguntas al asistente
-- `mockStats` — `{polizas: 12, clientes: 5}`
-- `clientById(id)` — función helper para buscar cliente por ID
+```dart
+import 'package:amconnect/core/utils/formatters.dart';
+```
+
+| Función | Input | Output | Uso |
+|---|---|---|---|
+| `fmtCurrency(v)` | `double?` | `"$150,000"` | Suma asegurada, primas, montos |
+| `fmtPremium(v, freq)` | `double?, String` | `"$3,615 · Annual"` | Prima con frecuencia |
+| `fmtDate(dt)` | `DateTime?` | `"13 jun 2026"` | Fechas de pólizas y general |
+| `fmtDate(dt, showYear: false)` | `DateTime?` | `"13 jun"` | Fechas compactas en listas |
+| `fmtDateFromIso(iso)` | `String?` | `"13 jun 2026"` | Fechas ISO del API |
+| `fmtSmartDate(dt, l10n)` | `DateTime?, l10n` | `"Hoy"` / `"Mañana"` / `"13 jun"` | Recordatorios en listas |
+| `fmtDateWithWeekday(dt)` | `DateTime?` | `"lun 13 jun 2026"` | Timestamps de comentarios/detalle |
+| `fmtTime(dt)` | `DateTime?` | `"10:30"` / `"—"` | Hora de recordatorios |
+| `fmtTime(dt, fallback: '')` | `DateTime?` | `"10:30"` / `""` | Hora cuando vacío no muestra nada |
+
+**Reglas:**
+- `fmtSmartDate` requiere `AppLocalizations` — solo usar en widgets con `BuildContext`
+- "Hoy" y "Mañana" **solo** via `fmtSmartDate` con `l10n` — nunca hardcodear esos strings
 
 ---
 
-## Pendientes / próximos pasos sugeridos
+## Dimensiones y espaciados (`AmDimens`)
 
-- [ ] Conectar con Supabase backend (ver `/Users/Development/Projects/JACATSoft/AmConnect/backend/`)
-- [ ] Reemplazar mock data con llamadas reales al Edge Function `amconnect-api`
-- [ ] Implementar autenticación real (Apple/Google Sign In)
-- [x] Modo oscuro — `AzulProTheme.darkTheme` + `AmTheme` extension; todos los widgets usan `cs.*`/`context.am.*`
-- [ ] Voz real en ChatScreen (actualmente solo texto)
-- [ ] Subida real de archivos en FeedScreen
-- [ ] Notificaciones push para recordatorios
-- [x] i18n implementado — español + inglés via ARB + flutter_localizations
+Definidos en `lib/core/theme/app_dimensions.dart`. **Nunca valores numéricos crudos.**
+
+| Token | Valor | Uso |
+|---|---|---|
+| `screenH` | 18.0 | Padding horizontal de pantallas |
+| `cardPad` | 18.0 | Padding interno de `AmCard` |
+| `cardRadius` | 18.0 | Radio de cards, diálogos, contenedores |
+| `gapL` | 20.0 | Separación entre secciones principales |
+| `gapM` | 16.0 | Separación entre ítems de sección |
+| `gapS` | 14.0 | Separación entre filas de lista |
+| `gapXS` | 11.0 | Entre label de sección y su contenido |
+| `scrollBottomPad` | 100.0 | Padding inferior en listas (espacio para tab bar + FAB) |
+
+---
+
+## Widgets con animaciones — tamaño fijo
+
+Los widgets que animan su tamaño internamente (expansión de rings, etc.) **deben declarar un `SizedBox` de tamaño fijo** antes del `Stack`/contenedor animado, para que el layout externo no se mueva:
+
+```dart
+// ✅ Correcto — el Column exterior no se mueve
+return SizedBox(
+  width: 140, height: 140,
+  child: Stack(alignment: Alignment.center, children: [...]),
+);
+
+// ❌ Incorrecto — el Stack crece/encoge y empuja los widgets adyacentes
+return Stack(alignment: Alignment.center, children: [...]);
+```
+
+---
+
+## Soft-delete y visibilidad
+
+Todos los deletes usan `is_active = false` + `deleted_at` (nunca `DELETE`). En la UI:
+
+- **Lista activa**: filtrar con `r.isActive` (excluye done + cancelled).
+- **Vista cancelados**: filtrar con `r.cancelled` (sin `IgnorePointer`; usar `showContextMenu: false` en `ReminderItem` para deshabilitar el long-press sin bloquear el tap de detalle).
+- **Detalle de cancelado**: solo lectura — no mostrar botones de edición, ni activar `onTap` en tipo/status/reagendar.
+- **Vista calendario**: `selectedDayRemindersProvider` y `remindersByDateProvider` filtran por `r.isActive`.
+
+---
+
+## Diálogos y bottom sheets
+
+- Diálogos comunes en `core/widgets/`: `AmConfirmDialog`, `AmCancelDialog`, `AmRescheduleDialog`.
+- Animaciones con `Curves.easeOutBack` u otras que excedan [0,1]: limitar opacity con `.clamp(0.0, 1.0)`.
+- `showModalBottomSheet`: siempre `useRootNavigator: true`, `backgroundColor: cs.surface`, `shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24)))`.
+
+---
+
+## Capa de repositorio
+
+**Nunca** acceder directamente a SDKs desde `Notifier` o pantallas. Flujo obligatorio:
+
+```
+Pantalla → ref.watch/read(provider) → Notifier → ref.read(repositoryProvider) → Repository → ApiClient/SDK
+```
+
+Repositorios en `core/repositories/`:
+- `contact_repository.dart` + `supabase_contact_repository.dart`
+- `reminder_repository.dart` + `supabase_reminder_repository.dart`
+- `policy_repository.dart` + `supabase_policy_repository.dart`
+- `agent_repository.dart` + `supabase_agent_repository.dart`
+- `auth_repository.dart` + `supabase_auth_repository.dart`
 
 ---
 
@@ -328,7 +443,8 @@ Datos disponibles:
 
 ```bash
 # Desde amconnect-app/amconnect/
-flutter analyze          # verificar errores
+flutter analyze          # verificar errores (debe salir con 0 errores/warnings)
+flutter gen-l10n         # regenerar localizaciones tras editar ARB
 flutter run              # correr en simulador/dispositivo
 flutter build ios        # build iOS
 ```
@@ -338,61 +454,24 @@ flutter build ios        # build iOS
 ```
 assets/logo/
 ├── logo.png     # logo con fondo
-└── logo_t.png   # logo transparente (el que se usa en la app)
+└── logo_t.png   # logo transparente (usado en la app)
 ```
 
 ---
 
-## Reglas del proyecto
+## Estado actual de la app
 
-- **No modificar versiones de dependencias.** Las versiones definidas en `pubspec.yaml` (Flutter, Riverpod, GoRouter, Google Fonts, etc.) **no deben cambiarse**. Si una API parece diferente a lo esperado, adaptarse al código existente — nunca actualizar o cambiar una versión para resolver la discrepancia.
+### Conectado al backend (real)
+- [x] Autenticación con Supabase (email/password, Google)
+- [x] Recordatorios — CRUD completo + Realtime
+- [x] Contactos — CRUD completo + Realtime
+- [x] Pólizas — conteo + Realtime
+- [x] Dashboard — datos reales (agente, stats, reminders)
+- [x] Chat IA — integrado con Edge Function `amconnect-api`
+- [x] Ingesta de documentos (Feed)
 
-- **Capa de repositorio obligatoria para acceso a datos externos.** Nunca acceder directamente a SDKs de infraestructura (Supabase, Firebase, APIs REST, etc.) desde un `Notifier` o una pantalla. Todo acceso a datos externos debe pasar por un `Repository`:
-
-```
-core/
-└── repositories/
-    ├── auth_repository.dart          # Interfaz abstracta
-    └── supabase_auth_repository.dart # Implementación concreta + Provider
-```
-
-**Flujo correcto:**
-```
-Pantalla → ref.watch/read(provider) → Notifier → ref.read(repositoryProvider) → Repository → SDK
-```
-
-**Ejemplo de estructura:**
-```dart
-// 1. Interfaz abstracta (lib/core/repositories/foo_repository.dart)
-abstract class FooRepository {
-  Future<void> doSomething();
-}
-
-// 2. Implementación concreta (lib/core/repositories/supabase_foo_repository.dart)
-class SupabaseFooRepository implements FooRepository {
-  final SupabaseClient _client;
-  SupabaseFooRepository(this._client);
-
-  @override
-  Future<void> doSomething() async {
-    await _client.from('foo').select();
-  }
-}
-
-final fooRepositoryProvider = Provider<FooRepository>((ref) {
-  return SupabaseFooRepository(Supabase.instance.client);
-});
-
-// 3. Notifier (features/foo/providers/foo_provider.dart)
-class FooNotifier extends Notifier<FooState> {
-  late final FooRepository _repo;
-
-  @override
-  FooState build() {
-    _repo = ref.read(fooRepositoryProvider);
-    return FooState();
-  }
-
-  Future<void> load() => _repo.doSomething();
-}
-```
+### Pendiente
+- [ ] Voz real en VoiceOverlay (actualmente sin STT)
+- [ ] Acciones rápidas de cliente (llamar, mensaje — placeholders)
+- [ ] Pantalla de pólizas por cliente (tabs vacíos en ClientDetail)
+- [ ] Notificaciones push para recordatorios

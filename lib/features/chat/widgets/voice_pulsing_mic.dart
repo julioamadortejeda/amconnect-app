@@ -36,7 +36,10 @@ class _VoicePulsingMicState extends State<VoicePulsingMic>
         final t1 = Curves.easeOut.transform(_ctrl.value);
         final t2 = Curves.easeOut.transform((_ctrl.value + 0.5).remainder(1.0));
 
-        return Stack(
+        return SizedBox(
+          width: 140,
+          height: 140,
+          child: Stack(
           alignment: Alignment.center,
           children: [
             // Ring 1
@@ -84,6 +87,7 @@ class _VoicePulsingMicState extends State<VoicePulsingMic>
               child: const Icon(Icons.mic_rounded, color: Colors.white, size: 38),
             ),
           ],
+        ),
         );
       },
     );

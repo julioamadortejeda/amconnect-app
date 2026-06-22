@@ -3,6 +3,7 @@ import '../../../core/models/reminder.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/utils/catalog_l10n.dart';
+import '../../../core/utils/formatters.dart';
 import 'reminder_info_row.dart';
 import 'reminder_status_chip.dart';
 import 'reminder_type_chip.dart';
@@ -12,30 +13,18 @@ class ReminderDetailInfoSection extends StatelessWidget {
   const ReminderDetailInfoSection({
     super.key,
     required this.reminder,
-    required this.onTapType,
-    required this.onTapStatus,
-    required this.onTapReschedule,
+    this.onTapType,
+    this.onTapStatus,
+    this.onTapReschedule,
   });
 
   final Reminder reminder;
-  final VoidCallback onTapType;
-  final VoidCallback onTapStatus;
-  final VoidCallback onTapReschedule;
+  final VoidCallback? onTapType;
+  final VoidCallback? onTapStatus;
+  final VoidCallback? onTapReschedule;
 
-  static String _fmtDate(DateTime? dt) {
-    if (dt == null) return '—';
-    const wd = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
-    const mo = [
-      'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-      'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
-    ];
-    return '${wd[dt.weekday - 1]} ${dt.day} ${mo[dt.month - 1]} ${dt.year}';
-  }
-
-  static String _fmtTime(DateTime? dt) {
-    if (dt == null || (dt.hour == 0 && dt.minute == 0)) return '';
-    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-  }
+  static String _fmtDate(DateTime? dt) => fmtDateWithWeekday(dt);
+  static String _fmtTime(DateTime? dt) => fmtTime(dt, fallback: '');
 
   @override
   Widget build(BuildContext context) {

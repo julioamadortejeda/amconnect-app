@@ -1,4 +1,5 @@
 import 'reminder_comment.dart';
+import '../utils/formatters.dart';
 
 enum ReminderPriority { urgent, warning, normal }
 
@@ -59,28 +60,17 @@ class Reminder {
   bool get isFollowUp => type == 'FOLLOW_UP';
   bool get isPayment  => type == 'PAYMENT';
 
-  static const _months = [
-    'ene','feb','mar','abr','may','jun',
-    'jul','ago','sep','oct','nov','dic',
-  ];
-
-  static String _formatFecha(String? isoDate) {
+  static String _formatDate(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return '—';
     final dt = DateTime.tryParse(isoDate)?.toLocal();
     if (dt == null) return '—';
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final d = DateTime(dt.year, dt.month, dt.day);
-    if (d == today) return 'Hoy';
-    if (d == today.add(const Duration(days: 1))) return 'Mañana';
-    return '${dt.day} ${_months[dt.month - 1]}';
+    return fmtDate(dt, showYear: false);
   }
 
-  static String _formatHora(String? isoDate) {
+  static String _formatTime(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return '—';
     final dt = DateTime.tryParse(isoDate)?.toLocal();
-    if (dt == null || (dt.hour == 0 && dt.minute == 0)) return '—';
-    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    return fmtTime(dt);
   }
 
   static ReminderPriority _resolvePriority(
@@ -134,8 +124,8 @@ class Reminder {
       sub: description?.isNotEmpty == true
           ? description!
           : contactName ?? '',
-      date: _formatFecha(dueDate),
-      time: _formatHora(dueDate),
+      date: _formatDate(dueDate),
+      time: _formatTime(dueDate),
       done: isDone,
       cancelled: isCancelled,
       statusCode: statusCode,

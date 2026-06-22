@@ -20,21 +20,27 @@ class HomeHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Image.asset('assets/logo/logo_t.png', width: 38, height: 38),
+          Image.asset('assets/logo/logo.png', width: 38, height: 38),
           const SizedBox(width: 11),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l10n.homeTitle,
-                    style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
-                        color: cs.tertiary, letterSpacing: 0.02)),
+                    style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
+                        color: cs.tertiary,
+                        letterSpacing: 0.02)),
                 Text(
                   agentName.isNotEmpty
                       ? l10n.homeGreeting(agentName.split(' ').first)
                       : l10n.homeGreetingDefault,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,
-                      color: cs.onSurface, letterSpacing: -0.01),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurface,
+                      letterSpacing: -0.01),
                 ),
               ],
             ),
