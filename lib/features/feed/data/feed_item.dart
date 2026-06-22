@@ -8,6 +8,8 @@ class FeedItem {
     this.contactName,
     this.fileName,
     this.storagePath,
+    this.content,
+    this.summary,
   });
 
   final String id;
@@ -18,6 +20,8 @@ class FeedItem {
   final String? contactName;
   final String? fileName;
   final String? storagePath;
+  final String? content;
+  final String? summary;
 
   factory FeedItem.fromJson(Map<String, dynamic> json) {
     final dm = json['document_metadata'] as Map<String, dynamic>?;
@@ -31,6 +35,8 @@ class FeedItem {
       contactName: ct?['full_name'] as String?,
       fileName: dm?['file_name'] as String?,
       storagePath: dm?['storage_path'] as String?,
+      content: json['content'] as String?,
+      summary: json['summary'] as String?,
     );
   }
 }

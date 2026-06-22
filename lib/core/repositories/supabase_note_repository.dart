@@ -42,6 +42,26 @@ class SupabaseNoteRepository implements NoteRepository {
         .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+
+  @override
+  Future<Map<String, int>> getNotesSummary() async {
+    final res = await _client.get('notes/summary');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    return wrapper.map((key, value) => MapEntry(key, (value as num).toInt()));
+  }
+
+  @override
+  Future<List<FeedItem>> searchNotes({int limit = 20, String? query}) async {
+    final url = query != null && query.trim().isNotEmpty
+        ? 'notes/search?limit=$limit&search=${Uri.encodeComponent(query)}'
+        : 'notes/search?limit=$limit';
+    final res = await _client.get(url);
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items
+        .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
 }
 
 final noteRepositoryProvider = Provider<NoteRepository>((ref) {

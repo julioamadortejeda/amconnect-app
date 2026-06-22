@@ -119,3 +119,22 @@ class PolicyFrequency {
         months: json['months'] as int? ?? 12,
       );
 }
+
+extension PolicySlimExtension on Policy {
+  Map<String, dynamic> toSlimMap() {
+    return {
+      'id': id,
+      if (policyNumber != null) 'policyNumber': policyNumber,
+      if (carrierName != '—') 'carrier': carrierName,
+      if (branchName != '—') 'branch': branchName,
+      if (productName != '—') 'product': productName,
+      if (premium != null) 'premium': premium,
+      'currency': currencyCode,
+      if (statusCode.isNotEmpty) 'status': statusCode,
+      if (startDate != null) 'startDate': startDate,
+      if (endDate != null) 'endDate': endDate,
+      if (renewalDate != null) 'renewalDate': renewalDate,
+      if (nextPaymentDate != null) 'nextPaymentDate': nextPaymentDate,
+    };
+  }
+}

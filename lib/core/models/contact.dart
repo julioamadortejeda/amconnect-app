@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/formatters.dart';
 
 class Contact {
   const Contact({
@@ -27,10 +28,7 @@ class Contact {
   final String? notes;
   final String? createdAt;
 
-  String get initials {
-    final parts = fullName.trim().split(RegExp(r'\s+'));
-    return parts.take(2).map((w) => w.isEmpty ? '' : w[0].toUpperCase()).join();
-  }
+  String get initials => getInitials(fullName);
 
   Color get color {
     final hue = (id.hashCode.abs() % 360).toDouble();

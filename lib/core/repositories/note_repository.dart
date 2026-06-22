@@ -6,4 +6,6 @@ abstract class NoteRepository {
   Future<List<AgentNote>> getByPolicyId(String policyId);
   Future<void> deleteNote(String noteId);
   Future<List<FeedItem>> getRecent({int limit = 20});
+  Future<Map<String, int>> getNotesSummary();
+  Future<List<FeedItem>> searchNotes({int limit = 20, String? query});
 }

@@ -71,3 +71,27 @@ String fmtTime(DateTime? dt, {String fallback = '—'}) {
   if (dt == null || (dt.hour == 0 && dt.minute == 0)) return fallback;
   return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
 }
+
+// ─── Names and Strings ────────────────────────────────────────────────────────
+
+/// Splits a full name into a first name and a last name.
+(String, String?) splitFullName(String fullName) {
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+  final firstName = parts.isNotEmpty ? parts.first : fullName;
+  final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+  return (firstName, lastName);
+}
+
+/// Generates initials for a full name (up to 2 letters).
+String getInitials(String fullName) {
+  final clean = fullName.trim();
+  if (clean.isEmpty) return '';
+  final parts = clean.split(RegExp(r'\s+'));
+  if (parts.length >= 2) {
+    final p1 = parts[0];
+    final p2 = parts[1];
+    return '${p1.isEmpty ? '' : p1[0]}${p2.isEmpty ? '' : p2[0]}'.toUpperCase();
+  }
+  final single = parts[0];
+  return single.substring(0, single.length.clamp(0, 2)).toUpperCase();
+}

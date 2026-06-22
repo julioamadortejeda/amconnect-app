@@ -1280,6 +1280,72 @@ abstract class AppLocalizations {
   /// **'Procesando archivo con IA…'**
   String get feedStepProcessing;
 
+  /// No description provided for @feedViewModeIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingestar'**
+  String get feedViewModeIngest;
+
+  /// No description provided for @feedViewModeKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Conocimiento'**
+  String get feedViewModeKnowledge;
+
+  /// No description provided for @feedStatsPDFs.
+  ///
+  /// In es, this message translates to:
+  /// **'PDFs'**
+  String get feedStatsPDFs;
+
+  /// No description provided for @feedStatsImages.
+  ///
+  /// In es, this message translates to:
+  /// **'Imágenes'**
+  String get feedStatsImages;
+
+  /// No description provided for @feedStatsAudios.
+  ///
+  /// In es, this message translates to:
+  /// **'Audios'**
+  String get feedStatsAudios;
+
+  /// No description provided for @feedStatsNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get feedStatsNotes;
+
+  /// No description provided for @feedStatsChats.
+  ///
+  /// In es, this message translates to:
+  /// **'Chats'**
+  String get feedStatsChats;
+
+  /// No description provided for @feedSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar en base de conocimiento...'**
+  String get feedSearchHint;
+
+  /// No description provided for @feedSearchNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron notas o documentos.'**
+  String get feedSearchNoResults;
+
+  /// No description provided for @feedStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen de conocimiento'**
+  String get feedStatsTitle;
+
+  /// No description provided for @feedAllNotesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las notas'**
+  String get feedAllNotesTitle;
+
   /// No description provided for @feedSuccessTitle.
   ///
   /// In es, this message translates to:

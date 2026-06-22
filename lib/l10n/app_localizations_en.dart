@@ -630,6 +630,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedStepProcessing => 'Processing file with AI…';
 
   @override
+  String get feedViewModeIngest => 'Ingest';
+
+  @override
+  String get feedViewModeKnowledge => 'Knowledge';
+
+  @override
+  String get feedStatsPDFs => 'PDFs';
+
+  @override
+  String get feedStatsImages => 'Images';
+
+  @override
+  String get feedStatsAudios => 'Audios';
+
+  @override
+  String get feedStatsNotes => 'Notes';
+
+  @override
+  String get feedStatsChats => 'Chats';
+
+  @override
+  String get feedSearchHint => 'Search knowledge base...';
+
+  @override
+  String get feedSearchNoResults => 'No notes or documents found.';
+
+  @override
+  String get feedStatsTitle => 'Knowledge Summary';
+
+  @override
+  String get feedAllNotesTitle => 'All Notes';
+
+  @override
   String get feedSuccessTitle => 'Policy created';
 
   @override

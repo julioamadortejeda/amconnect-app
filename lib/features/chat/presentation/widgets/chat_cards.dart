@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/am_theme.dart';
 import '../../../../core/widgets/am_press.dart';
+import '../../../../core/utils/formatters.dart';
 
 // ─── Factory ─────────────────────────────────────────────────────────────────
 
@@ -69,7 +70,7 @@ class _PolicyConfirmedCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF007AC0), Color(0xFF2AB5FF)],
+                colors: [AmColors.accent, Color(0xFF2AB5FF)],
               ),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
@@ -210,10 +211,7 @@ class _ContactCreatedCard extends StatelessWidget {
     final contactId = data['contactId'] as String? ?? '';
 
     // Initials
-    final parts = fullName.trim().split(RegExp(r'\s+'));
-    final initials = parts.length >= 2
-        ? '${parts[0][0]}${parts[1][0]}'.toUpperCase()
-        : fullName.substring(0, fullName.length.clamp(0, 2)).toUpperCase();
+    final initials = getInitials(fullName);
 
     return Container(
       decoration: BoxDecoration(
