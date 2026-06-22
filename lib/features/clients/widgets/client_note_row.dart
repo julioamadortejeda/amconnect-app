@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/models/agent_note.dart';
 import '../../../l10n/app_localizations.dart';
@@ -27,12 +28,15 @@ class _ClientNoteRowState extends State<ClientNoteRow> {
           widget.note.sourceType == 'image' ||
           widget.note.sourceType == 'audio');
 
-  (Color, IconData) get _typeStyle => switch (widget.note.sourceType) {
-    'pdf' || 'document' => (AmColors.srcDoc, Icons.article_outlined),
-    'audio'             => (AmColors.srcWave, Icons.volume_up_outlined),
-    'image'             => (AmColors.srcImage, Icons.image_outlined),
-    'text' || _         => (AmColors.srcWhatsApp, Icons.chat_bubble_outline),
-  };
+  (Color, IconData) get _typeStyle => (
+    switch (widget.note.sourceType) {
+      'pdf' || 'document' => AmColors.srcDoc,
+      'audio'             => AmColors.srcWave,
+      'image'             => AmColors.srcImage,
+      _                   => AmColors.srcWhatsApp,
+    },
+    AmIcons.forSourceType(widget.note.sourceType),
+  );
 
   @override
   Widget build(BuildContext context) {

@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_badge.dart';
 import '../../../core/widgets/am_card.dart';
@@ -239,22 +240,22 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final recentAsync = ref.watch(recentFeedProvider);
 
     final feedTypes = [
-      _InputType('policyPdf', Icons.description_outlined, AmColors.srcDoc,
+      _InputType('policyPdf', AmIcons.pdf, AmColors.srcDoc,
           l10n.feedTypePolicyPdf, l10n.feedTypePolicyPdfDesc,
           onTap: _pickPolicyPdf),
-      _InputType('policyPhoto', Icons.camera_alt_outlined, AmColors.srcImage,
+      _InputType('policyPhoto', AmIcons.camera, AmColors.srcImage,
           l10n.feedTypePolicyPhoto, l10n.feedTypePolicyPhotoDesc,
           onTap: _pickPolicyImage),
-      _InputType('audio', Icons.graphic_eq, AmColors.srcWave,
+      _InputType('audio', AmIcons.audio, AmColors.srcWave,
           l10n.feedTypeAudio, l10n.feedTypeAudioDesc,
           onTap: _pickKnowledgeAudio),
-      _InputType('text', Icons.edit_note_outlined, AmColors.srcNote,
+      _InputType('text', AmIcons.text, AmColors.srcNote,
           l10n.feedTypeText, l10n.feedTypeTextDesc,
           onTap: () => _openTextInput('text')),
-      _InputType('image', Icons.image_outlined, AmColors.srcImage,
+      _InputType('image', AmIcons.image, AmColors.srcImage,
           l10n.feedTypeKnowledgeImage, l10n.feedTypeKnowledgeImageDesc,
           onTap: _pickKnowledgeImage),
-      _InputType('document', Icons.picture_as_pdf_outlined, AmColors.srcDoc,
+      _InputType('document', AmIcons.document, AmColors.srcDoc,
           l10n.feedTypeDocument, l10n.feedTypeDocumentDesc,
           onTap: _pickKnowledgeDocument),
     ];
@@ -368,7 +369,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                   Colors.white),
                               borderRadius: BorderRadius.circular(13),
                             ),
-                            child: const Icon(Icons.chat_bubble_outline,
+                            child: const Icon(AmIcons.whatsapp,
                                 size: 24, color: AmColors.srcWhatsApp),
                           ),
                           const SizedBox(width: 13),
@@ -538,22 +539,15 @@ class _FeedRowState extends ConsumerState<_FeedRow> {
   bool _loadingFile = false;
   bool _expanded = false;
 
-  static (IconData, Color) _typeStyle(String sourceType) =>
-      switch (sourceType) {
-        'pdf' || 'doc' || 'document' => (
-            Icons.article_outlined,
-            AmColors.srcDoc,
-          ),
-        'audio' || 'wave' => (
-            Icons.volume_up_outlined,
-            AmColors.srcWave,
-          ),
-        'image' || 'photo' => (
-            Icons.image_outlined,
-            AmColors.srcImage,
-          ),
-        _ => (Icons.chat_bubble_outline, AmColors.srcWhatsApp),
-      };
+  static (IconData, Color) _typeStyle(String sourceType) => (
+    AmIcons.forSourceType(sourceType),
+    switch (sourceType) {
+      'pdf' || 'doc' || 'document' => AmColors.srcDoc,
+      'audio' || 'wave'            => AmColors.srcWave,
+      'image' || 'photo'           => AmColors.srcImage,
+      _                            => AmColors.srcWhatsApp,
+    },
+  );
 
   static String _relativeDate(String isoDate) {
     try {
@@ -1151,17 +1145,46 @@ class _InputType {
 
 // ── Knowledge base dashboard components ──────────────────────────────────────────
 
-class _KnowledgeDashboardView extends ConsumerWidget {
+class _KnowledgeDashboardView extends ConsumerStatefulWidget {
   const _KnowledgeDashboardView();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_KnowledgeDashboardView> createState() =>
+      _KnowledgeDashboardViewState();
+}
+
+class _KnowledgeDashboardViewState
+    extends ConsumerState<_KnowledgeDashboardView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(knowledgeListProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(knowledgeStatsProvider);
     final searchListAsync = ref.watch(knowledgeListProvider);
 
     return ListView(
+      controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(
           AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
       children: [
@@ -1184,36 +1207,36 @@ class _KnowledgeDashboardView extends ConsumerWidget {
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
-                  childAspectRatio: 0.9,
+                  childAspectRatio: 1.0,
                   children: [
                     _StatCard(
                       label: l10n.feedStatsPDFs,
                       count: stats['pdf'] ?? 0,
-                      icon: Icons.description_outlined,
+                      icon: AmIcons.pdf,
                       color: AmColors.srcDoc,
                     ),
                     _StatCard(
                       label: l10n.feedStatsImages,
                       count: stats['image'] ?? 0,
-                      icon: Icons.image_outlined,
+                      icon: AmIcons.image,
                       color: AmColors.srcImage,
                     ),
                     _StatCard(
                       label: l10n.feedStatsAudios,
                       count: stats['audio'] ?? 0,
-                      icon: Icons.graphic_eq,
+                      icon: AmIcons.audio,
                       color: AmColors.srcWave,
                     ),
                     _StatCard(
                       label: l10n.feedStatsNotes,
                       count: stats['text'] ?? 0,
-                      icon: Icons.edit_note_outlined,
+                      icon: AmIcons.text,
                       color: AmColors.srcNote,
                     ),
                     _StatCard(
                       label: l10n.feedStatsChats,
                       count: stats['chat'] ?? 0,
-                      icon: Icons.chat_bubble_outline,
+                      icon: AmIcons.whatsapp,
                       color: AmColors.accent,
                     ),
                   ],
@@ -1247,8 +1270,8 @@ class _KnowledgeDashboardView extends ConsumerWidget {
                   'Error: $e',
                   style: TextStyle(color: cs.error, fontSize: 13),
                 ),
-                data: (items) {
-                  if (items.isEmpty) {
+                data: (listState) {
+                  if (listState.items.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 32),
                       child: Center(
@@ -1261,10 +1284,17 @@ class _KnowledgeDashboardView extends ConsumerWidget {
                     );
                   }
                   return Column(
-                    children: items.map((item) => Padding(
-                      padding: const EdgeInsets.only(bottom: AmDimens.gapS),
-                      child: _FeedRow(item: item),
-                    )).toList(),
+                    children: [
+                      ...listState.items.map((item) => Padding(
+                        padding: const EdgeInsets.only(bottom: AmDimens.gapS),
+                        child: _FeedRow(item: item),
+                      )),
+                      if (listState.isLoadingMore)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: AmLoader(),
+                        ),
+                    ],
                   );
                 },
               ),
