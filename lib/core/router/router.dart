@@ -50,26 +50,34 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (_, state) => amTransitionPage(child: const RegisterScreen(), state: state, type: 'push'),
       ),
 
-      ShellRoute(
-        builder: (context, state, child) =>
-            ShellScreen(location: state.uri.path, child: child),
-        routes: [
-          GoRoute(
-            path: '/home',
-            pageBuilder: (_, state) => amTransitionPage(child: const HomeScreen(), state: state, type: 'fade'),
-          ),
-          GoRoute(
-            path: '/reminders',
-            pageBuilder: (_, state) => amTransitionPage(child: const RemindersScreen(), state: state, type: 'fade'),
-          ),
-          GoRoute(
-            path: '/clients',
-            pageBuilder: (_, state) => amTransitionPage(child: const ClientsScreen(), state: state, type: 'fade'),
-          ),
-          GoRoute(
-            path: '/data',
-            pageBuilder: (_, state) => amTransitionPage(child: const FeedScreen(), state: state, type: 'fade'),
-          ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            ShellScreen(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/home',
+              pageBuilder: (_, state) => const NoTransitionPage(child: HomeScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/reminders',
+              pageBuilder: (_, state) => const NoTransitionPage(child: RemindersScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/clients',
+              pageBuilder: (_, state) => const NoTransitionPage(child: ClientsScreen()),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/data',
+              pageBuilder: (_, state) => const NoTransitionPage(child: FeedScreen()),
+            ),
+          ]),
         ],
       ),
 

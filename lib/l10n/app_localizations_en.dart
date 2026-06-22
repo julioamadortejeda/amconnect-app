@@ -594,6 +594,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedTypeWhatsappDesc => 'Export and upload the conversation';
 
   @override
+  String get feedTypeKnowledgeImage => 'Image / screenshot';
+
+  @override
+  String get feedTypeKnowledgeImageDesc => 'Photo, screenshot or image file';
+
+  @override
+  String get feedTypeDocument => 'Knowledge PDF';
+
+  @override
+  String get feedTypeDocumentDesc => 'Document, manual, contract…';
+
+  @override
   String get feedRecentlyUploaded => 'Recently uploaded';
 
   @override
@@ -607,6 +619,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedProcessingDesc => 'AI is extracting policy data';
+
+  @override
+  String get feedStepGettingUrl => 'Getting upload link…';
+
+  @override
+  String get feedStepUploading => 'Uploading file to server…';
+
+  @override
+  String get feedStepProcessing => 'Processing file with AI…';
 
   @override
   String get feedSuccessTitle => 'Policy created';
@@ -643,6 +664,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Done';
+
+  @override
+  String get feedKnowledgeSuccessTitle => 'Saved!';
+
+  @override
+  String get feedKnowledgeDone => 'Close';
+
+  @override
+  String get feedTextInputTitle => 'Add note or text';
+
+  @override
+  String get feedWhatsappInputTitle => 'Import conversation';
+
+  @override
+  String get feedTextInputHint =>
+      'Paste your text, notes or conversation here…';
+
+  @override
+  String get feedTextInputSubmit => 'Process';
 
   @override
   String get remindersActionDone => 'Mark done';

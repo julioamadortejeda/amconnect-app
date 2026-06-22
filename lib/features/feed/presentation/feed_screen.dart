@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,9 @@ import '../data/feed_item.dart';
 import '../providers/ingest_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import 'ingest_chat_sheet.dart';
+import 'knowledge_success_sheet.dart';
 import 'policy_success_sheet.dart';
+import 'text_ingest_sheet.dart';
 
 // ── Providers ──────────────────────────────────────────────────────────────────
 
@@ -33,15 +36,133 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
-  Future<void> _pickAndProcessPdf() async {
+  bool _isPickingFile = false;
+
+  Future<void> _safePick(Future<void> Function() action) async {
+    if (_isPickingFile) return;
+    setState(() => _isPickingFile = true);
+    try {
+      await action().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException("La selección de archivo tardó demasiado tiempo.");
+        },
+      );
+    } catch (e) {
+      debugPrint('Error picking file: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e is TimeoutException ? (e.message ?? 'La selección de archivo tardó demasiado tiempo.') : 'Error al abrir el selector: $e'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPickingFile = false);
+      }
+    }
+  }
+
+  Future<void> _pickPolicyPdf() => _safePick(() async {
     final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
-    if (result == null || result.files.single.path == null) return;
-    final file = File(result.files.single.path!);
-    final fileName = result.files.single.name;
-    await ref.read(ingestProvider.notifier).process(file, fileName);
+    if (result == null) return;
+    if (result.files.single.path == null) {
+      _showNullPathAlert();
+      return;
+    }
+    await ref.read(ingestProvider.notifier).processPolicy(
+          File(result.files.single.path!),
+          result.files.single.name,
+        );
+  });
+
+  Future<void> _pickPolicyImage() => _safePick(() async {
+    final result = await FilePicker.pickFiles(type: FileType.image);
+    if (result == null) return;
+    if (result.files.single.path == null) {
+      _showNullPathAlert();
+      return;
+    }
+    await ref.read(ingestProvider.notifier).processPolicy(
+          File(result.files.single.path!),
+          result.files.single.name,
+        );
+  });
+
+  Future<void> _pickKnowledgeImage() => _safePick(() async {
+    final result = await FilePicker.pickFiles(type: FileType.image);
+    if (result == null) return;
+    if (result.files.single.path == null) {
+      _showNullPathAlert();
+      return;
+    }
+    await ref.read(ingestProvider.notifier).processKnowledgeFile(
+          File(result.files.single.path!),
+          result.files.single.name,
+        );
+  });
+
+  Future<void> _pickKnowledgeAudio() => _safePick(() async {
+    final result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'm4a', 'wav', 'aac', 'ogg'],
+    );
+    if (result == null) return;
+    if (result.files.single.path == null) {
+      _showNullPathAlert();
+      return;
+    }
+    await ref.read(ingestProvider.notifier).processKnowledgeFile(
+          File(result.files.single.path!),
+          result.files.single.name,
+        );
+  });
+
+  Future<void> _pickKnowledgeDocument() => _safePick(() async {
+    final result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result == null) return;
+    if (result.files.single.path == null) {
+      _showNullPathAlert();
+      return;
+    }
+    await ref.read(ingestProvider.notifier).processKnowledgeFile(
+          File(result.files.single.path!),
+          result.files.single.name,
+        );
+  });
+
+  void _showNullPathAlert() {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Error: El archivo seleccionado no devolvió una ruta local válida en iOS."),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  void _openTextInput(String sourceType) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => TextIngestSheet(sourceType: sourceType),
+    );
   }
 
   void _handleClose() {
@@ -49,23 +170,87 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     ref.invalidate(recentFeedProvider);
   }
 
+  void _showKnowledgeSuccess(String message) {
+    final cs = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) => KnowledgeSuccessSheet(
+        message: message,
+        onClose: () => Navigator.of(ctx).pop(),
+      ),
+    ).then((_) => _handleClose());
+  }
+
+  void _showIngestBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.transparent,
+      builder: (_) => const _UnifiedIngestBottomSheet(),
+    ).then((_) {
+      final state = ref.read(ingestProvider);
+      if (state.phase == IngestPhase.knowledgeSuccess && state.knowledgeMessage != null) {
+        _showKnowledgeSuccess(state.knowledgeMessage!);
+      } else if (state.phase != IngestPhase.idle) {
+        ref.read(ingestProvider.notifier).reset();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen<IngestState>(ingestProvider, (prev, next) {
+      if ((next.phase == IngestPhase.uploading || next.phase == IngestPhase.processing) &&
+          (prev == null || prev.phase == IngestPhase.idle)) {
+        _showIngestBottomSheet();
+      }
+      if (next.phase == IngestPhase.error &&
+          prev?.phase != IngestPhase.error &&
+          next.error != null) {
+        if (prev?.phase == IngestPhase.idle) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next.error!),
+              backgroundColor: Theme.of(context).colorScheme.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    });
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final ingest = ref.watch(ingestProvider);
     final recentAsync = ref.watch(recentFeedProvider);
 
     final feedTypes = [
-      _InputType('doc', Icons.description_outlined, AmColors.srcDoc,
+      _InputType('policyPdf', Icons.description_outlined, AmColors.srcDoc,
           l10n.feedTypePolicyPdf, l10n.feedTypePolicyPdfDesc,
-          available: true),
+          onTap: _pickPolicyPdf),
+      _InputType('policyPhoto', Icons.camera_alt_outlined, AmColors.srcImage,
+          l10n.feedTypePolicyPhoto, l10n.feedTypePolicyPhotoDesc,
+          onTap: _pickPolicyImage),
+      _InputType('audio', Icons.graphic_eq, AmColors.srcWave,
+          l10n.feedTypeAudio, l10n.feedTypeAudioDesc,
+          onTap: _pickKnowledgeAudio),
+      _InputType('text', Icons.edit_note_outlined, AmColors.srcNote,
+          l10n.feedTypeText, l10n.feedTypeTextDesc,
+          onTap: () => _openTextInput('text')),
       _InputType('image', Icons.image_outlined, AmColors.srcImage,
-          l10n.feedTypePolicyPhoto, l10n.feedTypePolicyPhotoDesc),
-      _InputType('wave', Icons.graphic_eq, AmColors.srcWave,
-          l10n.feedTypeAudio, l10n.feedTypeAudioDesc),
-      _InputType('note', Icons.edit_note_outlined, AmColors.srcNote,
-          l10n.feedTypeText, l10n.feedTypeTextDesc),
+          l10n.feedTypeKnowledgeImage, l10n.feedTypeKnowledgeImageDesc,
+          onTap: _pickKnowledgeImage),
+      _InputType('document', Icons.picture_as_pdf_outlined, AmColors.srcDoc,
+          l10n.feedTypeDocument, l10n.feedTypeDocumentDesc,
+          onTap: _pickKnowledgeDocument),
     ];
 
     return Scaffold(
@@ -99,10 +284,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         mainAxisSpacing: 12,
                         childAspectRatio: 1.1,
                         children: feedTypes
-                            .map((t) => _TypeCard(
-                                  t: t,
-                                  onTap: t.available ? _pickAndProcessPdf : () {},
-                                ))
+                            .map((t) => _TypeCard(t: t))
                             .toList(),
                       ),
                     ],
@@ -115,7 +297,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 AmAnimateIn(
                   index: 1,
                   child: AmCard(
-                    onTap: () {},
+                    onTap: () => _openTextInput('whatsapp'),
                     child: Row(
                       children: [
                         Container(
@@ -226,13 +408,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               ],
             ),
 
-            if (ingest.phase == IngestPhase.uploading ||
-                ingest.phase == IngestPhase.processing)
-              _ProcessingOverlay(phase: ingest.phase),
-            if (ingest.phase == IngestPhase.chatting)
-              IngestChatSheet(onClose: _handleClose),
-            if (ingest.phase == IngestPhase.success)
-              PolicySuccessSheet(onClose: _handleClose),
           ],
         ),
       ),
@@ -243,69 +418,43 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 // ── Type card ──────────────────────────────────────────────────────────────────
 
 class _TypeCard extends StatelessWidget {
-  const _TypeCard({required this.t, required this.onTap});
+  const _TypeCard({required this.t});
 
   final _InputType t;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final bg = Color.alphaBlend(t.color.withValues(alpha: 0.14), Colors.white);
 
-    return Stack(
-      children: [
-        AmCard(
-          onTap: t.available ? onTap : null,
-          child: Opacity(
-            opacity: t.available ? 1.0 : 0.55,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: bg, borderRadius: BorderRadius.circular(13)),
-                  child: Icon(t.icon, size: 22, color: t.color),
-                ),
-                const SizedBox(height: 10),
-                Text(t.label,
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: cs.onSurface)),
-                const SizedBox(height: 3),
-                Flexible(
-                  child: Text(t.sub,
-                      style: TextStyle(
-                          fontSize: 12, color: cs.tertiary, height: 1.35),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                ),
-              ],
-            ),
+    return AmCard(
+      onTap: t.onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+                color: bg, borderRadius: BorderRadius.circular(13)),
+            child: Icon(t.icon, size: 22, color: t.color),
           ),
-        ),
-        if (!t.available)
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-              decoration: BoxDecoration(
-                color: cs.secondaryContainer,
-                borderRadius: BorderRadius.circular(99),
-              ),
-              child: Text('Pronto',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: cs.onSurfaceVariant)),
-            ),
+          const SizedBox(height: 10),
+          Text(t.label,
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface)),
+          const SizedBox(height: 3),
+          Flexible(
+            child: Text(t.sub,
+                style: TextStyle(
+                    fontSize: 12, color: cs.tertiary, height: 1.35),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
           ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -423,15 +572,34 @@ class _FeedRow extends StatelessWidget {
 // ── Processing overlay ─────────────────────────────────────────────────────────
 
 class _ProcessingOverlay extends StatelessWidget {
-  const _ProcessingOverlay({required this.phase});
+  const _ProcessingOverlay({required this.phase, this.statusMessageKey});
 
   final IngestPhase phase;
+  final String? statusMessageKey;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final isUploading = phase == IngestPhase.uploading;
+
+    final step1Status = switch (statusMessageKey) {
+      'feedStepGettingUrl' => _StepStatus.active,
+      'feedStepUploading' || 'feedStepProcessing' || null => _StepStatus.completed,
+      _ => _StepStatus.pending,
+    };
+
+    final step2Status = switch (statusMessageKey) {
+      'feedStepGettingUrl' => _StepStatus.pending,
+      'feedStepUploading' => _StepStatus.active,
+      'feedStepProcessing' || null => _StepStatus.completed,
+      _ => _StepStatus.pending,
+    };
+
+    final step3Status = switch (statusMessageKey) {
+      'feedStepProcessing' => _StepStatus.active,
+      null => _StepStatus.completed,
+      _ => _StepStatus.pending,
+    };
 
     return Container(
       color: Colors.black.withValues(alpha: 0.34),
@@ -458,8 +626,8 @@ class _ProcessingOverlay extends StatelessWidget {
                     borderRadius: BorderRadius.circular(99)),
               ),
               Container(
-                width: 80,
-                height: 80,
+                width: 72,
+                height: 72,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
                   color: cs.primaryContainer,
@@ -471,29 +639,240 @@ class _ProcessingOverlay extends StatelessWidget {
                   ],
                 ),
                 child: Image.asset('assets/logo/logo_t.png',
-                    width: 46, height: 46),
+                    width: 42, height: 42),
               ),
               Text(
-                isUploading ? l10n.feedUploading : l10n.feedProcessing,
+                l10n.feedProcessing,
                 style: TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w600,
                     color: cs.onSurface),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: cs.secondaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    _StepRow(
+                      label: l10n.feedStepGettingUrl,
+                      status: step1Status,
+                    ),
+                    const SizedBox(height: 12),
+                    _StepRow(
+                      label: l10n.feedStepUploading,
+                      status: step2Status,
+                    ),
+                    const SizedBox(height: 12),
+                    _StepRow(
+                      label: l10n.feedStepProcessing,
+                      status: step3Status,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+enum _StepStatus { pending, active, completed }
+
+class _StepRow extends StatelessWidget {
+  const _StepRow({required this.label, required this.status});
+  final String label;
+  final _StepStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    Widget leading() {
+      switch (status) {
+        case _StepStatus.pending:
+          return Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: cs.outlineVariant, width: 2),
+            ),
+          );
+        case _StepStatus.active:
+          return const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(AmColors.accent),
+            ),
+          );
+        case _StepStatus.completed:
+          return Container(
+            width: 20,
+            height: 20,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF34A853),
+            ),
+            child: const Icon(
+              Icons.check,
+              size: 13,
+              color: Colors.white,
+            ),
+          );
+      }
+    }
+
+    final textColor = switch (status) {
+      _StepStatus.pending => cs.tertiary,
+      _StepStatus.active => cs.onSurface,
+      _StepStatus.completed => cs.onSurface.withValues(alpha: 0.6),
+    };
+
+    final fontWeight = status == _StepStatus.active ? FontWeight.w600 : FontWeight.w500;
+
+    return Row(
+      children: [
+        leading(),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14.5,
+              fontWeight: fontWeight,
+              color: textColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Unified Ingest Bottom Sheet ──────────────────────────────────────────────────
+
+class _UnifiedIngestBottomSheet extends ConsumerStatefulWidget {
+  const _UnifiedIngestBottomSheet();
+
+  @override
+  ConsumerState<_UnifiedIngestBottomSheet> createState() => _UnifiedIngestBottomSheetState();
+}
+
+class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomSheet> {
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<IngestState>(ingestProvider, (prev, next) {
+      if (next.phase == IngestPhase.idle || next.phase == IngestPhase.knowledgeSuccess) {
+        Navigator.of(context).pop();
+      }
+    });
+
+    final state = ref.watch(ingestProvider);
+
+    return PopScope(
+      canPop: false,
+      child: state.phase == IngestPhase.idle
+          ? const SizedBox.shrink()
+          : _buildContent(context, state),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, IngestState state) {
+    final handleClose = () {
+      ref.read(ingestProvider.notifier).reset();
+    };
+
+    switch (state.phase) {
+      case IngestPhase.uploading:
+      case IngestPhase.processing:
+        return _ProcessingOverlay(
+          phase: state.phase,
+          statusMessageKey: state.statusMessageKey,
+        );
+      case IngestPhase.chatting:
+        return IngestChatSheet(onClose: handleClose);
+      case IngestPhase.success:
+        return PolicySuccessSheet(onClose: handleClose);
+      case IngestPhase.error:
+        return _UnifiedErrorSheet(error: state.error ?? 'Error de procesamiento', onClose: handleClose);
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+}
+
+// ── Unified Error Sheet ─────────────────────────────────────────────────────────
+
+class _UnifiedErrorSheet extends StatelessWidget {
+  const _UnifiedErrorSheet({required this.error, required this.onClose});
+  final String error;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      color: Colors.black.withValues(alpha: 0.34),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(22, 24, 22, 48),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, color: cs.error, size: 48),
+              const SizedBox(height: 16),
               Text(
-                isUploading
-                    ? l10n.feedUploadingDesc
-                    : l10n.feedProcessingDesc,
-                style: TextStyle(fontSize: 13.5, color: cs.tertiary),
+                'Error de procesamiento',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                error,
+                style: TextStyle(fontSize: 14, color: cs.tertiary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 28),
-              const SizedBox(
-                width: 36,
-                height: 36,
-                child: CircularProgressIndicator(
-                    strokeWidth: 3, color: AmColors.accent),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: FilledButton(
+                  onPressed: onClose,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: cs.error,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cerrar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -507,12 +886,12 @@ class _ProcessingOverlay extends StatelessWidget {
 
 class _InputType {
   const _InputType(this.key, this.icon, this.color, this.label, this.sub,
-      {this.available = false});
+      {this.onTap});
 
   final String key;
   final IconData icon;
   final Color color;
   final String label;
   final String sub;
-  final bool available;
+  final VoidCallback? onTap;
 }

@@ -22,34 +22,34 @@ const _kIndicatorVPad = 8.0;
 const _kIndicatorHPad = 6.0;
 
 class ShellScreen extends ConsumerWidget {
-  const ShellScreen({super.key, required this.child, required this.location});
+  const ShellScreen({super.key, required this.navigationShell});
 
-  final Widget child;
-  final String location;
+  final StatefulNavigationShell navigationShell;
 
   static const _tabs = [
-    _Tab(path: '/home',     icon: Icons.home_outlined,            activeIcon: Icons.home),
-    _Tab(path: '/reminders', icon: Icons.calendar_today_outlined,  activeIcon: Icons.calendar_today),
-    _Tab(path: '/clients',   icon: Icons.group_outlined,           activeIcon: Icons.group),
-    _Tab(path: '/data',      icon: Icons.folder_outlined,          activeIcon: Icons.folder),
+    _Tab(icon: Icons.home_outlined,           activeIcon: Icons.home),
+    _Tab(icon: Icons.calendar_today_outlined, activeIcon: Icons.calendar_today),
+    _Tab(icon: Icons.group_outlined,          activeIcon: Icons.group),
+    _Tab(icon: Icons.folder_outlined,         activeIcon: Icons.folder),
   ];
 
-  String get _activeTab {
-    for (final t in _tabs) {
-      if (location.startsWith(t.path)) return t.path;
-    }
-    return '/home';
+  void _onTabSelected(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bottom = MediaQuery.of(context).padding.bottom;
-    final barVisible = location != '/home' || ref.watch(homeReadyProvider).hasValue;
+    final activeIndex = navigationShell.currentIndex;
+    final barVisible = activeIndex != 0 || ref.watch(homeReadyProvider).hasValue;
 
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(child: child),
+          Positioned.fill(child: navigationShell),
 
           AnimatedPositioned(
             duration: const Duration(milliseconds: 320),
@@ -58,7 +58,11 @@ class ShellScreen extends ConsumerWidget {
             right: _kBarRight,
             bottom: barVisible ? bottom + _kBottomOffset : -(bottom + _kBarHeight + _kBottomOffset),
             height: _kBarHeight,
-            child: _PillBar(tabs: _tabs, activeTab: _activeTab),
+            child: _PillBar(
+              tabs: _tabs,
+              activeIndex: activeIndex,
+              onTabSelected: _onTabSelected,
+            ),
           ),
 
           AnimatedPositioned(
@@ -77,24 +81,25 @@ class ShellScreen extends ConsumerWidget {
 }
 
 class _Tab {
-  const _Tab({required this.path, required this.icon, required this.activeIcon});
-  final String path;
+  const _Tab({required this.icon, required this.activeIcon});
   final IconData icon;
   final IconData activeIcon;
 }
 
-/// Barra píldora con indicador deslizante estilo iOS.
-/// Un único Container de fondo se anima entre posiciones con
-/// AnimatedPositioned — misma técnica que usa UIKit en iOS 16+.
 class _PillBar extends StatelessWidget {
-  const _PillBar({required this.tabs, required this.activeTab});
+  const _PillBar({
+    required this.tabs,
+    required this.activeIndex,
+    required this.onTabSelected,
+  });
+
   final List<_Tab> tabs;
-  final String activeTab;
+  final int activeIndex;
+  final ValueChanged<int> onTabSelected;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final activeIndex = tabs.indexWhere((t) => t.path == activeTab);
 
     return Container(
       clipBehavior: Clip.hardEdge,
@@ -117,7 +122,6 @@ class _PillBar extends StatelessWidget {
 
           return Stack(
             children: [
-              // Cápsula deslizante
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 280),
                 curve: Curves.easeInOutCubic,
@@ -132,11 +136,14 @@ class _PillBar extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Items encima de la cápsula
               Row(
-                children: tabs.map((t) => Expanded(
-                  child: _TabItem(t: t, active: activeTab == t.path),
+                children: tabs.asMap().entries.map((e) => Expanded(
+                  child: _TabItem(
+                    t: e.value,
+                    index: e.key,
+                    active: activeIndex == e.key,
+                    onTap: onTabSelected,
+                  ),
                 )).toList(),
               ),
             ],
@@ -148,16 +155,24 @@ class _PillBar extends StatelessWidget {
 }
 
 class _TabItem extends StatelessWidget {
-  const _TabItem({required this.t, required this.active});
-  final _Tab t;
-  final bool active;
+  const _TabItem({
+    required this.t,
+    required this.index,
+    required this.active,
+    required this.onTap,
+  });
 
-  String _label(AppLocalizations l10n) => switch (t.path) {
-        '/home'      => l10n.shellHome,
-        '/reminders' => l10n.shellAgenda,
-        '/clients'   => l10n.shellClients,
-        '/data'      => l10n.shellData,
-        _            => '',
+  final _Tab t;
+  final int index;
+  final bool active;
+  final ValueChanged<int> onTap;
+
+  String _label(AppLocalizations l10n) => switch (index) {
+        0 => l10n.shellHome,
+        1 => l10n.shellAgenda,
+        2 => l10n.shellClients,
+        3 => l10n.shellData,
+        _ => '',
       };
 
   @override
@@ -166,7 +181,7 @@ class _TabItem extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return AmPress(
-      onTap: () => context.go(t.path),
+      onTap: () => onTap(index),
       child: SizedBox(
         height: _kBarHeight,
         child: Column(

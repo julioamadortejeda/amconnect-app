@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
 import '../data/ingest_repository.dart';
 
-export 'package:amconnect/features/feed/data/ingest_repository.dart' show IngestPolicyResponse;
+export 'package:amconnect/features/feed/data/ingest_repository.dart'
+    show IngestPolicyResponse, IngestKnowledgeResponse;
 
-enum IngestPhase { idle, uploading, processing, chatting, success, error }
+enum IngestPhase { idle, uploading, processing, chatting, success, knowledgeSuccess, error }
 
 class IngestMessage {
   final String role; // 'user' | 'ai'
@@ -93,6 +94,8 @@ class IngestState {
   final bool isSending;
   final String? error;
   final PolicyConfirmedData? confirmedPolicy;
+  final String? knowledgeMessage;
+  final String? statusMessageKey;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -103,6 +106,8 @@ class IngestState {
     this.isSending = false,
     this.error,
     this.confirmedPolicy,
+    this.knowledgeMessage,
+    this.statusMessageKey,
   });
 
   IngestState copyWith({
@@ -114,6 +119,8 @@ class IngestState {
     bool? isSending,
     String? error,
     PolicyConfirmedData? confirmedPolicy,
+    String? knowledgeMessage,
+    String? statusMessageKey,
   }) =>
       IngestState(
         phase: phase ?? this.phase,
@@ -124,6 +131,8 @@ class IngestState {
         isSending: isSending ?? this.isSending,
         error: error,
         confirmedPolicy: confirmedPolicy ?? this.confirmedPolicy,
+        knowledgeMessage: knowledgeMessage ?? this.knowledgeMessage,
+        statusMessageKey: statusMessageKey ?? this.statusMessageKey,
       );
 }
 
@@ -136,30 +145,46 @@ class IngestNotifier extends Notifier<IngestState> {
     return const IngestState();
   }
 
-  Future<void> process(File file, String fileName) async {
-    state = const IngestState(phase: IngestPhase.uploading);
+  Future<void> processPolicy(File file, String fileName) async {
+    final mimeType = _mimeFromFileName(fileName);
+    state = const IngestState(
+      phase: IngestPhase.uploading,
+      statusMessageKey: 'feedStepGettingUrl',
+    );
     try {
-      final uploadUrl = await _repo.getUploadUrl(fileName, 'application/pdf');
-      await _repo.uploadToStorage(uploadUrl.signedUrl, file, 'application/pdf');
-
-      state = state.copyWith(phase: IngestPhase.processing);
-
+      final uploadUrl = await _repo.getUploadUrl(fileName, mimeType);
+      await Future.delayed(const Duration(milliseconds: 600));
+      
+      state = state.copyWith(
+        statusMessageKey: 'feedStepUploading',
+      );
+      await _repo.uploadToStorage(uploadUrl.signedUrl, file, mimeType);
+      await Future.delayed(const Duration(milliseconds: 600));
+ 
+      state = state.copyWith(
+        phase: IngestPhase.processing,
+        statusMessageKey: 'feedStepProcessing',
+      );
+ 
       final result = await _repo.ingestPolicy(
         storagePath: uploadUrl.filePath,
         fileName: fileName,
+        mimeType: mimeType,
       );
-
+ 
       state = state.copyWith(
         phase: IngestPhase.chatting,
         sessionId: result.sessionId,
         documentMetadataId: result.documentMetadataId,
         extraction: result.extraction,
         messages: [IngestMessage(role: 'ai', text: result.message)],
+        statusMessageKey: null,
       );
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
         error: e is ApiException ? e.message : e.toString(),
+        statusMessageKey: null,
       );
     }
   }
@@ -191,6 +216,87 @@ class IngestNotifier extends Notifier<IngestState> {
       state = state.copyWith(
         isSending: false,
         error: e is ApiException ? e.message : e.toString(),
+      );
+    }
+  }
+
+  Future<void> processKnowledgeFile(File file, String fileName) async {
+    final mimeType = _mimeFromFileName(fileName);
+    state = const IngestState(
+      phase: IngestPhase.uploading,
+      statusMessageKey: 'feedStepGettingUrl',
+    );
+    try {
+      final uploadUrl = await _repo.getUploadUrl(fileName, mimeType);
+      await Future.delayed(const Duration(milliseconds: 600));
+      
+      state = state.copyWith(
+        statusMessageKey: 'feedStepUploading',
+      );
+      await _repo.uploadToStorage(uploadUrl.signedUrl, file, mimeType);
+      await Future.delayed(const Duration(milliseconds: 600));
+      
+      state = state.copyWith(
+        phase: IngestPhase.processing,
+        statusMessageKey: 'feedStepProcessing',
+      );
+      final result = await _repo.ingestKnowledgeFile(
+        storagePath: uploadUrl.filePath,
+        fileName: fileName,
+        mimeType: mimeType,
+      );
+      state = state.copyWith(
+        phase: IngestPhase.knowledgeSuccess,
+        knowledgeMessage: result.message,
+        statusMessageKey: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        phase: IngestPhase.error,
+        error: e is ApiException ? e.message : e.toString(),
+        statusMessageKey: null,
+      );
+    }
+  }
+
+  static String _mimeFromFileName(String fileName) {
+    final ext = fileName.split('.').last.toLowerCase();
+    return switch (ext) {
+      'jpg' || 'jpeg' => 'image/jpeg',
+      'png' => 'image/png',
+      'heic' => 'image/jpeg', // Map to image/jpeg to pass backend validation
+      'gif' => 'image/gif',
+      'webp' => 'image/webp',
+      'mp3' => 'audio/mpeg',
+      'm4a' => 'audio/mp4',
+      'wav' => 'audio/wav',
+      'aac' => 'audio/mp4', // Map to audio/mp4 to pass backend validation
+      'ogg' => 'audio/ogg',
+      'pdf' => 'application/pdf',
+      _ => 'application/octet-stream',
+    };
+  }
+
+  Future<void> processKnowledgeText(String content, String sourceType) async {
+    state = const IngestState(
+      phase: IngestPhase.processing,
+      statusMessageKey: 'feedStepProcessing',
+    );
+    try {
+      final result = await _repo.ingestKnowledgeText(
+        content: content,
+        sourceType: sourceType,
+      );
+      state = state.copyWith(
+        phase: IngestPhase.knowledgeSuccess,
+        knowledgeMessage: result.message,
+        statusMessageKey: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        phase: IngestPhase.error,
+        error: e is ApiException ? e.message : e.toString(),
+        statusMessageKey: null,
       );
     }
   }

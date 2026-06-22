@@ -596,6 +596,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedTypeWhatsappDesc => 'Exporta y sube la conversación';
 
   @override
+  String get feedTypeKnowledgeImage => 'Imagen / captura';
+
+  @override
+  String get feedTypeKnowledgeImageDesc => 'Foto, captura de pantalla o imagen';
+
+  @override
+  String get feedTypeDocument => 'PDF de conocimiento';
+
+  @override
+  String get feedTypeDocumentDesc => 'Documento, manual, contrato…';
+
+  @override
   String get feedRecentlyUploaded => 'Subido recientemente';
 
   @override
@@ -610,6 +622,15 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get feedProcessingDesc =>
       'La IA está extrayendo los datos de la póliza';
+
+  @override
+  String get feedStepGettingUrl => 'Obteniendo enlace de subida…';
+
+  @override
+  String get feedStepUploading => 'Subiendo archivo al servidor…';
+
+  @override
+  String get feedStepProcessing => 'Procesando archivo con IA…';
 
   @override
   String get feedSuccessTitle => 'Póliza creada';
@@ -646,6 +667,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedSuccessDone => 'Listo';
+
+  @override
+  String get feedKnowledgeSuccessTitle => '¡Guardado!';
+
+  @override
+  String get feedKnowledgeDone => 'Cerrar';
+
+  @override
+  String get feedTextInputTitle => 'Agregar nota o texto';
+
+  @override
+  String get feedWhatsappInputTitle => 'Importar conversación';
+
+  @override
+  String get feedTextInputHint => 'Pega aquí el texto, notas o conversación…';
+
+  @override
+  String get feedTextInputSubmit => 'Procesar';
 
   @override
   String get remindersActionDone => 'Finalizar';

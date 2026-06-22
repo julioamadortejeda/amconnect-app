@@ -1208,6 +1208,30 @@ abstract class AppLocalizations {
   /// **'Exporta y sube la conversación'**
   String get feedTypeWhatsappDesc;
 
+  /// No description provided for @feedTypeKnowledgeImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Imagen / captura'**
+  String get feedTypeKnowledgeImage;
+
+  /// No description provided for @feedTypeKnowledgeImageDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto, captura de pantalla o imagen'**
+  String get feedTypeKnowledgeImageDesc;
+
+  /// No description provided for @feedTypeDocument.
+  ///
+  /// In es, this message translates to:
+  /// **'PDF de conocimiento'**
+  String get feedTypeDocument;
+
+  /// No description provided for @feedTypeDocumentDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento, manual, contrato…'**
+  String get feedTypeDocumentDesc;
+
   /// No description provided for @feedRecentlyUploaded.
   ///
   /// In es, this message translates to:
@@ -1237,6 +1261,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La IA está extrayendo los datos de la póliza'**
   String get feedProcessingDesc;
+
+  /// No description provided for @feedStepGettingUrl.
+  ///
+  /// In es, this message translates to:
+  /// **'Obteniendo enlace de subida…'**
+  String get feedStepGettingUrl;
+
+  /// No description provided for @feedStepUploading.
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo archivo al servidor…'**
+  String get feedStepUploading;
+
+  /// No description provided for @feedStepProcessing.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesando archivo con IA…'**
+  String get feedStepProcessing;
 
   /// No description provided for @feedSuccessTitle.
   ///
@@ -1297,6 +1339,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Listo'**
   String get feedSuccessDone;
+
+  /// No description provided for @feedKnowledgeSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Guardado!'**
+  String get feedKnowledgeSuccessTitle;
+
+  /// No description provided for @feedKnowledgeDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get feedKnowledgeDone;
+
+  /// No description provided for @feedTextInputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar nota o texto'**
+  String get feedTextInputTitle;
+
+  /// No description provided for @feedWhatsappInputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar conversación'**
+  String get feedWhatsappInputTitle;
+
+  /// No description provided for @feedTextInputHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el texto, notas o conversación…'**
+  String get feedTextInputHint;
+
+  /// No description provided for @feedTextInputSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesar'**
+  String get feedTextInputSubmit;
 
   /// No description provided for @remindersActionDone.
   ///

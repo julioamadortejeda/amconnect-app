@@ -65,9 +65,25 @@ class ApiClient {
 
   /// PUT sin Authorization — para URLs firmadas de Supabase Storage.
   Future<void> putFile(String signedUrl, File file, String mimeType) async {
+    String targetUrl = signedUrl;
+    try {
+      final supabaseUri = Uri.parse(Env.supabaseUrl);
+      final signedUri = Uri.parse(signedUrl);
+      if (signedUri.host == '127.0.0.1' || signedUri.host == 'localhost' || signedUri.host == 'kong') {
+        targetUrl = signedUri.replace(
+          scheme: supabaseUri.scheme,
+          host: supabaseUri.host,
+          port: supabaseUri.port,
+        ).toString();
+      }
+    } catch (e) {
+      // Si falla el parsing por alguna razón, conservamos la URL original
+      targetUrl = signedUrl;
+    }
+
     final bytes = await file.readAsBytes();
     final res = await http.put(
-      Uri.parse(signedUrl),
+      Uri.parse(targetUrl),
       headers: {'Content-Type': mimeType},
       body: bytes,
     );
