@@ -10,6 +10,7 @@ import '../providers/chat_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/voice_overlay.dart';
 import 'widgets/chat_cards.dart';
+import '../../../core/config/features.dart';
 
 const _chatSuggestions = [
   '¿Quién vence pronto?',
@@ -229,8 +230,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     AmIconBtn(
                       icon: Icons.mic_none_rounded,
                       tone: AmIconBtnTone.sunken,
-                      onTap: () => VoiceOverlay.show(context,
-                          continueSession: true, navigateToChat: false),
+                      onTap: () {
+                        if (kVoiceChatEnabled) {
+                          GoRouter.of(context).push('/voice-chat');
+                        } else {
+                          VoiceOverlay.show(context,
+                              continueSession: true, navigateToChat: false);
+                        }
+                      },
                     ),
                     const SizedBox(width: 6),
                     AnimatedScale(

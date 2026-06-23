@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shell/shell_screen.dart';
@@ -18,6 +20,7 @@ import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
+import '../../features/chat/presentation/voice_chat_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -113,6 +116,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           type: 'push',
         ),
       ),
+      GoRoute(
+        path: '/voice-chat',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const VoiceChatScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
     ],
   );
 });
@@ -124,11 +135,18 @@ class _AuthNotifier extends ChangeNotifier {
   }
 }
 
-CustomTransitionPage<T> amTransitionPage<T>({
+Page<T> amTransitionPage<T>({
   required Widget child,
   required GoRouterState state,
   required String type, // 'push' | 'pop' | 'fade'
 }) {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
+    return CupertinoPage<T>(
+      key: state.pageKey,
+      child: child,
+    );
+  }
+
   return CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
