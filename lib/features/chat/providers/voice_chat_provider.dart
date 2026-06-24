@@ -355,14 +355,12 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           _hasReceivedMicData = true;
           debugPrint('[VoiceChat] 🎙 First mic chunk arrived (${data.length} bytes)');
         }
-        // Half-duplex: block mic while model is speaking OR during post-turn cooldown.
-        // modelSpeaking → prevents echo while Gemini talks.
-        // _micCooldown → prevents echo from the tail of buffered audio after turn_complete.
-        if (_micCooldown || state.status == VoiceChatStatus.modelSpeaking) {
+        // Keep the mic active during model speech. Only block it during post-turn cooldown
+        // to prevent room echo from the tail of buffered audio after turn_complete.
+        if (_micCooldown) {
           _micMutedLogCounter++;
           if (_micMutedLogCounter % 40 == 1) {
-            final reason = _micCooldown ? 'cooldown' : 'modelSpeaking';
-            debugPrint('[VoiceChat] 🔇 Mic MUTED ($reason) — ${_micMutedLogCounter} chunks dropped');
+            debugPrint('[VoiceChat] 🔇 Mic MUTED (cooldown) — ${_micMutedLogCounter} chunks dropped');
           }
           return;
         }

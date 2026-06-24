@@ -102,34 +102,28 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             eng.attach(player)
             eng.connect(player, to: eng.mainMixerNode, format: playFmt)
 
-            // Connect inputNode → micMixer → mainMixerNode BEFORE starting the engine.
-            // Without a downstream connection the inputNode format stays "0 Hz" and the
-            // hardware is never initialized. outputVolume = 0.001 (-60 dB, inaudible) is
-            // critical: 0.0 tells the render thread to skip this path entirely, so the
-            // tap never fires. Any non-zero value keeps the graph active.
-            let micMixer = AVAudioMixerNode()
-            eng.attach(micMixer)
-            eng.connect(inputNode, to: micMixer, format: nil)
-            eng.connect(micMixer, to: eng.mainMixerNode, format: nil)
-            micMixer.outputVolume = 0.001
-
-            print("[VoiceAudio] Starting AVAudioEngine...")
-            try eng.start()
-            player.play()
-            print("[VoiceAudio] Engine started, player armed.")
-
-            // Read the format AFTER the engine starts — now the hardware is active.
-            let inputFmt = inputNode.outputFormat(forBus: 0)
+            // Read the format of the inputNode for logging.
+            var inputFmt = inputNode.outputFormat(forBus: 0)
+            if inputFmt.sampleRate == 0 {
+                print("[VoiceAudio] Warning: outputFormat is 0 Hz, falling back to inputFormat.")
+                inputFmt = inputNode.inputFormat(forBus: 0)
+            }
             print("[VoiceAudio] Input format: \(inputFmt)")
 
             let capFmt = AVAudioFormat(commonFormat: .pcmFormatFloat32,
                                        sampleRate: 16_000, channels: 1, interleaved: false)!
 
-            inputNode.installTap(onBus: 0, bufferSize: 4_096, format: inputFmt) { [weak self] buf, _ in
+            // Install tap directly on inputNode
+            inputNode.installTap(onBus: 0, bufferSize: 4_096, format: nil) { [weak self] buf, _ in
                 print("[VoiceAudio] TAP \(buf.frameLength)f")
                 self?.handleCapture(buf, targetFmt: capFmt)
             }
-            print("[VoiceAudio] Tap installed.")
+            print("[VoiceAudio] Tap installed on inputNode.")
+
+            print("[VoiceAudio] Starting AVAudioEngine...")
+            try eng.start()
+            player.play()
+            print("[VoiceAudio] Engine started, player armed.")
 
             engine = eng
             playerNode = player
@@ -235,8 +229,16 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
         // We ignore `err` if we successfully produced Float32 frames
         guard out.frameLength > 0, let floatPtr = out.floatChannelData?[0] else { return }
         
-        // Manually convert Float32 [-1.0, 1.0] samples to Int16 [-32768, 32767]
+        // Calculate max amplitude for debugging
         let frameCount = Int(out.frameLength)
+        var maxAmp: Float = 0.0
+        for i in 0..<frameCount {
+            let val = abs(floatPtr[i])
+            if val > maxAmp { maxAmp = val }
+        }
+        print("[VoiceAudio] TAP max amplitude: \(maxAmp)")
+        
+        // Manually convert Float32 [-1.0, 1.0] samples to Int16 [-32768, 32767]
         var int16Samples = [Int16](repeating: 0, count: frameCount)
         for i in 0..<frameCount {
             let sample = floatPtr[i]
