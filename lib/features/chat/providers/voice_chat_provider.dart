@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' as http;
 import '../../../core/config/env.dart';
 
 // ── Tipos públicos ────────────────────────────────────────────────────────────
@@ -90,17 +91,29 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   // ai_session row instead of creating a new one.
   String? _rootSessionId;
 
-  // Half-duplex state:
-  // _discardAudio: true after `interrupted` — ignores in-flight audio chunks from
-  //   the old turn so they can't flip state back to modelSpeaking and mute the mic.
-  //   Reset to false on `turn_complete` so the next model response is played normally.
-  // _micCooldown: true after `turn_complete` while waiting for buffered audio to
-  //   finish playing on the speaker. Prevents the mic from picking up that tail audio
-  //   (echo) and sending it to Gemini as if the user was speaking.
-  bool _discardAudio = false;
-  bool _micCooldown  = false;
-
+  // Full-duplex: the mic streams continuously and is NEVER gated on state. The OS
+  // voice-processing unit (AEC) keeps the model's voice out of the mic signal, so
+  // it's safe to keep sending while the model speaks — that's exactly what lets
+  // Gemini's server VAD detect a barge-in and fire `interrupted`. `modelSpeaking`
+  // is therefore a purely visual state, never a gate on the microphone.
   int _audioChunksReceived = 0; // for logging
+
+  // Echo guard. The .voiceChat audio session mode does NOT fully cancel the
+  // speaker, so the model's own voice leaks into the mic and trips Gemini's
+  // server VAD, making the model interrupt itself mid-answer. While the model is
+  // speaking — and for a short hangover after the last played chunk — we stop
+  // FORWARDING mic audio to Gemini. The mic keeps capturing; we just don't send
+  // the echo. Voice barge-in is unavailable in this window; the user interrupts
+  // by tapping the screen, which calls interrupt() and re-opens the mic send.
+  DateTime? _lastPlaybackAt;
+  static const _playbackHangover = Duration(milliseconds: 700);
+
+  bool get _micSendBlockedByPlayback {
+    if (state.status == VoiceChatStatus.modelSpeaking) return true;
+    final last = _lastPlaybackAt;
+    return last != null &&
+        DateTime.now().difference(last) < _playbackHangover;
+  }
 
   // Silence watchdog: if the mic has been sending audio for > _stuckThreshold
   // without any Gemini response (no transcript, no audio, no turn_complete),
@@ -109,6 +122,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   DateTime? _lastGeminiActivity;
   Timer? _watchdogTimer;
   String? _timezone; // stored so the watchdog can reconnect
+  
+  // Token usage trackers
+  int _promptTokens = 0;
+  int _completionTokens = 0;
+  int _totalTokens = 0;
 
   @override
   VoiceChatState build() {
@@ -118,6 +136,56 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   // ── Conexión ───────────────────────────────────────────────────────────────
 
+  Future<dynamic> _post(String path, Map<String, dynamic> body) async {
+    final token = Supabase.instance.client.auth.currentSession?.accessToken;
+    final response = await http.post(
+      Uri.parse('${Env.apiBaseUrl}$path'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        if (_timezone != null) 'x-timezone': _timezone!,
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('HTTP error ${response.statusCode}: ${response.body}');
+    }
+  }
+
+  Future<dynamic> _executeToolInSupabase(String name, Map<String, dynamic> args) async {
+    try {
+      final res = await _post('/ai/voice/execute-tool', {
+        'sessionId': state.sessionId,
+        'timezone': _timezone,
+        'toolName': name,
+        'args': args,
+      });
+      return res; // returns whatever the function returns
+    } catch (e) {
+      debugPrint('[VoiceChat] executeTool error: $e');
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<void> _saveRoundInSupabase(String userText, String modelText) async {
+    try {
+      await _post('/ai/voice/save-round', {
+        'sessionId': state.sessionId,
+        'userText': userText,
+        'modelText': modelText,
+        'promptTokens': _promptTokens,
+        'completionTokens': _completionTokens,
+        'totalTokens': _totalTokens,
+      });
+      debugPrint('[VoiceChat] Round saved in DB');
+    } catch (e) {
+      debugPrint('[VoiceChat] saveRound error: $e');
+    }
+  }
+
   Future<void> connect(String timezone) async {
     _timezone = timezone;
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
@@ -126,20 +194,29 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       return;
     }
 
-    final base = Env.apiBaseUrl;
-    final wsBase = base
-        .replaceFirst('https://', 'wss://')
-        .replaceFirst('http://', 'ws://');
-    final wsUrl = '$wsBase/ai/voice';
-
-    debugPrint('[VoiceChat] Connecting to $wsUrl');
-
     try {
-      _socket = await WebSocket.connect(wsUrl, headers: {
-        'Authorization': 'Bearer $token',
-        'x-timezone': timezone,
-        if (_rootSessionId != null) 'sessionId': _rootSessionId!,
-      });
+      // 1. Init session in Supabase to get prompt instructions and tool schemas
+      debugPrint('[VoiceChat] Initializing session in Supabase...');
+      final initData = await _post('/ai/voice/init', {
+        'timezone': timezone,
+        'sessionId': _rootSessionId,
+      }) as Map<String, dynamic>;
+
+      final sessionId = initData['sessionId'] as String;
+      final systemInstruction = initData['systemInstruction'] as String;
+      final tools = initData['tools'] as List<dynamic>? ?? [];
+
+      _rootSessionId ??= sessionId;
+      state = state.copyWith(
+        status: VoiceChatStatus.connecting,
+        sessionId: _rootSessionId,
+      );
+
+      // 2. Connect directly to Gemini Live API WebSocket
+      final geminiWsUrl = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${Env.geminiApiKey}';
+      debugPrint('[VoiceChat] Connecting directly to Gemini Live API');
+
+      _socket = await WebSocket.connect(geminiWsUrl);
 
       _wsSub = _socket!.listen(
         _onMessage,
@@ -148,7 +225,36 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         cancelOnError: false,
       );
 
-      debugPrint('[VoiceChat] WebSocket connected');
+      debugPrint('[VoiceChat] WebSocket connected directly to Gemini');
+
+      // 3. Send setup message to Gemini Live API
+      final setupMessage = {
+        'setup': {
+          'model': 'models/${Env.geminiLiveModel}',
+          'generation_config': {
+            'response_modalities': ['AUDIO'],
+          },
+          'realtime_input_config': {
+            'automatic_activity_detection': {
+              'start_of_speech_sensitivity': 'START_SENSITIVITY_LOW',
+              'end_of_speech_sensitivity': 'END_SENSITIVITY_LOW',
+              'prefix_padding_ms': 200,
+              'silence_duration_ms': 500,
+            },
+          },
+          'input_audio_transcription': {},
+          'output_audio_transcription': {},
+          'system_instruction': {
+            'parts': [
+              {'text': systemInstruction}
+            ],
+          },
+          'tools': tools,
+        }
+      };
+
+      _socket!.add(jsonEncode(setupMessage));
+      debugPrint('[VoiceChat] Setup message sent to Gemini');
 
       // Start the native audio engine (capture + playback in one AVAudioEngine)
       await _audioControl.invokeMethod<void>('startAudio');
@@ -161,9 +267,6 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   Future<void> endSession() async {
     debugPrint('[VoiceChat] Ending session');
-    if (_socket?.readyState == WebSocket.open) {
-      _socket!.add(jsonEncode({'type': 'end'}));
-    }
     await _cleanup();
     if (!_disposed) state = state.copyWith(status: VoiceChatStatus.closed);
   }
@@ -188,94 +291,69 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     if (_socket?.readyState == WebSocket.open) {
       final dummySilence = Uint8List(1600);
       _socket!.add(jsonEncode({
-        'type': 'audio',
-        'data': base64Encode(dummySilence),
+        'realtime_input': {
+          'media_chunks': [
+            {
+              'mime_type': 'audio/pcm;rate=16000',
+              'data': base64Encode(dummySilence),
+            }
+          ]
+        }
       }));
     }
   }
 
-  // ── Mensajes entrantes del backend ────────────────────────────────────────
+  // ── Mensajes entrantes de Gemini Live API ─────────────────────────────────
 
   Future<void> _onMessage(dynamic raw) async {
     if (_disposed) return;
     Map<String, dynamic> msg;
     try {
-      msg = jsonDecode(raw as String) as Map<String, dynamic>;
+      String text;
+      if (raw is String) {
+        text = raw;
+      } else if (raw is List<int>) {
+        text = utf8.decode(raw);
+      } else {
+        debugPrint('[VoiceChat] Unknown raw payload type: ${raw.runtimeType}');
+        return;
+      }
+      msg = jsonDecode(text) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('[VoiceChat] Parse error: $e');
       return;
     }
 
-    final type = msg['type'] as String?;
-    if (type != 'audio') {
-      debugPrint('[VoiceChat] << $type');
+    // Handle setupComplete
+    final setupComplete = msg['setupComplete'] ?? msg['setup_complete'];
+    if (setupComplete != null) {
+      debugPrint('[VoiceChat] ▶ Gemini ready — entering LISTENING mode, starting mic');
+      state = state.copyWith(status: VoiceChatStatus.listening);
+      _touchGeminiActivity();
+      _startMicStream();
+      return;
     }
 
-    switch (type) {
-      case 'ready':
-        final sid = msg['session_id'] as String?;
-        _rootSessionId ??= sid; // pin to first session; stays across reconnects
-        state = state.copyWith(
-          status: VoiceChatStatus.ready,
-          sessionId: _rootSessionId,
-        );
+    // Handle usageMetadata
+    final usageMetadata = msg['usageMetadata'] ?? msg['usage_metadata'];
+    if (usageMetadata is Map) {
+      _promptTokens = (usageMetadata['promptTokenCount'] ?? usageMetadata['prompt_token_count'] ?? 0) as int;
+      _completionTokens = (usageMetadata['candidatesTokenCount'] ?? usageMetadata['candidates_token_count'] ?? 0) as int;
+      _totalTokens = (usageMetadata['totalTokenCount'] ?? usageMetadata['total_token_count'] ?? 0) as int;
+      debugPrint('[VoiceChat] Usage tokens updated: prompt=$_promptTokens completion=$_completionTokens total=$_totalTokens');
+    }
 
-      case 'gemini_ready':
-        debugPrint('[VoiceChat] ▶ Gemini ready — entering LISTENING mode, starting mic');
-        state = state.copyWith(status: VoiceChatStatus.listening);
-        _touchGeminiActivity();
-        _startMicStream();
+    // Handle serverContent
+    final serverContent = msg['serverContent'] ?? msg['server_content'];
+    if (serverContent is Map) {
+      _touchGeminiActivity();
 
-      case 'audio':
-        // Discard in-flight audio chunks from an interrupted turn.
-        // Without this guard, late chunks arrive after `interrupted` and flip the
-        // state back to modelSpeaking — silencing the mic indefinitely.
-        if (_discardAudio) {
-          debugPrint('[VoiceChat] ⊘ Discarding in-flight audio chunk (post-interrupt)');
-          break;
-        }
-        _touchGeminiActivity();
-        _audioChunksReceived++;
-        final base64Audio = msg['data'] as String? ?? '';
-        if (base64Audio.isNotEmpty) {
-          try {
-            await _audioControl.invokeMethod<void>('playPcm', {'data': base64Audio});
-          } catch (e) {
-            debugPrint('[VoiceChat] playPcm error: $e');
-          }
-        }
-        if (state.status != VoiceChatStatus.modelSpeaking) {
-          debugPrint('[VoiceChat] 🔊 MODEL speaking — mic MUTED (half-duplex)');
-          state = state.copyWith(status: VoiceChatStatus.modelSpeaking);
-        }
-
-      case 'transcript_user':
-        var text = msg['text'] as String? ?? '';
-        text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
-        debugPrint('[VoiceChat] 🎤 User: "$text"');
-        _touchGeminiActivity();
-        state = state.copyWith(liveUserText: state.liveUserText + text);
-
-      case 'transcript_model':
-        var text = msg['text'] as String? ?? '';
-        text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
-        debugPrint('[VoiceChat] 🤖 Model: "$text"');
-        if (state.status != VoiceChatStatus.modelSpeaking) {
-          state = state.copyWith(
-            status: VoiceChatStatus.modelSpeaking,
-            liveModelText: state.liveModelText + text,
-          );
-        } else {
-          state = state.copyWith(liveModelText: state.liveModelText + text);
-        }
-
-      case 'interrupted':
-        // Flag to discard in-flight audio from the interrupted turn.
-        // Cleared on the next turn_complete so the model's next response plays.
-        _discardAudio = true;
+      // Handle interrupted (barge-in). The mic never stopped, so Gemini already
+      // heard the user — just flush the model audio still queued on the speaker.
+      if (serverContent['interrupted'] == true) {
         final chunksBeforeInterrupt = _audioChunksReceived;
         _audioChunksReceived = 0;
-        debugPrint('[VoiceChat] ⚡ INTERRUPTED after $chunksBeforeInterrupt chunks — stopping playback');
+        debugPrint('[VoiceChat] ⚡ INTERRUPTED after $chunksBeforeInterrupt chunks — flushing playback');
         try {
           await _audioControl.invokeMethod<void>('stopPlayback');
         } catch (_) {}
@@ -283,47 +361,131 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           status: VoiceChatStatus.listening,
           liveModelText: '',
         );
-        debugPrint('[VoiceChat] 🎤 USER turn (barge-in) — mic ACTIVE');
+        debugPrint('[VoiceChat] 🎤 USER barge-in — model audio flushed');
+      }
 
-      case 'turn_complete':
-        // Re-arm for the next model response.
-        _discardAudio = false;
+      // Handle modelTurn (audio chunks)
+      final modelTurn = serverContent['modelTurn'] ?? serverContent['model_turn'];
+      if (modelTurn is Map && modelTurn['parts'] is List) {
+        final parts = modelTurn['parts'] as List;
+        for (final part in parts) {
+          if (part is Map) {
+            final inlineData = part['inlineData'] ?? part['inline_data'];
+            if (inlineData is Map && inlineData['data'] is String) {
+              final base64Audio = inlineData['data'] as String;
+              if (base64Audio.isNotEmpty) {
+                _audioChunksReceived++;
+                _lastPlaybackAt = DateTime.now(); // arm the echo guard hangover
+                try {
+                  await _audioControl.invokeMethod<void>('playPcm', {'data': base64Audio});
+                } catch (e) {
+                  debugPrint('[VoiceChat] playPcm error: $e');
+                }
+              }
+            }
+          }
+        }
+        // Visual state only — the mic keeps streaming (full-duplex).
+        if (state.status != VoiceChatStatus.modelSpeaking) {
+          debugPrint('[VoiceChat] 🔊 MODEL speaking (mic stays open)');
+          state = state.copyWith(status: VoiceChatStatus.modelSpeaking);
+        }
+      }
+
+      // Handle outputTranscription (model text)
+      final outputTrans = serverContent['outputTranscription'] ?? serverContent['output_transcription'];
+      if (outputTrans is Map && outputTrans['text'] is String) {
+        var text = outputTrans['text'] as String;
+        text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
+        debugPrint('[VoiceChat] 🤖 Model: "$text"');
+        state = state.copyWith(
+          status: VoiceChatStatus.modelSpeaking,
+          liveModelText: state.liveModelText + text,
+        );
+      }
+
+      // Handle inputTranscription (user text)
+      final inputTrans = serverContent['inputTranscription'] ?? serverContent['input_transcription'];
+      if (inputTrans is Map && inputTrans['text'] is String) {
+        var text = inputTrans['text'] as String;
+        text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
+        debugPrint('[VoiceChat] 🎤 User: "$text"');
+        state = state.copyWith(liveUserText: state.liveUserText + text);
+        _armWatchdog(); // user spoke → expect a model reply; reconnect if none in 12s
+      }
+
+      // Handle turnComplete
+      if (serverContent['turnComplete'] == true || serverContent['turn_complete'] == true) {
         final chunksThisTurn = _audioChunksReceived;
         _audioChunksReceived = 0;
-        debugPrint('[VoiceChat] ✅ TURN COMPLETE ($chunksThisTurn chunks played) — entering mic cooldown');
+        debugPrint('[VoiceChat] ✅ TURN COMPLETE ($chunksThisTurn chunks played) — saving round');
+
+        final userText = state.liveUserText;
+        final modelText = state.liveModelText;
 
         final newTurns = [...state.turns];
-        if (state.liveUserText.isNotEmpty) {
-          newTurns.add(VoiceChatTurn(isUser: true, text: state.liveUserText));
+        if (userText.isNotEmpty) {
+          newTurns.add(VoiceChatTurn(isUser: true, text: userText));
         }
-        if (state.liveModelText.isNotEmpty) {
-          newTurns.add(VoiceChatTurn(isUser: false, text: state.liveModelText));
+        if (modelText.isNotEmpty) {
+          newTurns.add(VoiceChatTurn(isUser: false, text: modelText));
         }
+
+        // Save round to Supabase asynchronously so it doesn't block the UI
+        _saveRoundInSupabase(userText, modelText);
+
         state = VoiceChatState(
           status: VoiceChatStatus.listening,
           sessionId: state.sessionId,
           turns: newTurns,
         );
 
-        // Wait for the native player to finish draining its buffer before enabling
-        // the mic. Without this wait the mic would pick up the tail of the model's
-        // audio (speaker → mic echo) and send it to Gemini as user speech.
-        _micCooldown = true;
-        _waitForPlaybackDone();
+        // Reset usage token trackers
+        _promptTokens = 0;
+        _completionTokens = 0;
+        _totalTokens = 0;
+      }
+    }
 
-      case 'skill_call':
-        final name = msg['name'] as String?;
-        debugPrint('[VoiceChat] 🛠 Skill executing: $name');
-        state = state.copyWith(activeSkill: name);
+    // Handle toolCall
+    final toolCall = msg['toolCall'] ?? msg['tool_call'];
+    if (toolCall is Map) {
+      final functionCalls = toolCall['functionCalls'] ?? toolCall['function_calls'];
+      if (functionCalls is List && functionCalls.isNotEmpty) {
+        _touchGeminiActivity(); // Gemini is responding (calling a tool) — cancel watchdog
+        debugPrint('[VoiceChat] Tool calls received: $functionCalls');
+        
+        final futures = functionCalls.map((call) async {
+          if (call is Map) {
+            final id = call['id'] as String;
+            final name = call['name'] as String;
+            final args = call['args'] as Map<String, dynamic>? ?? {};
 
-      case 'error':
-        final message = msg['message'] as String? ?? 'Error desconocido';
-        debugPrint('[VoiceChat] Error from backend: $message');
-        _setError(message);
+            state = state.copyWith(activeSkill: name);
+            final result = await _executeToolInSupabase(name, args);
 
-      case 'closed':
-        debugPrint('[VoiceChat] Backend closed session');
-        if (!_disposed) state = state.copyWith(status: VoiceChatStatus.closed);
+            return {
+              'id': id,
+              'name': name,
+              'response': {'result': result},
+            };
+          }
+          return null;
+        }).toList();
+
+        final results = (await Future.wait(futures)).whereType<Map<String, dynamic>>().toList();
+
+        // Send tool responses back to Gemini
+        final toolResponse = {
+          'tool_response': {
+            'function_responses': results,
+          }
+        };
+        _socket?.add(jsonEncode(toolResponse));
+        debugPrint('[VoiceChat] Sent tool responses to Gemini');
+        
+        state = state.copyWith(clearActiveSkill: true);
+      }
     }
   }
 
@@ -341,12 +503,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   bool _hasReceivedMicData = false;
   int _micChunksSent = 0;
-  int _micMutedLogCounter = 0;
 
   void _startMicStream() {
     _hasReceivedMicData = false;
     _micChunksSent = 0;
-    _micMutedLogCounter = 0;
     _audioSub = _audioInput.receiveBroadcastStream().listen(
       (dynamic data) {
         if (_disposed) return;
@@ -355,28 +515,26 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           _hasReceivedMicData = true;
           debugPrint('[VoiceChat] 🎙 First mic chunk arrived (${data.length} bytes)');
         }
-        // Keep the mic active during model speech. Only block it during post-turn cooldown
-        // to prevent room echo from the tail of buffered audio after turn_complete.
-        if (_micCooldown) {
-          _micMutedLogCounter++;
-          if (_micMutedLogCounter % 40 == 1) {
-            debugPrint('[VoiceChat] 🔇 Mic MUTED (cooldown) — ${_micMutedLogCounter} chunks dropped');
-          }
-          return;
-        }
-        _micMutedLogCounter = 0;
-        if (_socket?.readyState == WebSocket.open) {
+        // Echo guard: while the model is speaking (and a short hangover after),
+        // don't forward mic audio — otherwise the speaker bleed trips Gemini's VAD
+        // and the model interrupts itself. The mic still captures; we just hold the
+        // send. Tapping the screen (interrupt()) re-opens the send immediately.
+        if (_socket?.readyState == WebSocket.open && !_micSendBlockedByPlayback) {
           _micChunksSent++;
-          if (_micChunksSent == 1) {
-            debugPrint('[VoiceChat] 📤 Mic sending to Gemini (chunk #1 this turn)');
-            _armWatchdog(); // start countdown — if Gemini doesn't respond in 12s, reconnect
-          } else if (_micChunksSent % 20 == 0) {
-            debugPrint('[VoiceChat] 📤 Mic: $_micChunksSent chunks sent this turn');
+          if (_micChunksSent % 50 == 0) {
+            debugPrint('[VoiceChat] 📤 Mic streaming ($_micChunksSent chunks)');
           }
-          _socket!.add(jsonEncode({
-            'type': 'audio',
-            'data': base64Encode(data),
-          }));
+          final pcmChunkMessage = {
+            'realtime_input': {
+              'media_chunks': [
+                {
+                  'mime_type': 'audio/pcm;rate=16000',
+                  'data': base64Encode(data),
+                }
+              ]
+            }
+          };
+          _socket!.add(jsonEncode(pcmChunkMessage));
         }
       },
       onError: (Object e) {
@@ -394,9 +552,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _watchdogTimer = null;
   }
 
-  // Arms the watchdog timer. Called each time the mic sends its first chunk of
-  // a turn. If Gemini doesn't respond within _stuckThreshold, the session is
-  // considered stuck and gets reconnected transparently.
+  // Arms the watchdog timer. Called when the user starts speaking (Gemini emits an
+  // input transcription). If no Gemini activity follows within _stuckThreshold, the
+  // Live session is considered stuck and gets reconnected transparently. Any inbound
+  // server content / tool call calls _touchGeminiActivity() which cancels it.
   void _armWatchdog() {
     _watchdogTimer?.cancel();
     _watchdogTimer = Timer(_stuckThreshold, () {
@@ -428,8 +587,6 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   Future<void> _partialCleanup() async {
     _watchdogTimer?.cancel();
     _watchdogTimer = null;
-    _discardAudio = false;
-    _micCooldown  = false;
     _audioChunksReceived = 0;
     await _audioSub?.cancel();
     _audioSub = null;
@@ -438,37 +595,6 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     try { await _audioControl.invokeMethod<void>('stopAudio'); } catch (_) {}
     try { await _socket?.close(); } catch (_) {}
     _socket = null;
-  }
-
-  // Polls native until the AVAudioPlayerNode has drained its scheduled buffers,
-  // then clears the cooldown flag so the mic can resume.
-  Future<void> _waitForPlaybackDone() async {
-    debugPrint('[VoiceChat] ⏳ Waiting for playback to drain…');
-    int polls = 0;
-    while (!_disposed) {
-      await Future.delayed(const Duration(milliseconds: 50));
-      polls++;
-      try {
-        final done = await _audioControl.invokeMethod<bool>('isPlaybackDone') ?? true;
-        if (done) {
-          // Extra 100 ms for room echo to dissipate before mic resumes.
-          await Future.delayed(const Duration(milliseconds: 100));
-          if (!_disposed) {
-            _micCooldown = false;
-            _micChunksSent = 0;
-            debugPrint('[VoiceChat] 🎤 USER turn — mic ACTIVE (drained in ${polls * 50}ms)');
-          }
-          return;
-        }
-      } catch (_) {
-        break; // native channel gone (session ended) — bail out
-      }
-    }
-    // Fallback: release cooldown even if polling fails.
-    if (!_disposed) {
-      _micCooldown = false;
-      debugPrint('[VoiceChat] 🎤 USER turn — mic ACTIVE (fallback after ${polls * 50}ms)');
-    }
   }
 
   // ── Limpieza ──────────────────────────────────────────────────────────────

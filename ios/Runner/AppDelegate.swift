@@ -59,9 +59,6 @@ import AVFoundation
         VoiceAudioManager.shared.stop()
         result(nil as Any?)
 
-      case "isPlaybackDone":
-        result(VoiceAudioManager.shared.isPlaybackDone)
-
       default:
         result(FlutterMethodNotImplemented)
       }
