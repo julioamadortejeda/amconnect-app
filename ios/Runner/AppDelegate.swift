@@ -32,12 +32,13 @@ import AVFoundation
       switch call.method {
 
       case "startAudio":
-        do {
-          try VoiceAudioManager.shared.start()
-          result(nil as Any?)
-        } catch {
-          result(FlutterError(code: "AUDIO_START_ERROR",
-                              message: error.localizedDescription, details: nil))
+        VoiceAudioManager.shared.startRequestingPermissionIfNeeded { error in
+          if let error = error {
+            result(FlutterError(code: "AUDIO_START_ERROR",
+                                message: error.localizedDescription, details: nil))
+          } else {
+            result(nil as Any?)
+          }
         }
 
       case "playPcm":
@@ -57,6 +58,9 @@ import AVFoundation
       case "stopAudio":
         VoiceAudioManager.shared.stop()
         result(nil as Any?)
+
+      case "isPlaybackDone":
+        result(VoiceAudioManager.shared.isPlaybackDone)
 
       default:
         result(FlutterMethodNotImplemented)

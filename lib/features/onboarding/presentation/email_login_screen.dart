@@ -19,8 +19,8 @@ class EmailLoginScreen extends ConsumerStatefulWidget {
 }
 
 class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController(text: 'test1@jacatsoft.com');
+  final _passCtrl = TextEditingController(text: '123456');
   bool _obscure = true;
   bool _emailTouched = false;
 
