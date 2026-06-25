@@ -50,16 +50,18 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(voiceChatProvider);
 
-    // Auto-scroll transcript list when new turns arrive
+    // Auto-scroll to keep the latest content visible — both when a new turn is
+    // committed AND while the live transcript streams in (token by token). Uses
+    // jumpTo for the live updates so many rapid changes don't queue competing
+    // animations; the list still follows smoothly.
     ref.listen(voiceChatProvider, (prev, next) {
-      if (prev?.turns.length != next.turns.length) {
+      final contentGrew = prev?.turns.length != next.turns.length ||
+          prev?.liveModelText != next.liveModelText ||
+          prev?.liveUserText != next.liveUserText;
+      if (contentGrew) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_scrollCtrl.hasClients) {
-            _scrollCtrl.animateTo(
-              _scrollCtrl.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
+            _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
           }
         });
       }

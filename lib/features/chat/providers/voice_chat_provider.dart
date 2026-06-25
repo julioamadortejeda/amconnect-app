@@ -85,6 +85,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   StreamSubscription<dynamic>? _wsSub;
   StreamSubscription<dynamic>? _audioSub;
   bool _disposed = false;
+  // Set when the session is terminated for a non-recoverable reason (e.g. plan
+  // quota exhausted). Blocks the auto-reconnect in _onSocketClosed while still
+  // allowing the error message to be shown (unlike _disposed, which suppresses it).
+  bool _terminated = false;
 
   // The session ID of the first Gemini connection in this voice call.
   // Sent as 'sessionId' header on reconnects so the backend reuses the same
@@ -108,7 +112,16 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   DateTime? _lastPlaybackAt;
   static const _playbackHangover = Duration(milliseconds: 700);
 
+  // True from the instant the user taps to interrupt until the model turn
+  // actually ends (turnComplete / server `interrupted`). While set, any model
+  // audio/text that Gemini keeps streaming is DISCARDED — not played, not shown,
+  // and it does NOT re-arm modelSpeaking or the echo guard. Without this, the
+  // trailing audio re-closes the echo guard and the user's barge-in never reaches
+  // Gemini, so it keeps talking for several seconds before recognizing speech.
+  bool _discardingModelTurn = false;
+
   bool get _micSendBlockedByPlayback {
+    if (_discardingModelTurn) return false; // interrupting → keep mic open for barge-in
     if (state.status == VoiceChatStatus.modelSpeaking) return true;
     final last = _lastPlaybackAt;
     return last != null &&
@@ -212,8 +225,25 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         sessionId: _rootSessionId,
       );
 
-      // 2. Connect directly to Gemini Live API WebSocket
-      final geminiWsUrl = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${Env.geminiApiKey}';
+      // 2. Mint a short-lived Gemini token — fetched right before opening the
+      // socket since it's only valid to START a session for ~60s. The raw
+      // GEMINI_API_KEY never reaches the client, so it can't be extracted by
+      // decompiling the app. systemInstruction/tools travel with it because the
+      // backend bakes them into the token's liveConnectConstraints — once that's
+      // set, Gemini locks the WHOLE session config and ignores whatever this
+      // client sends in its own `setup` message below.
+      final tokenData = await _post('/ai/voice/token', {
+        'systemInstruction': systemInstruction,
+        'tools': tools,
+      }) as Map<String, dynamic>;
+      final ephemeralToken = tokenData['token'] as String;
+
+      // 3. Connect directly to Gemini Live API WebSocket. Ephemeral tokens only
+      // work on the v1alpha endpoint, passed as the `access_token` query param —
+      // and ONLY against the BidiGenerateContentConstrained method (not the plain
+      // BidiGenerateContent one, which only accepts a real `key=` API key and
+      // rejects `access_token` with close code 1008 "unregistered callers").
+      final geminiWsUrl = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=$ephemeralToken';
       debugPrint('[VoiceChat] Connecting directly to Gemini Live API');
 
       _socket = await WebSocket.connect(geminiWsUrl);
@@ -236,7 +266,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           },
           'realtime_input_config': {
             'automatic_activity_detection': {
-              'start_of_speech_sensitivity': 'START_SENSITIVITY_LOW',
+              // HIGH start sensitivity = reacts to quieter/shorter speech onsets, so a
+              // barge-in is detected sooner. This is the only real interrupt mechanism
+              // under automatic VAD — the client can't tell Gemini to stop generating;
+              // tapping the screen only mutes local playback (see interrupt() above).
+              'start_of_speech_sensitivity': 'START_SENSITIVITY_HIGH',
               'end_of_speech_sensitivity': 'END_SENSITIVITY_LOW',
               'prefix_padding_ms': 200,
               'silence_duration_ms': 500,
@@ -271,9 +305,28 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     if (!_disposed) state = state.copyWith(status: VoiceChatStatus.closed);
   }
 
+  // Commits the in-flight turn (the user's question AND whatever the model has
+  // said so far) into `turns`, in the correct order (user first, then model),
+  // and clears the live buffers. Called on a turn boundary — turnComplete, a tap
+  // interrupt, or a server `interrupted`. Committing the user text here too is
+  // what prevents the interrupted answer from landing BEFORE the question.
+  void _commitCurrentTurn() {
+    final user = state.liveUserText;
+    final model = state.liveModelText;
+    if (user.isEmpty && model.isEmpty) return;
+    final newTurns = [...state.turns];
+    if (user.isNotEmpty) newTurns.add(VoiceChatTurn(isUser: true, text: user));
+    if (model.isNotEmpty) newTurns.add(VoiceChatTurn(isUser: false, text: model));
+    state = state.copyWith(turns: newTurns, liveUserText: '', liveModelText: '');
+  }
+
   Future<void> interrupt() async {
     if (state.status != VoiceChatStatus.modelSpeaking) return;
     debugPrint('[VoiceChat] Interrupt — stopping playback');
+
+    // Discard any model audio/text that Gemini keeps streaming after this point,
+    // and keep the mic open so the user's barge-in actually reaches Gemini.
+    _discardingModelTurn = true;
 
     // Stop speaker output; AEC reference drops → no more echo to cancel
     try {
@@ -282,25 +335,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       debugPrint('[VoiceChat] stopPlayback error: $e');
     }
 
-    state = state.copyWith(
-      status: VoiceChatStatus.listening,
-      liveModelText: '',
-    );
-
-    // Send 50 ms of silence to trigger Gemini server-side VAD interrupt
-    if (_socket?.readyState == WebSocket.open) {
-      final dummySilence = Uint8List(1600);
-      _socket!.add(jsonEncode({
-        'realtime_input': {
-          'media_chunks': [
-            {
-              'mime_type': 'audio/pcm;rate=16000',
-              'data': base64Encode(dummySilence),
-            }
-          ]
-        }
-      }));
-    }
+    _commitCurrentTurn(); // keep the question + what the model already said, in order
+    state = state.copyWith(status: VoiceChatStatus.listening);
   }
 
   // ── Mensajes entrantes de Gemini Live API ─────────────────────────────────
@@ -357,16 +393,20 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         try {
           await _audioControl.invokeMethod<void>('stopPlayback');
         } catch (_) {}
-        state = state.copyWith(
-          status: VoiceChatStatus.listening,
-          liveModelText: '',
-        );
+        // Pure voice barge-in (no prior tap): preserve the partial in order.
+        // After a tap the turn was already committed, so don't re-commit — that
+        // would fragment the new question the user is now speaking.
+        if (!_discardingModelTurn) _commitCurrentTurn();
+        _discardingModelTurn = false;
+        state = state.copyWith(status: VoiceChatStatus.listening);
         debugPrint('[VoiceChat] 🎤 USER barge-in — model audio flushed');
       }
 
-      // Handle modelTurn (audio chunks)
+      // Handle modelTurn (audio chunks). Skipped entirely while discarding an
+      // interrupted turn — playing/queuing this audio would re-arm modelSpeaking
+      // and the echo guard, blocking the user's barge-in.
       final modelTurn = serverContent['modelTurn'] ?? serverContent['model_turn'];
-      if (modelTurn is Map && modelTurn['parts'] is List) {
+      if (modelTurn is Map && modelTurn['parts'] is List && !_discardingModelTurn) {
         final parts = modelTurn['parts'] as List;
         for (final part in parts) {
           if (part is Map) {
@@ -392,9 +432,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         }
       }
 
-      // Handle outputTranscription (model text)
+      // Handle outputTranscription (model text). Also skipped while discarding —
+      // the partial was already committed at interrupt; trailing text would
+      // append a second, out-of-place bubble.
       final outputTrans = serverContent['outputTranscription'] ?? serverContent['output_transcription'];
-      if (outputTrans is Map && outputTrans['text'] is String) {
+      if (outputTrans is Map && outputTrans['text'] is String && !_discardingModelTurn) {
         var text = outputTrans['text'] as String;
         text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
         debugPrint('[VoiceChat] 🤖 Model: "$text"');
@@ -418,26 +460,20 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       if (serverContent['turnComplete'] == true || serverContent['turn_complete'] == true) {
         final chunksThisTurn = _audioChunksReceived;
         _audioChunksReceived = 0;
+        _discardingModelTurn = false; // turn ended — resume normal flow
         debugPrint('[VoiceChat] ✅ TURN COMPLETE ($chunksThisTurn chunks played) — saving round');
 
         final userText = state.liveUserText;
         final modelText = state.liveModelText;
 
-        final newTurns = [...state.turns];
-        if (userText.isNotEmpty) {
-          newTurns.add(VoiceChatTurn(isUser: true, text: userText));
-        }
-        if (modelText.isNotEmpty) {
-          newTurns.add(VoiceChatTurn(isUser: false, text: modelText));
-        }
+        _commitCurrentTurn(); // user first, then model — clears the live buffers
 
         // Save round to Supabase asynchronously so it doesn't block the UI
         _saveRoundInSupabase(userText, modelText);
 
-        state = VoiceChatState(
+        state = state.copyWith(
           status: VoiceChatStatus.listening,
-          sessionId: state.sessionId,
-          turns: newTurns,
+          clearActiveSkill: true,
         );
 
         // Reset usage token trackers
@@ -463,6 +499,13 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
             state = state.copyWith(activeSkill: name);
             final result = await _executeToolInSupabase(name, args);
+
+            // Backend signals the plan limit was hit — stop here, show the
+            // message and tear down. Don't forward a tool response to Gemini.
+            if (result is Map && result['quotaExceeded'] == true) {
+              await _handleQuotaExceeded(result['message'] as String?);
+              return null;
+            }
 
             return {
               'id': id,
@@ -491,7 +534,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   void _onSocketClosed() {
     debugPrint('[VoiceChat] Socket closed by server');
-    if (_disposed) return; // user-initiated via endSession() — screen already closing
+    if (_disposed || _terminated) return; // user-ended or quota-terminated — no reconnect
 
     // Gemini Live sessions have a duration/context limit and the server can close
     // mid-turn. Reconnect transparently so the user doesn't lose the session.
@@ -588,6 +631,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _watchdogTimer?.cancel();
     _watchdogTimer = null;
     _audioChunksReceived = 0;
+    _discardingModelTurn = false;
     await _audioSub?.cancel();
     _audioSub = null;
     await _wsSub?.cancel();
@@ -595,6 +639,18 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     try { await _audioControl.invokeMethod<void>('stopAudio'); } catch (_) {}
     try { await _socket?.close(); } catch (_) {}
     _socket = null;
+  }
+
+  // Plan quota exhausted (signaled by the backend on an execute-tool call).
+  // Tears down audio + socket without triggering a reconnect, then surfaces the
+  // limit message as an error state. The screen stays open (it only auto-pops on
+  // `closed`, not `error`) so the user can read it and close manually.
+  Future<void> _handleQuotaExceeded(String? message) async {
+    if (_terminated || _disposed) return;
+    debugPrint('[VoiceChat] 🚫 Plan limit reached — terminating voice session');
+    _terminated = true;
+    await _partialCleanup();
+    _setError(message ?? 'Has alcanzado el límite de tu plan.');
   }
 
   // ── Limpieza ──────────────────────────────────────────────────────────────
