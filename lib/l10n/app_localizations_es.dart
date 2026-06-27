@@ -545,6 +545,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceNotAvailable => 'Voz no disponible';
 
   @override
+  String get voiceChatConnecting => 'Conectando…';
+
+  @override
+  String get voiceChatSessionReady => 'Preparando sesión…';
+
+  @override
+  String get voiceChatListening => 'Escuchando…';
+
+  @override
+  String get voiceChatModelSpeaking => 'Respondiendo…';
+
+  @override
+  String get voiceChatEnd => 'Terminar sesión';
+
+  @override
+  String get voiceChatClosed => 'Sesión terminada';
+
+  @override
+  String get voiceChatError => 'Error de conexión';
+
+  @override
+  String get voiceChatPermissionDenied => 'Permiso de micrófono denegado';
+
+  @override
+  String get voiceChatSkillActive => 'Consultando datos…';
+
+  @override
   String get chatTitle => 'Asistente';
 
   @override

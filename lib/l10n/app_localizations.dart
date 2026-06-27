@@ -1106,6 +1106,60 @@ abstract class AppLocalizations {
   /// **'Voz no disponible'**
   String get voiceNotAvailable;
 
+  /// No description provided for @voiceChatConnecting.
+  ///
+  /// In es, this message translates to:
+  /// **'Conectando…'**
+  String get voiceChatConnecting;
+
+  /// No description provided for @voiceChatSessionReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando sesión…'**
+  String get voiceChatSessionReady;
+
+  /// No description provided for @voiceChatListening.
+  ///
+  /// In es, this message translates to:
+  /// **'Escuchando…'**
+  String get voiceChatListening;
+
+  /// No description provided for @voiceChatModelSpeaking.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondiendo…'**
+  String get voiceChatModelSpeaking;
+
+  /// No description provided for @voiceChatEnd.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminar sesión'**
+  String get voiceChatEnd;
+
+  /// No description provided for @voiceChatClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión terminada'**
+  String get voiceChatClosed;
+
+  /// No description provided for @voiceChatError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión'**
+  String get voiceChatError;
+
+  /// No description provided for @voiceChatPermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso de micrófono denegado'**
+  String get voiceChatPermissionDenied;
+
+  /// No description provided for @voiceChatSkillActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultando datos…'**
+  String get voiceChatSkillActive;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:

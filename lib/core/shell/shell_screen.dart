@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
 import '../../features/chat/widgets/voice_overlay.dart';
 import '../../l10n/app_localizations.dart';
+import '../config/features.dart';
 
 const _kMicSize = 64.0;
 const _kMicRight = 16.0;
@@ -275,7 +276,13 @@ class _MicButtonState extends State<_MicButton>
 
     // Show overlay partway through the ripple so they overlap briefly
     await Future.delayed(const Duration(milliseconds: 260));
-    if (mounted) VoiceOverlay.show(context);
+    if (mounted) {
+      if (kVoiceChatEnabled) {
+        GoRouter.of(context).push('/voice-chat');
+      } else {
+        VoiceOverlay.show(context);
+      }
+    }
 
     await Future.delayed(const Duration(milliseconds: 280));
     _ripple?.remove();
