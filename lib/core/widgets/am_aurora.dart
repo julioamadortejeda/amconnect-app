@@ -23,6 +23,7 @@ class AmAurora extends StatefulWidget {
 class _AmAuroraState extends State<AmAurora> with TickerProviderStateMixin {
   late final AnimationController _entryCtrl;
   late final AnimationController _loopCtrl;
+  bool _started = false;
 
   @override
   void initState() {
@@ -35,9 +36,36 @@ class _AmAuroraState extends State<AmAurora> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 9000),
     )..repeat();
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_started) {
+      _started = true;
+      final route = ModalRoute.of(context);
+      if (route != null) {
+        if (route.animation!.isCompleted) {
+          _startEntry();
+        } else {
+          void listener(AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              _startEntry();
+              route.animation!.removeStatusListener(listener);
+            }
+          }
+
+          route.animation!.addStatusListener(listener);
+        }
+      } else {
+        _startEntry();
+      }
+    }
+  }
+
+  void _startEntry() {
     if (widget.delay == Duration.zero) {
-      _entryCtrl.forward();
+      if (mounted) _entryCtrl.forward();
     } else {
       Future.delayed(widget.delay, () {
         if (mounted) _entryCtrl.forward();
@@ -54,12 +82,22 @@ class _AmAuroraState extends State<AmAurora> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final routeAnimation = ModalRoute.of(context)?.animation;
+    final animList = <Listenable>[_entryCtrl, _loopCtrl];
+    if (routeAnimation != null) {
+      animList.add(routeAnimation);
+    }
     return AnimatedBuilder(
-      animation: Listenable.merge([_entryCtrl, _loopCtrl]),
-      builder: (_, __) => CustomPaint(
-        painter: _AuroraPainter(entry: _entryCtrl.value, loop: _loopCtrl.value),
-        child: const SizedBox.expand(),
-      ),
+      animation: Listenable.merge(animList),
+      builder: (context, __) {
+        final routeVal = routeAnimation?.value ?? 1.0;
+        // Bypasses painting completely (entry = 0.0) during transitions to optimize GPU/CPU frames
+        final visibleEntry = _entryCtrl.value * (routeVal < 0.99 ? 0.0 : 1.0);
+        return CustomPaint(
+          painter: _AuroraPainter(entry: visibleEntry, loop: _loopCtrl.value),
+          child: const SizedBox.expand(),
+        );
+      },
     );
   }
 }
@@ -68,7 +106,7 @@ class _AuroraPainter extends CustomPainter {
   const _AuroraPainter({required this.entry, required this.loop});
 
   final double entry; // 0→1 once
-  final double loop;  // 0→1 repeating
+  final double loop; // 0→1 repeating
 
   // App blue family: sky → primary #007AC0 → deep navy → indigo → sky (closed).
   static const _palette = [

@@ -214,6 +214,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'timezone': timezone,
         'sessionId': _rootSessionId,
       }) as Map<String, dynamic>;
+      if (_disposed) return;
 
       final sessionId = initData['sessionId'] as String;
       final systemInstruction = initData['systemInstruction'] as String;
@@ -236,6 +237,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'systemInstruction': systemInstruction,
         'tools': tools,
       }) as Map<String, dynamic>;
+      if (_disposed) return;
       final ephemeralToken = tokenData['token'] as String;
 
       // 3. Connect directly to Gemini Live API WebSocket. Ephemeral tokens only
@@ -247,6 +249,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       debugPrint('[VoiceChat] Connecting directly to Gemini Live API');
 
       _socket = await WebSocket.connect(geminiWsUrl);
+      if (_disposed) {
+        try { _socket?.close(); } catch (_) {}
+        _socket = null;
+        return;
+      }
 
       _wsSub = _socket!.listen(
         _onMessage,
@@ -257,33 +264,42 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
       debugPrint('[VoiceChat] WebSocket connected directly to Gemini');
 
+      // Convert tools from snake_case to camelCase
+      final camelTools = tools.map((t) {
+        if (t is Map) {
+          final funcDecls = t['function_declarations'] ?? t['functionDeclarations'];
+          if (funcDecls != null) {
+            return {
+              'functionDeclarations': funcDecls,
+            };
+          }
+        }
+        return t;
+      }).toList();
+
       // 3. Send setup message to Gemini Live API
       final setupMessage = {
         'setup': {
           'model': 'models/${Env.geminiLiveModel}',
-          'generation_config': {
-            'response_modalities': ['AUDIO'],
+          'generationConfig': {
+            'responseModalities': ['AUDIO'],
           },
-          'realtime_input_config': {
-            'automatic_activity_detection': {
-              // HIGH start sensitivity = reacts to quieter/shorter speech onsets, so a
-              // barge-in is detected sooner. This is the only real interrupt mechanism
-              // under automatic VAD — the client can't tell Gemini to stop generating;
-              // tapping the screen only mutes local playback (see interrupt() above).
-              'start_of_speech_sensitivity': 'START_SENSITIVITY_HIGH',
-              'end_of_speech_sensitivity': 'END_SENSITIVITY_LOW',
-              'prefix_padding_ms': 200,
-              'silence_duration_ms': 500,
+          'realtimeInputConfig': {
+            'automaticActivityDetection': {
+              'startOfSpeechSensitivity': 'START_SENSITIVITY_HIGH',
+              'endOfSpeechSensitivity': 'END_SENSITIVITY_LOW',
+              'prefixPaddingMs': 200,
+              'silenceDurationMs': 500,
             },
           },
-          'input_audio_transcription': {},
-          'output_audio_transcription': {},
-          'system_instruction': {
+          'inputAudioTranscription': {},
+          'outputAudioTranscription': {},
+          'systemInstruction': {
             'parts': [
               {'text': systemInstruction}
             ],
           },
-          'tools': tools,
+          'tools': camelTools,
         }
       };
 
@@ -292,10 +308,15 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
       // Start the native audio engine (capture + playback in one AVAudioEngine)
       await _audioControl.invokeMethod<void>('startAudio');
+      if (_disposed) {
+        try { await _audioControl.invokeMethod<void>('stopAudio'); } catch (_) {}
+        return;
+      }
     } catch (e) {
+      if (_disposed) return;
       debugPrint('[VoiceChat] Connection failed: $e');
       await _cleanup();
-      if (!_disposed) _setError('No se pudo conectar: $e');
+      _setError('No se pudo conectar: $e');
     }
   }
 
@@ -520,8 +541,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
         // Send tool responses back to Gemini
         final toolResponse = {
-          'tool_response': {
-            'function_responses': results,
+          'toolResponse': {
+            'functionResponses': results,
           }
         };
         _socket?.add(jsonEncode(toolResponse));
@@ -533,7 +554,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   }
 
   void _onSocketClosed() {
-    debugPrint('[VoiceChat] Socket closed by server');
+    final code = _socket?.closeCode;
+    final reason = _socket?.closeReason;
+    debugPrint('[VoiceChat] Socket closed by server: code=$code reason="$reason"');
     if (_disposed || _terminated) return; // user-ended or quota-terminated — no reconnect
 
     // Gemini Live sessions have a duration/context limit and the server can close
@@ -568,13 +591,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
             debugPrint('[VoiceChat] 📤 Mic streaming ($_micChunksSent chunks)');
           }
           final pcmChunkMessage = {
-            'realtime_input': {
-              'media_chunks': [
-                {
-                  'mime_type': 'audio/pcm;rate=16000',
-                  'data': base64Encode(data),
-                }
-              ]
+            'realtimeInput': {
+              'audio': {
+                'mimeType': 'audio/pcm;rate=16000',
+                'data': base64Encode(data),
+              }
             }
           };
           _socket!.add(jsonEncode(pcmChunkMessage));

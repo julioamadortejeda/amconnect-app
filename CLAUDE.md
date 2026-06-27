@@ -469,9 +469,17 @@ assets/logo/
 - [x] Dashboard — datos reales (agente, stats, reminders)
 - [x] Chat IA — integrado con Edge Function `amconnect-api`
 - [x] Ingesta de documentos (Feed)
+- [x] Voz real en VoiceOverlay (integrada con Gemini 3.1 Live API por WebSocket con audio PCM bidireccional y transcripciones visibles)
 
 ### Pendiente
-- [ ] Voz real en VoiceOverlay (actualmente sin STT)
 - [ ] Acciones rápidas de cliente (llamar, mensaje — placeholders)
 - [ ] Pantalla de pólizas por cliente (tabs vacíos en ClientDetail)
 - [ ] Notificaciones push para recordatorios
+
+---
+
+## Cambios Recientes
+
+- **Chat de Texto y Voz:** El chat de texto y los ajustes del chat de voz (con las correcciones del nuevo formato de audio `realtimeInput.audio` para evitar la desconexión del WebSocket en Gemini 3.1 Live API) están listos y validados.
+- **Optimización y Estabilización de UI en Voz:** Se optimizó `AmAurora` para suspender el pintado durante las transiciones de ruta (eliminando el lag al entrar/salir de la pantalla) y se fijó la altura de la barra inferior a 76px (junto con una onda de voz de 28px de altura máxima) para evitar desplazamientos verticales del orbe del micrófono al cambiar de estado (detalles en [walkthrough.md](file:///Users/julio/.gemini/antigravity/brain/a411ae05-c358-412b-93b2-578d9f685c96/walkthrough.md)).
+

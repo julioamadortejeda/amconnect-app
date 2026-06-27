@@ -2,7 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class VoiceWaveformBars extends StatefulWidget {
-  const VoiceWaveformBars({super.key});
+  const VoiceWaveformBars({super.key, this.maxHeight = 48.0});
+
+  final double maxHeight;
 
   @override
   State<VoiceWaveformBars> createState() => _VoiceWaveformBarsState();
@@ -30,7 +32,7 @@ class _VoiceWaveformBarsState extends State<VoiceWaveformBars>
   @override
   Widget build(BuildContext context) {
     const barCount = 11;
-    const maxH = 48.0;
+    final maxH = widget.maxHeight;
     const minH = 5.0;
 
     return SizedBox(

@@ -47,13 +47,27 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
         let session = AVAudioSession.sharedInstance()
         switch session.recordPermission {
         case .granted:
-            do { try start(); completion(nil) } catch { completion(error) }
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try self.start()
+                    DispatchQueue.main.async { completion(nil) }
+                } catch {
+                    DispatchQueue.main.async { completion(error) }
+                }
+            }
         case .undetermined:
             session.requestRecordPermission { granted in
-                DispatchQueue.main.async {
-                    if granted {
-                        do { try self.start(); completion(nil) } catch { completion(error) }
-                    } else {
+                if granted {
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        do {
+                            try self.start()
+                            DispatchQueue.main.async { completion(nil) }
+                        } catch {
+                            DispatchQueue.main.async { completion(error) }
+                        }
+                    }
+                } else {
+                    DispatchQueue.main.async {
                         completion(NSError(domain: "VoiceAudio", code: -2,
                             userInfo: [NSLocalizedDescriptionKey: "Microphone permission denied"]))
                     }
@@ -63,7 +77,14 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             completion(NSError(domain: "VoiceAudio", code: -1,
                 userInfo: [NSLocalizedDescriptionKey: "Microphone permission denied. Enable in Settings → AmConnect → Microphone."]))
         @unknown default:
-            do { try start(); completion(nil) } catch { completion(error) }
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try self.start()
+                    DispatchQueue.main.async { completion(nil) }
+                } catch {
+                    DispatchQueue.main.async { completion(error) }
+                }
+            }
         }
     }
 
