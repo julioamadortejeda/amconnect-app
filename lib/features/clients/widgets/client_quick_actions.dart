@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../feed/widgets/ingest_type_picker.dart';
 
 class ClientQuickActions extends StatelessWidget {
   const ClientQuickActions({super.key, required this.clientId});
@@ -30,6 +31,12 @@ class ClientQuickActions extends StatelessWidget {
           icon: Icons.notifications_none_outlined,
           label: l10n.clientsActionRemind,
           onTap: () => context.push('/create-reminder?cliente=$clientId'),
+        ),
+        const SizedBox(width: 9),
+        _Action(
+          icon: Icons.upload_file_outlined,
+          label: l10n.clientsActionUpload,
+          onTap: () => IngestTypePicker.show(context, contactId: clientId),
         ),
       ],
     );

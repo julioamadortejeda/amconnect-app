@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
@@ -96,6 +97,8 @@ class IngestState {
   final PolicyConfirmedData? confirmedPolicy;
   final String? knowledgeMessage;
   final String? statusMessageKey;
+  final String? contactId;
+  final String? policyId;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -108,6 +111,8 @@ class IngestState {
     this.confirmedPolicy,
     this.knowledgeMessage,
     this.statusMessageKey,
+    this.contactId,
+    this.policyId,
   });
 
   IngestState copyWith({
@@ -121,6 +126,8 @@ class IngestState {
     PolicyConfirmedData? confirmedPolicy,
     String? knowledgeMessage,
     String? statusMessageKey,
+    String? contactId,
+    String? policyId,
   }) =>
       IngestState(
         phase: phase ?? this.phase,
@@ -133,6 +140,8 @@ class IngestState {
         confirmedPolicy: confirmedPolicy ?? this.confirmedPolicy,
         knowledgeMessage: knowledgeMessage ?? this.knowledgeMessage,
         statusMessageKey: statusMessageKey ?? this.statusMessageKey,
+        contactId: contactId ?? this.contactId,
+        policyId: policyId ?? this.policyId,
       );
 }
 
@@ -145,33 +154,33 @@ class IngestNotifier extends Notifier<IngestState> {
     return const IngestState();
   }
 
-  Future<void> processPolicy(File file, String fileName) async {
+  Future<void> processPolicy(File file, String fileName, {String? contactId}) async {
     final mimeType = _mimeFromFileName(fileName);
-    state = const IngestState(
+    state = IngestState(
       phase: IngestPhase.uploading,
       statusMessageKey: 'feedStepGettingUrl',
+      contactId: contactId,
     );
     try {
       final uploadUrl = await _repo.getUploadUrl(fileName, mimeType);
       await Future.delayed(const Duration(milliseconds: 600));
-      
-      state = state.copyWith(
-        statusMessageKey: 'feedStepUploading',
-      );
+
+      state = state.copyWith(statusMessageKey: 'feedStepUploading');
       await _repo.uploadToStorage(uploadUrl.signedUrl, file, mimeType);
       await Future.delayed(const Duration(milliseconds: 600));
- 
+
       state = state.copyWith(
         phase: IngestPhase.processing,
         statusMessageKey: 'feedStepProcessing',
       );
- 
+
       final result = await _repo.ingestPolicy(
         storagePath: uploadUrl.filePath,
         fileName: fileName,
         mimeType: mimeType,
+        contactId: contactId,
       );
- 
+
       state = state.copyWith(
         phase: IngestPhase.chatting,
         sessionId: result.sessionId,
@@ -183,7 +192,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? e.message : e.toString(),
+        error: e is ApiException ? _mapApiException(e) : e.toString(),
         statusMessageKey: null,
       );
     }
@@ -215,27 +224,27 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         isSending: false,
-        error: e is ApiException ? e.message : e.toString(),
+        error: e is ApiException ? _mapApiException(e) : e.toString(),
       );
     }
   }
 
-  Future<void> processKnowledgeFile(File file, String fileName) async {
+  Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, bool? makeGeneral}) async {
     final mimeType = _mimeFromFileName(fileName);
-    state = const IngestState(
+    state = IngestState(
       phase: IngestPhase.uploading,
       statusMessageKey: 'feedStepGettingUrl',
+      contactId: contactId,
+      policyId: policyId,
     );
     try {
       final uploadUrl = await _repo.getUploadUrl(fileName, mimeType);
       await Future.delayed(const Duration(milliseconds: 600));
-      
-      state = state.copyWith(
-        statusMessageKey: 'feedStepUploading',
-      );
+
+      state = state.copyWith(statusMessageKey: 'feedStepUploading');
       await _repo.uploadToStorage(uploadUrl.signedUrl, file, mimeType);
       await Future.delayed(const Duration(milliseconds: 600));
-      
+
       state = state.copyWith(
         phase: IngestPhase.processing,
         statusMessageKey: 'feedStepProcessing',
@@ -244,6 +253,9 @@ class IngestNotifier extends Notifier<IngestState> {
         storagePath: uploadUrl.filePath,
         fileName: fileName,
         mimeType: mimeType,
+        contactId: contactId,
+        policyId: policyId,
+        makeGeneral: makeGeneral,
       );
       state = state.copyWith(
         phase: IngestPhase.knowledgeSuccess,
@@ -253,7 +265,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? e.message : e.toString(),
+        error: e is ApiException ? _mapApiException(e) : e.toString(),
         statusMessageKey: null,
       );
     }
@@ -264,28 +276,33 @@ class IngestNotifier extends Notifier<IngestState> {
     return switch (ext) {
       'jpg' || 'jpeg' => 'image/jpeg',
       'png' => 'image/png',
-      'heic' => 'image/jpeg', // Map to image/jpeg to pass backend validation
+      'heic' => 'image/jpeg',
       'gif' => 'image/gif',
       'webp' => 'image/webp',
       'mp3' => 'audio/mpeg',
       'm4a' => 'audio/mp4',
       'wav' => 'audio/wav',
-      'aac' => 'audio/mp4', // Map to audio/mp4 to pass backend validation
+      'aac' => 'audio/mp4',
       'ogg' => 'audio/ogg',
       'pdf' => 'application/pdf',
       _ => 'application/octet-stream',
     };
   }
 
-  Future<void> processKnowledgeText(String content, String sourceType) async {
-    state = const IngestState(
+  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, bool? makeGeneral}) async {
+    state = IngestState(
       phase: IngestPhase.processing,
       statusMessageKey: 'feedStepProcessing',
+      contactId: contactId,
+      policyId: policyId,
     );
     try {
       final result = await _repo.ingestKnowledgeText(
         content: content,
         sourceType: sourceType,
+        contactId: contactId,
+        policyId: policyId,
+        makeGeneral: makeGeneral,
       );
       state = state.copyWith(
         phase: IngestPhase.knowledgeSuccess,
@@ -295,7 +312,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? e.message : e.toString(),
+        error: e is ApiException ? _mapApiException(e) : e.toString(),
         statusMessageKey: null,
       );
     }
@@ -309,6 +326,33 @@ class IngestNotifier extends Notifier<IngestState> {
       } catch (_) {}
     }
     state = const IngestState();
+  }
+
+  String _mapApiException(ApiException e) {
+    if (e.errorCode != null) {
+      return e.errorCode!;
+    }
+    if (e.statusCode == 503 || e.message.contains("unavailable") || e.message.contains("high demand")) {
+      return "AI_PROVIDER_BUSY";
+    }
+    if (e.statusCode == 401) {
+      return "SESSION_EXPIRED";
+    }
+    if (e.statusCode == 404) {
+      return "RESOURCE_NOT_FOUND";
+    }
+
+    try {
+      final decoded = jsonDecode(e.message);
+      if (decoded is Map) {
+        if (decoded['error'] is Map) {
+          return decoded['error']['message']?.toString() ?? 'Error del servidor';
+        }
+        return decoded['error']?.toString() ?? decoded['message']?.toString() ?? e.message;
+      }
+    } catch (_) {}
+
+    return e.message;
   }
 }
 

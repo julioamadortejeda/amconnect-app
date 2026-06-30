@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/supabase_auth_repository.dart';
+import '../repositories/supabase_agent_repository.dart';
 
 /// Stream del usuario autenticado — escuchado por el router para redirigir.
 final authUserProvider = StreamProvider<User?>((ref) {
@@ -29,7 +32,18 @@ class AuthNotifier extends Notifier<void> {
 
   Future<void> signInWithApple() => _repo.signInWithApple();
 
-  Future<void> signOut() => _repo.signOut();
+  Future<void> signOut() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await ref.read(agentRepositoryProvider).deregisterDeviceToken(token: token);
+      }
+    } catch (e) {
+      // Ignoramos errores de red o FCM al desasociar el token en logout para no bloquear la salida del usuario.
+      debugPrint("Warning cleaning up FCM token on logout: $e");
+    }
+    await _repo.signOut();
+  }
 }
 
 final authProvider = NotifierProvider<AuthNotifier, void>(AuthNotifier.new);

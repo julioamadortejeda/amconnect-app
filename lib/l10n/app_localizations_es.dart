@@ -131,6 +131,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Error al crear la cuenta. Inténtalo de nuevo.';
 
   @override
+  String get errModelBusy =>
+      'El asistente de IA está ocupado en este momento. Por favor, intenta de nuevo en unos segundos.';
+
+  @override
+  String get errSessionExpired =>
+      'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.';
+
+  @override
+  String get errNotFound => 'Recurso no encontrado.';
+
+  @override
+  String get errUnknown =>
+      'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get errNetwork =>
+      'Error de conexión. Revisa tu internet y vuelve a intentarlo.';
+
+  @override
   String get shellHome => 'Inicio';
 
   @override
@@ -377,6 +396,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsActionRemind => 'Recordar';
+
+  @override
+  String get clientsActionUpload => 'Subir';
 
   @override
   String get clientsActionAsk => 'Preguntar';

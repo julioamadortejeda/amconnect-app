@@ -130,6 +130,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errCreateAccount => 'Error creating account. Please try again.';
 
   @override
+  String get errModelBusy =>
+      'The AI assistant is currently busy. Please try again in a few seconds.';
+
+  @override
+  String get errSessionExpired =>
+      'Your session has expired. Please log in again.';
+
+  @override
+  String get errNotFound => 'Resource not found.';
+
+  @override
+  String get errUnknown => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String get errNetwork =>
+      'Connection error. Please check your internet and try again.';
+
+  @override
   String get shellHome => 'Home';
 
   @override
@@ -376,6 +394,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsActionRemind => 'Remind';
+
+  @override
+  String get clientsActionUpload => 'Upload';
 
   @override
   String get clientsActionAsk => 'Ask';
