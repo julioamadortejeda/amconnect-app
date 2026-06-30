@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/providers/auth_provider.dart';
+import 'core/services/notification_service.dart';
 import 'core/config/env.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
@@ -23,6 +25,17 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Escuchar el estado de autenticación para registrar el token de notificaciones push
+    ref.listen(authUserProvider, (previous, next) {
+      final user = next.value;
+      if (user != null) {
+        final notificationService = ref.read(notificationServiceProvider);
+        notificationService.init().then((_) {
+          notificationService.requestPermissionsAndRegister();
+        });
+      }
+    });
+
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'AMConnect Advisor',

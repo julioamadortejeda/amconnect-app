@@ -52,13 +52,18 @@ class ApiClient {
     return _handle(res);
   }
 
-  Future<void> delete(String path) async {
-    final res = await http.delete(Uri.parse('$_base/$path'), headers: _headers);
+  Future<void> delete(String path, {Map<String, dynamic>? body}) async {
+    final res = await http.delete(
+      Uri.parse('$_base/$path'),
+      headers: _headers,
+      body: body != null ? jsonEncode(body) : null,
+    );
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      final body = jsonDecode(res.body);
+      final responseBody = jsonDecode(res.body);
       throw ApiException(
         statusCode: res.statusCode,
-        message: (body is Map ? body['error']?.toString() : null) ?? 'Error desconocido',
+        message: (responseBody is Map ? responseBody['error']?.toString() : null) ?? 'Error desconocido',
+        errorCode: responseBody is Map ? responseBody['errorCode']?.toString() : null,
       );
     }
   }
@@ -88,7 +93,11 @@ class ApiClient {
       body: bytes,
     );
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      throw ApiException(statusCode: res.statusCode, message: 'Error al subir archivo');
+      throw ApiException(
+        statusCode: res.statusCode,
+        message: 'Error al subir archivo',
+        errorCode: 'UPLOAD_FAILED',
+      );
     }
   }
 
@@ -100,6 +109,7 @@ class ApiClient {
     throw ApiException(
       statusCode: res.statusCode,
       message: (body is Map ? body['error']?.toString() : null) ?? 'Error desconocido',
+      errorCode: body is Map ? body['errorCode']?.toString() : null,
     );
   }
 }
@@ -107,9 +117,10 @@ class ApiClient {
 class ApiException implements Exception {
   final int statusCode;
   final String message;
-  const ApiException({required this.statusCode, required this.message});
+  final String? errorCode;
+  const ApiException({required this.statusCode, required this.message, this.errorCode});
   @override
-  String toString() => 'ApiException($statusCode): $message';
+  String toString() => 'ApiException($statusCode): $message (Code: $errorCode)';
 }
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());

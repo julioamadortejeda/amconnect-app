@@ -56,6 +56,11 @@
   "errFillAll": "Por favor, completa todos los campos",
   "errPasswordMismatch": "Las contraseñas no coinciden",
   "errCreateAccount": "Error al crear la cuenta. Inténtalo de nuevo.",
+  "errModelBusy": "El asistente de IA está ocupado en este momento. Por favor, intenta de nuevo en unos segundos.",
+  "errSessionExpired": "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.",
+  "errNotFound": "Recurso no encontrado.",
+  "errUnknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+  "errNetwork": "Error de conexión. Revisa tu internet y vuelve a intentarlo.",
 
   "@_shell": {},
   "shellHome": "Inicio",
@@ -175,6 +180,7 @@
   "clientsActionCall": "Llamar",
   "clientsActionMessage": "Mensaje",
   "clientsActionRemind": "Recordar",
+  "clientsActionUpload": "Subir",
   "clientsActionAsk": "Preguntar",
   "clientsPoliciesTab": "Pólizas · {count}",
   "@clientsPoliciesTab": {

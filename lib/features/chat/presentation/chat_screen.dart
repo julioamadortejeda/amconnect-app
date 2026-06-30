@@ -8,9 +8,11 @@ import '../../../core/widgets/am_icon_btn.dart';
 import '../../../core/widgets/am_press.dart';
 import '../providers/chat_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/utils/error_translator.dart';
 import '../widgets/voice_overlay.dart';
 import 'widgets/chat_cards.dart';
 import '../../../core/config/features.dart';
+import '../../feed/widgets/ingest_type_picker.dart';
 
 const _chatSuggestions = [
   '¿Quién vence pronto?',
@@ -131,7 +133,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         color: cs.onErrorContainer, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(chat.error!,
+                      child: Text(context.translateError(chat.error),
                           style: TextStyle(
                               fontSize: 13, color: cs.onErrorContainer)),
                     ),
@@ -227,6 +229,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                     ),
                     const SizedBox(width: 8),
+                    AmIconBtn(
+                      icon: Icons.attach_file_rounded,
+                      tone: AmIconBtnTone.sunken,
+                      onTap: () {
+                        final ctx = ref.read(chatProvider).activeContext;
+                        final contactId = ctx?.type == 'contact' ? ctx?.id : null;
+                        IngestTypePicker.show(context, contactId: contactId);
+                      },
+                    ),
+                    const SizedBox(width: 6),
                     AmIconBtn(
                       icon: Icons.mic_none_rounded,
                       tone: AmIconBtnTone.sunken,
@@ -491,13 +503,22 @@ class _TypingBubble extends StatefulWidget {
 class _TypingBubbleState extends State<_TypingBubble>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
+  final List<Animation<double>> _anims = [];
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1200))
-      ..repeat();
+        vsync: this, duration: const Duration(milliseconds: 1200));
+    
+    for (int i = 0; i < 3; i++) {
+      _anims.add(CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(i * 0.15, i * 0.15 + 0.5, curve: Curves.easeInOut),
+      ));
+    }
+    
+    _ctrl.repeat();
   }
 
   @override
@@ -540,11 +561,7 @@ class _TypingBubbleState extends State<_TypingBubble>
           ),
           child: Row(
             children: List.generate(3, (i) {
-              final anim = CurvedAnimation(
-                parent: _ctrl,
-                curve: Interval(i * 0.15, i * 0.15 + 0.5,
-                    curve: Curves.easeInOut),
-              );
+              final anim = _anims[i];
               return AnimatedBuilder(
                 animation: anim,
                 builder: (_, __) => Container(

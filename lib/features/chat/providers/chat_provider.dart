@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
 import '../data/chat_context.dart';
@@ -12,6 +13,7 @@ class ChatState {
   final bool isLoading;
   final String? error;
   final AiChatContext? pendingContext;
+  final AiChatContext? activeContext;
 
   const ChatState({
     this.messages = const [],
@@ -19,6 +21,7 @@ class ChatState {
     this.isLoading = false,
     this.error,
     this.pendingContext,
+    this.activeContext,
   });
 
   ChatState copyWith({
@@ -34,6 +37,7 @@ class ChatState {
     isLoading: isLoading ?? this.isLoading,
     error: error,
     pendingContext: clearContext ? null : (pendingContext ?? this.pendingContext),
+    activeContext: activeContext,
   );
 }
 
@@ -73,9 +77,36 @@ class ChatNotifier extends Notifier<ChatState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: e is ApiException ? e.message : e.toString(),
+        error: e is ApiException ? _mapApiException(e) : e.toString(),
       );
     }
+  }
+
+  String _mapApiException(ApiException e) {
+    if (e.errorCode != null) {
+      return e.errorCode!;
+    }
+    if (e.statusCode == 503 || e.message.contains("unavailable") || e.message.contains("high demand")) {
+      return "AI_PROVIDER_BUSY";
+    }
+    if (e.statusCode == 401) {
+      return "SESSION_EXPIRED";
+    }
+    if (e.statusCode == 404) {
+      return "RESOURCE_NOT_FOUND";
+    }
+
+    try {
+      final decoded = jsonDecode(e.message);
+      if (decoded is Map) {
+        if (decoded['error'] is Map) {
+          return decoded['error']['message']?.toString() ?? 'Error del servidor';
+        }
+        return decoded['error']?.toString() ?? decoded['message']?.toString() ?? e.message;
+      }
+    } catch (_) {}
+
+    return e.message;
   }
 
   Future<void> reset() async {
@@ -88,7 +119,7 @@ class ChatNotifier extends Notifier<ChatState> {
 
   Future<void> resetWithContext(AiChatContext ctx) async {
     await reset();
-    state = ChatState(pendingContext: ctx);
+    state = ChatState(pendingContext: ctx, activeContext: ctx);
   }
 }
 

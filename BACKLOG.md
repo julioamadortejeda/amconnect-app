@@ -28,6 +28,8 @@
 - [ ] Voz real en ChatScreen (actualmente solo texto)
 - [ ] Subida real de archivos en FeedScreen
 - [ ] Notificaciones push para recordatorios
+- [ ] **Optimizar consumo de tokens en Chat de Voz:** Revisar por qué el chat de voz consume una cantidad elevada de tokens en comparación con el de texto y optimizar la ventana de historial/prompts enviados.
+- [ ] **Opción de conocimiento híbrido (Cliente + General):** Al subir/crear un documento de conocimiento asignado a un cliente específico, permitir marcar un toggle/checkbox para que también se indexe como conocimiento general del agente (accesible globalmente por la IA sin requerir el filtro de cliente).
 
 ## Limpieza de Mocks / Datos Simulados
 

@@ -332,6 +332,36 @@ abstract class AppLocalizations {
   /// **'Error al crear la cuenta. Inténtalo de nuevo.'**
   String get errCreateAccount;
 
+  /// No description provided for @errModelBusy.
+  ///
+  /// In es, this message translates to:
+  /// **'El asistente de IA está ocupado en este momento. Por favor, intenta de nuevo en unos segundos.'**
+  String get errModelBusy;
+
+  /// No description provided for @errSessionExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.'**
+  String get errSessionExpired;
+
+  /// No description provided for @errNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Recurso no encontrado.'**
+  String get errNotFound;
+
+  /// No description provided for @errUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.'**
+  String get errUnknown;
+
+  /// No description provided for @errNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión. Revisa tu internet y vuelve a intentarlo.'**
+  String get errNetwork;
+
   /// No description provided for @shellHome.
   ///
   /// In es, this message translates to:
@@ -799,6 +829,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Recordar'**
   String get clientsActionRemind;
+
+  /// No description provided for @clientsActionUpload.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir'**
+  String get clientsActionUpload;
 
   /// No description provided for @clientsActionAsk.
   ///

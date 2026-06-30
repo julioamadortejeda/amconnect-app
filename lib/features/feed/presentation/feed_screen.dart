@@ -20,6 +20,7 @@ import '../../../core/widgets/am_top_bar.dart';
 import '../data/feed_item.dart';
 import '../providers/ingest_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/utils/error_translator.dart';
 import 'ingest_chat_sheet.dart';
 import 'knowledge_success_sheet.dart';
 import 'policy_success_sheet.dart';
@@ -226,7 +227,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         if (prev?.phase == IngestPhase.idle) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(next.error!),
+              content: Text(context.translateError(next.error)),
               backgroundColor: Theme.of(context).colorScheme.error,
               behavior: SnackBarBehavior.floating,
             ),
@@ -1049,7 +1050,7 @@ class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomS
       case IngestPhase.success:
         return PolicySuccessSheet(onClose: handleClose);
       case IngestPhase.error:
-        return _UnifiedErrorSheet(error: state.error ?? 'Error de procesamiento', onClose: handleClose);
+        return _UnifiedErrorSheet(error: context.translateError(state.error ?? 'Error de procesamiento'), onClose: handleClose);
       default:
         return const SizedBox.shrink();
     }

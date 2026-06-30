@@ -5,6 +5,7 @@ import '../../../core/widgets/am_aurora.dart';
 import '../providers/voice_chat_provider.dart';
 import '../widgets/voice_waveform_bars.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
 
 class VoiceChatScreen extends ConsumerStatefulWidget {
@@ -220,7 +221,7 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
                               ] else if (state.error != null) ...[
                                 const SizedBox(height: 2),
                                 Text(
-                                  state.error!,
+                                  context.translateError(state.error!),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(

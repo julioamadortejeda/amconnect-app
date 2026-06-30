@@ -7,9 +7,18 @@ import '../providers/ingest_provider.dart';
 import '../../../l10n/app_localizations.dart';
 
 class TextIngestSheet extends ConsumerStatefulWidget {
-  const TextIngestSheet({super.key, required this.sourceType});
+  const TextIngestSheet({
+    super.key,
+    required this.sourceType,
+    this.contactId,
+    this.policyId,
+    this.makeGeneral,
+  });
 
   final String sourceType; // 'text' | 'whatsapp'
+  final String? contactId;
+  final String? policyId;
+  final bool? makeGeneral;
 
   @override
   ConsumerState<TextIngestSheet> createState() => _TextIngestSheetState();
@@ -33,7 +42,13 @@ class _TextIngestSheetState extends ConsumerState<TextIngestSheet> {
     final notifier = ref.read(ingestProvider.notifier);
     Navigator.of(context).pop();
     await Future.delayed(const Duration(milliseconds: 350));
-    await notifier.processKnowledgeText(text, widget.sourceType);
+    await notifier.processKnowledgeText(
+      text,
+      widget.sourceType,
+      contactId: widget.contactId,
+      policyId: widget.policyId,
+      makeGeneral: widget.makeGeneral,
+    );
   }
 
   @override

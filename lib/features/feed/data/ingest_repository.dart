@@ -94,6 +94,7 @@ class IngestRepository {
     required String mimeType,
     String? contactId,
     String? policyId,
+    bool? makeGeneral,
   }) async {
     final res = await _api.post('ai/ingest', body: {
       'storagePath': storagePath,
@@ -101,6 +102,7 @@ class IngestRepository {
       'mimeType': mimeType,
       if (contactId != null) 'contactId': contactId,
       if (policyId != null) 'policyId': policyId,
+      if (makeGeneral != null) 'makeGeneral': makeGeneral,
     });
     final data = res['data'] as Map<String, dynamic>;
     return IngestKnowledgeResponse(
@@ -115,12 +117,14 @@ class IngestRepository {
     required String sourceType,
     String? contactId,
     String? policyId,
+    bool? makeGeneral,
   }) async {
     final res = await _api.post('ai/ingest-text', body: {
       'content': content,
       'sourceType': sourceType,
       if (contactId != null) 'contactId': contactId,
       if (policyId != null) 'policyId': policyId,
+      if (makeGeneral != null) 'makeGeneral': makeGeneral,
     });
     final data = res['data'] as Map<String, dynamic>;
     return IngestKnowledgeResponse(
