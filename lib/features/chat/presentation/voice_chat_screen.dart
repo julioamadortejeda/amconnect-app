@@ -109,7 +109,7 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'AMCONNECT VOICE',
+                            'AMCONNECT VOICE  ·  ${_formatTimeLeft(state.timeLeftSeconds)}',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
@@ -286,6 +286,12 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
       VoiceChatStatus.error => l10n.voiceChatError,
       VoiceChatStatus.closed => l10n.voiceChatClosed,
     };
+  }
+
+  String _formatTimeLeft(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 }
 

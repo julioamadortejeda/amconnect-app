@@ -35,6 +35,7 @@ class VoiceChatState {
   final String liveModelText;
   final String? activeSkill;
   final String? error;
+  final int timeLeftSeconds;
 
   const VoiceChatState({
     this.status = VoiceChatStatus.connecting,
@@ -44,6 +45,7 @@ class VoiceChatState {
     this.liveModelText = '',
     this.activeSkill,
     this.error,
+    this.timeLeftSeconds = 600,
   });
 
   VoiceChatState copyWith({
@@ -55,6 +57,7 @@ class VoiceChatState {
     String? activeSkill,
     bool clearActiveSkill = false,
     String? error,
+    int? timeLeftSeconds,
   }) {
     return VoiceChatState(
       status: status ?? this.status,
@@ -64,6 +67,7 @@ class VoiceChatState {
       liveModelText: liveModelText ?? this.liveModelText,
       activeSkill: clearActiveSkill ? null : (activeSkill ?? this.activeSkill),
       error: error ?? this.error,
+      timeLeftSeconds: timeLeftSeconds ?? this.timeLeftSeconds,
     );
   }
 }
@@ -134,6 +138,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   static const _stuckThreshold = Duration(seconds: 12);
   DateTime? _lastGeminiActivity;
   Timer? _watchdogTimer;
+  Timer? _countdownTimer;
   String? _timezone; // stored so the watchdog can reconnect
   
   // Token usage trackers
@@ -388,6 +393,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       state = state.copyWith(status: VoiceChatStatus.listening);
       _touchGeminiActivity();
       _startMicStream();
+      _startCountdown();
       return;
     }
 
@@ -676,11 +682,31 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   // ── Limpieza ──────────────────────────────────────────────────────────────
 
+  void _startCountdown() {
+    if (_countdownTimer != null) return;
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_disposed) {
+        timer.cancel();
+        return;
+      }
+      if (state.timeLeftSeconds <= 1) {
+        timer.cancel();
+        _countdownTimer = null;
+        debugPrint('[VoiceChat] ⏰ Session time limit reached (10 minutes). Ending session...');
+        endSession();
+      } else {
+        state = state.copyWith(timeLeftSeconds: state.timeLeftSeconds - 1);
+      }
+    });
+  }
+
   Future<void> _cleanup() async {
     _disposed = true;
     _rootSessionId = null;
     _watchdogTimer?.cancel();
     _watchdogTimer = null;
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
     await _audioSub?.cancel();
     _audioSub = null;
     await _wsSub?.cancel();
