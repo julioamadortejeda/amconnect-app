@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/home/providers/home_provider.dart';
+import '../../features/feed/presentation/ingest_flow_overlay.dart';
 import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
 import '../../features/chat/widgets/voice_overlay.dart';
@@ -51,6 +52,14 @@ class ShellScreen extends ConsumerWidget {
       body: Stack(
         children: [
           Positioned.fill(child: navigationShell),
+
+          // Escucha ingestProvider durante toda la sesión, sin importar el
+          // tab activo — ver comentario en ingest_flow_overlay.dart.
+          // Positioned.fill (no un hijo plano) para no alterar el cálculo de
+          // tamaño del Stack: un hijo no-posicionado fuerza al Stack a
+          // dimensionarse por sus hijos no-posicionados en vez de llenar las
+          // constraints del Scaffold, colapsando todo a tamaño cero.
+          const Positioned.fill(child: IngestFlowOverlay()),
 
           AnimatedPositioned(
             duration: const Duration(milliseconds: 320),

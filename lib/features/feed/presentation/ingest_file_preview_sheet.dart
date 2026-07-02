@@ -112,8 +112,14 @@ class IngestFilePreviewSheet extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledButton(
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      // Esperar a que el pop de este sheet termine antes de
+                      // disparar el cambio de estado que abre el siguiente
+                      // (mismo patrón que text_ingest_sheet.dart) — evita que
+                      // el nuevo modal se empuje mientras este sigue en curso
+                      // y termine cerrándose a sí mismo.
+                      await Future.delayed(const Duration(milliseconds: 350));
                       onConfirm();
                     },
                     style: FilledButton.styleFrom(

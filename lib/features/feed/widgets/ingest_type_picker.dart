@@ -180,7 +180,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         label: l10n.feedTypeAudio,
         sub: l10n.feedTypeAudioDesc,
         onTap: () => _pickFile(
-          type: FileType.audio,
+          type: FileType.custom,
+          extensions: const ['mp3', 'wav', 'm4a', 'aac'],
           isPolicy: false,
           sourceType: 'audio',
         ),
