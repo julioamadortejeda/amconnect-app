@@ -296,6 +296,120 @@ abstract class AppLocalizations {
   /// **'Confirmar contraseña'**
   String get fieldConfirm;
 
+  /// No description provided for @fieldFullName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get fieldFullName;
+
+  /// No description provided for @fieldPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get fieldPhone;
+
+  /// No description provided for @accountProfileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get accountProfileTitle;
+
+  /// No description provided for @accountPlanTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu plan'**
+  String get accountPlanTitle;
+
+  /// No description provided for @accountEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar'**
+  String get accountEdit;
+
+  /// No description provided for @accountSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get accountSave;
+
+  /// No description provided for @accountSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios guardados'**
+  String get accountSaved;
+
+  /// No description provided for @accountErrSave.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios. Inténtalo de nuevo.'**
+  String get accountErrSave;
+
+  /// No description provided for @accountPlanPrice.
+  ///
+  /// In es, this message translates to:
+  /// **'{price} MXN/mes'**
+  String accountPlanPrice(String price);
+
+  /// No description provided for @accountPlanStatusTrial.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba'**
+  String get accountPlanStatusTrial;
+
+  /// No description provided for @accountPlanStatusActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get accountPlanStatusActive;
+
+  /// No description provided for @accountPlanStatusExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Expirado'**
+  String get accountPlanStatusExpired;
+
+  /// No description provided for @accountPlanStatusCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelado'**
+  String get accountPlanStatusCancelled;
+
+  /// No description provided for @accountTrialDaysLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} días restantes de prueba'**
+  String accountTrialDaysLeft(int count);
+
+  /// No description provided for @accountUsageChatLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de chat'**
+  String get accountUsageChatLabel;
+
+  /// No description provided for @accountUsageIngestionsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos procesados'**
+  String get accountUsageIngestionsLabel;
+
+  /// No description provided for @accountUsageFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'{used} de {limit}'**
+  String accountUsageFormat(int used, int limit);
+
+  /// No description provided for @accountSignOutTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get accountSignOutTitle;
+
+  /// No description provided for @accountSignOutMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Podrás volver a iniciar sesión cuando quieras.'**
+  String get accountSignOutMessage;
+
   /// No description provided for @errInvalidEmail.
   ///
   /// In es, this message translates to:
@@ -1531,6 +1645,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Procesar'**
   String get feedTextInputSubmit;
+
+  /// No description provided for @feedPreviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar archivo'**
+  String get feedPreviewTitle;
+
+  /// No description provided for @feedPreviewConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get feedPreviewConfirm;
 
   /// No description provided for @remindersActionDone.
   ///

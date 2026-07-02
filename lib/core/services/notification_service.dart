@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../router/router.dart';
 import '../repositories/supabase_agent_repository.dart';
 
 /// Handler de mensajes en segundo plano. Debe ser una función de nivel superior
@@ -66,12 +69,15 @@ class NotificationService {
         }
       });
 
-      // 5. Escuchar cuando el usuario hace clic en una notificación y abre la app
+      // 5. Escuchar cuando el usuario hace clic en una notificación y abre la app (Background)
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         if (kDebugMode) {
           print('App abierta desde notificación: ${message.data}');
         }
-        // Aquí se puede redirigir al detalle del recordatorio si message.data['reminderId'] está presente
+        final reminderId = message.data['reminder_id'] ?? message.data['reminderId'];
+        if (reminderId != null) {
+          _ref.read(routerProvider).push('/reminder/$reminderId');
+        }
       });
 
       // 6. Escuchar cuando el token se refresque automáticamente
@@ -81,6 +87,17 @@ class NotificationService {
         }
         await _sendTokenToBackend(newToken);
       });
+
+      // 7. Manejar cuando la app se abre desde un estado cerrado (Terminated) mediante notificación
+      final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        final reminderId = initialMessage.data['reminder_id'] ?? initialMessage.data['reminderId'];
+        if (reminderId != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _ref.read(routerProvider).push('/reminder/$reminderId');
+          });
+        }
+      }
 
       _initialized = true;
       if (kDebugMode) {
@@ -173,7 +190,17 @@ class NotificationService {
         if (kDebugMode) {
           print('Clic en notificación local: ${details.payload}');
         }
-        // Manejar el clic en la notificación local
+        if (details.payload != null) {
+          try {
+            final data = jsonDecode(details.payload!) as Map<String, dynamic>;
+            final reminderId = data['reminder_id'] ?? data['reminderId'];
+            if (reminderId != null) {
+              _ref.read(routerProvider).push('/reminder/$reminderId');
+            }
+          } catch (e) {
+            debugPrint('Error al procesar payload de notificación local: $e');
+          }
+        }
       },
     );
   }
@@ -208,7 +235,7 @@ class NotificationService {
       title: notification.title,
       body: notification.body,
       notificationDetails: details,
-      payload: message.data.toString(),
+      payload: jsonEncode(message.data),
     );
   }
 

@@ -21,6 +21,7 @@ import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
 import '../../features/chat/presentation/voice_chat_screen.dart';
+import '../../features/account/presentation/account_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -103,7 +104,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/reminder/:id',
         pageBuilder: (_, state) => amTransitionPage(
-          child: ReminderDetailScreen(reminder: state.extra as Reminder),
+          child: ReminderDetailScreen(
+            reminder: state.extra as Reminder?,
+            reminderId: state.pathParameters['id'],
+          ),
           state: state,
           type: 'push',
         ),
@@ -120,6 +124,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/voice-chat',
         pageBuilder: (_, state) => amTransitionPage(
           child: const VoiceChatScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/account',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const AccountScreen(),
           state: state,
           type: 'push',
         ),

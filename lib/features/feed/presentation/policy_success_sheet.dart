@@ -44,12 +44,9 @@ class PolicySuccessSheet extends ConsumerWidget {
         alignment: Alignment.bottomCenter,
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28),
-            ),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -60,7 +57,7 @@ class PolicySuccessSheet extends ConsumerWidget {
                 height: 5,
                 margin: const EdgeInsets.only(top: 14, bottom: 20),
                 decoration: BoxDecoration(
-                  color: cs.outline,
+                  color: cs.outlineVariant,
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),

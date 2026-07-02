@@ -9,6 +9,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../../../l10n/app_localizations.dart';
+import '../presentation/ingest_file_preview_sheet.dart';
 import '../presentation/text_ingest_sheet.dart';
 import '../providers/ingest_provider.dart';
 
@@ -87,6 +88,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     required FileType type,
     List<String>? extensions,
     required bool isPolicy,
+    required String sourceType,
   }) =>
       _safePick(() async {
         final result = await FilePicker.pickFiles(
@@ -105,23 +107,46 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
           }
           return;
         }
+        final file = File(path);
+        final fileName = result.files.single.name;
+        final fileSize = result.files.single.size;
+        final isImage = type == FileType.image;
         final notifier = ref.read(ingestProvider.notifier);
+        final contactId = widget.contactId;
+        final policyId = widget.policyId;
+        final makeGeneral = _makeGeneral;
+
         if (mounted) Navigator.of(context).pop();
-        if (isPolicy) {
-          await notifier.processPolicy(
-            File(path),
-            result.files.single.name,
-            contactId: widget.contactId,
-          );
-        } else {
-          await notifier.processKnowledgeFile(
-            File(path),
-            result.files.single.name,
-            contactId: widget.contactId,
-            policyId: widget.policyId,
-            makeGeneral: _makeGeneral,
-          );
-        }
+
+        showModalBottomSheet(
+          context: context,
+          useRootNavigator: true,
+          isScrollControlled: true,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          builder: (_) => IngestFilePreviewSheet(
+            file: file,
+            fileName: fileName,
+            fileSize: fileSize,
+            isImage: isImage,
+            sourceType: sourceType,
+            onConfirm: () {
+              if (isPolicy) {
+                notifier.processPolicy(file, fileName, contactId: contactId);
+              } else {
+                notifier.processKnowledgeFile(
+                  file,
+                  fileName,
+                  contactId: contactId,
+                  policyId: policyId,
+                  makeGeneral: makeGeneral,
+                );
+              }
+            },
+          ),
+        );
       });
 
   @override
@@ -139,6 +164,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
           type: FileType.custom,
           extensions: ['pdf'],
           isPolicy: true,
+          sourceType: 'pdf',
         ),
       ),
       _PickerType(
@@ -146,7 +172,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         color: AmColors.srcImage,
         label: l10n.feedTypePolicyPhoto,
         sub: l10n.feedTypePolicyPhotoDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: true),
+        onTap: () => _pickFile(type: FileType.image, isPolicy: true, sourceType: 'image'),
       ),
       _PickerType(
         icon: AmIcons.audio,
@@ -154,9 +180,9 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         label: l10n.feedTypeAudio,
         sub: l10n.feedTypeAudioDesc,
         onTap: () => _pickFile(
-          type: FileType.custom,
-          extensions: ['mp3', 'm4a', 'wav', 'aac', 'ogg'],
+          type: FileType.audio,
           isPolicy: false,
+          sourceType: 'audio',
         ),
       ),
       _PickerType(
@@ -171,7 +197,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         color: AmColors.srcImage,
         label: l10n.feedTypeKnowledgeImage,
         sub: l10n.feedTypeKnowledgeImageDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: false),
+        onTap: () => _pickFile(type: FileType.image, isPolicy: false, sourceType: 'image'),
       ),
       _PickerType(
         icon: AmIcons.document,
@@ -182,6 +208,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
           type: FileType.custom,
           extensions: ['pdf'],
           isPolicy: false,
+          sourceType: 'pdf',
         ),
       ),
     ];

@@ -17,12 +17,18 @@ import '../widgets/reminder_detail_relations_section.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
 import '../../../core/widgets/am_stagger.dart';
+import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ReminderDetailScreen extends ConsumerStatefulWidget {
-  const ReminderDetailScreen({super.key, required this.reminder});
+  const ReminderDetailScreen({
+    super.key,
+    this.reminder,
+    this.reminderId,
+  }) : assert(reminder != null || reminderId != null, 'Must provide either reminder or reminderId');
 
-  final Reminder reminder;
+  final Reminder? reminder;
+  final String? reminderId;
 
   @override
   ConsumerState<ReminderDetailScreen> createState() =>
@@ -34,12 +40,51 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
   bool _saving = false;
   late final TextEditingController _titleCtrl;
   late final TextEditingController _descCtrl;
+  Reminder? _currentReminder;
+  bool _loading = false;
+  String? _loadError;
 
   @override
   void initState() {
     super.initState();
-    _titleCtrl = TextEditingController(text: widget.reminder.title);
-    _descCtrl = TextEditingController(text: widget.reminder.description ?? '');
+    if (widget.reminder != null) {
+      _currentReminder = widget.reminder;
+      _titleCtrl = TextEditingController(text: _currentReminder!.title);
+      _descCtrl = TextEditingController(text: _currentReminder!.description ?? '');
+    } else {
+      _titleCtrl = TextEditingController();
+      _descCtrl = TextEditingController();
+      _loadReminder();
+    }
+  }
+
+  Future<void> _loadReminder() async {
+    setState(() {
+      _loading = true;
+      _loadError = null;
+    });
+    try {
+      final repo = ref.read(reminderRepositoryProvider);
+      final r = await repo.getById(widget.reminderId!);
+      if (r == null) {
+        setState(() {
+          _loading = false;
+          _loadError = 'Recordatorio no encontrado.';
+        });
+        return;
+      }
+      _currentReminder = r;
+      _titleCtrl.text = _currentReminder!.title;
+      _descCtrl.text = _currentReminder!.description ?? '';
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _loadError = 'Error al cargar recordatorio: $e';
+      });
+    }
   }
 
   @override
@@ -50,8 +95,10 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
   }
 
   Reminder _fresh(List<Reminder> list) =>
-      list.firstWhere((r) => r.id == widget.reminder.id,
-          orElse: () => widget.reminder);
+      list.firstWhere(
+        (r) => r.id == (_currentReminder?.id ?? widget.reminderId),
+        orElse: () => _currentReminder!,
+      );
 
   void _enterEdit(Reminder r) {
     _titleCtrl.text = r.title;
@@ -111,10 +158,50 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    if (_loading) {
+      return Scaffold(
+        backgroundColor: cs.surface,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    if (_loadError != null) {
+      return Scaffold(
+        backgroundColor: cs.surface,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(
+              _loadError!,
+              style: TextStyle(color: cs.error, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
     final reminders = ref.watch(remindersProvider).asData?.value ?? [];
     final r = _fresh(reminders);
     final types = ref.watch(reminderTypesProvider).asData?.value ?? [];
-    final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     int aniIdx = 0;
 

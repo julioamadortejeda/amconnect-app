@@ -112,6 +112,71 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldConfirm => 'Confirmar contraseña';
 
   @override
+  String get fieldFullName => 'Nombre completo';
+
+  @override
+  String get fieldPhone => 'Teléfono';
+
+  @override
+  String get accountProfileTitle => 'Perfil';
+
+  @override
+  String get accountPlanTitle => 'Tu plan';
+
+  @override
+  String get accountEdit => 'Editar';
+
+  @override
+  String get accountSave => 'Guardar';
+
+  @override
+  String get accountSaved => 'Cambios guardados';
+
+  @override
+  String get accountErrSave =>
+      'No se pudieron guardar los cambios. Inténtalo de nuevo.';
+
+  @override
+  String accountPlanPrice(String price) {
+    return '$price MXN/mes';
+  }
+
+  @override
+  String get accountPlanStatusTrial => 'Prueba';
+
+  @override
+  String get accountPlanStatusActive => 'Activo';
+
+  @override
+  String get accountPlanStatusExpired => 'Expirado';
+
+  @override
+  String get accountPlanStatusCancelled => 'Cancelado';
+
+  @override
+  String accountTrialDaysLeft(int count) {
+    return '$count días restantes de prueba';
+  }
+
+  @override
+  String get accountUsageChatLabel => 'Mensajes de chat';
+
+  @override
+  String get accountUsageIngestionsLabel => 'Documentos procesados';
+
+  @override
+  String accountUsageFormat(int used, int limit) {
+    return '$used de $limit';
+  }
+
+  @override
+  String get accountSignOutTitle => '¿Cerrar sesión?';
+
+  @override
+  String get accountSignOutMessage =>
+      'Podrás volver a iniciar sesión cuando quieras.';
+
+  @override
   String get errInvalidEmail => 'Ingresa un correo electrónico válido';
 
   @override
@@ -767,6 +832,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedTextInputSubmit => 'Procesar';
+
+  @override
+  String get feedPreviewTitle => 'Confirmar archivo';
+
+  @override
+  String get feedPreviewConfirm => 'Confirmar';
 
   @override
   String get remindersActionDone => 'Finalizar';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/am_icon_btn.dart';
+import '../../../core/widgets/am_press.dart';
 import '../../../l10n/app_localizations.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -20,7 +21,10 @@ class HomeHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Image.asset('assets/logo/logo.png', width: 38, height: 38),
+          AmPress(
+            onTap: () => context.push('/account'),
+            child: Image.asset('assets/logo/logo.png', width: 38, height: 38),
+          ),
           const SizedBox(width: 11),
           Expanded(
             child: Column(

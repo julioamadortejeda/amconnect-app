@@ -118,8 +118,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
   Future<void> _pickKnowledgeAudio() => _safePick(() async {
     final result = await FilePicker.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'm4a', 'wav', 'aac', 'ogg'],
+      type: FileType.audio,
     );
     if (result == null) return;
     if (result.files.single.path == null) {
@@ -856,11 +855,9 @@ class _ProcessingOverlay extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(22, 14, 22, 48),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(28),
-                topRight: Radius.circular(28)),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -870,7 +867,7 @@ class _ProcessingOverlay extends StatelessWidget {
                 height: 5,
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
-                    color: cs.outline,
+                    color: cs.outlineVariant,
                     borderRadius: BorderRadius.circular(99)),
               ),
               Container(
@@ -1073,17 +1070,23 @@ class _UnifiedErrorSheet extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(22, 24, 22, 48),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28),
-            ),
+          padding: const EdgeInsets.fromLTRB(22, 14, 22, 48),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Container(
+                width: 44,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: cs.outlineVariant,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
               Icon(Icons.error_outline, color: cs.error, size: 48),
               const SizedBox(height: 16),
               Text(

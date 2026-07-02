@@ -65,11 +65,9 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.82,
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(28), topRight: Radius.circular(28),
-            ),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             children: [
@@ -81,7 +79,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                     Container(
                       width: 44, height: 5,
                       decoration: BoxDecoration(
-                        color: cs.outline,
+                        color: cs.outlineVariant,
                         borderRadius: BorderRadius.circular(99),
                       ),
                     ),

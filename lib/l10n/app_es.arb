@@ -48,6 +48,39 @@
   "fieldEmail": "Correo electrónico",
   "fieldPassword": "Contraseña",
   "fieldConfirm": "Confirmar contraseña",
+  "fieldFullName": "Nombre completo",
+  "fieldPhone": "Teléfono",
+
+  "@_account": {},
+  "accountProfileTitle": "Perfil",
+  "accountPlanTitle": "Tu plan",
+  "accountEdit": "Editar",
+  "accountSave": "Guardar",
+  "accountSaved": "Cambios guardados",
+  "accountErrSave": "No se pudieron guardar los cambios. Inténtalo de nuevo.",
+  "accountPlanPrice": "{price} MXN/mes",
+  "@accountPlanPrice": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "accountPlanStatusTrial": "Prueba",
+  "accountPlanStatusActive": "Activo",
+  "accountPlanStatusExpired": "Expirado",
+  "accountPlanStatusCancelled": "Cancelado",
+  "accountTrialDaysLeft": "{count} días restantes de prueba",
+  "@accountTrialDaysLeft": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "accountUsageChatLabel": "Mensajes de chat",
+  "accountUsageIngestionsLabel": "Documentos procesados",
+  "accountUsageFormat": "{used} de {limit}",
+  "@accountUsageFormat": {
+    "placeholders": {
+      "used": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "accountSignOutTitle": "¿Cerrar sesión?",
+  "accountSignOutMessage": "Podrás volver a iniciar sesión cuando quieras.",
 
   "@_errors": {},
   "errInvalidEmail": "Ingresa un correo electrónico válido",
@@ -331,6 +364,8 @@
   "feedWhatsappInputTitle": "Importar conversación",
   "feedTextInputHint": "Pega aquí el texto, notas o conversación…",
   "feedTextInputSubmit": "Procesar",
+  "feedPreviewTitle": "Confirmar archivo",
+  "feedPreviewConfirm": "Confirmar",
 
   "@_reminderActions": {},
   "remindersActionDone": "Finalizar",

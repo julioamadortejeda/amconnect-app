@@ -112,6 +112,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldConfirm => 'Confirm password';
 
   @override
+  String get fieldFullName => 'Full name';
+
+  @override
+  String get fieldPhone => 'Phone';
+
+  @override
+  String get accountProfileTitle => 'Profile';
+
+  @override
+  String get accountPlanTitle => 'Your plan';
+
+  @override
+  String get accountEdit => 'Edit';
+
+  @override
+  String get accountSave => 'Save';
+
+  @override
+  String get accountSaved => 'Changes saved';
+
+  @override
+  String get accountErrSave => 'Couldn\'t save changes. Please try again.';
+
+  @override
+  String accountPlanPrice(String price) {
+    return '$price MXN/month';
+  }
+
+  @override
+  String get accountPlanStatusTrial => 'Trial';
+
+  @override
+  String get accountPlanStatusActive => 'Active';
+
+  @override
+  String get accountPlanStatusExpired => 'Expired';
+
+  @override
+  String get accountPlanStatusCancelled => 'Cancelled';
+
+  @override
+  String accountTrialDaysLeft(int count) {
+    return '$count days left in trial';
+  }
+
+  @override
+  String get accountUsageChatLabel => 'Chat messages';
+
+  @override
+  String get accountUsageIngestionsLabel => 'Documents processed';
+
+  @override
+  String accountUsageFormat(int used, int limit) {
+    return '$used of $limit';
+  }
+
+  @override
+  String get accountSignOutTitle => 'Sign out?';
+
+  @override
+  String get accountSignOutMessage => 'You can sign back in anytime.';
+
+  @override
   String get errInvalidEmail => 'Enter a valid email address';
 
   @override
@@ -764,6 +827,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedTextInputSubmit => 'Process';
+
+  @override
+  String get feedPreviewTitle => 'Confirm file';
+
+  @override
+  String get feedPreviewConfirm => 'Confirm';
 
   @override
   String get remindersActionDone => 'Mark done';

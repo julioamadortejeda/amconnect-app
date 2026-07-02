@@ -37,6 +37,38 @@
   "fieldEmail": "Email address",
   "fieldPassword": "Password",
   "fieldConfirm": "Confirm password",
+  "fieldFullName": "Full name",
+  "fieldPhone": "Phone",
+
+  "accountProfileTitle": "Profile",
+  "accountPlanTitle": "Your plan",
+  "accountEdit": "Edit",
+  "accountSave": "Save",
+  "accountSaved": "Changes saved",
+  "accountErrSave": "Couldn't save changes. Please try again.",
+  "accountPlanPrice": "{price} MXN/month",
+  "@accountPlanPrice": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "accountPlanStatusTrial": "Trial",
+  "accountPlanStatusActive": "Active",
+  "accountPlanStatusExpired": "Expired",
+  "accountPlanStatusCancelled": "Cancelled",
+  "accountTrialDaysLeft": "{count} days left in trial",
+  "@accountTrialDaysLeft": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "accountUsageChatLabel": "Chat messages",
+  "accountUsageIngestionsLabel": "Documents processed",
+  "accountUsageFormat": "{used} of {limit}",
+  "@accountUsageFormat": {
+    "placeholders": {
+      "used": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "accountSignOutTitle": "Sign out?",
+  "accountSignOutMessage": "You can sign back in anytime.",
 
   "errInvalidEmail": "Enter a valid email address",
   "errEmptyCredentials": "Please fill in all fields",
@@ -284,6 +316,8 @@
   "feedWhatsappInputTitle": "Import conversation",
   "feedTextInputHint": "Paste your text, notes or conversation here…",
   "feedTextInputSubmit": "Process",
+  "feedPreviewTitle": "Confirm file",
+  "feedPreviewConfirm": "Confirm",
 
   "remindersActionDone": "Mark done",
   "remindersActionInProgress": "In progress",
