@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../data/chat_context.dart';
 import '../data/chat_repository.dart';
 
@@ -77,36 +77,9 @@ class ChatNotifier extends Notifier<ChatState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: e is ApiException ? _mapApiException(e) : e.toString(),
+        error: mapApiError(e),
       );
     }
-  }
-
-  String _mapApiException(ApiException e) {
-    if (e.errorCode != null) {
-      return e.errorCode!;
-    }
-    if (e.statusCode == 503 || e.message.contains("unavailable") || e.message.contains("high demand")) {
-      return "AI_PROVIDER_BUSY";
-    }
-    if (e.statusCode == 401) {
-      return "SESSION_EXPIRED";
-    }
-    if (e.statusCode == 404) {
-      return "RESOURCE_NOT_FOUND";
-    }
-
-    try {
-      final decoded = jsonDecode(e.message);
-      if (decoded is Map) {
-        if (decoded['error'] is Map) {
-          return decoded['error']['message']?.toString() ?? 'Error del servidor';
-        }
-        return decoded['error']?.toString() ?? decoded['message']?.toString() ?? e.message;
-      }
-    } catch (_) {}
-
-    return e.message;
   }
 
   Future<void> reset() async {

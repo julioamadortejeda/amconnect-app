@@ -55,8 +55,9 @@ String fmtSmartDate(DateTime? dt, AppLocalizations l10n,
   final today = DateTime(now.year, now.month, now.day);
   final d = DateTime(dt.year, dt.month, dt.day);
   if (d == today) return l10n.calendarToday;
-  if (d == today.add(const Duration(days: 1)))
+  if (d == today.add(const Duration(days: 1))) {
     return l10n.remindersDetailTomorrow;
+  }
   return fmtDate(dt, showYear: showYear);
 }
 
@@ -94,4 +95,18 @@ String getInitials(String fullName) {
   }
   final single = parts[0];
   return single.substring(0, single.length.clamp(0, 2)).toUpperCase();
+}
+
+// "Hoy" / "Ayer" / "lun" / "13 jun" — fecha relativa corta para listas del Feed
+String fmtRelativeDay(DateTime? dt, AppLocalizations l10n) {
+  if (dt == null) return '';
+  final local = dt.toLocal();
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final d = DateTime(local.year, local.month, local.day);
+  final diff = today.difference(d).inDays;
+  if (diff == 0) return l10n.calendarToday;
+  if (diff == 1) return l10n.commonYesterday;
+  if (diff > 1 && diff < 7) return _weekdays[local.weekday - 1];
+  return fmtDate(local, showYear: false);
 }

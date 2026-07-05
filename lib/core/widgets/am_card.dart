@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';
 import 'am_press.dart';
 
@@ -26,18 +27,7 @@ class AmCard extends StatelessWidget {
           BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x0D141E1A),
-                blurRadius: 2,
-                offset: Offset(0, 1),
-              ),
-              BoxShadow(
-                color: Color(0x0A141E1A),
-                blurRadius: 10,
-                offset: Offset(0, 3),
-              ),
-            ],
+            boxShadow: AmShadows.card,
           ),
       child: child,
     );

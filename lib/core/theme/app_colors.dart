@@ -66,4 +66,22 @@ class AmColors {
   static const srcWave = Color(0xFFB9791A);
   static const srcImage = Color(0xFF7A4FD0);
   static const srcNote = Color(0xFF007AC0);
+
+  // Acentos absolutos de badges (mismos en light/dark)
+  static const gold = Color(0xFFB9791A);
+}
+
+/// Sombras estándar de cards. Usar SIEMPRE estos tokens en lugar de
+/// BoxShadow con hex inline — un solo lugar para ajustar la elevación global.
+abstract final class AmShadows {
+  static const _small =
+      BoxShadow(color: Color(0x0D141E1A), blurRadius: 2, offset: Offset(0, 1));
+  static const _large =
+      BoxShadow(color: Color(0x0A141E1A), blurRadius: 10, offset: Offset(0, 3));
+
+  /// Par estándar de AmCard (sutil cercana + difusa lejana).
+  static const card = [_small, _large];
+
+  /// Solo la sombra cercana — para elementos pequeños (chips, burbujas).
+  static const chip = [_small];
 }

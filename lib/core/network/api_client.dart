@@ -59,12 +59,7 @@ class ApiClient {
       body: body != null ? jsonEncode(body) : null,
     );
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      final responseBody = jsonDecode(res.body);
-      throw ApiException(
-        statusCode: res.statusCode,
-        message: (responseBody is Map ? responseBody['error']?.toString() : null) ?? 'Error desconocido',
-        errorCode: responseBody is Map ? responseBody['errorCode']?.toString() : null,
-      );
+      throw _toApiException(res);
     }
   }
 
@@ -102,14 +97,33 @@ class ApiClient {
   }
 
   Map<String, dynamic> _handle(http.Response res) {
-    final body = jsonDecode(res.body);
     if (res.statusCode >= 200 && res.statusCode < 300) {
+      final body = jsonDecode(res.body);
       return body is Map<String, dynamic> ? body : {'data': body};
     }
-    throw ApiException(
+    throw _toApiException(res);
+  }
+
+  /// Construye la excepción a partir de la respuesta de error del backend.
+  /// Contrato: `{ success: false, error: <msg>, errorCode: <CODE>, errorId?: <uuid> }`.
+  /// Si el body no es JSON (ej: HTML de un gateway caído), se trata como
+  /// error de conexión en lugar de crashear con FormatException.
+  ApiException _toApiException(http.Response res) {
+    Object? body;
+    try {
+      body = jsonDecode(res.body);
+    } catch (_) {
+      return ApiException(
+        statusCode: res.statusCode,
+        message: 'CONNECTION_FAILED',
+        errorCode: 'CONNECTION_FAILED',
+      );
+    }
+    return ApiException(
       statusCode: res.statusCode,
       message: (body is Map ? body['error']?.toString() : null) ?? 'Error desconocido',
       errorCode: body is Map ? body['errorCode']?.toString() : null,
+      errorId: body is Map ? body['errorId']?.toString() : null,
     );
   }
 }
@@ -118,9 +132,20 @@ class ApiException implements Exception {
   final int statusCode;
   final String message;
   final String? errorCode;
-  const ApiException({required this.statusCode, required this.message, this.errorCode});
+
+  /// UUID del registro en `error_logs` del backend (si el error fue persistido).
+  /// Se muestra abreviado al usuario como "código de referencia" para soporte.
+  final String? errorId;
+
+  const ApiException({
+    required this.statusCode,
+    required this.message,
+    this.errorCode,
+    this.errorId,
+  });
+
   @override
-  String toString() => 'ApiException($statusCode): $message (Code: $errorCode)';
+  String toString() => 'ApiException($statusCode): $message (Code: $errorCode, Ref: $errorId)';
 }
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());

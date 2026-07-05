@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/models/agent_note.dart';
+import '../../../core/repositories/supabase_storage_repository.dart';
 import '../../../l10n/app_localizations.dart';
 
-class ClientNoteRow extends StatefulWidget {
+class ClientNoteRow extends ConsumerStatefulWidget {
   const ClientNoteRow({super.key, required this.note});
 
   final AgentNote note;
 
   @override
-  State<ClientNoteRow> createState() => _ClientNoteRowState();
+  ConsumerState<ClientNoteRow> createState() => _ClientNoteRowState();
 }
 
-class _ClientNoteRowState extends State<ClientNoteRow> {
+class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
   bool _expanded = false;
   bool _loadingFile = false;
 
@@ -59,10 +60,7 @@ class _ClientNoteRowState extends State<ClientNoteRow> {
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-            boxShadow: const [
-              BoxShadow(color: Color(0x0D141E1A), blurRadius: 2, offset: Offset(0, 1)),
-              BoxShadow(color: Color(0x0A141E1A), blurRadius: 10, offset: Offset(0, 3)),
-            ],
+            boxShadow: AmShadows.card,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,9 +154,9 @@ class _ClientNoteRowState extends State<ClientNoteRow> {
     if (_loadingFile) return;
     setState(() => _loadingFile = true);
     try {
-      final signedUrl = await Supabase.instance.client.storage
-          .from('policies')
-          .createSignedUrl(widget.note.storagePath!, 3600);
+      final signedUrl = await ref
+          .read(storageRepositoryProvider)
+          .getSignedUrl(widget.note.storagePath!);
       final uri = Uri.parse(signedUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);

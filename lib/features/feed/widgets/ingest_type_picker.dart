@@ -99,8 +99,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         final path = result.files.single.path;
         if (path == null) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('No se pudo obtener la ruta del archivo.'),
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(AppLocalizations.of(context)!.errFilePathUnavailable),
               backgroundColor: Colors.orange,
               behavior: SnackBarBehavior.floating,
             ));

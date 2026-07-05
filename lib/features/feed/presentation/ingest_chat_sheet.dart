@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../l10n/app_localizations.dart';
 import '../providers/ingest_provider.dart';
 
 class IngestChatSheet extends ConsumerStatefulWidget {
@@ -46,6 +47,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(ingestProvider);
 
     ref.listen(ingestProvider, (prev, next) {
@@ -100,7 +102,7 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Confirmar póliza',
+                              Text(l10n.feedConfirmPolicyTitle,
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,
                                       color: cs.onSurface)),
                               if (policyNumber != null || carrierName != null)

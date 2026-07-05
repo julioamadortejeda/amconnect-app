@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/services/notification_service.dart';
@@ -12,6 +13,9 @@ import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Inter viene empaquetada en assets/google_fonts/ — nunca descargar fuentes
+  // en runtime (evita jank en el primer frame y dependencia de red al abrir).
+  GoogleFonts.config.allowRuntimeFetching = false;
   await dotenv.load(fileName: '.env');
   await Supabase.initialize(
     url: Env.supabaseUrl,
@@ -38,7 +42,7 @@ class MyApp extends ConsumerWidget {
 
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
-      title: 'AMConnect Advisor',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,

@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../data/ingest_repository.dart';
 
 export 'package:amconnect/features/feed/data/ingest_repository.dart'
@@ -192,7 +192,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? _mapApiException(e) : e.toString(),
+        error: mapApiError(e),
         statusMessageKey: null,
       );
     }
@@ -224,7 +224,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         isSending: false,
-        error: e is ApiException ? _mapApiException(e) : e.toString(),
+        error: mapApiError(e),
       );
     }
   }
@@ -265,7 +265,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? _mapApiException(e) : e.toString(),
+        error: mapApiError(e),
         statusMessageKey: null,
       );
     }
@@ -312,7 +312,7 @@ class IngestNotifier extends Notifier<IngestState> {
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
-        error: e is ApiException ? _mapApiException(e) : e.toString(),
+        error: mapApiError(e),
         statusMessageKey: null,
       );
     }
@@ -328,32 +328,6 @@ class IngestNotifier extends Notifier<IngestState> {
     state = const IngestState();
   }
 
-  String _mapApiException(ApiException e) {
-    if (e.errorCode != null) {
-      return e.errorCode!;
-    }
-    if (e.statusCode == 503 || e.message.contains("unavailable") || e.message.contains("high demand")) {
-      return "AI_PROVIDER_BUSY";
-    }
-    if (e.statusCode == 401) {
-      return "SESSION_EXPIRED";
-    }
-    if (e.statusCode == 404) {
-      return "RESOURCE_NOT_FOUND";
-    }
-
-    try {
-      final decoded = jsonDecode(e.message);
-      if (decoded is Map) {
-        if (decoded['error'] is Map) {
-          return decoded['error']['message']?.toString() ?? 'Error del servidor';
-        }
-        return decoded['error']?.toString() ?? decoded['message']?.toString() ?? e.message;
-      }
-    } catch (_) {}
-
-    return e.message;
-  }
 }
 
 final ingestProvider = NotifierProvider<IngestNotifier, IngestState>(IngestNotifier.new);

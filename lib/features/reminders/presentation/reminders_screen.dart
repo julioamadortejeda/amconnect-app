@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/features.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
@@ -50,26 +51,28 @@ class RemindersScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          AmPress(
-            onTap: () => context.push('/create-reminder'),
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: AmColors.accent,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AmColors.accent.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+          if (kManualReminderCreationEnabled) ...[
+            const SizedBox(width: 10),
+            AmPress(
+              onTap: () => context.push('/create-reminder'),
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AmColors.accent,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AmColors.accent.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.add, color: Colors.white, size: 20),
               ),
-              child: const Icon(Icons.add, color: Colors.white, size: 20),
             ),
-          ),
+          ],
           SizedBox(width: AmDimens.screenH),
         ],
       ),

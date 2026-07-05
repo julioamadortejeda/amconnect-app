@@ -1,6 +1,8 @@
 {
   "@@locale": "es",
 
+  "appTitle": "AMConnect Advisor",
+
   "@_common": {},
   "commonTerms": "Al continuar, aceptas los Términos y la Política de Privacidad.",
   "commonClose": "Cerrar",
@@ -8,6 +10,7 @@
   "commonDelete": "Eliminar",
   "commonAccount": "Cuenta",
   "commonSignOut": "Cerrar sesión",
+  "commonYesterday": "Ayer",
   "commonLoading": "Cargando...",
   "homeEmptyPendientes": "Sin recordatorios pendientes",
   "homeEmptySeguimientos": "Sin seguimientos activos",
@@ -94,6 +97,22 @@
   "errNotFound": "Recurso no encontrado.",
   "errUnknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
   "errNetwork": "Error de conexión. Revisa tu internet y vuelve a intentarlo.",
+  "errQuotaExceeded": "Alcanzaste el límite de tu plan este mes. Actualiza tu plan para continuar.",
+  "errSubscriptionRequired": "Tu suscripción ha vencido. Activa un plan para continuar.",
+  "errValidationFailed": "Los datos enviados no son válidos. Revisa la información e intenta de nuevo.",
+  "errConflict": "Ya existe un registro con esos datos.",
+  "errAccessDenied": "No tienes permiso para realizar esta acción.",
+  "errAiFailed": "El asistente tuvo un problema al procesar tu solicitud. Intenta de nuevo.",
+  "errUploadFailed": "No se pudo subir el archivo. Intenta de nuevo.",
+  "errRefCode": "Código de referencia: {ref}",
+  "@errRefCode": {
+    "placeholders": {
+      "ref": {"type": "String"}
+    }
+  },
+  "errFilePickerTimeout": "La selección de archivo tardó demasiado. Intenta de nuevo.",
+  "errFilePickerOpen": "No se pudo abrir el selector de archivos.",
+  "errFilePathUnavailable": "No se pudo obtener la ruta del archivo seleccionado.",
 
   "@_shell": {},
   "shellHome": "Inicio",
@@ -369,6 +388,7 @@
   "feedWhatsappInputTitle": "Importar conversación",
   "feedTextInputHint": "Pega aquí el texto, notas o conversación…",
   "feedTextInputSubmit": "Procesar",
+  "feedConfirmPolicyTitle": "Confirmar póliza",
   "feedPreviewTitle": "Confirmar archivo",
   "feedPreviewConfirm": "Confirmar",
 

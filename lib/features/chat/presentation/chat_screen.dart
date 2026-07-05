@@ -164,12 +164,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   border:
                                       Border.all(color: cs.outlineVariant),
                                   borderRadius: BorderRadius.circular(20),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Color(0x0D141E1A),
-                                        blurRadius: 2,
-                                        offset: Offset(0, 1)),
-                                  ],
+                                  boxShadow: AmShadows.chip,
                                 ),
                                 child: Text(s,
                                     style: TextStyle(
@@ -191,16 +186,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 decoration: BoxDecoration(
                   color: cs.surface,
                   borderRadius: BorderRadius.circular(22),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color(0x0D141E1A),
-                        blurRadius: 2,
-                        offset: Offset(0, 1)),
-                    BoxShadow(
-                        color: Color(0x0A141E1A),
-                        blurRadius: 10,
-                        offset: Offset(0, 3)),
-                  ],
+                  boxShadow: AmShadows.card,
                 ),
                 child: Row(
                   children: [
@@ -439,16 +425,7 @@ class _Bubble extends StatelessWidget {
                     bottomLeft: Radius.circular(18),
                     bottomRight: Radius.circular(18),
                   ),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color(0x0D141E1A),
-                        blurRadius: 2,
-                        offset: Offset(0, 1)),
-                    BoxShadow(
-                        color: Color(0x0A141E1A),
-                        blurRadius: 10,
-                        offset: Offset(0, 3)),
-                  ],
+                  boxShadow: AmShadows.card,
                 ),
                 child: Text(text,
                     style: TextStyle(
@@ -548,16 +525,7 @@ class _TypingBubbleState extends State<_TypingBubble>
               bottomLeft: Radius.circular(18),
               bottomRight: Radius.circular(18),
             ),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color(0x0D141E1A),
-                  blurRadius: 2,
-                  offset: Offset(0, 1)),
-              BoxShadow(
-                  color: Color(0x0A141E1A),
-                  blurRadius: 10,
-                  offset: Offset(0, 3)),
-            ],
+            boxShadow: AmShadows.card,
           ),
           child: Row(
             children: List.generate(3, (i) {

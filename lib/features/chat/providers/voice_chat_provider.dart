@@ -208,7 +208,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _timezone = timezone;
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
     if (token == null) {
-      _setError('Sin sesión de usuario.');
+      _setError('SESSION_EXPIRED');
       return;
     }
 
@@ -263,7 +263,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       _wsSub = _socket!.listen(
         _onMessage,
         onDone: _onSocketClosed,
-        onError: (Object e) => _setError(e.toString()),
+        onError: (Object e) {
+          debugPrint('[VoiceChat] WebSocket error: $e');
+          _setError('CONNECTION_FAILED');
+        },
         cancelOnError: false,
       );
 
@@ -321,7 +324,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       if (_disposed) return;
       debugPrint('[VoiceChat] Connection failed: $e');
       await _cleanup();
-      _setError('No se pudo conectar: $e');
+      _setError('CONNECTION_FAILED');
     }
   }
 
@@ -677,7 +680,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     debugPrint('[VoiceChat] 🚫 Plan limit reached — terminating voice session');
     _terminated = true;
     await _partialCleanup();
-    _setError(message ?? 'Has alcanzado el límite de tu plan.');
+    _setError(message ?? 'QUOTA_EXCEEDED');
   }
 
   // ── Limpieza ──────────────────────────────────────────────────────────────

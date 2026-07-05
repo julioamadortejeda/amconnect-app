@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/widgets/am_avatar.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_theme.dart';
 
 class ClientAvatarHeader extends StatelessWidget {
   const ClientAvatarHeader({super.key, required this.contact});
@@ -22,7 +24,7 @@ class ClientAvatarHeader extends StatelessWidget {
 
     final year = contact.memberSinceYear;
     final isGold = year != null && year <= 2019;
-    final badgeColor = isGold ? const Color(0xFFB9791A) : const Color(0xFF0E7C42);
+    final badgeColor = isGold ? AmColors.gold : context.am.green;
     final badgeBg = badgeColor.withValues(alpha: 0.08);
 
     return Column(

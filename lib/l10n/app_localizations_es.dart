@@ -9,6 +9,9 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get appTitle => 'AMConnect Advisor';
+
+  @override
   String get commonTerms =>
       'Al continuar, aceptas los Términos y la Política de Privacidad.';
 
@@ -26,6 +29,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commonSignOut => 'Cerrar sesión';
+
+  @override
+  String get commonYesterday => 'Ayer';
 
   @override
   String get commonLoading => 'Cargando...';
@@ -213,6 +219,48 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get errNetwork =>
       'Error de conexión. Revisa tu internet y vuelve a intentarlo.';
+
+  @override
+  String get errQuotaExceeded =>
+      'Alcanzaste el límite de tu plan este mes. Actualiza tu plan para continuar.';
+
+  @override
+  String get errSubscriptionRequired =>
+      'Tu suscripción ha vencido. Activa un plan para continuar.';
+
+  @override
+  String get errValidationFailed =>
+      'Los datos enviados no son válidos. Revisa la información e intenta de nuevo.';
+
+  @override
+  String get errConflict => 'Ya existe un registro con esos datos.';
+
+  @override
+  String get errAccessDenied => 'No tienes permiso para realizar esta acción.';
+
+  @override
+  String get errAiFailed =>
+      'El asistente tuvo un problema al procesar tu solicitud. Intenta de nuevo.';
+
+  @override
+  String get errUploadFailed =>
+      'No se pudo subir el archivo. Intenta de nuevo.';
+
+  @override
+  String errRefCode(String ref) {
+    return 'Código de referencia: $ref';
+  }
+
+  @override
+  String get errFilePickerTimeout =>
+      'La selección de archivo tardó demasiado. Intenta de nuevo.';
+
+  @override
+  String get errFilePickerOpen => 'No se pudo abrir el selector de archivos.';
+
+  @override
+  String get errFilePathUnavailable =>
+      'No se pudo obtener la ruta del archivo seleccionado.';
 
   @override
   String get shellHome => 'Inicio';
@@ -848,6 +896,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedTextInputSubmit => 'Procesar';
+
+  @override
+  String get feedConfirmPolicyTitle => 'Confirmar póliza';
 
   @override
   String get feedPreviewTitle => 'Confirmar archivo';

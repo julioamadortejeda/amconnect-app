@@ -1,5 +1,9 @@
 # AMConnect Flutter App — CLAUDE.md
 
+> **Obligatorio:** lee `RULES.md` (mismo directorio) antes de escribir código. Ahí están las reglas duras de i18n, theming, widgets, Riverpod, errores y rendimiento.
+
+Contexto general del proyecto: `/Users/Development/Projects/JACATSoft/context.md` · Backlog: `/Users/Development/Projects/JACATSoft/backlog.md`
+
 ## Contexto del proyecto
 
 App móvil Flutter para asesores de seguros. Permite gestionar clientes, pólizas, recordatorios y chatear con un asistente IA. Diseño basado en prototipo HTML/CSS exportado desde Claude Design.
@@ -200,7 +204,9 @@ final myProvider = NotifierProvider<MyNotifier, MyState>(MyNotifier.new);
 
 ### Realtime (Supabase)
 
-`reminders`, `contacts` y `policies` tienen suscripciones Realtime activas. El patrón en cada `AsyncNotifier`:
+Tablas habilitadas: `contacts`, `policies`, `reminders`, `agent_notes` (todas con `REPLICA IDENTITY FULL` + publicación supabase_realtime). Para datos por pantalla (detalle) usar el patrón dos providers: `FutureProvider.family` (datos) + `Provider.autoDispose.family<void>` que llama `ref.invalidate` — `autoDispose` cierra el canal al salir de la pantalla.
+
+Para listas principales, el patrón en cada `AsyncNotifier`: El patrón en cada `AsyncNotifier`:
 
 ```dart
 RealtimeChannel? _channel;
@@ -402,6 +408,23 @@ return Stack(alignment: Alignment.center, children: [...]);
 ```
 
 ---
+
+## VoiceOverlay — parámetros clave
+
+- `continueSession: bool` — si `false` → reset de sesión al abrir.
+- `navigateToChat: bool` — si `false` → el overlay envía el mensaje pero NO navega a /chat (úsalo cuando ya estás en la pantalla de chat).
+- `initialContext: AiChatContext?` — si presente → `resetWithContext`.
+- El caller decide la navegación, no el overlay.
+
+## Animaciones de entrada — `AmAnimateIn` vs `AmStagger`
+
+`AmStagger` es una `Column` (sin scroll) — solo para listas cortas estáticas. Para contenido dentro de `ListView`, usar `AmAnimateIn(index: N, child: ...)` en cada sección. Nunca poner `AmStagger` dentro de un `ListView`.
+
+## Manejo de errores en UI
+
+- Los repositorios lanzan `ApiException` (`statusCode`, `message`, `errorCode`).
+- Mostrar errores SOLO con `context.translateError(...)` (`core/utils/error_translator.dart`): código conocido → string localizada; desconocido → mensaje del backend tal cual.
+- Código nuevo del backend ⇒ agregar case en `error_translator.dart` + claves `err*` en ambos ARB.
 
 ## Soft-delete y visibilidad
 

@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get appTitle => 'AMConnect Advisor';
+
+  @override
   String get commonTerms =>
       'By continuing, you accept the Terms and Privacy Policy.';
 
@@ -26,6 +29,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonSignOut => 'Sign out';
+
+  @override
+  String get commonYesterday => 'Yesterday';
 
   @override
   String get commonLoading => 'Loading...';
@@ -209,6 +215,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errNetwork =>
       'Connection error. Please check your internet and try again.';
+
+  @override
+  String get errQuotaExceeded =>
+      'You\'ve reached your plan limit for this month. Upgrade your plan to continue.';
+
+  @override
+  String get errSubscriptionRequired =>
+      'Your subscription has expired. Activate a plan to continue.';
+
+  @override
+  String get errValidationFailed =>
+      'The submitted data is invalid. Please review it and try again.';
+
+  @override
+  String get errConflict => 'A record with that data already exists.';
+
+  @override
+  String get errAccessDenied =>
+      'You don\'t have permission to perform this action.';
+
+  @override
+  String get errAiFailed =>
+      'The assistant had a problem processing your request. Please try again.';
+
+  @override
+  String get errUploadFailed =>
+      'The file could not be uploaded. Please try again.';
+
+  @override
+  String errRefCode(String ref) {
+    return 'Reference code: $ref';
+  }
+
+  @override
+  String get errFilePickerTimeout =>
+      'File selection took too long. Please try again.';
+
+  @override
+  String get errFilePickerOpen => 'Could not open the file picker.';
+
+  @override
+  String get errFilePathUnavailable =>
+      'Could not get the path of the selected file.';
 
   @override
   String get shellHome => 'Home';
@@ -842,6 +891,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedTextInputSubmit => 'Process';
+
+  @override
+  String get feedConfirmPolicyTitle => 'Confirm policy';
 
   @override
   String get feedPreviewTitle => 'Confirm file';

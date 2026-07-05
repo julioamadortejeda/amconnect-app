@@ -1,12 +1,15 @@
 {
   "@@locale": "en",
 
+  "appTitle": "AMConnect Advisor",
+
   "commonTerms": "By continuing, you accept the Terms and Privacy Policy.",
   "commonClose": "Close",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonAccount": "Account",
   "commonSignOut": "Sign out",
+  "commonYesterday": "Yesterday",
   "commonLoading": "Loading...",
   "homeEmptyPendientes": "No pending reminders",
   "homeEmptySeguimientos": "No active follow-ups",
@@ -81,6 +84,22 @@
   "errNotFound": "Resource not found.",
   "errUnknown": "An unexpected error occurred. Please try again.",
   "errNetwork": "Connection error. Please check your internet and try again.",
+  "errQuotaExceeded": "You've reached your plan limit for this month. Upgrade your plan to continue.",
+  "errSubscriptionRequired": "Your subscription has expired. Activate a plan to continue.",
+  "errValidationFailed": "The submitted data is invalid. Please review it and try again.",
+  "errConflict": "A record with that data already exists.",
+  "errAccessDenied": "You don't have permission to perform this action.",
+  "errAiFailed": "The assistant had a problem processing your request. Please try again.",
+  "errUploadFailed": "The file could not be uploaded. Please try again.",
+  "errRefCode": "Reference code: {ref}",
+  "@errRefCode": {
+    "placeholders": {
+      "ref": {"type": "String"}
+    }
+  },
+  "errFilePickerTimeout": "File selection took too long. Please try again.",
+  "errFilePickerOpen": "Could not open the file picker.",
+  "errFilePathUnavailable": "Could not get the path of the selected file.",
 
   "shellHome": "Home",
   "shellAgenda": "Agenda",
@@ -321,6 +340,7 @@
   "feedWhatsappInputTitle": "Import conversation",
   "feedTextInputHint": "Paste your text, notes or conversation here…",
   "feedTextInputSubmit": "Process",
+  "feedConfirmPolicyTitle": "Confirm policy",
   "feedPreviewTitle": "Confirm file",
   "feedPreviewConfirm": "Confirm",
 

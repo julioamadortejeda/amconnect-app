@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('es')
   ];
 
+  /// No description provided for @appTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'AMConnect Advisor'**
+  String get appTitle;
+
   /// No description provided for @commonTerms.
   ///
   /// In es, this message translates to:
@@ -133,6 +139,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cerrar sesión'**
   String get commonSignOut;
+
+  /// No description provided for @commonYesterday.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayer'**
+  String get commonYesterday;
 
   /// No description provided for @commonLoading.
   ///
@@ -475,6 +487,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error de conexión. Revisa tu internet y vuelve a intentarlo.'**
   String get errNetwork;
+
+  /// No description provided for @errQuotaExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Alcanzaste el límite de tu plan este mes. Actualiza tu plan para continuar.'**
+  String get errQuotaExceeded;
+
+  /// No description provided for @errSubscriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu suscripción ha vencido. Activa un plan para continuar.'**
+  String get errSubscriptionRequired;
+
+  /// No description provided for @errValidationFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'Los datos enviados no son válidos. Revisa la información e intenta de nuevo.'**
+  String get errValidationFailed;
+
+  /// No description provided for @errConflict.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe un registro con esos datos.'**
+  String get errConflict;
+
+  /// No description provided for @errAccessDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permiso para realizar esta acción.'**
+  String get errAccessDenied;
+
+  /// No description provided for @errAiFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'El asistente tuvo un problema al procesar tu solicitud. Intenta de nuevo.'**
+  String get errAiFailed;
+
+  /// No description provided for @errUploadFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo subir el archivo. Intenta de nuevo.'**
+  String get errUploadFailed;
+
+  /// No description provided for @errRefCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de referencia: {ref}'**
+  String errRefCode(String ref);
+
+  /// No description provided for @errFilePickerTimeout.
+  ///
+  /// In es, this message translates to:
+  /// **'La selección de archivo tardó demasiado. Intenta de nuevo.'**
+  String get errFilePickerTimeout;
+
+  /// No description provided for @errFilePickerOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el selector de archivos.'**
+  String get errFilePickerOpen;
+
+  /// No description provided for @errFilePathUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo obtener la ruta del archivo seleccionado.'**
+  String get errFilePathUnavailable;
 
   /// No description provided for @shellHome.
   ///
@@ -1675,6 +1753,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Procesar'**
   String get feedTextInputSubmit;
+
+  /// No description provided for @feedConfirmPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar póliza'**
+  String get feedConfirmPolicyTitle;
 
   /// No description provided for @feedPreviewTitle.
   ///

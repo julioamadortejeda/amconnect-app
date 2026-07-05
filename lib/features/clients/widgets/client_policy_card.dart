@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/agent_note.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
+import '../../../core/repositories/supabase_storage_repository.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_card.dart';
@@ -29,6 +30,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final policy = widget.policy;
     final isActive = policy.statusCode == 'ACTIVE';
@@ -97,7 +99,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? const Color(0xFF0E7C42).withValues(alpha: 0.08)
+                      ? am.green.withValues(alpha: 0.08)
                       : cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -107,7 +109,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     color:
-                        isActive ? const Color(0xFF0E7C42) : cs.tertiary,
+                        isActive ? am.green : cs.tertiary,
                   ),
                 ),
               ),
@@ -118,7 +120,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF1F3F4),
+              color: cs.secondaryContainer,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -248,7 +250,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
   }
 }
 
-class _PolicyFileRow extends StatefulWidget {
+class _PolicyFileRow extends ConsumerStatefulWidget {
   const _PolicyFileRow({
     required this.note,
     required this.l10n,
@@ -260,10 +262,10 @@ class _PolicyFileRow extends StatefulWidget {
   final VoidCallback? onDelete;
 
   @override
-  State<_PolicyFileRow> createState() => _PolicyFileRowState();
+  ConsumerState<_PolicyFileRow> createState() => _PolicyFileRowState();
 }
 
-class _PolicyFileRowState extends State<_PolicyFileRow> {
+class _PolicyFileRowState extends ConsumerState<_PolicyFileRow> {
   bool _loading = false;
 
   @override
@@ -394,9 +396,9 @@ class _PolicyFileRowState extends State<_PolicyFileRow> {
     if (_loading) return;
     setState(() => _loading = true);
     try {
-      final signedUrl = await Supabase.instance.client.storage
-          .from('policies')
-          .createSignedUrl(widget.note.storagePath!, 3600);
+      final signedUrl = await ref
+          .read(storageRepositoryProvider)
+          .getSignedUrl(widget.note.storagePath!);
       final uri = Uri.parse(signedUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
