@@ -395,6 +395,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsSearchHint => 'Search client…';
 
   @override
+  String get clientsTabClients => 'Clients';
+
+  @override
+  String get clientsTabPolicies => 'Policies';
+
+  @override
+  String get clientsSearchPolicyHint => 'Search policy, carrier or product…';
+
+  @override
+  String get clientsEmptyPolicies => 'No policies in portfolio';
+
+  @override
+  String get clientsErrorPolicies => 'Error loading policies';
+
+  @override
   String get clientsEmpty => 'No registered clients';
 
   @override

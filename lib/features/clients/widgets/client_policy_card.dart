@@ -67,6 +67,27 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (policy.contactName != null && policy.contactName!.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Icon(Icons.person_outline_rounded, size: 12, color: cs.tertiary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              policy.contactName!,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: cs.tertiary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

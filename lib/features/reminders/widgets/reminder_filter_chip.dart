@@ -23,6 +23,7 @@ class ReminderFilterChip extends StatelessWidget {
     return AmPress(
       onTap: onTap,
       child: Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
         decoration: BoxDecoration(
           color: active ? activeColor : cs.surface,

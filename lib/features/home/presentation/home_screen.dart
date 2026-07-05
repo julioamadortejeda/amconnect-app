@@ -89,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           label: data.pending.length > 4
                               ? l10n.homeViewAllCount(data.pending.length)
                               : l10n.homeViewAgenda,
-                          onTap: () => context.push('/reminders'),
+                          onTap: () => context.go('/reminders'),
                         ),
                       ),
                       const SizedBox(height: AmDimens.gapXS),
@@ -113,7 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ? HomeSectionTrailing(
                                 label: l10n
                                     .homeViewAllCount(data.followUps.length),
-                                onTap: () => context.push('/reminders'),
+                                onTap: () => context.go('/reminders'),
                               )
                             : null,
                       ),
@@ -170,7 +170,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
-                        onTap: () => context.push('/reminders'),
+                        onTap: () => context.go('/reminders'),
                         dot: data.urgentCount > 0,
                         child: Icon(Icons.notifications_outlined,
                             size: 20, color: cs.onSurface),

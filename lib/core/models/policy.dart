@@ -14,6 +14,8 @@ class Policy {
     this.status,
     this.currency,
     this.paymentFrequency,
+    this.contactId,
+    this.contactName,
   });
 
   final String id;
@@ -30,6 +32,8 @@ class Policy {
   final PolicyCatalog? status;
   final PolicyCurrency? currency;
   final PolicyFrequency? paymentFrequency;
+  final String? contactId;
+  final String? contactName;
 
   String get productName => product?.name ?? '—';
   String get branchName  => product?.branchName ?? '—';
@@ -38,11 +42,23 @@ class Policy {
   String get currencyCode => currency?.code ?? 'MXN';
   String get frequencyLabel => paymentFrequency?.name ?? '';
 
+  bool matchesQuery(String q) {
+    if (q.isEmpty) return true;
+    final lower = q.toLowerCase();
+    return (policyNumber?.toLowerCase().contains(lower) ?? false) ||
+        productName.toLowerCase().contains(lower) ||
+        branchName.toLowerCase().contains(lower) ||
+        carrierName.toLowerCase().contains(lower) ||
+        (contactName?.toLowerCase().contains(lower) ?? false) ||
+        (notes?.toLowerCase().contains(lower) ?? false);
+  }
+
   factory Policy.fromJson(Map<String, dynamic> json) {
     final product = json['product'] as Map<String, dynamic>?;
     final status  = json['status']  as Map<String, dynamic>?;
     final currency = json['currency'] as Map<String, dynamic>?;
     final freq    = json['paymentFrequency'] as Map<String, dynamic>?;
+    final contact = json['contact'] as Map<String, dynamic>?;
 
     return Policy(
       id:              json['id'] as String,
@@ -59,6 +75,8 @@ class Policy {
       status:   status   != null ? PolicyCatalog.fromJson(status)   : null,
       currency: currency != null ? PolicyCurrency.fromJson(currency) : null,
       paymentFrequency: freq != null ? PolicyFrequency.fromJson(freq) : null,
+      contactId: json['contactId'] as String? ?? contact?['id'] as String?,
+      contactName: contact?['fullName'] as String? ?? contact?['full_name'] as String?,
     );
   }
 }

@@ -187,6 +187,11 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "clientsSearchHint": "Buscar cliente…",
+  "clientsTabClients": "Clientes",
+  "clientsTabPolicies": "Pólizas",
+  "clientsSearchPolicyHint": "Buscar póliza, aseguradora o producto…",
+  "clientsEmptyPolicies": "Sin pólizas en cartera",
+  "clientsErrorPolicies": "Error al cargar pólizas",
   "clientsEmpty": "Sin clientes registrados",
   "clientsError": "Error al cargar clientes",
   "clientsContactSection": "Contacto",

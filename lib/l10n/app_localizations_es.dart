@@ -399,6 +399,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsSearchHint => 'Buscar cliente…';
 
   @override
+  String get clientsTabClients => 'Clientes';
+
+  @override
+  String get clientsTabPolicies => 'Pólizas';
+
+  @override
+  String get clientsSearchPolicyHint =>
+      'Buscar póliza, aseguradora o producto…';
+
+  @override
+  String get clientsEmptyPolicies => 'Sin pólizas en cartera';
+
+  @override
+  String get clientsErrorPolicies => 'Error al cargar pólizas';
+
+  @override
   String get clientsEmpty => 'Sin clientes registrados';
 
   @override

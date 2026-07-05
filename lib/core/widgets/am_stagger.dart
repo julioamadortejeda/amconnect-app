@@ -97,7 +97,10 @@ class _AmStaggerState extends State<AmStagger> with TickerProviderStateMixin {
               opacity: _fades[index].value,
               child: Transform.translate(
                 offset: Offset(0, _translates[index].value),
-                child: child,
+                // RepaintBoundary: cachea el contenido real (íconos, texto,
+                // sombras) como una capa una sola vez, en vez de repintarlo
+                // en cada frame de la animación de opacity/transform.
+                child: RepaintBoundary(child: child),
               ),
             );
           },
@@ -178,7 +181,10 @@ class _AmAnimateInState extends State<AmAnimateIn> with SingleTickerProviderStat
           opacity: _fade.value,
           child: Transform.translate(
             offset: Offset(0, _translate.value),
-            child: child,
+            // RepaintBoundary: cachea el contenido real (íconos, texto,
+            // sombras) como una capa una sola vez, en vez de repintarlo
+            // en cada frame de la animación de opacity/transform.
+            child: RepaintBoundary(child: child),
           ),
         );
       },

@@ -97,89 +97,83 @@ class ReminderItem extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        r.title,
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w700,
-                          color: cs.onSurface,
-                          decoration:
-                              r.done ? TextDecoration.lineThrough : null,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      r.title,
+                      style: TextStyle(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                        color: cs.onSurface,
+                        decoration:
+                            r.done ? TextDecoration.lineThrough : null,
                       ),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            if (statusText != null) ...[
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          if (statusText != null) ...[
+                            TextSpan(
+                                text: statusText,
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w600,
+                                )),
+                            if (hasSub)
                               TextSpan(
-                                  text: statusText,
-                                  style: TextStyle(
-                                    color: statusColor,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                              if (hasSub)
-                                TextSpan(
-                                  text: '  ·  ',
-                                  style: TextStyle(color: cs.outlineVariant),
-                                ),
-                            ],
-                            TextSpan(text: mainSub),
+                                text: '  ·  ',
+                                style: TextStyle(color: cs.outlineVariant),
+                              ),
                           ],
-                        ),
-                        style: TextStyle(fontSize: 12.5, color: cs.tertiary),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                          TextSpan(text: mainSub),
+                        ],
                       ),
-                    ],
-                  ),
+                      style: TextStyle(fontSize: 12.5, color: cs.tertiary),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 10),
-              SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: badgeBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(fmtSmartDate(r.dueDate, l10n),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: badgeFg)),
+                  ),
+                  if (daysLeft != null && daysLeft != 0) ...[
+                    const SizedBox(height: 4),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 9, vertical: 4),
+                          horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
                         color: badgeBg,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(fmtSmartDate(r.dueDate, l10n),
+                      child: Text('${daysLeft}d',
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.w600,
                               color: badgeFg)),
                     ),
-                    if (daysLeft != null && daysLeft != 0) ...[
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: badgeBg,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text('${daysLeft}d',
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: badgeFg)),
-                      ),
-                    ],
                   ],
-                ),
+                ],
               ),
             ],
           ),

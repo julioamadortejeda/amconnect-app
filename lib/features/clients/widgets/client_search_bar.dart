@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ClientSearchBar extends StatelessWidget {
-  const ClientSearchBar({super.key, required this.onChanged});
+  const ClientSearchBar({super.key, required this.onChanged, this.hintText});
 
   final ValueChanged<String> onChanged;
+  final String? hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ClientSearchBar extends StatelessWidget {
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
-                hintText: l10n.clientsSearchHint,
+                hintText: hintText ?? l10n.clientsSearchHint,
                 hintStyle: TextStyle(color: cs.tertiary),
               ),
             ),

@@ -22,6 +22,23 @@ class SupabasePolicyRepository implements PolicyRepository {
         .map((e) => Policy.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+
+  @override
+  Future<List<Policy>> getAll() async {
+    final res = await _client.get('policies?pageSize=100');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items
+        .map((e) => Policy.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<Policy> getById(String id) async {
+    final res = await _client.get('policies/$id');
+    final data = res['data'] as Map<String, dynamic>;
+    return Policy.fromJson(data['policy'] as Map<String, dynamic>);
+  }
 }
 
 final policyRepositoryProvider = Provider<PolicyRepository>((ref) {

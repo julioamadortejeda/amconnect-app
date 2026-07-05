@@ -824,6 +824,36 @@ abstract class AppLocalizations {
   /// **'Buscar cliente…'**
   String get clientsSearchHint;
 
+  /// No description provided for @clientsTabClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Clientes'**
+  String get clientsTabClients;
+
+  /// No description provided for @clientsTabPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Pólizas'**
+  String get clientsTabPolicies;
+
+  /// No description provided for @clientsSearchPolicyHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar póliza, aseguradora o producto…'**
+  String get clientsSearchPolicyHint;
+
+  /// No description provided for @clientsEmptyPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin pólizas en cartera'**
+  String get clientsEmptyPolicies;
+
+  /// No description provided for @clientsErrorPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar pólizas'**
+  String get clientsErrorPolicies;
+
   /// No description provided for @clientsEmpty.
   ///
   /// In es, this message translates to:

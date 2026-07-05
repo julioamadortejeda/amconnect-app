@@ -16,7 +16,6 @@ const _kGap = 6.0;
 const _kBarLeft = 16.0;
 const _kBarRight = _kMicRight + _kMicSize + _kGap;
 const _kBarHeight = 64.0;
-const _kBottomOffset = 8.0;
 
 // Padding vertical del indicador deslizante dentro de la píldora
 const _kIndicatorVPad = 8.0;
@@ -29,10 +28,10 @@ class ShellScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   static const _tabs = [
-    _Tab(icon: Icons.home_outlined,           activeIcon: Icons.home),
+    _Tab(icon: Icons.home_outlined, activeIcon: Icons.home),
     _Tab(icon: Icons.calendar_today_outlined, activeIcon: Icons.calendar_today),
-    _Tab(icon: Icons.group_outlined,          activeIcon: Icons.group),
-    _Tab(icon: Icons.folder_outlined,         activeIcon: Icons.folder),
+    _Tab(icon: Icons.group_outlined, activeIcon: Icons.group),
+    _Tab(icon: Icons.folder_outlined, activeIcon: Icons.folder),
   ];
 
   void _onTabSelected(int index) {
@@ -46,7 +45,8 @@ class ShellScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bottom = MediaQuery.of(context).padding.bottom;
     final activeIndex = navigationShell.currentIndex;
-    final barVisible = activeIndex != 0 || ref.watch(homeReadyProvider).hasValue;
+    final barVisible =
+        activeIndex != 0 || ref.watch(homeReadyProvider).hasValue;
 
     return Scaffold(
       body: Stack(
@@ -66,7 +66,7 @@ class ShellScreen extends ConsumerWidget {
             curve: Curves.easeInOut,
             left: _kBarLeft,
             right: _kBarRight,
-            bottom: barVisible ? bottom + _kBottomOffset : -(bottom + _kBarHeight + _kBottomOffset),
+            bottom: barVisible ? bottom : -(bottom + _kBarHeight),
             height: _kBarHeight,
             child: _PillBar(
               tabs: _tabs,
@@ -79,7 +79,7 @@ class ShellScreen extends ConsumerWidget {
             duration: const Duration(milliseconds: 320),
             curve: Curves.easeInOut,
             right: _kMicRight,
-            bottom: barVisible ? bottom + _kBottomOffset : -(bottom + _kMicSize + _kBottomOffset),
+            bottom: barVisible ? bottom : -(bottom + _kMicSize),
             width: _kMicSize,
             height: _kMicSize,
             child: const _MicButton(),
@@ -147,14 +147,18 @@ class _PillBar extends StatelessWidget {
                 ),
               ),
               Row(
-                children: tabs.asMap().entries.map((e) => Expanded(
-                  child: _TabItem(
-                    t: e.value,
-                    index: e.key,
-                    active: activeIndex == e.key,
-                    onTap: onTabSelected,
-                  ),
-                )).toList(),
+                children: tabs
+                    .asMap()
+                    .entries
+                    .map((e) => Expanded(
+                          child: _TabItem(
+                            t: e.value,
+                            index: e.key,
+                            active: activeIndex == e.key,
+                            onTap: onTabSelected,
+                          ),
+                        ))
+                    .toList(),
               ),
             ],
           );
@@ -316,7 +320,8 @@ class _MicButtonState extends State<_MicButton>
             ),
           ],
         ),
-        child: const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),
+        child:
+            const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),
       ),
     );
   }
