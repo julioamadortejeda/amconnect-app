@@ -45,36 +45,33 @@ class _AmCancelDialogState extends State<AmCancelDialog> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH * 1.5),
-      child: AnimatedPadding(
-        padding: MediaQuery.of(context).viewInsets,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.decelerate,
-        child: TweenAnimationBuilder<double>(
-          duration: const Duration(milliseconds: 240),
-          curve: Curves.easeOutBack,
-          tween: Tween(begin: 0.85, end: 1.0),
-          builder: (context, scale, child) {
-            return Transform.scale(
-              scale: scale,
-              child: Opacity(
-                opacity: ((scale - 0.85) / 0.15).clamp(0.0, 1.0),
-                child: child,
-              ),
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: cs.surface,
-              borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.16),
-                  blurRadius: 32,
-                  offset: const Offset(0, 12),
-                ),
-              ],
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeOutBack,
+        tween: Tween(begin: 0.85, end: 1.0),
+        builder: (context, scale, child) {
+          return Transform.scale(
+            scale: scale,
+            child: Opacity(
+              opacity: ((scale - 0.85) / 0.15).clamp(0.0, 1.0),
+              child: child,
             ),
-            padding: const EdgeInsets.all(AmDimens.cardPad),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.16),
+                blurRadius: 32,
+                offset: const Offset(0, 12),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(AmDimens.cardPad),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

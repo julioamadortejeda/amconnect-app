@@ -730,6 +730,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatInputHint => 'Ask your assistant…';
 
   @override
+  String get chatCardViewProfile => 'View Profile';
+
+  @override
+  String get chatCardViewPolicy => 'View Policy';
+
+  @override
+  String get chatCardGoToAgenda => 'Go to Agenda';
+
+  @override
+  String get chatCardContactInfoTitle => 'Contact';
+
+  @override
+  String get chatCardContactListTitle => 'Matching Contacts';
+
+  @override
+  String get chatCardReminderListTitle => 'Reminders & Tasks';
+
+  @override
+  String get chatCardPolicyInfoTitle => 'Policy Found';
+
+  @override
+  String get chatCardActionCall => 'Call';
+
+  @override
+  String get chatCardActionWhatsApp => 'WhatsApp';
+
+  @override
   String get feedTitle => 'Knowledge base';
 
   @override

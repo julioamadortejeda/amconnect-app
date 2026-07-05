@@ -36,6 +36,7 @@ class VoiceChatState {
   final String? activeSkill;
   final String? error;
   final int timeLeftSeconds;
+  final Map<String, dynamic>? activeWidgetMetadata;
 
   const VoiceChatState({
     this.status = VoiceChatStatus.connecting,
@@ -46,6 +47,7 @@ class VoiceChatState {
     this.activeSkill,
     this.error,
     this.timeLeftSeconds = 600,
+    this.activeWidgetMetadata,
   });
 
   VoiceChatState copyWith({
@@ -58,6 +60,8 @@ class VoiceChatState {
     bool clearActiveSkill = false,
     String? error,
     int? timeLeftSeconds,
+    Map<String, dynamic>? activeWidgetMetadata,
+    bool clearActiveWidgetMetadata = false,
   }) {
     return VoiceChatState(
       status: status ?? this.status,
@@ -68,6 +72,7 @@ class VoiceChatState {
       activeSkill: clearActiveSkill ? null : (activeSkill ?? this.activeSkill),
       error: error ?? this.error,
       timeLeftSeconds: timeLeftSeconds ?? this.timeLeftSeconds,
+      activeWidgetMetadata: clearActiveWidgetMetadata ? null : (activeWidgetMetadata ?? this.activeWidgetMetadata),
     );
   }
 }
@@ -365,7 +370,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
 
     _commitCurrentTurn(); // keep the question + what the model already said, in order
-    state = state.copyWith(status: VoiceChatStatus.listening);
+    state = state.copyWith(
+      status: VoiceChatStatus.listening,
+      clearActiveWidgetMetadata: true,
+    );
   }
 
   // ── Mensajes entrantes de Gemini Live API ─────────────────────────────────
@@ -482,7 +490,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         var text = inputTrans['text'] as String;
         text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
         debugPrint('[VoiceChat] 🎤 User: "$text"');
-        state = state.copyWith(liveUserText: state.liveUserText + text);
+        state = state.copyWith(
+          liveUserText: state.liveUserText + text,
+          clearActiveWidgetMetadata: true,
+        );
         _armWatchdog(); // user spoke → expect a model reply; reconnect if none in 12s
       }
 
@@ -528,13 +539,28 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
             final args = call['args'] as Map<String, dynamic>? ?? {};
 
             state = state.copyWith(activeSkill: name);
-            final result = await _executeToolInSupabase(name, args);
+            final executionRes = await _executeToolInSupabase(name, args);
 
             // Backend signals the plan limit was hit — stop here, show the
             // message and tear down. Don't forward a tool response to Gemini.
-            if (result is Map && result['quotaExceeded'] == true) {
-              await _handleQuotaExceeded(result['message'] as String?);
+            if (executionRes is Map && executionRes['quotaExceeded'] == true) {
+              await _handleQuotaExceeded(executionRes['message'] as String?);
               return null;
+            }
+
+            dynamic result = executionRes;
+            Map<String, dynamic>? metadata;
+
+            if (executionRes is Map && executionRes.containsKey('result')) {
+              result = executionRes['result'];
+              final rawMeta = executionRes['__skillMetadata'];
+              if (rawMeta is Map<String, dynamic>) {
+                metadata = rawMeta;
+              }
+            }
+
+            if (metadata != null) {
+              state = state.copyWith(activeWidgetMetadata: metadata);
             }
 
             return {

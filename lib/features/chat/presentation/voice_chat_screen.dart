@@ -7,6 +7,7 @@ import '../widgets/voice_waveform_bars.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
+import 'widgets/chat_cards.dart';
 
 class VoiceChatScreen extends ConsumerStatefulWidget {
   const VoiceChatScreen({super.key});
@@ -167,6 +168,17 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
                             ],
                           ),
                   ),
+
+                  // Floating visual widget card
+                  if (state.activeWidgetMetadata != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                      child: AnimatedSize(
+                        duration: const Duration(milliseconds: 240),
+                        curve: Curves.easeInOut,
+                        child: buildChatCard(state.activeWidgetMetadata!, context) ?? const SizedBox.shrink(),
+                      ),
+                    ),
 
                   // ── Sleek Bottom Bar ─────────────────────────────────────────
                   Container(

@@ -1442,6 +1442,60 @@ abstract class AppLocalizations {
   /// **'Pregúntale a tu asistente…'**
   String get chatInputHint;
 
+  /// No description provided for @chatCardViewProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Perfil'**
+  String get chatCardViewProfile;
+
+  /// No description provided for @chatCardViewPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Póliza'**
+  String get chatCardViewPolicy;
+
+  /// No description provided for @chatCardGoToAgenda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Agenda'**
+  String get chatCardGoToAgenda;
+
+  /// No description provided for @chatCardContactInfoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get chatCardContactInfoTitle;
+
+  /// No description provided for @chatCardContactListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos coincidentes'**
+  String get chatCardContactListTitle;
+
+  /// No description provided for @chatCardReminderListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios y pendientes'**
+  String get chatCardReminderListTitle;
+
+  /// No description provided for @chatCardPolicyInfoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza Encontrada'**
+  String get chatCardPolicyInfoTitle;
+
+  /// No description provided for @chatCardActionCall.
+  ///
+  /// In es, this message translates to:
+  /// **'Llamar'**
+  String get chatCardActionCall;
+
+  /// No description provided for @chatCardActionWhatsApp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get chatCardActionWhatsApp;
+
   /// No description provided for @feedTitle.
   ///
   /// In es, this message translates to:

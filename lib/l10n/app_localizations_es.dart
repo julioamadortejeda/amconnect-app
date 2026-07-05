@@ -735,6 +735,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chatInputHint => 'Pregúntale a tu asistente…';
 
   @override
+  String get chatCardViewProfile => 'Ver Perfil';
+
+  @override
+  String get chatCardViewPolicy => 'Ver Póliza';
+
+  @override
+  String get chatCardGoToAgenda => 'Ir a Agenda';
+
+  @override
+  String get chatCardContactInfoTitle => 'Contacto';
+
+  @override
+  String get chatCardContactListTitle => 'Contactos coincidentes';
+
+  @override
+  String get chatCardReminderListTitle => 'Recordatorios y pendientes';
+
+  @override
+  String get chatCardPolicyInfoTitle => 'Póliza Encontrada';
+
+  @override
+  String get chatCardActionCall => 'Llamar';
+
+  @override
+  String get chatCardActionWhatsApp => 'WhatsApp';
+
+  @override
   String get feedTitle => 'Base de conocimiento';
 
   @override
