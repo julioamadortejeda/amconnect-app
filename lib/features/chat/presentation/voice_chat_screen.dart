@@ -5,6 +5,7 @@ import '../../../core/widgets/am_aurora.dart';
 import '../providers/voice_chat_provider.dart';
 import '../widgets/voice_waveform_bars.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/device_timezone.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/chat_cards.dart';
@@ -31,7 +32,7 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      ref.read(voiceChatProvider.notifier).connect('America/Mexico_City');
+      ref.read(voiceChatProvider.notifier).connect(DeviceTimezone.name);
     });
   }
 

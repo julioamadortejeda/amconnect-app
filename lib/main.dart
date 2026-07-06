@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/services/notification_service.dart';
 import 'core/config/env.dart';
+import 'core/utils/device_timezone.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
 import 'l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   // en runtime (evita jank en el primer frame y dependencia de red al abrir).
   GoogleFonts.config.allowRuntimeFetching = false;
   await dotenv.load(fileName: '.env');
+  await DeviceTimezone.init();
   await Supabase.initialize(
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey, // ignore: deprecated_member_use

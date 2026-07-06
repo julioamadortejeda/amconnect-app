@@ -61,6 +61,17 @@ String fmtSmartDate(DateTime? dt, AppLocalizations l10n,
   return fmtDate(dt, showYear: showYear);
 }
 
+// "Hoy, 17:02" / "Mañana" / "13 jun 2026, 09:00" — día inteligente + hora.
+// Convierte a hora local del dispositivo; medianoche local = sin hora → solo día.
+String fmtSmartDateTime(DateTime? dt, AppLocalizations l10n,
+    {bool showYear = false}) {
+  if (dt == null) return '—';
+  final local = dt.toLocal();
+  final day = fmtSmartDate(local, l10n, showYear: showYear);
+  final time = fmtTime(local, fallback: '');
+  return time.isEmpty ? day : '$day, $time';
+}
+
 // "lun 13 jun 2026" — para timestamps de comentarios y pantallas de detalle
 String fmtDateWithWeekday(DateTime? dt) {
   if (dt == null) return '—';

@@ -54,9 +54,10 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> _ensureGoogleInitialized() async {
     if (_googleInitialized) return;
     await GoogleSignIn.instance.initialize(
-      // TODO: uncomment and set your Web OAuth client ID from Google Cloud Console
-      // This must match the Client ID in Supabase → Auth → Providers → Google
-      // serverClientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+      // Web OAuth client ID del proyecto GCP (amconnect-jacatsoft). Debe
+      // coincidir con el client_id configurado en Supabase Auth → Google.
+      serverClientId:
+          '209849163943-tnlpoo835d1ijmjc3umaesqco07o5qti.apps.googleusercontent.com',
     );
     _googleInitialized = true;
   }

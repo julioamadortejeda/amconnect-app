@@ -4,27 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
+import '../utils/device_timezone.dart';
 
 class ApiClient {
   String get _base => Env.apiBaseUrl;
 
   Map<String, String> get _headers {
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
-    // Compute timezone offset string (e.g., "-06:00")
-    final now = DateTime.now();
-    final offset = now.timeZoneOffset;
-    final sign = offset.isNegative ? '-' : '+';
-    final hours = offset.inHours.abs().toString().padLeft(2, '0');
-    final minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
-    final tzOffset = '$sign$hours:$minutes';
-    // Use the IANA timezone name when available, fall back to offset
-    final tzName = now.timeZoneName; // e.g. "CST" or "America/Mexico_City"
     final locale = Platform.localeName; // e.g. "es_MX"
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
-      'x-timezone': tzName,
-      'x-timezone-offset': tzOffset,
+      'x-timezone': DeviceTimezone.name, // IANA real, e.g. "America/Mexico_City"
+      'x-timezone-offset': DeviceTimezone.offset,
       'Accept-Language': locale,
     };
   }

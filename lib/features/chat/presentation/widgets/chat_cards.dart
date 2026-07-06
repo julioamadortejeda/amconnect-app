@@ -355,6 +355,7 @@ class _ReminderCreatedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final am = context.am;
+    final l10n = AppLocalizations.of(context)!;
     final title = data['title'] as String? ?? 'Recordatorio';
     final description = data['description'] as String?;
     final dueDate = data['dueDate'] as String?;
@@ -439,7 +440,8 @@ class _ReminderCreatedCard extends StatelessWidget {
                   _DetailRow(
                     icon: Icons.calendar_today_rounded,
                     label: 'Fecha',
-                    value: _formatDate(dueDate),
+                    value: fmtSmartDateTime(DateTime.tryParse(dueDate), l10n,
+                        showYear: true),
                   ),
                 if (description != null && description.isNotEmpty)
                   Padding(
@@ -470,29 +472,6 @@ class _ReminderCreatedCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(String iso) {
-    try {
-      final dt = DateTime.parse(iso);
-      final now = DateTime.now();
-      final diff = dt.difference(now);
-
-      String dayPart;
-      if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-        dayPart = 'Hoy';
-      } else if (diff.inDays == 1 ||
-          (dt.day == now.day + 1 && dt.month == now.month && dt.year == now.year)) {
-        dayPart = 'Mañana';
-      } else {
-        dayPart = '${dt.day}/${dt.month}/${dt.year}';
-      }
-
-      final hour = dt.hour.toString().padLeft(2, '0');
-      final minute = dt.minute.toString().padLeft(2, '0');
-      return '$dayPart, $hour:$minute';
-    } catch (_) {
-      return iso;
-    }
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -839,7 +818,9 @@ class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
                           Text(
                             [
                               if (clientName != null) clientName,
-                              if (dueDate != null) _formatDateCompact(dueDate),
+                              if (dueDate != null)
+                                fmtSmartDateTime(
+                                    DateTime.tryParse(dueDate), l10n),
                             ].join(' · '),
                             style: TextStyle(fontSize: 11, color: cs.tertiary),
                           ),
@@ -862,18 +843,6 @@ class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
     );
   }
 
-  String _formatDateCompact(String iso) {
-    try {
-      final dt = DateTime.parse(iso);
-      final now = DateTime.now();
-      if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-        return 'Hoy';
-      }
-      return '${dt.day}/${dt.month}';
-    } catch (_) {
-      return '';
-    }
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -887,7 +856,6 @@ class _PolicyInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final carrier = data['carrierName'] as String? ?? '';
     final branch = data['branchName'] as String? ?? '';
@@ -991,7 +959,7 @@ class _PolicyInfoCard extends StatelessWidget {
                     value: fmtCurrency((sumInsured as num?)?.toDouble()),
                   ),
                 if (endDate != null)
-                  _DetailRow(icon: Icons.calendar_today_rounded, label: l10n.clientsPolicyEndDate, value: _formatDateSimple(endDate)),
+                  _DetailRow(icon: Icons.calendar_today_rounded, label: l10n.clientsPolicyEndDate, value: fmtDateFromIso(endDate)),
               ],
             ),
           ),
@@ -1010,14 +978,6 @@ class _PolicyInfoCard extends StatelessWidget {
     );
   }
 
-  String _formatDateSimple(String iso) {
-    try {
-      final dt = DateTime.parse(iso);
-      return '${dt.day}/${dt.month}/${dt.year}';
-    } catch (_) {
-      return iso;
-    }
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

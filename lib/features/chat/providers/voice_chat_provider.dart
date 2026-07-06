@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/config/env.dart';
+import '../../../core/utils/device_timezone.dart';
 
 // ── Tipos públicos ────────────────────────────────────────────────────────────
 
@@ -167,6 +168,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
         if (_timezone != null) 'x-timezone': _timezone!,
+        'x-timezone-offset': DeviceTimezone.offset,
       },
       body: jsonEncode(body),
     );
