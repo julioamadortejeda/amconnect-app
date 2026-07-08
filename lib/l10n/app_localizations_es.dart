@@ -723,6 +723,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceChatSkillActive => 'Consultando datos…';
 
   @override
+  String get voiceChatThinking => 'Pensando…';
+
+  @override
   String get chatTitle => 'Asistente';
 
   @override

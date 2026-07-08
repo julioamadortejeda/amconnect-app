@@ -152,10 +152,27 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   int _completionTokens = 0;
   int _totalTokens = 0;
 
+  // Tool calls executed during the in-flight turn, sent to /save-round on
+  // turnComplete so history mirrors what the text chat loop persists (the
+  // function call + its response) — dropped on interrupt, same as the rest
+  // of a discarded turn's text.
+  final List<Map<String, dynamic>> _pendingToolCalls = [];
+
   @override
   VoiceChatState build() {
+    _audioControl.setMethodCallHandler(_handleAudioControlCall);
     ref.onDispose(_cleanup);
     return const VoiceChatState();
+  }
+
+  Future<void> _handleAudioControlCall(MethodCall call) async {
+    if (_disposed) return;
+    if (call.method == 'playbackFinished') {
+      debugPrint('[VoiceChat] Native audio playback finished.');
+      if (state.status == VoiceChatStatus.modelSpeaking) {
+        state = state.copyWith(status: VoiceChatStatus.listening);
+      }
+    }
   }
 
   // ── Conexión ───────────────────────────────────────────────────────────────
@@ -195,7 +212,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
   }
 
-  Future<void> _saveRoundInSupabase(String userText, String modelText) async {
+  Future<void> _saveRoundInSupabase(
+    String userText,
+    String modelText,
+    List<Map<String, dynamic>> toolCalls,
+  ) async {
     try {
       await _post('/ai/voice/save-round', {
         'sessionId': state.sessionId,
@@ -204,8 +225,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'promptTokens': _promptTokens,
         'completionTokens': _completionTokens,
         'totalTokens': _totalTokens,
+        'toolCalls': toolCalls,
       });
-      debugPrint('[VoiceChat] Round saved in DB');
+      debugPrint('[VoiceChat] Round saved in DB (${toolCalls.length} tool calls)');
     } catch (e) {
       debugPrint('[VoiceChat] saveRound error: $e');
     }
@@ -250,17 +272,25 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'tools': tools,
       }) as Map<String, dynamic>;
       if (_disposed) return;
-      final ephemeralToken = tokenData['token'] as String;
+      
+      final String wsUrl = tokenData['url'] as String? ?? '';
+      final Map<String, dynamic>? customHeaders = tokenData['headers'] as Map<String, dynamic>?;
+      final String targetModel = tokenData['model'] as String? ?? 'models/${Env.geminiLiveModel}';
 
-      // 3. Connect directly to Gemini Live API WebSocket. Ephemeral tokens only
-      // work on the v1alpha endpoint, passed as the `access_token` query param —
-      // and ONLY against the BidiGenerateContentConstrained method (not the plain
-      // BidiGenerateContent one, which only accepts a real `key=` API key and
-      // rejects `access_token` with close code 1008 "unregistered callers").
-      final geminiWsUrl = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=$ephemeralToken';
-      debugPrint('[VoiceChat] Connecting directly to Gemini Live API');
+      if (wsUrl.isEmpty) {
+        throw Exception('El servidor no devolvió una URL de WebSocket para el chat de voz.');
+      }
 
-      _socket = await WebSocket.connect(geminiWsUrl);
+      debugPrint('[VoiceChat] Connecting directly to Gemini Live API — url: $wsUrl');
+
+      final headersMap = customHeaders != null
+          ? Map<String, String>.from(customHeaders.map((key, value) => MapEntry(key, value.toString())))
+          : <String, String>{};
+
+      _socket = await WebSocket.connect(
+        wsUrl,
+        headers: headersMap.isNotEmpty ? headersMap : null,
+      );
       if (_disposed) {
         try { _socket?.close(); } catch (_) {}
         _socket = null;
@@ -295,7 +325,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       // 3. Send setup message to Gemini Live API
       final setupMessage = {
         'setup': {
-          'model': 'models/${Env.geminiLiveModel}',
+          'model': targetModel,
           'generationConfig': {
             'responseModalities': ['AUDIO'],
           },
@@ -372,6 +402,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
 
     _commitCurrentTurn(); // keep the question + what the model already said, in order
+    _pendingToolCalls.clear();
     state = state.copyWith(
       status: VoiceChatStatus.listening,
       clearActiveWidgetMetadata: true,
@@ -394,6 +425,42 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         return;
       }
       msg = jsonDecode(text) as Map<String, dynamic>;
+
+      // Imprime el mensaje crudo de Gemini pero limpia/trunca el audio base64 para no inundar la consola
+      final cleanMsg = Map<String, dynamic>.from(msg);
+      final serverContent = cleanMsg['serverContent'] ?? cleanMsg['server_content'];
+      if (serverContent is Map) {
+        final modelTurn = serverContent['modelTurn'] ?? serverContent['model_turn'];
+        if (modelTurn is Map && modelTurn['parts'] is List) {
+          final parts = List<dynamic>.from(modelTurn['parts']);
+          for (var i = 0; i < parts.length; i++) {
+            final part = parts[i];
+            if (part is Map) {
+              final inlineData = part['inlineData'] ?? part['inline_data'];
+              if (inlineData is Map && inlineData['data'] is String) {
+                final cleanPart = Map<String, dynamic>.from(part);
+                cleanPart['inlineData'] = {
+                  ...inlineData,
+                  'data': '<AUDIO_BASE64_TRUNCATED_FOR_READABILITY>'
+                };
+                parts[i] = cleanPart;
+              }
+            }
+          }
+          cleanMsg['serverContent'] = {
+            ...serverContent,
+            'modelTurn': {
+              ...modelTurn,
+              'parts': parts
+            }
+          };
+        }
+      }
+      String printedMsg = jsonEncode(cleanMsg);
+      if (printedMsg.length > 800) {
+        printedMsg = '${printedMsg.substring(0, 800)}... [TRUNCATED]';
+      }
+      debugPrint('[VoiceChat] Raw Gemini message: $printedMsg');
     } catch (e) {
       debugPrint('[VoiceChat] Parse error: $e');
       return;
@@ -437,6 +504,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         // After a tap the turn was already committed, so don't re-commit — that
         // would fragment the new question the user is now speaking.
         if (!_discardingModelTurn) _commitCurrentTurn();
+        _pendingToolCalls.clear();
         _discardingModelTurn = false;
         state = state.copyWith(status: VoiceChatStatus.listening);
         debugPrint('[VoiceChat] 🎤 USER barge-in — model audio flushed');
@@ -512,12 +580,20 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         _commitCurrentTurn(); // user first, then model — clears the live buffers
 
         // Save round to Supabase asynchronously so it doesn't block the UI
-        _saveRoundInSupabase(userText, modelText);
+        final toolCalls = List<Map<String, dynamic>>.from(_pendingToolCalls);
+        _pendingToolCalls.clear();
+        _saveRoundInSupabase(userText, modelText, toolCalls);
 
-        state = state.copyWith(
-          status: VoiceChatStatus.listening,
-          clearActiveSkill: true,
-        );
+        if (chunksThisTurn == 0) {
+          state = state.copyWith(
+            status: VoiceChatStatus.listening,
+            clearActiveSkill: true,
+          );
+        } else {
+          state = state.copyWith(
+            clearActiveSkill: true,
+          );
+        }
 
         // Reset usage token trackers
         _promptTokens = 0;
@@ -536,40 +612,50 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         
         final futures = functionCalls.map((call) async {
           if (call is Map) {
-            final id = call['id'] as String;
-            final name = call['name'] as String;
-            final args = call['args'] as Map<String, dynamic>? ?? {};
+            try {
+              final id = (call['id'] ?? '') as String;
+              final name = call['name'] as String;
+              final args = call['args'] as Map<String, dynamic>? ?? {};
 
-            state = state.copyWith(activeSkill: name);
-            final executionRes = await _executeToolInSupabase(name, args);
+              state = state.copyWith(activeSkill: name);
+              final executionRes = await _executeToolInSupabase(name, args);
 
-            // Backend signals the plan limit was hit — stop here, show the
-            // message and tear down. Don't forward a tool response to Gemini.
-            if (executionRes is Map && executionRes['quotaExceeded'] == true) {
-              await _handleQuotaExceeded(executionRes['message'] as String?);
+              // Backend signals the plan limit was hit — stop here, show the
+              // message and tear down. Don't forward a tool response to Gemini.
+              if (executionRes is Map && executionRes['quotaExceeded'] == true) {
+                await _handleQuotaExceeded(executionRes['message'] as String?);
+                return null;
+              }
+
+              dynamic result = executionRes;
+              Map<String, dynamic>? metadata;
+
+              if (executionRes is Map && executionRes.containsKey('result')) {
+                result = executionRes['result'];
+                final rawMeta = executionRes['__skillMetadata'];
+                if (rawMeta is Map<String, dynamic>) {
+                  metadata = rawMeta;
+                }
+              }
+
+              if (metadata != null) {
+                state = state.copyWith(activeWidgetMetadata: metadata);
+              }
+
+              _pendingToolCalls.add({'name': name, 'args': args, 'response': result});
+
+              final resMap = {
+                'name': name,
+                'response': {'result': result},
+              };
+              if (id.isNotEmpty) {
+                resMap['id'] = id;
+              }
+              return resMap;
+            } catch (e, stack) {
+              debugPrint('[VoiceChat] Error executing tool call: $e\n$stack');
               return null;
             }
-
-            dynamic result = executionRes;
-            Map<String, dynamic>? metadata;
-
-            if (executionRes is Map && executionRes.containsKey('result')) {
-              result = executionRes['result'];
-              final rawMeta = executionRes['__skillMetadata'];
-              if (rawMeta is Map<String, dynamic>) {
-                metadata = rawMeta;
-              }
-            }
-
-            if (metadata != null) {
-              state = state.copyWith(activeWidgetMetadata: metadata);
-            }
-
-            return {
-              'id': id,
-              'name': name,
-              'response': {'result': result},
-            };
           }
           return null;
         }).toList();
@@ -733,6 +819,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   Future<void> _cleanup() async {
     _disposed = true;
+    _audioControl.setMethodCallHandler(null);
     _rootSessionId = null;
     _watchdogTimer?.cancel();
     _watchdogTimer = null;

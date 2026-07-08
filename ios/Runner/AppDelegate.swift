@@ -28,6 +28,13 @@ import AVFoundation
     // ── MethodChannel: control (start, playPcm, stopPlayback, stop) ───────────
     let controlChannel = FlutterMethodChannel(name: "com.amconnect/audio",
                                               binaryMessenger: messenger)
+    
+    VoiceAudioManager.shared.onPlaybackFinished = {
+      DispatchQueue.main.async {
+        controlChannel.invokeMethod("playbackFinished", arguments: nil)
+      }
+    }
+
     controlChannel.setMethodCallHandler { (call, result) in
       switch call.method {
 

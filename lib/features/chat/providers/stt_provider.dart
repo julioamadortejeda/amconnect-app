@@ -78,6 +78,10 @@ class SttNotifier extends Notifier<SttState> {
       listenOptions: SpeechListenOptions(
         partialResults: true,
         pauseFor: Duration(seconds: 2),
+        // El asesor siempre habla en español, sin importar el idioma del
+        // sistema del teléfono — sin esto, speech_to_text usa el locale del
+        // device y transcribe mal palabras en español si está en inglés.
+        localeId: 'es-MX',
       ),
     );
   }

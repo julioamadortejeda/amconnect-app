@@ -4,7 +4,13 @@ class Env {
   static String get supabaseUrl => dotenv.env['SUPABASE_URL']!;
   static String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY']!;
   static String get apiBaseUrl =>
-      dotenv.env['API_BASE_URL'] ?? 'http://127.0.0.1:54321/functions/v1/amconnect-api';
-  static String get geminiLiveModel => dotenv.env['GEMINI_LIVE_MODEL'] ?? 'gemini-3.1-flash-live-preview';
-}
+      dotenv.env['API_BASE_URL'] ??
+      'http://127.0.0.1:54321/functions/v1/amconnect-api';
+  static String get geminiLiveModel =>
+      dotenv.env['GEMINI_LIVE_MODEL'] ?? 'gemini-3.1-flash-live-preview';
 
+  /// 'live' (default) — Gemini Live API, WebSocket bidireccional, conversación fluida.
+  /// 'turn_based' — walkie-talkie: STT on-device → texto → /ai/chat/tts → TTS.
+  static String get voiceMode => dotenv.env['VOICE_MODE'] ?? 'live';
+  static bool get isTurnBasedVoice => voiceMode == 'live';
+}

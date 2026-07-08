@@ -20,6 +20,7 @@ import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
 import '../../features/chat/presentation/voice_chat_screen.dart';
+import '../../features/chat_tts/presentation/chat_tts_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -123,6 +124,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/voice-chat',
         pageBuilder: (_, state) => amTransitionPage(
           child: const VoiceChatScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/voice-chat-tts',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const ChatTtsScreen(),
           state: state,
           type: 'push',
         ),

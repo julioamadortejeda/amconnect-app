@@ -271,6 +271,7 @@
   "voiceChatError": "Connection error",
   "voiceChatPermissionDenied": "Microphone permission denied",
   "voiceChatSkillActive": "Looking up data…",
+  "voiceChatThinking": "Thinking…",
 
   "chatTitle": "Assistant",
   "chatSubtitle": "Connected to your base",

@@ -11,6 +11,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/utils/error_translator.dart';
 import '../widgets/voice_overlay.dart';
 import 'widgets/chat_cards.dart';
+import '../../../core/config/env.dart';
 import '../../../core/config/features.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 
@@ -230,7 +231,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       tone: AmIconBtnTone.sunken,
                       onTap: () {
                         if (kVoiceChatEnabled) {
-                          GoRouter.of(context).push('/voice-chat');
+                          GoRouter.of(context).push(Env.isTurnBasedVoice ? '/voice-chat-tts' : '/voice-chat');
                         } else {
                           VoiceOverlay.show(context,
                               continueSession: true, navigateToChat: false);

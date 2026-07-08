@@ -317,6 +317,7 @@
   "voiceChatError": "Error de conexión",
   "voiceChatPermissionDenied": "Permiso de micrófono denegado",
   "voiceChatSkillActive": "Consultando datos…",
+  "voiceChatThinking": "Pensando…",
 
   "@_chat": {},
   "chatTitle": "Asistente",

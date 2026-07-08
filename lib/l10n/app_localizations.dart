@@ -1418,6 +1418,12 @@ abstract class AppLocalizations {
   /// **'Consultando datos…'**
   String get voiceChatSkillActive;
 
+  /// No description provided for @voiceChatThinking.
+  ///
+  /// In es, this message translates to:
+  /// **'Pensando…'**
+  String get voiceChatThinking;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:

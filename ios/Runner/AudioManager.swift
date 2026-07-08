@@ -22,6 +22,8 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
     private var inputConverter: AVAudioConverter?
     private var lastInputFormat: AVAudioFormat?
     private var eventSink: FlutterEventSink?
+    var onPlaybackFinished: (() -> Void)?
+    private var activeBufferCount = 0
     
     // Serial queue and accumulator to prevent flooding the Flutter Platform Channel
     private let audioQueue = DispatchQueue(label: "com.amconnect.audio")
@@ -179,13 +181,30 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             for i in 0..<frameCount { floatPtr[i] = Float(src[i]) / 32_768.0 }
         }
 
-        player.scheduleBuffer(buf, completionHandler: nil)
+        audioQueue.async { [weak self] in
+            self?.activeBufferCount += 1
+        }
+
+        player.scheduleBuffer(buf, completionHandler: { [weak self] in
+            guard let self = self else { return }
+            self.audioQueue.async {
+                if self.activeBufferCount > 0 {
+                    self.activeBufferCount -= 1
+                    if self.activeBufferCount == 0 {
+                        self.onPlaybackFinished?()
+                    }
+                }
+            }
+        })
     }
 
     /// Stop audio playback immediately (barge-in / interrupt).
     /// Cancels all scheduled buffers so the model's voice cuts off the instant the
     /// user barges in (full-duplex: the mic never stopped, so Gemini already heard it).
     func stopPlayback() {
+        audioQueue.async { [weak self] in
+            self?.activeBufferCount = 0
+        }
         playerNode?.stop()
         playerNode?.play() // re-arm for next audio
     }

@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
 import '../../features/chat/widgets/voice_overlay.dart';
 import '../../l10n/app_localizations.dart';
+import '../config/env.dart';
 import '../config/features.dart';
 
 const _kMicSize = 64.0;
@@ -291,7 +292,7 @@ class _MicButtonState extends State<_MicButton>
     await Future.delayed(const Duration(milliseconds: 260));
     if (mounted) {
       if (kVoiceChatEnabled) {
-        GoRouter.of(context).push('/voice-chat');
+        GoRouter.of(context).push(Env.isTurnBasedVoice ? '/voice-chat-tts' : '/voice-chat');
       } else {
         VoiceOverlay.show(context);
       }
