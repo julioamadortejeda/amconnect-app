@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/providers/ai_backend_provider.dart';
 import '../../../core/services/audio_playback_service.dart';
 import '../../../core/utils/api_error_mapper.dart';
 import '../data/chat_tts_repository.dart';
@@ -62,6 +63,7 @@ class ChatTtsNotifier extends Notifier<ChatTtsState> {
 
     try {
       final result = await _repo.sendMessage(text, sessionId: state.sessionId);
+      ref.read(aiBackendProvider.notifier).set(result.aiBackend);
       state = state.copyWith(
         sessionId: result.sessionId,
         lastAiText: result.text,

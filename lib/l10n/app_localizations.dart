@@ -1430,6 +1430,18 @@ abstract class AppLocalizations {
   /// **'Asistente'**
   String get chatTitle;
 
+  /// No description provided for @chatBackendFree.
+  ///
+  /// In es, this message translates to:
+  /// **'Free'**
+  String get chatBackendFree;
+
+  /// No description provided for @chatBackendEnterprise.
+  ///
+  /// In es, this message translates to:
+  /// **'Enterprise'**
+  String get chatBackendEnterprise;
+
   /// No description provided for @chatSubtitle.
   ///
   /// In es, this message translates to:

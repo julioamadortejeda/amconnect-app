@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/config/env.dart';
+import '../../../core/providers/ai_backend_provider.dart';
 import '../../../core/utils/device_timezone.dart';
 
 // ── Tipos públicos ────────────────────────────────────────────────────────────
@@ -272,13 +273,16 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'tools': tools,
       }) as Map<String, dynamic>;
       if (_disposed) return;
+      ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
       
       final String wsUrl = tokenData['url'] as String? ?? '';
       final Map<String, dynamic>? customHeaders = tokenData['headers'] as Map<String, dynamic>?;
-      final String targetModel = tokenData['model'] as String? ?? 'models/${Env.geminiLiveModel}';
+      // Sin fallback local: el backend es la única fuente del modelo — un
+      // default aquí enmascararía errores de configuración del servidor.
+      final String targetModel = tokenData['model'] as String? ?? '';
 
-      if (wsUrl.isEmpty) {
-        throw Exception('El servidor no devolvió una URL de WebSocket para el chat de voz.');
+      if (wsUrl.isEmpty || targetModel.isEmpty) {
+        throw Exception('El servidor no devolvió URL/modelo para el chat de voz.');
       }
 
       debugPrint('[VoiceChat] Connecting directly to Gemini Live API — url: $wsUrl');
@@ -481,7 +485,13 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     final usageMetadata = msg['usageMetadata'] ?? msg['usage_metadata'];
     if (usageMetadata is Map) {
       _promptTokens = (usageMetadata['promptTokenCount'] ?? usageMetadata['prompt_token_count'] ?? 0) as int;
-      _completionTokens = (usageMetadata['candidatesTokenCount'] ?? usageMetadata['candidates_token_count'] ?? 0) as int;
+      // Studio Live reporta responseTokenCount; Vertex Live, candidatesTokenCount
+      // (verificado 2026-07-09 contra ambos WebSockets).
+      _completionTokens = (usageMetadata['responseTokenCount'] ??
+          usageMetadata['response_token_count'] ??
+          usageMetadata['candidatesTokenCount'] ??
+          usageMetadata['candidates_token_count'] ??
+          0) as int;
       _totalTokens = (usageMetadata['totalTokenCount'] ?? usageMetadata['total_token_count'] ?? 0) as int;
       debugPrint('[VoiceChat] Usage tokens updated: prompt=$_promptTokens completion=$_completionTokens total=$_totalTokens');
     }

@@ -321,6 +321,8 @@
 
   "@_chat": {},
   "chatTitle": "Asistente",
+  "chatBackendFree": "Free",
+  "chatBackendEnterprise": "Enterprise",
   "chatSubtitle": "Conectado a tu base",
   "chatNewConversation": "Nueva conversación",
   "chatInputHint": "Pregúntale a tu asistente…",

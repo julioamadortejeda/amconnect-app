@@ -14,7 +14,7 @@ class ChatRepository {
   final ApiClient _api;
   ChatRepository(this._api);
 
-  Future<({String text, String sessionId, Map<String, dynamic>? metadata})> sendMessage(
+  Future<({String text, String sessionId, Map<String, dynamic>? metadata, String? aiBackend})> sendMessage(
     String message, {
     String? sessionId,
     AiChatContext? context,
@@ -32,6 +32,7 @@ class ChatRepository {
       text: data['text'] as String,
       sessionId: data['sessionId'] as String,
       metadata: rawMeta is Map<String, dynamic> ? rawMeta : null,
+      aiBackend: data['aiBackend'] as String?,
     );
   }
 

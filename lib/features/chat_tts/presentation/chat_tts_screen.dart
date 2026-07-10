@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_ai_backend_badge.dart';
 import '../../../core/widgets/am_aurora.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../chat/providers/stt_provider.dart';
@@ -91,6 +92,8 @@ class _ChatTtsScreenState extends ConsumerState<ChatTtsScreen> {
                           ),
                         ),
                       ),
+                      const AmAiBackendBadge(),
+                      const SizedBox(width: 12),
                       GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
                         child: Container(

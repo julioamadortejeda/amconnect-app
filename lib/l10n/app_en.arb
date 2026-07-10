@@ -274,6 +274,8 @@
   "voiceChatThinking": "Thinking…",
 
   "chatTitle": "Assistant",
+  "chatBackendFree": "Free",
+  "chatBackendEnterprise": "Enterprise",
   "chatSubtitle": "Connected to your base",
   "chatNewConversation": "New conversation",
   "chatInputHint": "Ask your assistant…",

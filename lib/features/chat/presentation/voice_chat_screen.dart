@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/widgets/am_ai_backend_badge.dart';
 import '../../../core/widgets/am_aurora.dart';
 import '../providers/voice_chat_provider.dart';
 import '../widgets/voice_waveform_bars.dart';
@@ -120,6 +121,8 @@ class _VoiceChatScreenState extends ConsumerState<VoiceChatScreen>
                             ),
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        const AmAiBackendBadge(),
                       ],
                     ),
                   ),

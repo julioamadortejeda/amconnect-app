@@ -724,6 +724,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatTitle => 'Assistant';
 
   @override
+  String get chatBackendFree => 'Free';
+
+  @override
+  String get chatBackendEnterprise => 'Enterprise';
+
+  @override
   String get chatSubtitle => 'Connected to your base';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/providers/ai_backend_provider.dart';
 import '../../../core/utils/api_error_mapper.dart';
 import '../data/chat_context.dart';
 import '../data/chat_repository.dart';
@@ -69,6 +70,7 @@ class ChatNotifier extends Notifier<ChatState> {
         sessionId: state.sessionId,
         context: context,
       );
+      ref.read(aiBackendProvider.notifier).set(result.aiBackend);
       state = state.copyWith(
         messages: [...state.messages, ChatMessage(role: 'ai', text: result.text, metadata: result.metadata)],
         sessionId: result.sessionId,

@@ -8,7 +8,7 @@ class ChatTtsRepository {
   final ApiClient _api;
   ChatTtsRepository(this._api);
 
-  Future<({String text, String sessionId, String? audioBase64, String? audioMimeType})> sendMessage(
+  Future<({String text, String sessionId, String? audioBase64, String? audioMimeType, String? aiBackend})> sendMessage(
     String message, {
     String? sessionId,
     AiChatContext? context,
@@ -25,6 +25,7 @@ class ChatTtsRepository {
       sessionId: data['sessionId'] as String,
       audioBase64: data['audioBase64'] as String?,
       audioMimeType: data['audioMimeType'] as String?,
+      aiBackend: data['aiBackend'] as String?,
     );
   }
 

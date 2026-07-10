@@ -13,6 +13,7 @@ import '../widgets/voice_overlay.dart';
 import 'widgets/chat_cards.dart';
 import '../../../core/config/env.dart';
 import '../../../core/config/features.dart';
+import '../../../core/widgets/am_ai_backend_badge.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 
 const _chatSuggestions = [
@@ -345,13 +346,16 @@ class _ChatHeader extends StatelessWidget {
               ],
             ),
           ),
-          if (sessionActive)
+          const AmAiBackendBadge(),
+          if (sessionActive) ...[
+            const SizedBox(width: 8),
             AmIconBtn(
               icon: Icons.refresh_rounded,
               tone: AmIconBtnTone.sunken,
               size: 18,
               onTap: onReset,
             ),
+          ],
         ],
       ),
     );
