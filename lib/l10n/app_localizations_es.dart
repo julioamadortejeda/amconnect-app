@@ -687,6 +687,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersNoClientOption => 'Sin cliente';
 
   @override
+  String get remindersSelectPolicyTitle => 'Seleccionar póliza';
+
+  @override
+  String get remindersNoPolicyOption => 'Sin póliza';
+
+  @override
+  String get remindersPolicyNeedsClient => 'Elige un cliente primero';
+
+  @override
   String get remindersPickDateTitle => 'Fecha y hora del recordatorio';
 
   @override

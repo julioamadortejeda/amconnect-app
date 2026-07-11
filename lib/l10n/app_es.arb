@@ -303,6 +303,9 @@
   "remindersCreateBtn": "Crear recordatorio",
   "remindersSelectClientTitle": "Seleccionar cliente",
   "remindersNoClientOption": "Sin cliente",
+  "remindersSelectPolicyTitle": "Seleccionar póliza",
+  "remindersNoPolicyOption": "Sin póliza",
+  "remindersPolicyNeedsClient": "Elige un cliente primero",
   "remindersPickDateTitle": "Fecha y hora del recordatorio",
   "remindersPickDateMessage": "Elige cuándo quieres que te recuerde esto.",
 

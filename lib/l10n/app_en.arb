@@ -258,6 +258,9 @@
   "remindersCreateBtn": "Create reminder",
   "remindersSelectClientTitle": "Select client",
   "remindersNoClientOption": "No client",
+  "remindersSelectPolicyTitle": "Select policy",
+  "remindersNoPolicyOption": "No policy",
+  "remindersPolicyNeedsClient": "Choose a client first",
   "remindersPickDateTitle": "Reminder date & time",
   "remindersPickDateMessage": "Choose when you want to be reminded.",
 

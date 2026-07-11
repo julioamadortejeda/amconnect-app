@@ -137,6 +137,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     String? description,
     required DateTime dueDate,
     String? contactId,
+    String? policyId,
   }) async {
     final created = await _repo.create(
       typeId: typeId,
@@ -144,6 +145,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
       description: description,
       dueDate: dueDate,
       contactId: contactId,
+      policyId: policyId,
     );
     if (created == null) return null;
     if (state.asData?.value.any((r) => r.id == created.id) != true) {

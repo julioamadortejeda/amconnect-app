@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/contact.dart';
+import '../../../core/models/policy.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/am_theme.dart';
@@ -20,6 +21,7 @@ import '../../clients/providers/clients_provider.dart';
 import '../providers/reminders_provider.dart';
 import '../widgets/reminder_client_sheet.dart';
 import '../widgets/reminder_info_row.dart';
+import '../widgets/reminder_policy_sheet.dart';
 import '../widgets/reminder_type_chip.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 
@@ -36,6 +38,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
   final _descCtrl = TextEditingController();
   String? _typeId;
   String? _clienteId;
+  String? _policyId;
   late DateTime _dueDate;
   bool _showSuccess = false;
 
@@ -47,8 +50,11 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
     _dueDate = DateTime(now.year, now.month, now.day + 1, 9, 0);
     _titleCtrl.addListener(_rebuild);
     // Estado del provider de creación es compartido entre visitas a esta
-    // pantalla — limpiar cualquier error de un intento anterior.
-    ref.read(createReminderProvider.notifier).reset();
+    // pantalla — limpiar cualquier error de un intento anterior. Diferido
+    // porque Riverpod prohíbe modificar un provider durante el build.
+    Future.microtask(() {
+      if (mounted) ref.read(createReminderProvider.notifier).reset();
+    });
   }
 
   void _rebuild() => setState(() {});
@@ -73,6 +79,14 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
     if (id == null) return null;
     for (final t in types) {
       if (t.id == id) return t;
+    }
+    return null;
+  }
+
+  Policy? _findPolicy(List<Policy> policies) {
+    if (_policyId == null) return null;
+    for (final p in policies) {
+      if (p.id == _policyId) return p;
     }
     return null;
   }
@@ -105,7 +119,27 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => ReminderClientSheet(
         selectedClientId: _clienteId,
-        onSelect: (c) => setState(() => _clienteId = c?.id),
+        onSelect: (c) => setState(() {
+          if (c?.id != _clienteId) _policyId = null;
+          _clienteId = c?.id;
+        }),
+      ),
+    );
+  }
+
+  void _openPolicySheet(String contactId) {
+    final cs = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderPolicySheet(
+        contactId: contactId,
+        selectedPolicyId: _policyId,
+        onSelect: (p) => setState(() => _policyId = p?.id),
       ),
     );
   }
@@ -131,6 +165,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
       description: _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
       dueDate: _dueDate,
       contactId: _clienteId,
+      policyId: _clienteId != null ? _policyId : null,
     );
     if (!mounted || created == null) return;
     setState(() => _showSuccess = true);
@@ -152,6 +187,10 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
     final effectiveTypeId = _typeId ?? (types.isNotEmpty ? types.first.id : null);
     final selectedType = _findType(types, effectiveTypeId);
     final selectedContact = _findContact(clients);
+    final policies = _clienteId != null
+        ? ref.watch(contactPoliciesProvider(_clienteId!)).asData?.value ?? []
+        : const <Policy>[];
+    final selectedPolicy = _findPolicy(policies);
 
     final canSave = _titleCtrl.text.trim().isNotEmpty &&
         effectiveTypeId != null &&
@@ -265,6 +304,34 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                           ),
                     chevron: true,
                     onTap: _openClientSheet,
+                  ),
+                ),
+                const SizedBox(height: AmDimens.gapM),
+
+                AmSectionLabel(label: l10n.remindersDetailPolicy),
+                const SizedBox(height: AmDimens.gapXS),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cs.surface,
+                    borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+                    boxShadow: AmShadows.card,
+                  ),
+                  child: ReminderInfoRow(
+                    icon: Icons.description_outlined,
+                    label: l10n.remindersDetailPolicy,
+                    trailing: Text(
+                      selectedPolicy?.policyNumber ??
+                          (_clienteId == null
+                              ? l10n.remindersPolicyNeedsClient
+                              : l10n.remindersNoPolicyOption),
+                      style: TextStyle(fontSize: 13.5, color: cs.tertiary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    chevron: _clienteId != null,
+                    onTap: _clienteId == null
+                        ? null
+                        : () => _openPolicySheet(_clienteId!),
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapM),

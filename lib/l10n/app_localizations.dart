@@ -1346,6 +1346,24 @@ abstract class AppLocalizations {
   /// **'Sin cliente'**
   String get remindersNoClientOption;
 
+  /// No description provided for @remindersSelectPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar póliza'**
+  String get remindersSelectPolicyTitle;
+
+  /// No description provided for @remindersNoPolicyOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin póliza'**
+  String get remindersNoPolicyOption;
+
+  /// No description provided for @remindersPolicyNeedsClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un cliente primero'**
+  String get remindersPolicyNeedsClient;
+
   /// No description provided for @remindersPickDateTitle.
   ///
   /// In es, this message translates to:

@@ -114,6 +114,7 @@ class CreateReminderNotifier extends Notifier<CreateReminderState> {
     String? description,
     required DateTime dueDate,
     String? contactId,
+    String? policyId,
   }) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
@@ -123,6 +124,7 @@ class CreateReminderNotifier extends Notifier<CreateReminderState> {
         description: description,
         dueDate: dueDate,
         contactId: contactId,
+        policyId: policyId,
       );
       state = state.copyWith(loading: false);
       return created;

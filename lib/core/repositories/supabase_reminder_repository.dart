@@ -23,6 +23,7 @@ class SupabaseReminderRepository implements ReminderRepository {
     String? description,
     required DateTime dueDate,
     String? contactId,
+    String? policyId,
   }) async {
     final res = await _client.post('reminders', body: {
       'typeId': typeId,
@@ -30,6 +31,7 @@ class SupabaseReminderRepository implements ReminderRepository {
       if (description != null && description.isNotEmpty) 'description': description,
       'dueDate': dueDate.toUtc().toIso8601String(),
       if (contactId != null) 'contactId': contactId,
+      if (policyId != null) 'policyId': policyId,
     });
     final data = res['data'] as Map<String, dynamic>?;
     return data != null ? Reminder.fromJson(data) : null;
