@@ -131,6 +131,27 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     ]);
   }
 
+  Future<Reminder?> create({
+    required String typeId,
+    required String title,
+    String? description,
+    required DateTime dueDate,
+    String? contactId,
+  }) async {
+    final created = await _repo.create(
+      typeId: typeId,
+      title: title,
+      description: description,
+      dueDate: dueDate,
+      contactId: contactId,
+    );
+    if (created == null) return null;
+    if (state.asData?.value.any((r) => r.id == created.id) != true) {
+      state = AsyncData([...state.requireValue, created]);
+    }
+    return created;
+  }
+
   Future<void> toggle(String id) async {
     final list = state.asData?.value;
     final current = list?.firstWhere(

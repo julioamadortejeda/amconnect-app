@@ -7,6 +7,8 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_icon_btn.dart';
 import '../../../core/widgets/am_press.dart';
 import '../providers/chat_provider.dart';
+import '../providers/voice_chat_provider.dart';
+import '../../../core/utils/device_timezone.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/utils/error_translator.dart';
 import '../widgets/voice_overlay.dart';
@@ -232,6 +234,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       tone: AmIconBtnTone.sunken,
                       onTap: () {
                         if (kVoiceChatEnabled) {
+                          if (!Env.isTurnBasedVoice) {
+                            // Adelanta init+token en paralelo con la transición.
+                            ref.read(voiceChatProvider.notifier).prefetch(DeviceTimezone.name);
+                          }
                           GoRouter.of(context).push(Env.isTurnBasedVoice ? '/voice-chat-tts' : '/voice-chat');
                         } else {
                           VoiceOverlay.show(context,

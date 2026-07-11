@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
+import '../../../core/network/api_client.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../home/providers/home_provider.dart';
 
@@ -82,6 +83,61 @@ final reminderTypesProvider = FutureProvider<List<ReminderType>>((ref) {
   ref.keepAlive();
   return ref.read(reminderRepositoryProvider).getTypes();
 });
+
+/// Estado del formulario de creación manual de recordatorios.
+class CreateReminderState {
+  const CreateReminderState({this.loading = false, this.error});
+
+  final bool loading;
+
+  /// errorCode o mensaje crudo del backend — se traduce con
+  /// `context.translateError` en la pantalla.
+  final String? error;
+
+  CreateReminderState copyWith({
+    bool? loading,
+    String? error,
+    bool clearError = false,
+  }) => CreateReminderState(
+    loading: loading ?? this.loading,
+    error: clearError ? null : (error ?? this.error),
+  );
+}
+
+class CreateReminderNotifier extends Notifier<CreateReminderState> {
+  @override
+  CreateReminderState build() => const CreateReminderState();
+
+  Future<Reminder?> submit({
+    required String typeId,
+    required String title,
+    String? description,
+    required DateTime dueDate,
+    String? contactId,
+  }) async {
+    state = state.copyWith(loading: true, clearError: true);
+    try {
+      final created = await ref.read(remindersProvider.notifier).create(
+        typeId: typeId,
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        contactId: contactId,
+      );
+      state = state.copyWith(loading: false);
+      return created;
+    } on ApiException catch (e) {
+      state = CreateReminderState(error: e.errorCode ?? e.message);
+      return null;
+    }
+  }
+
+  void reset() => state = const CreateReminderState();
+}
+
+final createReminderProvider =
+    NotifierProvider<CreateReminderNotifier, CreateReminderState>(
+        CreateReminderNotifier.new);
 
 /// Mapa fecha → recordatorios para pintar puntos en el calendario.
 final remindersByDateProvider = Provider<Map<DateTime, List<Reminder>>>((ref) {

@@ -234,6 +234,53 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
   }
 
+  // ── Prefetch de conexión ───────────────────────────────────────────────────
+  // El tap que navega a la pantalla de voz llama prefetch() para correr los dos
+  // round-trips al backend (init + token) en paralelo con la animación de
+  // apertura; connect() los reutiliza. Caduca a los 45 s porque el token
+  // efímero de Studio solo es válido para INICIAR sesión ~60 s.
+  Future<(Map<String, dynamic>, Map<String, dynamic>)>? _prefetched;
+  DateTime? _prefetchedAt;
+
+  void prefetch(String timezone) {
+    if (_socket != null || _prefetched != null) return;
+    _timezone = timezone;
+    _prefetchedAt = DateTime.now();
+    final future = _fetchInitAndToken(timezone);
+    // Marca el error como manejado por si la pantalla nunca lo consume;
+    // connect() re-pide y reporta por su propio camino.
+    unawaited(future.then((_) {}, onError: (_) {}));
+    _prefetched = future;
+  }
+
+  Future<(Map<String, dynamic>, Map<String, dynamic>)>? _takeFreshPrefetch() {
+    final pf = _prefetched;
+    final at = _prefetchedAt;
+    _prefetched = null;
+    _prefetchedAt = null;
+    if (pf == null || at == null) return null;
+    if (DateTime.now().difference(at) > const Duration(seconds: 45)) return null;
+    return pf;
+  }
+
+  // Init de sesión (prompt + tool schemas) y luego el token efímero de Gemini.
+  // La GEMINI_API_KEY nunca llega al cliente. systemInstruction/tools viajan en
+  // el request del token porque el backend los hornea en las
+  // liveConnectConstraints — con eso Gemini fija TODA la config de la sesión e
+  // ignora lo que el cliente mande en su propio mensaje `setup`.
+  Future<(Map<String, dynamic>, Map<String, dynamic>)> _fetchInitAndToken(
+      String timezone) async {
+    final initData = await _post('/ai/voice/init', {
+      'timezone': timezone,
+      'sessionId': _rootSessionId,
+    }) as Map<String, dynamic>;
+    final tokenData = await _post('/ai/voice/token', {
+      'systemInstruction': initData['systemInstruction'],
+      'tools': initData['tools'] ?? [],
+    }) as Map<String, dynamic>;
+    return (initData, tokenData);
+  }
+
   Future<void> connect(String timezone) async {
     _timezone = timezone;
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
@@ -243,12 +290,23 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
 
     try {
-      // 1. Init session in Supabase to get prompt instructions and tool schemas
-      debugPrint('[VoiceChat] Initializing session in Supabase...');
-      final initData = await _post('/ai/voice/init', {
-        'timezone': timezone,
-        'sessionId': _rootSessionId,
-      }) as Map<String, dynamic>;
+      // 1+2. Init de sesión + token efímero — reutiliza el prefetch del tap si
+      // sigue fresco; si no (o si falló), corre los dos round-trips aquí.
+      Map<String, dynamic> initData;
+      Map<String, dynamic> tokenData;
+      final prefetched = _takeFreshPrefetch();
+      if (prefetched != null) {
+        debugPrint('[VoiceChat] Using prefetched init+token');
+        try {
+          (initData, tokenData) = await prefetched;
+        } catch (_) {
+          debugPrint('[VoiceChat] Prefetch failed — fetching fresh init+token');
+          (initData, tokenData) = await _fetchInitAndToken(timezone);
+        }
+      } else {
+        debugPrint('[VoiceChat] Initializing session in Supabase...');
+        (initData, tokenData) = await _fetchInitAndToken(timezone);
+      }
       if (_disposed) return;
 
       final sessionId = initData['sessionId'] as String;
@@ -260,19 +318,6 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         status: VoiceChatStatus.connecting,
         sessionId: _rootSessionId,
       );
-
-      // 2. Mint a short-lived Gemini token — fetched right before opening the
-      // socket since it's only valid to START a session for ~60s. The raw
-      // GEMINI_API_KEY never reaches the client, so it can't be extracted by
-      // decompiling the app. systemInstruction/tools travel with it because the
-      // backend bakes them into the token's liveConnectConstraints — once that's
-      // set, Gemini locks the WHOLE session config and ignores whatever this
-      // client sends in its own `setup` message below.
-      final tokenData = await _post('/ai/voice/token', {
-        'systemInstruction': systemInstruction,
-        'tools': tools,
-      }) as Map<String, dynamic>;
-      if (_disposed) return;
       ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
       
       final String wsUrl = tokenData['url'] as String? ?? '';

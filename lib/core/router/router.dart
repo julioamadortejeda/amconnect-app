@@ -15,7 +15,7 @@ import '../../features/reminders/presentation/create_reminder_screen.dart';
 import '../../features/reminders/presentation/reminder_detail_screen.dart';
 import '../../core/models/reminder.dart';
 import '../../features/chat/data/chat_context.dart';
-import '../../features/chat/presentation/chat_screen.dart';
+import '../../features/assistant/presentation/assistant_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
@@ -115,7 +115,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/chat',
         pageBuilder: (_, state) => amTransitionPage(
-          child: ChatScreen(initialContext: state.extra as AiChatContext?),
+          child: AssistantScreen(initialContext: state.extra as AiChatContext?),
           state: state,
           type: 'push',
         ),

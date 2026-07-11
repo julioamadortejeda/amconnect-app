@@ -657,6 +657,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFieldTitle => 'Título';
 
   @override
+  String get remindersFieldDescription => 'Descripción';
+
+  @override
   String get remindersFieldType => 'Tipo';
 
   @override
@@ -669,10 +672,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFieldTime => 'Hora';
 
   @override
+  String get remindersFieldDateTime => 'Fecha y hora';
+
+  @override
   String get remindersRepeatYearly => 'Repetir cada año';
 
   @override
   String get remindersCreateBtn => 'Crear recordatorio';
+
+  @override
+  String get remindersSelectClientTitle => 'Seleccionar cliente';
+
+  @override
+  String get remindersNoClientOption => 'Sin cliente';
+
+  @override
+  String get remindersPickDateTitle => 'Fecha y hora del recordatorio';
+
+  @override
+  String get remindersPickDateMessage =>
+      'Elige cuándo quieres que te recuerde esto.';
 
   @override
   String get voiceListening => 'Escuchando…';
@@ -724,6 +743,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get voiceChatThinking => 'Pensando…';
+
+  @override
+  String get assistantVoiceActive => 'Voz activa';
 
   @override
   String get chatTitle => 'Asistente';

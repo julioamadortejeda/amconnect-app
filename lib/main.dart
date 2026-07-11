@@ -11,6 +11,7 @@ import 'core/utils/device_timezone.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
 import 'l10n/app_localizations.dart';
+import 'core/providers/session_cleanup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +32,17 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Escuchar el estado de autenticación para registrar el token de notificaciones push
+    // Escuchar el estado de autenticación para registrar tokens e invalidar cachés
     ref.listen(authUserProvider, (previous, next) {
-      final user = next.value;
-      if (user != null) {
+      final prevUser = previous?.value;
+      final nextUser = next.value;
+
+      // Si el ID de usuario cambia (login, logout, o cambio de cuenta), limpiamos la caché
+      if (prevUser?.id != nextUser?.id) {
+        clearUserSessionCache(ref);
+      }
+
+      if (nextUser != null) {
         final notificationService = ref.read(notificationServiceProvider);
         notificationService.init().then((_) {
           notificationService.requestPermissionsAndRegister();

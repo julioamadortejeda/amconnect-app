@@ -1286,6 +1286,12 @@ abstract class AppLocalizations {
   /// **'Título'**
   String get remindersFieldTitle;
 
+  /// No description provided for @remindersFieldDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get remindersFieldDescription;
+
   /// No description provided for @remindersFieldType.
   ///
   /// In es, this message translates to:
@@ -1310,6 +1316,12 @@ abstract class AppLocalizations {
   /// **'Hora'**
   String get remindersFieldTime;
 
+  /// No description provided for @remindersFieldDateTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora'**
+  String get remindersFieldDateTime;
+
   /// No description provided for @remindersRepeatYearly.
   ///
   /// In es, this message translates to:
@@ -1321,6 +1333,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Crear recordatorio'**
   String get remindersCreateBtn;
+
+  /// No description provided for @remindersSelectClientTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get remindersSelectClientTitle;
+
+  /// No description provided for @remindersNoClientOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cliente'**
+  String get remindersNoClientOption;
+
+  /// No description provided for @remindersPickDateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora del recordatorio'**
+  String get remindersPickDateTitle;
+
+  /// No description provided for @remindersPickDateMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cuándo quieres que te recuerde esto.'**
+  String get remindersPickDateMessage;
 
   /// No description provided for @voiceListening.
   ///
@@ -1423,6 +1459,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pensando…'**
   String get voiceChatThinking;
+
+  /// No description provided for @assistantVoiceActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Voz activa'**
+  String get assistantVoiceActive;
 
   /// No description provided for @chatTitle.
   ///

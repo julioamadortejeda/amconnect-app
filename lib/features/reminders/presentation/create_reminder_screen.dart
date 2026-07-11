@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/models/contact.dart';
+import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/am_theme.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/utils/formatters.dart';
+import '../../../core/utils/reminder_utils.dart';
+import '../../../core/utils/catalog_l10n.dart';
 import '../../../core/widgets/am_avatar.dart';
-import '../../../core/widgets/am_back_bar.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../core/widgets/am_reschedule_dialog.dart';
+import '../../../core/widgets/am_section_label.dart';
+import '../../../core/widgets/am_text_field.dart';
+import '../../../core/widgets/am_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../clients/providers/clients_provider.dart';
+import '../providers/reminders_provider.dart';
+import '../widgets/reminder_client_sheet.dart';
+import '../widgets/reminder_info_row.dart';
+import '../widgets/reminder_type_chip.dart';
+import '../widgets/reminder_type_selection_sheet.dart';
 
 class CreateReminderScreen extends ConsumerStatefulWidget {
   const CreateReminderScreen({super.key, this.clienteId});
@@ -17,29 +32,111 @@ class CreateReminderScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
-  String _tipo = 'llamada';
-  String _clienteId = '';
-  final String _titulo = 'Llamar a Mariana Torres';
-  bool _saved = false;
-
-  final _tipos = [
-    ('llamada', Icons.phone_outlined),
-    ('pago',    Icons.payments_outlined),
-    ('renovacion', Icons.autorenew),
-    ('otro',    Icons.notifications_outlined),
-  ];
-
-  String _tipoLabel(String key, AppLocalizations l10n) => switch (key) {
-    'llamada'    => l10n.reminderTypeCall,
-    'pago'       => l10n.reminderTypePayment,
-    'renovacion' => l10n.reminderTypeRenewal,
-    _            => l10n.reminderTypeOther,
-  };
+  final _titleCtrl = TextEditingController();
+  final _descCtrl = TextEditingController();
+  String? _typeId;
+  String? _clienteId;
+  late DateTime _dueDate;
+  bool _showSuccess = false;
 
   @override
   void initState() {
     super.initState();
-    _clienteId = widget.clienteId ?? '';
+    _clienteId = widget.clienteId;
+    final now = DateTime.now();
+    _dueDate = DateTime(now.year, now.month, now.day + 1, 9, 0);
+    _titleCtrl.addListener(_rebuild);
+    // Estado del provider de creación es compartido entre visitas a esta
+    // pantalla — limpiar cualquier error de un intento anterior.
+    ref.read(createReminderProvider.notifier).reset();
+  }
+
+  void _rebuild() => setState(() {});
+
+  @override
+  void dispose() {
+    _titleCtrl.removeListener(_rebuild);
+    _titleCtrl.dispose();
+    _descCtrl.dispose();
+    super.dispose();
+  }
+
+  Contact? _findContact(List<Contact> clients) {
+    if (_clienteId == null) return null;
+    for (final c in clients) {
+      if (c.id == _clienteId) return c;
+    }
+    return null;
+  }
+
+  ReminderType? _findType(List<ReminderType> types, String? id) {
+    if (id == null) return null;
+    for (final t in types) {
+      if (t.id == id) return t;
+    }
+    return null;
+  }
+
+  void _openTypeSheet(List<ReminderType> types, String? selectedId) {
+    final cs = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderTypeSelectionSheet(
+        types: types,
+        selectedTypeId: selectedId,
+        onSelect: (t) => setState(() => _typeId = t.id),
+      ),
+    );
+  }
+
+  void _openClientSheet() {
+    final cs = Theme.of(context).colorScheme;
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderClientSheet(
+        selectedClientId: _clienteId,
+        onSelect: (c) => setState(() => _clienteId = c?.id),
+      ),
+    );
+  }
+
+  void _openDatePicker() {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (_) => AmRescheduleDialog(
+        initialDateTime: _dueDate,
+        title: l10n.remindersPickDateTitle,
+        message: l10n.remindersPickDateMessage,
+        onConfirm: (dt) => setState(() => _dueDate = dt),
+      ),
+    );
+  }
+
+  Future<void> _save(String typeId) async {
+    final notifier = ref.read(createReminderProvider.notifier);
+    final created = await notifier.submit(
+      typeId: typeId,
+      title: _titleCtrl.text.trim(),
+      description: _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
+      dueDate: _dueDate,
+      contactId: _clienteId,
+    );
+    if (!mounted || created == null) return;
+    setState(() => _showSuccess = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override
@@ -47,377 +144,243 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
     final cs = Theme.of(context).colorScheme;
     final am = context.am;
     final l10n = AppLocalizations.of(context)!;
+
+    final types = ref.watch(reminderTypesProvider).asData?.value ?? [];
+    final clients = ref.watch(clientsProvider).asData?.value ?? [];
+    final createState = ref.watch(createReminderProvider);
+
+    final effectiveTypeId = _typeId ?? (types.isNotEmpty ? types.first.id : null);
+    final selectedType = _findType(types, effectiveTypeId);
+    final selectedContact = _findContact(clients);
+
+    final canSave = _titleCtrl.text.trim().isNotEmpty &&
+        effectiveTypeId != null &&
+        !createState.loading;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(18, 90, 18, 40),
+      appBar: AmTopBar(title: l10n.remindersNewTitle, showBack: true),
+      body: SafeArea(
+        top: false,
+        child: Stack(
+          children: [
+            ListView(
+              padding: const EdgeInsets.fromLTRB(
+                  AmDimens.screenH, AmDimens.gapM, AmDimens.screenH, 40),
               children: [
-                // AI natural language box
+                AmSectionLabel(label: l10n.remindersFieldTitle),
+                const SizedBox(height: AmDimens.gapXS),
+                AmTextField(
+                  controller: _titleCtrl,
+                  hint: l10n.remindersFieldTitle,
+                  icon: Icons.edit_outlined,
+                ),
+                const SizedBox(height: AmDimens.gapM),
+
+                AmSectionLabel(label: l10n.remindersFieldDescription),
+                const SizedBox(height: AmDimens.gapXS),
                 Container(
-                  padding: const EdgeInsets.all(17),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF2AB5FF), Color(0xFF007AC0), Color(0xFF005580)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(color: AmColors.accent.withValues(alpha: 0.26),
-                          blurRadius: 26, offset: const Offset(0, 8)),
-                    ],
+                    color: cs.secondaryContainer,
+                    borderRadius: BorderRadius.circular(13),
+                    border: Border.all(color: cs.outline),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        const Icon(Icons.auto_awesome, color: Colors.white, size: 17),
-                        const SizedBox(width: 8),
-                        Text(l10n.remindersVoiceHint,
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500,
-                                color: Colors.white.withValues(alpha: 0.92), letterSpacing: 0.03)),
-                      ]),
-                      const SizedBox(height: 11),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text('"${l10n.remindersVoicePlaceholder}"',
-                                  style: TextStyle(fontSize: 14.5, color: Colors.white.withValues(alpha: 0.7))),
-                            ),
-                            Container(
-                              width: 36, height: 36,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.95),
-                                borderRadius: BorderRadius.circular(11),
-                              ),
-                              child: const Icon(Icons.mic_none_outlined, color: AmColors.accent, size: 18),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Title
-                _Field(
-                  label: l10n.remindersFieldTitle,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22)],
-                    ),
-                    child: Text(_titulo,
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
-                            color: cs.onSurface)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Type grid
-                _Field(
-                  label: l10n.remindersFieldType,
-                  child: Row(
-                    children: _tipos.map((t) {
-                      final (key, icon) = t;
-                      final label = _tipoLabel(key, l10n);
-                      final active = _tipo == key;
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: AmPress(
-                            onTap: () => setState(() => _tipo = key),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: active ? AmColors.accent : Colors.white,
-                                borderRadius: BorderRadius.circular(13),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: active ? AmColors.accent.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.055),
-                                    blurRadius: active ? 12 : 8,
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(icon, size: 19, color: active ? Colors.white : cs.onSurfaceVariant),
-                                  const SizedBox(height: 6),
-                                  Text(label,
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
-                                          color: active ? Colors.white : cs.onSurfaceVariant)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Client selector
-                _Field(
-                  label: l10n.remindersFieldClient,
-                  child: SizedBox(
-                    height: 56,
-                    child: Builder(
-                      builder: (context) {
-                        final clients = ref.watch(clientsProvider).value ?? [];
-                        final activeClienteId = _clienteId.isNotEmpty
-                            ? _clienteId
-                            : (clients.isNotEmpty ? clients.first.id : '');
-                        return ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: clients.map((c) {
-                            final active = c.id == activeClienteId;
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: AmPress(
-                                onTap: () => setState(() => _clienteId = c.id),
-                                child: Container(
-                                  padding: const EdgeInsets.fromLTRB(7, 7, 13, 7),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: active ? AmColors.accent : Colors.transparent,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(13),
-                                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      AmAvatar(initials: c.initials, color: c.color, size: 30, radius: 9),
-                                      const SizedBox(width: 8),
-                                      Text(c.fullName.split(' ').first,
-                                          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500,
-                                              color: cs.onSurface)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      }
+                  child: TextField(
+                    controller: _descCtrl,
+                    minLines: 2,
+                    maxLines: 5,
+                    style: TextStyle(fontSize: 15, color: cs.onSurface),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      hintText: l10n.remindersDetailNoDescription,
+                      hintStyle: TextStyle(color: cs.tertiary),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AmDimens.gapM),
 
-                // Date + time row
-                Row(
-                  children: [
-                    Expanded(
-                      child: _Field(
-                        label: l10n.remindersFieldDate,
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
-                          ),
-                          child: Row(
+                AmSectionLabel(label: l10n.remindersFieldType),
+                const SizedBox(height: AmDimens.gapXS),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cs.surface,
+                    borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+                    boxShadow: AmShadows.card,
+                  ),
+                  child: ReminderInfoRow(
+                    icon: selectedType != null
+                        ? reminderIcon(selectedType.code)
+                        : Icons.category_outlined,
+                    label: l10n.remindersFieldType,
+                    trailing: selectedType != null
+                        ? ReminderTypeChip(
+                            label: l10n.reminderType(selectedType.code),
+                            fg: cs.primary,
+                            bg: cs.primaryContainer,
+                          )
+                        : Text('—', style: TextStyle(color: cs.tertiary)),
+                    chevron: types.isNotEmpty,
+                    onTap: types.isEmpty
+                        ? null
+                        : () => _openTypeSheet(types, effectiveTypeId),
+                  ),
+                ),
+                const SizedBox(height: AmDimens.gapM),
+
+                AmSectionLabel(label: l10n.remindersFieldClient),
+                const SizedBox(height: AmDimens.gapXS),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cs.surface,
+                    borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+                    boxShadow: AmShadows.card,
+                  ),
+                  child: ReminderInfoRow(
+                    icon: Icons.person_outline,
+                    label: l10n.remindersFieldClient,
+                    trailing: selectedContact != null
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.calendar_today_outlined, size: 17, color: cs.onPrimaryContainer),
-                              const SizedBox(width: 9),
-                              Text('Mañana · Jue 5 jun',
-                                  style: TextStyle(fontSize: 13.5, color: cs.onSurface)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 118,
-                      child: _Field(
-                        label: l10n.remindersFieldTime,
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.access_time, size: 17, color: cs.onPrimaryContainer),
+                              AmAvatar(
+                                initials: selectedContact.initials,
+                                color: selectedContact.color,
+                                size: 26,
+                                radius: 8,
+                              ),
                               const SizedBox(width: 8),
-                              Text('15:00',
-                                  style: TextStyle(fontSize: 15, color: cs.onSurface)),
+                              Text(
+                                selectedContact.fullName,
+                                style: TextStyle(fontSize: 13.5, color: cs.onSurface),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
+                          )
+                        : Text(
+                            l10n.remindersNoClientOption,
+                            style: TextStyle(fontSize: 13.5, color: cs.tertiary),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    chevron: true,
+                    onTap: _openClientSheet,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AmDimens.gapM),
 
-                // Repeat toggle
+                AmSectionLabel(label: l10n.remindersFieldDateTime),
+                const SizedBox(height: AmDimens.gapXS),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 8)],
+                    color: cs.surface,
+                    borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+                    boxShadow: AmShadows.card,
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.autorenew, size: 18, color: cs.onSurfaceVariant),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(l10n.remindersRepeatYearly,
-                            style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600,
-                                color: cs.onSurface)),
-                      ),
-                      _Toggle(),
-                    ],
+                  child: ReminderInfoRow(
+                    icon: Icons.calendar_today_outlined,
+                    label: l10n.remindersFieldDateTime,
+                    trailing: Text(
+                      '${fmtDateWithWeekday(_dueDate)} · ${fmtTime(_dueDate)}',
+                      style: TextStyle(fontSize: 13.5, color: cs.onSurface),
+                    ),
+                    chevron: true,
+                    onTap: _openDatePicker,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AmDimens.gapL),
 
-                // Save button
                 AmPress(
-                  onTap: () {
-                    setState(() => _saved = true);
-                    Future.delayed(const Duration(milliseconds: 1100), () {
-                      if (!mounted) return;
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 17),
-                    decoration: BoxDecoration(
-                      color: AmColors.accent,
-                      borderRadius: BorderRadius.circular(17),
-                      boxShadow: [BoxShadow(color: AmColors.accent.withValues(alpha: 0.3),
-                          blurRadius: 18, offset: const Offset(0, 6))],
+                  onTap: canSave ? () => _save(effectiveTypeId) : null,
+                  child: Opacity(
+                    opacity: canSave ? 1.0 : 0.5,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                      decoration: BoxDecoration(
+                        color: AmColors.accent,
+                        borderRadius: BorderRadius.circular(17),
+                        boxShadow: [
+                          BoxShadow(
+                              color: AmColors.accent.withValues(alpha: 0.3),
+                              blurRadius: 18,
+                              offset: const Offset(0, 6)),
+                        ],
+                      ),
+                      child: createState.loading
+                          ? const Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white),
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.notifications_outlined,
+                                    size: 19, color: Colors.white),
+                                const SizedBox(width: 9),
+                                Text(
+                                  l10n.remindersCreateBtn,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                ),
+                if (createState.error != null) ...[
+                  const SizedBox(height: AmDimens.gapS),
+                  Text(
+                    context.translateError(createState.error),
+                    style: TextStyle(fontSize: 13, color: cs.error),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
+            if (_showSuccess)
+              Container(
+                color: Colors.black.withValues(alpha: 0.34),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(34, 30, 34, 30),
+                    decoration: BoxDecoration(
+                      color: cs.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: AmShadows.card,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.notifications_outlined, size: 19, color: Colors.white),
-                        const SizedBox(width: 9),
-                        Text(l10n.remindersCreateBtn,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500,
-                                color: Colors.white)),
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: am.greenWash,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.check, size: 38, color: am.green),
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          l10n.remindersCreated,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurface),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          // Back bar
-          AmBackBar(title: l10n.remindersNewTitle),
-          // Success overlay
-          if (_saved)
-            Container(
-              color: Colors.black.withValues(alpha: 0.34),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(34, 30, 34, 30),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 48)],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 72, height: 72,
-                        decoration: BoxDecoration(
-                          color: am.greenWash,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.check, size: 38, color: am.green),
-                      ),
-                      const SizedBox(height: 14),
-                      Text(l10n.remindersCreated,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600,
-                              color: cs.onSurface)),
-                    ],
-                  ),
-                ),
               ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Field extends StatelessWidget {
-  const _Field({required this.label, required this.child});
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(label.toUpperCase(),
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                  letterSpacing: 0.08 * 12, color: cs.tertiary)),
-        ),
-        child,
-      ],
-    );
-  }
-}
-
-class _Toggle extends StatefulWidget {
-  @override
-  State<_Toggle> createState() => _ToggleState();
-}
-
-class _ToggleState extends State<_Toggle> {
-  bool _on = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: () => setState(() => _on = !_on),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 50, height: 30,
-        decoration: BoxDecoration(
-          color: _on ? AmColors.accent : cs.outline,
-          borderRadius: BorderRadius.circular(999),
-        ),
-        padding: const EdgeInsets.all(3),
-        alignment: _on ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          width: 24, height: 24,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 3)],
-          ),
+          ],
         ),
       ),
     );

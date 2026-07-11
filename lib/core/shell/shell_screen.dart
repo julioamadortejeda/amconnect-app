@@ -6,10 +6,7 @@ import '../../features/home/providers/home_provider.dart';
 import '../../features/feed/presentation/ingest_flow_overlay.dart';
 import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
-import '../../features/chat/widgets/voice_overlay.dart';
 import '../../l10n/app_localizations.dart';
-import '../config/env.dart';
-import '../config/features.dart';
 
 const _kMicSize = 64.0;
 const _kMicRight = 16.0;
@@ -228,14 +225,14 @@ class _TabItem extends StatelessWidget {
   }
 }
 
-class _MicButton extends StatefulWidget {
+class _MicButton extends ConsumerStatefulWidget {
   const _MicButton();
 
   @override
-  State<_MicButton> createState() => _MicButtonState();
+  ConsumerState<_MicButton> createState() => _MicButtonState();
 }
 
-class _MicButtonState extends State<_MicButton>
+class _MicButtonState extends ConsumerState<_MicButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   OverlayEntry? _ripple;
@@ -291,11 +288,7 @@ class _MicButtonState extends State<_MicButton>
     // Show overlay partway through the ripple so they overlap briefly
     await Future.delayed(const Duration(milliseconds: 260));
     if (mounted) {
-      if (kVoiceChatEnabled) {
-        GoRouter.of(context).push(Env.isTurnBasedVoice ? '/voice-chat-tts' : '/voice-chat');
-      } else {
-        VoiceOverlay.show(context);
-      }
+      GoRouter.of(context).push('/chat');
     }
 
     await Future.delayed(const Duration(milliseconds: 280));

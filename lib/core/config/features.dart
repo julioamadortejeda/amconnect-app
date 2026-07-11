@@ -8,6 +8,6 @@ const kVoiceChatEnabled = true;
 const kShowAiBackendBadge = true;
 
 /// Creación manual de recordatorios (CreateReminderScreen).
-/// Deshabilitada para la beta: la pantalla es un mock (el guardado no crea
-/// nada) — ver backlog. Los recordatorios se crean vía chat/voz de IA.
-const kManualReminderCreationEnabled = false;
+/// Alternativa a crear recordatorios vía chat/voz de IA — pantalla real,
+/// conectada a POST /reminders.
+const kManualReminderCreationEnabled = true;

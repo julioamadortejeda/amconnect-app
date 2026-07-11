@@ -138,8 +138,10 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (sheetCtx) => ReminderTypeSelectionSheet(
-        reminder: r,
+        selectedTypeId: r.typeId,
         types: types,
+        onSelect: (t) =>
+            ref.read(remindersProvider.notifier).updateType(r.id, t.id),
       ),
     );
   }
