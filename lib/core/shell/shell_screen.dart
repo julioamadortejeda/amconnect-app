@@ -28,7 +28,7 @@ class ShellScreen extends ConsumerWidget {
   static const _tabs = [
     _Tab(icon: Icons.home_outlined, activeIcon: Icons.home),
     _Tab(icon: Icons.calendar_today_outlined, activeIcon: Icons.calendar_today),
-    _Tab(icon: Icons.group_outlined, activeIcon: Icons.group),
+    _Tab(icon: Icons.folder_shared_outlined, activeIcon: Icons.folder_shared),
     _Tab(icon: Icons.folder_outlined, activeIcon: Icons.folder),
   ];
 
@@ -306,13 +306,6 @@ class _MicButtonState extends ConsumerState<_MicButton>
         decoration: BoxDecoration(
           color: AmColors.accent,
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: AmColors.accent.withValues(alpha: 0.4),
-              blurRadius: 14,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child:
             const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),

@@ -18,13 +18,15 @@ import '../../../core/widgets/am_top_bar.dart';
 import '../data/feed_input_type.dart';
 import '../data/feed_item.dart';
 import '../providers/ingest_provider.dart';
+import '../providers/knowledge_dashboard_provider.dart';
+import '../../clients/providers/clients_provider.dart';
+import '../../home/providers/home_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/feed_row.dart';
 import '../widgets/feed_type_card.dart';
 import '../widgets/knowledge_dashboard_view.dart';
 import 'ingest_file_preview_sheet.dart';
 import 'text_ingest_sheet.dart';
-import '../providers/knowledge_dashboard_provider.dart';
 
 // ── Providers ──────────────────────────────────────────────────────────────────
 
@@ -168,6 +170,11 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   void _handleClose() {
     ref.read(ingestProvider.notifier).reset();
     ref.invalidate(recentFeedProvider);
+    ref.invalidate(knowledgeListProvider);
+    ref.invalidate(knowledgeStatsProvider);
+    ref.invalidate(clientsProvider);
+    ref.invalidate(policiesProvider);
+    ref.invalidate(policiesCountProvider);
   }
 
   @override

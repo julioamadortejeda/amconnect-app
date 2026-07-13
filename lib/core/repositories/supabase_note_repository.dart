@@ -29,6 +29,11 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
+  Future<void> createPolicyNote(String policyId, String content) async {
+    await _client.post('policies/$policyId/notes', body: {'content': content});
+  }
+
+  @override
   Future<void> deleteNote(String noteId) async {
     await _client.delete('notes/$noteId');
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../chat/presentation/widgets/chat_cards.dart';
@@ -86,9 +87,15 @@ class AssistantBubble extends StatelessWidget {
                     ),
                     boxShadow: AmShadows.card,
                   ),
-                  child: Text(text,
-                      style: TextStyle(
-                          fontSize: 15, color: cs.onSurface, height: 1.5)),
+                  child: MarkdownBody(
+                    data: text,
+                    shrinkWrap: true,
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      p: TextStyle(fontSize: 15, color: cs.onSurface, height: 1.5),
+                      strong: const TextStyle(fontWeight: FontWeight.bold),
+                      listBullet: const TextStyle(color: AmColors.accent),
+                    ),
+                  ),
                 ),
                 if (card != null)
                   Padding(

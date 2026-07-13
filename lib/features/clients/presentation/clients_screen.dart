@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
@@ -50,21 +51,35 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         title: title,
         subtitle: subtitle,
         actions: [
+          if (_tabIdx == 1) ...[
+            AmPress(
+              onTap: () => context.push('/catalogs'),
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: cs.secondaryContainer,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.tune, size: 18, color: cs.onSurfaceVariant),
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
           AmPress(
-            onTap: () {},
+            onTap: () {
+              if (_tabIdx == 0) {
+                context.push('/create-client');
+              } else {
+                context.push('/create-policy');
+              }
+            },
             child: Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
                 color: AmColors.accent,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AmColors.accent.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: const Icon(Icons.add, color: Colors.white, size: 20),
             ),

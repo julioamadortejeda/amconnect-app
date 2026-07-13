@@ -36,13 +36,6 @@ class ClientAiButton extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AmColors.accent,
               borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: AmColors.accent.withValues(alpha: 0.28),
-                  blurRadius: 18,
-                  offset: const Offset(0, 6),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

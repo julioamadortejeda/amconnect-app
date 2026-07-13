@@ -334,7 +334,7 @@ class _ContactCreatedCard extends StatelessWidget {
                 label: 'Ver Perfil',
                 icon: Icons.arrow_forward_rounded,
                 color: am.green,
-                onTap: () => context.push('/clients/$contactId'),
+                onTap: () => context.push('/clients/$contactId?fromChat=true'),
               ),
             ),
         ],
@@ -595,7 +595,7 @@ class _ContactInfoCard extends StatelessWidget {
                 label: l10n.chatCardViewProfile,
                 icon: Icons.arrow_forward_rounded,
                 color: isProspect ? am.amber : am.green,
-                onTap: () => context.push('/clients/$contactId'),
+                onTap: () => context.push('/clients/$contactId?fromChat=true'),
               ),
             ),
         ],
@@ -665,7 +665,7 @@ class _ContactListCarousel extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: AmPress(
-                  onTap: () => context.push('/clients/$id'),
+                  onTap: () => context.push('/clients/$id?fromChat=true'),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
@@ -970,7 +970,7 @@ class _PolicyInfoCard extends StatelessWidget {
                 label: l10n.chatCardViewProfile,
                 icon: Icons.person_rounded,
                 color: AmColors.accent,
-                onTap: () => context.push('/clients/$contactId'),
+                onTap: () => context.push('/clients/$contactId?fromChat=true'),
               ),
             ),
         ],

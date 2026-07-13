@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/agent_note.dart';
@@ -41,6 +42,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
     final obsoleteNotes = notes.where((n) => n.isObsolete).toList();
 
     return AmCard(
+      onTap: () => context.push('/policy/${policy.id}', extra: policy),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

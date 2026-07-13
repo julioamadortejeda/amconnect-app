@@ -5,6 +5,9 @@ import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/ingest_provider.dart';
 import '../presentation/feed_screen.dart' show recentFeedProvider;
+import '../providers/knowledge_dashboard_provider.dart';
+import '../../clients/providers/clients_provider.dart';
+import '../../home/providers/home_provider.dart';
 import 'ingest_chat_sheet.dart';
 import 'knowledge_success_sheet.dart';
 import 'policy_success_sheet.dart';
@@ -27,6 +30,11 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
   void _handleClose() {
     ref.read(ingestProvider.notifier).reset();
     ref.invalidate(recentFeedProvider);
+    ref.invalidate(knowledgeListProvider);
+    ref.invalidate(knowledgeStatsProvider);
+    ref.invalidate(clientsProvider);
+    ref.invalidate(policiesProvider);
+    ref.invalidate(policiesCountProvider);
   }
 
   void _showKnowledgeSuccess(String message) {

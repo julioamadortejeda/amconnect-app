@@ -50,10 +50,9 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           AmIconBtn(
-            icon: Icons.notifications_outlined,
-            onTap: () => context.go('/reminders'),
+            icon: Icons.bar_chart_rounded,
+            onTap: () => context.push('/analytics'),
             tone: AmIconBtnTone.soft,
-            dot: urgentCount > 0,
           ),
         ],
       ),

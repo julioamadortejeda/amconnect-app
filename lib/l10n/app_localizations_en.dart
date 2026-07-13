@@ -124,6 +124,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldPhone => 'Phone';
 
   @override
+  String get fieldOccupation => 'Occupation';
+
+  @override
+  String get fieldAddress => 'Address';
+
+  @override
+  String get fieldBirthdate => 'Birthdate';
+
+  @override
+  String get fieldRfc => 'RFC';
+
+  @override
+  String get fieldCurp => 'CURP';
+
+  @override
+  String get fieldNotes => 'Notes';
+
+  @override
   String get accountProfileTitle => 'Profile';
 
   @override
@@ -266,10 +284,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellAgenda => 'Agenda';
 
   @override
-  String get shellClients => 'Clients';
+  String get shellClients => 'Portfolio';
 
   @override
   String get shellData => 'Data';
+
+  @override
+  String get analyticsTitle => 'Portfolio Analytics';
+
+  @override
+  String get analyticsFunnelTitle => 'Sales Funnel';
+
+  @override
+  String get analyticsFunnelProspects => 'Prospects';
+
+  @override
+  String get analyticsFunnelClients => 'Clients with Policies';
+
+  @override
+  String get analyticsFunnelRate => 'Close Rate';
+
+  @override
+  String get analyticsPolicyStatus => 'Renewal Status';
+
+  @override
+  String get analyticsPolicyActive => 'Active';
+
+  @override
+  String get analyticsPolicyExpired => 'Expired / Overdue';
+
+  @override
+  String get analyticsPolicyPending => 'In Underwriting';
+
+  @override
+  String get analyticsBranchDist => 'Diversification by Line of Business';
+
+  @override
+  String get analyticsCarrierDist => 'Distribution by Carrier';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -499,6 +550,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsNewClient => 'Client';
 
   @override
+  String get clientsNewTitle => 'New client';
+
+  @override
+  String get clientsEditTitle => 'Edit client';
+
+  @override
+  String get clientsCreateBtn => 'Create client';
+
+  @override
+  String get clientsCreated => 'Client created';
+
+  @override
+  String get clientsUpdated => 'Client updated';
+
+  @override
+  String get clientsFieldNoBirthdate => 'No date set';
+
+  @override
+  String get clientsSectionPersonal => 'Personal info';
+
+  @override
+  String get clientsSectionFiscal => 'Fiscal';
+
+  @override
+  String get clientsFieldGeneralNotes => 'General notes';
+
+  @override
   String get clientsNoteTypePdf => 'PDF document';
 
   @override
@@ -642,6 +720,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersCreated => 'Reminder created';
 
   @override
+  String get remindersSectionInfo => 'Information';
+
+  @override
+  String get remindersSectionDetails => 'Details';
+
+  @override
   String get remindersVoiceHint => 'SAY IT IN YOUR OWN WORDS';
 
   @override
@@ -686,6 +770,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersNoPolicyOption => 'No policy';
+
+  @override
+  String get remindersSelectStatusTitle => 'Select status';
 
   @override
   String get remindersPolicyNeedsClient => 'Choose a client first';
@@ -1118,4 +1205,195 @@ class AppLocalizationsEn extends AppLocalizations {
   String remindersDetailDaysOverdue(int count) {
     return '${count}d overdue';
   }
+
+  @override
+  String get policiesNewPolicyTitle => 'New Policy';
+
+  @override
+  String get policiesPolicyNumber => 'Policy number';
+
+  @override
+  String get policiesCarrier => 'Carrier';
+
+  @override
+  String get policiesBranch => 'Branch';
+
+  @override
+  String get policiesProduct => 'Product';
+
+  @override
+  String get policiesStatus => 'Status';
+
+  @override
+  String get policiesCurrency => 'Currency';
+
+  @override
+  String get policiesPaymentFrequency => 'Payment frequency';
+
+  @override
+  String get policiesPaymentMethod => 'Payment method';
+
+  @override
+  String get policiesSumInsured => 'Sum insured';
+
+  @override
+  String get policiesPremium => 'Premium';
+
+  @override
+  String get policiesDeductible => 'Deductible';
+
+  @override
+  String get policiesStartDate => 'Start date';
+
+  @override
+  String get policiesEndDate => 'End date';
+
+  @override
+  String get policiesRenewalDate => 'Renewal date';
+
+  @override
+  String get policiesNextPaymentDate => 'Next payment';
+
+  @override
+  String get policiesNotes => 'Notes';
+
+  @override
+  String get policiesSaveBtn => 'Save policy';
+
+  @override
+  String get policiesSelectClient => 'Select client';
+
+  @override
+  String get policiesCreateCarrier => 'Create new Carrier';
+
+  @override
+  String get policiesCreateBranch => 'Create new Branch';
+
+  @override
+  String get policiesCreateProduct => 'Create new Product';
+
+  @override
+  String get policiesCreatedSuccess => 'Policy created successfully';
+
+  @override
+  String get policiesEditPolicyTitle => 'Edit Policy';
+
+  @override
+  String get policiesSaveChangesBtn => 'Save changes';
+
+  @override
+  String get policiesUpdatedSuccess => 'Policy updated successfully';
+
+  @override
+  String get policiesDetailTitle => 'Policy detail';
+
+  @override
+  String get policiesDetailLoadError => 'Couldn\'t load the policy.';
+
+  @override
+  String get policiesDetailCoverage => 'Coverage and payment';
+
+  @override
+  String get policiesDetailDates => 'Dates';
+
+  @override
+  String get policiesNotesSection => 'Notes';
+
+  @override
+  String get policiesEmptyNotes => 'No notes yet for this policy.';
+
+  @override
+  String get policiesAddNoteHint => 'Write a note...';
+
+  @override
+  String get policiesDeleteNoteTitle => 'Delete note';
+
+  @override
+  String get policiesDeleteNoteMsg =>
+      'Do you want to delete this note? This action cannot be undone.';
+
+  @override
+  String get policiesAttachFile => 'Attach';
+
+  @override
+  String get catalogsTitle => 'Catalogs';
+
+  @override
+  String get catalogsTypeCarriers => 'Carriers';
+
+  @override
+  String get catalogsTypeBranches => 'Branches';
+
+  @override
+  String get catalogsTypeProducts => 'Products';
+
+  @override
+  String get catalogsSearchHint => 'Search...';
+
+  @override
+  String get catalogsEmpty => 'No results';
+
+  @override
+  String get catalogsError => 'Couldn\'t load catalogs';
+
+  @override
+  String get catalogsFieldName => 'Name';
+
+  @override
+  String get catalogsFieldShortName => 'Short name';
+
+  @override
+  String get catalogsFieldCode => 'Code';
+
+  @override
+  String get catalogsSelectCarrier => 'Select carrier';
+
+  @override
+  String get catalogsSelectBranch => 'Select branch';
+
+  @override
+  String get catalogsNewCarrierTitle => 'New carrier';
+
+  @override
+  String get catalogsEditCarrierTitle => 'Edit carrier';
+
+  @override
+  String get catalogsNewBranchTitle => 'New branch';
+
+  @override
+  String get catalogsEditBranchTitle => 'Edit branch';
+
+  @override
+  String get catalogsNewProductTitle => 'New product';
+
+  @override
+  String get catalogsEditProductTitle => 'Edit product';
+
+  @override
+  String get catalogsCreateBtn => 'Create';
+
+  @override
+  String get catalogsCarrierCreated => 'Carrier created';
+
+  @override
+  String get catalogsCarrierUpdated => 'Carrier updated';
+
+  @override
+  String get catalogsBranchCreated => 'Branch created';
+
+  @override
+  String get catalogsBranchUpdated => 'Branch updated';
+
+  @override
+  String get catalogsProductCreated => 'Product created';
+
+  @override
+  String get catalogsProductUpdated => 'Product updated';
+
+  @override
+  String get catalogsDeleteTitle => 'Delete item';
+
+  @override
+  String get catalogsDeleteMessage =>
+      'Are you sure you want to delete it? This action cannot be undone.';
 }

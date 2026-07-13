@@ -138,7 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           label: data.clientsCount > 0
                               ? l10n.homeViewAllCount(data.clientsCount)
                               : l10n.homeViewAll,
-                          onTap: () => context.go('/clients'),
+                          onTap: () => context.go('/portfolio'),
                         ),
                       ),
                       const SizedBox(height: AmDimens.gapXS),
@@ -170,9 +170,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
-                        onTap: () => context.go('/reminders'),
-                        dot: data.urgentCount > 0,
-                        child: Icon(Icons.notifications_outlined,
+                        onTap: () => context.push('/analytics'),
+                        child: Icon(Icons.bar_chart_rounded,
                             size: 20, color: cs.onSurface),
                       ),
                     ],

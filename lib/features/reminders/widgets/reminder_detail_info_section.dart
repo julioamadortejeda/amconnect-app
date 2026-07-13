@@ -4,7 +4,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/utils/catalog_l10n.dart';
 import '../../../core/utils/formatters.dart';
-import 'reminder_info_row.dart';
+import '../../../core/widgets/am_info_row.dart';
 import 'reminder_status_chip.dart';
 import 'reminder_type_chip.dart';
 import '../../../l10n/app_localizations.dart';
@@ -55,7 +55,7 @@ class ReminderDetailInfoSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ReminderInfoRow(
+          AmInfoRow(
             icon: Icons.category_outlined,
             label: l10n.remindersFieldType,
             trailing: ReminderTypeChip(
@@ -72,7 +72,7 @@ class ReminderDetailInfoSection extends StatelessWidget {
             endIndent: AmDimens.screenH,
             color: cs.outlineVariant.withValues(alpha: 0.5),
           ),
-          ReminderInfoRow(
+          AmInfoRow(
             icon: Icons.radio_button_checked_outlined,
             label: l10n.remindersDetailStatus,
             trailing: ReminderStatusChip(statusCode: r.statusCode),
@@ -85,7 +85,7 @@ class ReminderDetailInfoSection extends StatelessWidget {
             endIndent: AmDimens.screenH,
             color: cs.outlineVariant.withValues(alpha: 0.5),
           ),
-          ReminderInfoRow(
+          AmInfoRow(
             icon: Icons.calendar_today_outlined,
             label: l10n.remindersDetailDueDate,
             trailing: Text(
@@ -102,7 +102,7 @@ class ReminderDetailInfoSection extends StatelessWidget {
             endIndent: AmDimens.screenH,
             color: cs.outlineVariant.withValues(alpha: 0.5),
           ),
-          ReminderInfoRow(
+          AmInfoRow(
             icon: Icons.access_time_outlined,
             label: l10n.remindersDetailCreatedAt,
             trailing: Text(

@@ -14,15 +14,26 @@ import '../presentation/text_ingest_sheet.dart';
 import '../providers/ingest_provider.dart';
 
 class IngestTypePicker extends ConsumerStatefulWidget {
-  const IngestTypePicker({super.key, this.contactId, this.policyId});
+  const IngestTypePicker({
+    super.key,
+    this.contactId,
+    this.policyId,
+    this.showPolicyExtraction = true,
+  });
 
   final String? contactId;
   final String? policyId;
+
+  /// Si es `false`, oculta las tiles de "PDF de póliza"/"Foto de póliza"
+  /// (extraer una póliza NUEVA) — úsalo al abrir el picker desde el detalle
+  /// de una póliza ya existente, donde esas opciones no aplican.
+  final bool showPolicyExtraction;
 
   static Future<void> show(
     BuildContext context, {
     String? contactId,
     String? policyId,
+    bool showPolicyExtraction = true,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -32,7 +43,11 @@ class IngestTypePicker extends ConsumerStatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => IngestTypePicker(contactId: contactId, policyId: policyId),
+      builder: (_) => IngestTypePicker(
+        contactId: contactId,
+        policyId: policyId,
+        showPolicyExtraction: showPolicyExtraction,
+      ),
     );
   }
 
@@ -155,25 +170,27 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     final l10n = AppLocalizations.of(context)!;
 
     final types = [
-      _PickerType(
-        icon: AmIcons.pdf,
-        color: AmColors.srcDoc,
-        label: l10n.feedTypePolicyPdf,
-        sub: l10n.feedTypePolicyPdfDesc,
-        onTap: () => _pickFile(
-          type: FileType.custom,
-          extensions: ['pdf'],
-          isPolicy: true,
-          sourceType: 'pdf',
+      if (widget.showPolicyExtraction) ...[
+        _PickerType(
+          icon: AmIcons.pdf,
+          color: AmColors.srcDoc,
+          label: l10n.feedTypePolicyPdf,
+          sub: l10n.feedTypePolicyPdfDesc,
+          onTap: () => _pickFile(
+            type: FileType.custom,
+            extensions: ['pdf'],
+            isPolicy: true,
+            sourceType: 'pdf',
+          ),
         ),
-      ),
-      _PickerType(
-        icon: AmIcons.camera,
-        color: AmColors.srcImage,
-        label: l10n.feedTypePolicyPhoto,
-        sub: l10n.feedTypePolicyPhotoDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: true, sourceType: 'image'),
-      ),
+        _PickerType(
+          icon: AmIcons.camera,
+          color: AmColors.srcImage,
+          label: l10n.feedTypePolicyPhoto,
+          sub: l10n.feedTypePolicyPhotoDesc,
+          onTap: () => _pickFile(type: FileType.image, isPolicy: true, sourceType: 'image'),
+        ),
+      ],
       _PickerType(
         icon: AmIcons.audio,
         color: AmColors.srcWave,

@@ -48,12 +48,6 @@ class AssistantHeader extends StatelessWidget {
             decoration: BoxDecoration(
               color: AmColors.accent,
               borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                    color: AmColors.accent.withValues(alpha: 0.28),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4)),
-              ],
             ),
             child: Center(
               child: Image.asset(

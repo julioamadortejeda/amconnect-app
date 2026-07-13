@@ -10,6 +10,12 @@ import '../../features/onboarding/presentation/login_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/clients/presentation/clients_screen.dart';
 import '../../features/clients/presentation/client_detail_screen.dart';
+import '../../features/clients/presentation/create_client_screen.dart';
+import '../../features/home/presentation/analytics_screen.dart';
+import '../../core/models/contact.dart';
+import '../../features/clients/presentation/create_policy_screen.dart';
+import '../../features/clients/presentation/policy_detail_screen.dart';
+import '../../core/models/policy.dart';
 import '../../features/reminders/presentation/reminders_screen.dart';
 import '../../features/reminders/presentation/create_reminder_screen.dart';
 import '../../features/reminders/presentation/reminder_detail_screen.dart';
@@ -22,6 +28,7 @@ import '../../features/onboarding/presentation/register_screen.dart';
 import '../../features/chat/presentation/voice_chat_screen.dart';
 import '../../features/chat_tts/presentation/chat_tts_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
+import '../../features/catalogs/presentation/catalogs_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -72,7 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
-              path: '/clients',
+              path: '/portfolio',
               pageBuilder: (_, state) => const NoTransitionPage(child: ClientsScreen()),
             ),
           ]),
@@ -86,12 +93,56 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        path: '/clients/:id',
+        path: '/analytics',
         pageBuilder: (_, state) => amTransitionPage(
-          child: ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
+          child: const AnalyticsScreen(),
           state: state,
           type: 'push',
         ),
+      ),
+      GoRoute(
+        path: '/create-client',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreateClientScreen(contact: state.extra as Contact?),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/create-policy',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreatePolicyScreen(
+            clientId: state.uri.queryParameters['client'],
+            policy: state.extra as Policy?,
+          ),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/policy/:id',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: PolicyDetailScreen(
+            policy: state.extra as Policy?,
+            policyId: state.pathParameters['id'],
+          ),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/clients/:id',
+        pageBuilder: (_, state) {
+          final fromChat = state.uri.queryParameters['fromChat'] == 'true';
+          return amTransitionPage(
+            child: ClientDetailScreen(
+              clientId: state.pathParameters['id'] ?? '',
+              fromChat: fromChat,
+            ),
+            state: state,
+            type: 'push',
+          );
+        },
       ),
       GoRoute(
         path: '/create-reminder',
@@ -140,6 +191,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/account',
         pageBuilder: (_, state) => amTransitionPage(
           child: const AccountScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/catalogs',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const CatalogsScreen(),
           state: state,
           type: 'push',
         ),

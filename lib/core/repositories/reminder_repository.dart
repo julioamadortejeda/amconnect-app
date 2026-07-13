@@ -11,6 +11,7 @@ abstract class ReminderRepository {
     required DateTime dueDate,
     String? contactId,
     String? policyId,
+    String? status,
   });
   Future<void> setDone(String id, bool isDone);
   Future<List<ReminderType>> getTypes();

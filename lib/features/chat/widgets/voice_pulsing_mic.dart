@@ -76,13 +76,6 @@ class _VoicePulsingMicState extends State<VoicePulsingMic>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AmColors.accent,
-                boxShadow: [
-                  BoxShadow(
-                    color: AmColors.accent.withValues(alpha: 0.55),
-                    blurRadius: 32,
-                    spreadRadius: 2,
-                  ),
-                ],
               ),
               child: const Icon(Icons.mic_rounded, color: Colors.white, size: 38),
             ),

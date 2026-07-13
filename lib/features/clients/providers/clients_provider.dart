@@ -5,6 +5,7 @@ import '../../../core/models/agent_note.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/models/reminder.dart';
+import '../../../core/network/api_client.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
@@ -110,10 +111,165 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
     if (id == null) return;
     state = AsyncData(state.requireValue.where((c) => c.id != id).toList());
   }
+
+  Future<Contact> create({
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    final created = await _repo.create(
+      fullName: fullName,
+      phone: phone,
+      email: email,
+      birthdate: birthdate,
+      occupation: occupation,
+      address: address,
+      rfc: rfc,
+      curp: curp,
+      notes: notes,
+    );
+    if (state.asData?.value.any((c) => c.id == created.id) != true) {
+      state = AsyncData([...state.requireValue, created]);
+    }
+    return created;
+  }
+
+  Future<Contact> updateContact(
+    String id, {
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    final updated = await _repo.update(
+      id,
+      fullName: fullName,
+      phone: phone,
+      email: email,
+      birthdate: birthdate,
+      occupation: occupation,
+      address: address,
+      rfc: rfc,
+      curp: curp,
+      notes: notes,
+    );
+    state = AsyncData([
+      for (final c in state.requireValue) if (c.id == id) updated else c,
+    ]);
+    return updated;
+  }
 }
 
 final clientsProvider =
     AsyncNotifierProvider<ClientsNotifier, List<Contact>>(ClientsNotifier.new);
+
+/// Estado del formulario de creación manual de clientes.
+class CreateClientState {
+  const CreateClientState({this.loading = false, this.error});
+
+  final bool loading;
+
+  /// errorCode o mensaje crudo del backend — se traduce con
+  /// `context.translateError` en la pantalla.
+  final String? error;
+
+  CreateClientState copyWith({
+    bool? loading,
+    String? error,
+    bool clearError = false,
+  }) => CreateClientState(
+    loading: loading ?? this.loading,
+    error: clearError ? null : (error ?? this.error),
+  );
+}
+
+class CreateClientNotifier extends Notifier<CreateClientState> {
+  @override
+  CreateClientState build() => const CreateClientState();
+
+  Future<Contact?> submit({
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    state = state.copyWith(loading: true, clearError: true);
+    try {
+      final created = await ref.read(clientsProvider.notifier).create(
+        fullName: fullName,
+        phone: phone,
+        email: email,
+        birthdate: birthdate,
+        occupation: occupation,
+        address: address,
+        rfc: rfc,
+        curp: curp,
+        notes: notes,
+      );
+      state = state.copyWith(loading: false);
+      return created;
+    } on ApiException catch (e) {
+      state = CreateClientState(error: e.errorCode ?? e.message);
+      return null;
+    }
+  }
+
+  Future<Contact?> updateContact(
+    String id, {
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    state = state.copyWith(loading: true, clearError: true);
+    try {
+      final updated = await ref.read(clientsProvider.notifier).updateContact(
+        id,
+        fullName: fullName,
+        phone: phone,
+        email: email,
+        birthdate: birthdate,
+        occupation: occupation,
+        address: address,
+        rfc: rfc,
+        curp: curp,
+        notes: notes,
+      );
+      state = state.copyWith(loading: false);
+      return updated;
+    } on ApiException catch (e) {
+      state = CreateClientState(error: e.errorCode ?? e.message);
+      return null;
+    }
+  }
+
+  void reset() => state = const CreateClientState();
+}
+
+final createClientProvider =
+    NotifierProvider<CreateClientNotifier, CreateClientState>(
+        CreateClientNotifier.new);
 
 class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
   late final PolicyRepository _repo;
@@ -264,6 +420,28 @@ final contactNotesRealtimeProvider =
           value: contactId,
         ),
         callback: (_) => ref.invalidate(contactNotesProvider(contactId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
+});
+
+// Watching this provider activates Realtime for notes of a policy — necesario
+// porque la ingesta de archivo/texto con IA es asíncrona (tarda segundos) y
+// nada más refresca policyNotesProvider cuando termina.
+final policyNotesRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, policyId) {
+  final channel = Supabase.instance.client
+      .channel('notes:policy:$policyId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'agent_notes',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'policy_id',
+          value: policyId,
+        ),
+        callback: (_) => ref.invalidate(policyNotesProvider(policyId)),
       )
       .subscribe();
   ref.onDispose(() => channel.unsubscribe());

@@ -26,6 +26,59 @@ class SupabaseContactRepository implements ContactRepository {
     final res = await _client.get('contacts/$id');
     return Contact.fromJson(res['data'] as Map<String, dynamic>);
   }
+
+  @override
+  Future<Contact> create({
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    final res = await _client.post('contacts', body: {
+      'fullName': fullName,
+      if (phone != null && phone.isNotEmpty) 'phone': phone,
+      if (email != null && email.isNotEmpty) 'email': email,
+      if (birthdate != null && birthdate.isNotEmpty) 'birthdate': birthdate,
+      if (occupation != null && occupation.isNotEmpty) 'occupation': occupation,
+      if (address != null && address.isNotEmpty) 'address': address,
+      if (rfc != null && rfc.isNotEmpty) 'rfc': rfc,
+      if (curp != null && curp.isNotEmpty) 'curp': curp,
+      if (notes != null && notes.isNotEmpty) 'notes': notes,
+    });
+    return Contact.fromJson(res['data'] as Map<String, dynamic>);
+  }
+
+  @override
+  Future<Contact> update(
+    String id, {
+    required String fullName,
+    String? phone,
+    String? email,
+    String? birthdate,
+    String? occupation,
+    String? address,
+    String? rfc,
+    String? curp,
+    String? notes,
+  }) async {
+    final res = await _client.patch('contacts/$id', body: {
+      'fullName': fullName,
+      'phone': phone,
+      'email': email,
+      'birthdate': birthdate,
+      'occupation': occupation,
+      'address': address,
+      'rfc': rfc,
+      'curp': curp,
+      'notes': notes,
+    });
+    return Contact.fromJson(res['data'] as Map<String, dynamic>);
+  }
 }
 
 final contactRepositoryProvider = Provider<ContactRepository>((ref) {

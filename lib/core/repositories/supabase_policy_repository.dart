@@ -39,6 +39,18 @@ class SupabasePolicyRepository implements PolicyRepository {
     final data = res['data'] as Map<String, dynamic>;
     return Policy.fromJson(data['policy'] as Map<String, dynamic>);
   }
+
+  @override
+  Future<Policy> create(Map<String, dynamic> data) async {
+    final res = await _client.post('policies', body: data);
+    return Policy.fromJson(res['data'] as Map<String, dynamic>);
+  }
+
+  @override
+  Future<Policy> update(String id, Map<String, dynamic> data) async {
+    final res = await _client.patch('policies/$id', body: data);
+    return Policy.fromJson(res['data'] as Map<String, dynamic>);
+  }
 }
 
 final policyRepositoryProvider = Provider<PolicyRepository>((ref) {

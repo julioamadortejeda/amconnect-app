@@ -492,15 +492,6 @@ class _VoiceActiveOrbState extends State<_VoiceActiveOrb>
                   border: isError
                       ? Border.all(color: Colors.red.withValues(alpha: 0.4))
                       : null,
-                  boxShadow: isError
-                      ? null
-                      : [
-                          BoxShadow(
-                            color: AmColors.accent.withValues(alpha: 0.55),
-                            blurRadius: 32,
-                            spreadRadius: 2,
-                          ),
-                        ],
                 ),
                 child: Icon(
                   iconData,

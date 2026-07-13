@@ -45,12 +45,6 @@ class AssistantVoiceBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: AmColors.accent,
         borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-              color: AmColors.accent.withValues(alpha: 0.32),
-              blurRadius: 18,
-              offset: const Offset(0, 6)),
-        ],
       ),
       child: Row(
         children: [

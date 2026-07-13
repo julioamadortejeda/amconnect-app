@@ -14,6 +14,7 @@ class Policy {
     this.status,
     this.currency,
     this.paymentFrequency,
+    this.paymentMethod,
     this.contactId,
     this.contactName,
   });
@@ -32,6 +33,7 @@ class Policy {
   final PolicyCatalog? status;
   final PolicyCurrency? currency;
   final PolicyFrequency? paymentFrequency;
+  final PolicyCatalog? paymentMethod;
   final String? contactId;
   final String? contactName;
 
@@ -58,6 +60,7 @@ class Policy {
     final status  = json['status']  as Map<String, dynamic>?;
     final currency = json['currency'] as Map<String, dynamic>?;
     final freq    = json['paymentFrequency'] as Map<String, dynamic>?;
+    final method  = json['paymentMethod'] as Map<String, dynamic>?;
     final contact = json['contact'] as Map<String, dynamic>?;
 
     return Policy(
@@ -75,6 +78,7 @@ class Policy {
       status:   status   != null ? PolicyCatalog.fromJson(status)   : null,
       currency: currency != null ? PolicyCurrency.fromJson(currency) : null,
       paymentFrequency: freq != null ? PolicyFrequency.fromJson(freq) : null,
+      paymentMethod: method != null ? PolicyCatalog.fromJson(method) : null,
       contactId: json['contactId'] as String? ?? contact?['id'] as String?,
       contactName: contact?['fullName'] as String? ?? contact?['full_name'] as String?,
     );

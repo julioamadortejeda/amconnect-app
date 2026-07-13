@@ -61,13 +61,6 @@ class RemindersScreen extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: AmColors.accent,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AmColors.accent.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: const Icon(Icons.add, color: Colors.white, size: 20),
               ),

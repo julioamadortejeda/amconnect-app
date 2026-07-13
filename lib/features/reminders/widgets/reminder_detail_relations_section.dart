@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/theme/app_dimensions.dart';
-import 'reminder_info_row.dart';
+import '../../../core/widgets/am_info_row.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ReminderDetailRelationsSection extends StatelessWidget {
@@ -38,7 +38,7 @@ class ReminderDetailRelationsSection extends StatelessWidget {
       child: Column(
         children: [
           if (r.policyNumber != null) ...[
-            ReminderInfoRow(
+            AmInfoRow(
               icon: Icons.description_outlined,
               label: l10n.remindersDetailPolicy,
               trailing: Text(
@@ -55,7 +55,7 @@ class ReminderDetailRelationsSection extends StatelessWidget {
               ),
           ],
           if (r.contactId != null)
-            ReminderInfoRow(
+            AmInfoRow(
               icon: Icons.person_outline,
               label: l10n.remindersFieldClient,
               trailing: Text(

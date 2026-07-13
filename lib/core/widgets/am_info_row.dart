@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_dimensions.dart';
+import '../theme/app_dimensions.dart';
 
-class ReminderInfoRow extends StatelessWidget {
-  const ReminderInfoRow({
+/// Fila de "campo: valor" con ícono — usada en pantallas de detalle y de
+/// formulario (icono + label fijo a la izquierda, valor a la derecha,
+/// chevron opcional si es tappable).
+class AmInfoRow extends StatelessWidget {
+  const AmInfoRow({
     super.key,
     required this.icon,
     required this.label,

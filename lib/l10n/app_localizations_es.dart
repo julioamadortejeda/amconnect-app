@@ -124,6 +124,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldPhone => 'Teléfono';
 
   @override
+  String get fieldOccupation => 'Ocupación';
+
+  @override
+  String get fieldAddress => 'Dirección';
+
+  @override
+  String get fieldBirthdate => 'Fecha de nacimiento';
+
+  @override
+  String get fieldRfc => 'RFC';
+
+  @override
+  String get fieldCurp => 'CURP';
+
+  @override
+  String get fieldNotes => 'Notas';
+
+  @override
   String get accountProfileTitle => 'Perfil';
 
   @override
@@ -269,10 +287,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shellAgenda => 'Agenda';
 
   @override
-  String get shellClients => 'Clientes';
+  String get shellClients => 'Cartera';
 
   @override
   String get shellData => 'Datos';
+
+  @override
+  String get analyticsTitle => 'Estadísticas de Cartera';
+
+  @override
+  String get analyticsFunnelTitle => 'Embudo de Prospección';
+
+  @override
+  String get analyticsFunnelProspects => 'Prospectos';
+
+  @override
+  String get analyticsFunnelClients => 'Clientes con póliza';
+
+  @override
+  String get analyticsFunnelRate => 'Tasa de cierre';
+
+  @override
+  String get analyticsPolicyStatus => 'Estatus de Renovación';
+
+  @override
+  String get analyticsPolicyActive => 'Vigentes';
+
+  @override
+  String get analyticsPolicyExpired => 'Vencidas / Por Renovar';
+
+  @override
+  String get analyticsPolicyPending => 'En Trámite';
+
+  @override
+  String get analyticsBranchDist => 'Diversificación por Ramo';
+
+  @override
+  String get analyticsCarrierDist => 'Distribución por Aseguradora';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -503,6 +554,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsNewClient => 'Cliente';
 
   @override
+  String get clientsNewTitle => 'Nuevo cliente';
+
+  @override
+  String get clientsEditTitle => 'Editar cliente';
+
+  @override
+  String get clientsCreateBtn => 'Crear cliente';
+
+  @override
+  String get clientsCreated => 'Cliente creado';
+
+  @override
+  String get clientsUpdated => 'Cliente actualizado';
+
+  @override
+  String get clientsFieldNoBirthdate => 'Sin fecha';
+
+  @override
+  String get clientsSectionPersonal => 'Datos personales';
+
+  @override
+  String get clientsSectionFiscal => 'Fiscal';
+
+  @override
+  String get clientsFieldGeneralNotes => 'Notas generales';
+
+  @override
   String get clientsNoteTypePdf => 'Documento PDF';
 
   @override
@@ -647,6 +725,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersCreated => 'Recordatorio creado';
 
   @override
+  String get remindersSectionInfo => 'Información';
+
+  @override
+  String get remindersSectionDetails => 'Detalles';
+
+  @override
   String get remindersVoiceHint => 'DÍSELO CON TUS PALABRAS';
 
   @override
@@ -691,6 +775,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersNoPolicyOption => 'Sin póliza';
+
+  @override
+  String get remindersSelectStatusTitle => 'Seleccionar estado';
 
   @override
   String get remindersPolicyNeedsClient => 'Elige un cliente primero';
@@ -1124,4 +1211,195 @@ class AppLocalizationsEs extends AppLocalizations {
   String remindersDetailDaysOverdue(int count) {
     return '${count}d venc.';
   }
+
+  @override
+  String get policiesNewPolicyTitle => 'Nueva Póliza';
+
+  @override
+  String get policiesPolicyNumber => 'Número de póliza';
+
+  @override
+  String get policiesCarrier => 'Aseguradora';
+
+  @override
+  String get policiesBranch => 'Ramo';
+
+  @override
+  String get policiesProduct => 'Producto';
+
+  @override
+  String get policiesStatus => 'Estado';
+
+  @override
+  String get policiesCurrency => 'Moneda';
+
+  @override
+  String get policiesPaymentFrequency => 'Frecuencia de pago';
+
+  @override
+  String get policiesPaymentMethod => 'Método de pago';
+
+  @override
+  String get policiesSumInsured => 'Suma asegurada';
+
+  @override
+  String get policiesPremium => 'Prima';
+
+  @override
+  String get policiesDeductible => 'Deducible';
+
+  @override
+  String get policiesStartDate => 'Inicio de vigencia';
+
+  @override
+  String get policiesEndDate => 'Fin de vigencia';
+
+  @override
+  String get policiesRenewalDate => 'Fecha de renovación';
+
+  @override
+  String get policiesNextPaymentDate => 'Siguiente pago';
+
+  @override
+  String get policiesNotes => 'Notas';
+
+  @override
+  String get policiesSaveBtn => 'Guardar póliza';
+
+  @override
+  String get policiesSelectClient => 'Seleccionar cliente';
+
+  @override
+  String get policiesCreateCarrier => 'Crear nueva Aseguradora';
+
+  @override
+  String get policiesCreateBranch => 'Crear nuevo Ramo';
+
+  @override
+  String get policiesCreateProduct => 'Crear nuevo Producto';
+
+  @override
+  String get policiesCreatedSuccess => 'Póliza creada con éxito';
+
+  @override
+  String get policiesEditPolicyTitle => 'Editar Póliza';
+
+  @override
+  String get policiesSaveChangesBtn => 'Guardar cambios';
+
+  @override
+  String get policiesUpdatedSuccess => 'Póliza actualizada con éxito';
+
+  @override
+  String get policiesDetailTitle => 'Detalle de póliza';
+
+  @override
+  String get policiesDetailLoadError => 'No se pudo cargar la póliza.';
+
+  @override
+  String get policiesDetailCoverage => 'Cobertura y pago';
+
+  @override
+  String get policiesDetailDates => 'Fechas';
+
+  @override
+  String get policiesNotesSection => 'Notas';
+
+  @override
+  String get policiesEmptyNotes => 'Aún no hay notas para esta póliza.';
+
+  @override
+  String get policiesAddNoteHint => 'Escribe una nota...';
+
+  @override
+  String get policiesDeleteNoteTitle => 'Eliminar nota';
+
+  @override
+  String get policiesDeleteNoteMsg =>
+      '¿Deseas eliminar esta nota? Esta acción no se puede deshacer.';
+
+  @override
+  String get policiesAttachFile => 'Adjuntar';
+
+  @override
+  String get catalogsTitle => 'Catálogos';
+
+  @override
+  String get catalogsTypeCarriers => 'Aseguradoras';
+
+  @override
+  String get catalogsTypeBranches => 'Ramos';
+
+  @override
+  String get catalogsTypeProducts => 'Productos';
+
+  @override
+  String get catalogsSearchHint => 'Buscar...';
+
+  @override
+  String get catalogsEmpty => 'No hay resultados';
+
+  @override
+  String get catalogsError => 'No se pudieron cargar los catálogos';
+
+  @override
+  String get catalogsFieldName => 'Nombre';
+
+  @override
+  String get catalogsFieldShortName => 'Nombre corto';
+
+  @override
+  String get catalogsFieldCode => 'Código';
+
+  @override
+  String get catalogsSelectCarrier => 'Seleccionar aseguradora';
+
+  @override
+  String get catalogsSelectBranch => 'Seleccionar ramo';
+
+  @override
+  String get catalogsNewCarrierTitle => 'Nueva aseguradora';
+
+  @override
+  String get catalogsEditCarrierTitle => 'Editar aseguradora';
+
+  @override
+  String get catalogsNewBranchTitle => 'Nuevo ramo';
+
+  @override
+  String get catalogsEditBranchTitle => 'Editar ramo';
+
+  @override
+  String get catalogsNewProductTitle => 'Nuevo producto';
+
+  @override
+  String get catalogsEditProductTitle => 'Editar producto';
+
+  @override
+  String get catalogsCreateBtn => 'Crear';
+
+  @override
+  String get catalogsCarrierCreated => 'Aseguradora creada';
+
+  @override
+  String get catalogsCarrierUpdated => 'Aseguradora actualizada';
+
+  @override
+  String get catalogsBranchCreated => 'Ramo creado';
+
+  @override
+  String get catalogsBranchUpdated => 'Ramo actualizado';
+
+  @override
+  String get catalogsProductCreated => 'Producto creado';
+
+  @override
+  String get catalogsProductUpdated => 'Producto actualizado';
+
+  @override
+  String get catalogsDeleteTitle => 'Eliminar elemento';
+
+  @override
+  String get catalogsDeleteMessage =>
+      '¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.';
 }

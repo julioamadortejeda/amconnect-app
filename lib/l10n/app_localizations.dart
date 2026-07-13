@@ -320,6 +320,42 @@ abstract class AppLocalizations {
   /// **'Teléfono'**
   String get fieldPhone;
 
+  /// No description provided for @fieldOccupation.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupación'**
+  String get fieldOccupation;
+
+  /// No description provided for @fieldAddress.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección'**
+  String get fieldAddress;
+
+  /// No description provided for @fieldBirthdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de nacimiento'**
+  String get fieldBirthdate;
+
+  /// No description provided for @fieldRfc.
+  ///
+  /// In es, this message translates to:
+  /// **'RFC'**
+  String get fieldRfc;
+
+  /// No description provided for @fieldCurp.
+  ///
+  /// In es, this message translates to:
+  /// **'CURP'**
+  String get fieldCurp;
+
+  /// No description provided for @fieldNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get fieldNotes;
+
   /// No description provided for @accountProfileTitle.
   ///
   /// In es, this message translates to:
@@ -569,7 +605,7 @@ abstract class AppLocalizations {
   /// No description provided for @shellClients.
   ///
   /// In es, this message translates to:
-  /// **'Clientes'**
+  /// **'Cartera'**
   String get shellClients;
 
   /// No description provided for @shellData.
@@ -577,6 +613,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Datos'**
   String get shellData;
+
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas de Cartera'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsFunnelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Embudo de Prospección'**
+  String get analyticsFunnelTitle;
+
+  /// No description provided for @analyticsFunnelProspects.
+  ///
+  /// In es, this message translates to:
+  /// **'Prospectos'**
+  String get analyticsFunnelProspects;
+
+  /// No description provided for @analyticsFunnelClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Clientes con póliza'**
+  String get analyticsFunnelClients;
+
+  /// No description provided for @analyticsFunnelRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Tasa de cierre'**
+  String get analyticsFunnelRate;
+
+  /// No description provided for @analyticsPolicyStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estatus de Renovación'**
+  String get analyticsPolicyStatus;
+
+  /// No description provided for @analyticsPolicyActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigentes'**
+  String get analyticsPolicyActive;
+
+  /// No description provided for @analyticsPolicyExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencidas / Por Renovar'**
+  String get analyticsPolicyExpired;
+
+  /// No description provided for @analyticsPolicyPending.
+  ///
+  /// In es, this message translates to:
+  /// **'En Trámite'**
+  String get analyticsPolicyPending;
+
+  /// No description provided for @analyticsBranchDist.
+  ///
+  /// In es, this message translates to:
+  /// **'Diversificación por Ramo'**
+  String get analyticsBranchDist;
+
+  /// No description provided for @analyticsCarrierDist.
+  ///
+  /// In es, this message translates to:
+  /// **'Distribución por Aseguradora'**
+  String get analyticsCarrierDist;
 
   /// No description provided for @homeTitle.
   ///
@@ -1004,6 +1106,60 @@ abstract class AppLocalizations {
   /// **'Cliente'**
   String get clientsNewClient;
 
+  /// No description provided for @clientsNewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo cliente'**
+  String get clientsNewTitle;
+
+  /// No description provided for @clientsEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar cliente'**
+  String get clientsEditTitle;
+
+  /// No description provided for @clientsCreateBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cliente'**
+  String get clientsCreateBtn;
+
+  /// No description provided for @clientsCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente creado'**
+  String get clientsCreated;
+
+  /// No description provided for @clientsUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente actualizado'**
+  String get clientsUpdated;
+
+  /// No description provided for @clientsFieldNoBirthdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin fecha'**
+  String get clientsFieldNoBirthdate;
+
+  /// No description provided for @clientsSectionPersonal.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos personales'**
+  String get clientsSectionPersonal;
+
+  /// No description provided for @clientsSectionFiscal.
+  ///
+  /// In es, this message translates to:
+  /// **'Fiscal'**
+  String get clientsSectionFiscal;
+
+  /// No description provided for @clientsFieldGeneralNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas generales'**
+  String get clientsFieldGeneralNotes;
+
   /// No description provided for @clientsNoteTypePdf.
   ///
   /// In es, this message translates to:
@@ -1268,6 +1424,18 @@ abstract class AppLocalizations {
   /// **'Recordatorio creado'**
   String get remindersCreated;
 
+  /// No description provided for @remindersSectionInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Información'**
+  String get remindersSectionInfo;
+
+  /// No description provided for @remindersSectionDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles'**
+  String get remindersSectionDetails;
+
   /// No description provided for @remindersVoiceHint.
   ///
   /// In es, this message translates to:
@@ -1357,6 +1525,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sin póliza'**
   String get remindersNoPolicyOption;
+
+  /// No description provided for @remindersSelectStatusTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar estado'**
+  String get remindersSelectStatusTitle;
 
   /// No description provided for @remindersPolicyNeedsClient.
   ///
@@ -2191,6 +2365,384 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count}d venc.'**
   String remindersDetailDaysOverdue(int count);
+
+  /// No description provided for @policiesNewPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Póliza'**
+  String get policiesNewPolicyTitle;
+
+  /// No description provided for @policiesPolicyNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Número de póliza'**
+  String get policiesPolicyNumber;
+
+  /// No description provided for @policiesCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora'**
+  String get policiesCarrier;
+
+  /// No description provided for @policiesBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo'**
+  String get policiesBranch;
+
+  /// No description provided for @policiesProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get policiesProduct;
+
+  /// No description provided for @policiesStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get policiesStatus;
+
+  /// No description provided for @policiesCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get policiesCurrency;
+
+  /// No description provided for @policiesPaymentFrequency.
+  ///
+  /// In es, this message translates to:
+  /// **'Frecuencia de pago'**
+  String get policiesPaymentFrequency;
+
+  /// No description provided for @policiesPaymentMethod.
+  ///
+  /// In es, this message translates to:
+  /// **'Método de pago'**
+  String get policiesPaymentMethod;
+
+  /// No description provided for @policiesSumInsured.
+  ///
+  /// In es, this message translates to:
+  /// **'Suma asegurada'**
+  String get policiesSumInsured;
+
+  /// No description provided for @policiesPremium.
+  ///
+  /// In es, this message translates to:
+  /// **'Prima'**
+  String get policiesPremium;
+
+  /// No description provided for @policiesDeductible.
+  ///
+  /// In es, this message translates to:
+  /// **'Deducible'**
+  String get policiesDeductible;
+
+  /// No description provided for @policiesStartDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de vigencia'**
+  String get policiesStartDate;
+
+  /// No description provided for @policiesEndDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de vigencia'**
+  String get policiesEndDate;
+
+  /// No description provided for @policiesRenewalDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de renovación'**
+  String get policiesRenewalDate;
+
+  /// No description provided for @policiesNextPaymentDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente pago'**
+  String get policiesNextPaymentDate;
+
+  /// No description provided for @policiesNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get policiesNotes;
+
+  /// No description provided for @policiesSaveBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar póliza'**
+  String get policiesSaveBtn;
+
+  /// No description provided for @policiesSelectClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get policiesSelectClient;
+
+  /// No description provided for @policiesCreateCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nueva Aseguradora'**
+  String get policiesCreateCarrier;
+
+  /// No description provided for @policiesCreateBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo Ramo'**
+  String get policiesCreateBranch;
+
+  /// No description provided for @policiesCreateProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo Producto'**
+  String get policiesCreateProduct;
+
+  /// No description provided for @policiesCreatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza creada con éxito'**
+  String get policiesCreatedSuccess;
+
+  /// No description provided for @policiesEditPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Póliza'**
+  String get policiesEditPolicyTitle;
+
+  /// No description provided for @policiesSaveChangesBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get policiesSaveChangesBtn;
+
+  /// No description provided for @policiesUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada con éxito'**
+  String get policiesUpdatedSuccess;
+
+  /// No description provided for @policiesDetailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle de póliza'**
+  String get policiesDetailTitle;
+
+  /// No description provided for @policiesDetailLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la póliza.'**
+  String get policiesDetailLoadError;
+
+  /// No description provided for @policiesDetailCoverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobertura y pago'**
+  String get policiesDetailCoverage;
+
+  /// No description provided for @policiesDetailDates.
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas'**
+  String get policiesDetailDates;
+
+  /// No description provided for @policiesNotesSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get policiesNotesSection;
+
+  /// No description provided for @policiesEmptyNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay notas para esta póliza.'**
+  String get policiesEmptyNotes;
+
+  /// No description provided for @policiesAddNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una nota...'**
+  String get policiesAddNoteHint;
+
+  /// No description provided for @policiesDeleteNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar nota'**
+  String get policiesDeleteNoteTitle;
+
+  /// No description provided for @policiesDeleteNoteMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Deseas eliminar esta nota? Esta acción no se puede deshacer.'**
+  String get policiesDeleteNoteMsg;
+
+  /// No description provided for @policiesAttachFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Adjuntar'**
+  String get policiesAttachFile;
+
+  /// No description provided for @catalogsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogos'**
+  String get catalogsTitle;
+
+  /// No description provided for @catalogsTypeCarriers.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradoras'**
+  String get catalogsTypeCarriers;
+
+  /// No description provided for @catalogsTypeBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramos'**
+  String get catalogsTypeBranches;
+
+  /// No description provided for @catalogsTypeProducts.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos'**
+  String get catalogsTypeProducts;
+
+  /// No description provided for @catalogsSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar...'**
+  String get catalogsSearchHint;
+
+  /// No description provided for @catalogsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay resultados'**
+  String get catalogsEmpty;
+
+  /// No description provided for @catalogsError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los catálogos'**
+  String get catalogsError;
+
+  /// No description provided for @catalogsFieldName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get catalogsFieldName;
+
+  /// No description provided for @catalogsFieldShortName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre corto'**
+  String get catalogsFieldShortName;
+
+  /// No description provided for @catalogsFieldCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get catalogsFieldCode;
+
+  /// No description provided for @catalogsSelectCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar aseguradora'**
+  String get catalogsSelectCarrier;
+
+  /// No description provided for @catalogsSelectBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar ramo'**
+  String get catalogsSelectBranch;
+
+  /// No description provided for @catalogsNewCarrierTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva aseguradora'**
+  String get catalogsNewCarrierTitle;
+
+  /// No description provided for @catalogsEditCarrierTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar aseguradora'**
+  String get catalogsEditCarrierTitle;
+
+  /// No description provided for @catalogsNewBranchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo ramo'**
+  String get catalogsNewBranchTitle;
+
+  /// No description provided for @catalogsEditBranchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ramo'**
+  String get catalogsEditBranchTitle;
+
+  /// No description provided for @catalogsNewProductTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo producto'**
+  String get catalogsNewProductTitle;
+
+  /// No description provided for @catalogsEditProductTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar producto'**
+  String get catalogsEditProductTitle;
+
+  /// No description provided for @catalogsCreateBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear'**
+  String get catalogsCreateBtn;
+
+  /// No description provided for @catalogsCarrierCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora creada'**
+  String get catalogsCarrierCreated;
+
+  /// No description provided for @catalogsCarrierUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora actualizada'**
+  String get catalogsCarrierUpdated;
+
+  /// No description provided for @catalogsBranchCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo creado'**
+  String get catalogsBranchCreated;
+
+  /// No description provided for @catalogsBranchUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo actualizado'**
+  String get catalogsBranchUpdated;
+
+  /// No description provided for @catalogsProductCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto creado'**
+  String get catalogsProductCreated;
+
+  /// No description provided for @catalogsProductUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto actualizado'**
+  String get catalogsProductUpdated;
+
+  /// No description provided for @catalogsDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar elemento'**
+  String get catalogsDeleteTitle;
+
+  /// No description provided for @catalogsDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.'**
+  String get catalogsDeleteMessage;
 }
 
 class _AppLocalizationsDelegate

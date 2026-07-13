@@ -345,9 +345,11 @@ class AssistantNotifier extends Notifier<AssistantState> {
   // modelo conserva el contexto de lo hablado/escrito antes.
   Future<(Map<String, dynamic>, Map<String, dynamic>)> _fetchInitAndToken(
       String timezone, String? resumeSessionId) async {
+    final ctx = state.activeContext ?? state.pendingContext;
     final initData = await _post('/ai/voice/init', {
       'timezone': timezone,
       'sessionId': resumeSessionId,
+      if (ctx != null) 'context': ctx.toJson(),
     }) as Map<String, dynamic>;
     final tokenData = await _post('/ai/voice/token', {
       'systemInstruction': initData['systemInstruction'],

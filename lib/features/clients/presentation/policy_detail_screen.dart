@@ -1,0 +1,482 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../core/models/agent_note.dart';
+import '../../../core/models/policy.dart';
+import '../../../core/repositories/supabase_note_repository.dart';
+import '../../../core/repositories/supabase_policy_repository.dart';
+import '../../../core/repositories/supabase_storage_repository.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/formatters.dart';
+import '../../../core/widgets/am_confirm_dialog.dart';
+import '../../../core/widgets/am_form_row.dart';
+import '../../feed/widgets/ingest_type_picker.dart';
+import '../../../core/widgets/am_group_card.dart';
+import '../../../core/widgets/am_info_row.dart';
+import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_press.dart';
+import '../../../core/widgets/am_ramo_icon.dart';
+import '../../../core/widgets/am_section_label.dart';
+import '../../../core/widgets/am_text_field.dart';
+import '../../../core/widgets/am_top_bar.dart';
+import '../../../l10n/app_localizations.dart';
+import '../providers/clients_provider.dart';
+
+class PolicyDetailScreen extends ConsumerStatefulWidget {
+  const PolicyDetailScreen({super.key, this.policy, this.policyId})
+      : assert(policy != null || policyId != null,
+            'Must provide either policy or policyId');
+
+  final Policy? policy;
+  final String? policyId;
+
+  @override
+  ConsumerState<PolicyDetailScreen> createState() =>
+      _PolicyDetailScreenState();
+}
+
+class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
+  Policy? _policy;
+  bool _loading = false;
+  bool _loadError = false;
+  final _noteCtrl = TextEditingController();
+  bool _sendingNote = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.policy != null) {
+      _policy = widget.policy;
+    } else {
+      _loadPolicy();
+    }
+  }
+
+  @override
+  void dispose() {
+    _noteCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadPolicy() async {
+    setState(() {
+      _loading = true;
+      _loadError = false;
+    });
+    try {
+      final p = await ref.read(policyRepositoryProvider).getById(widget.policyId!);
+      if (!mounted) return;
+      setState(() {
+        _policy = p;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _loadError = true;
+      });
+    }
+  }
+
+  Future<void> _edit() async {
+    final result = await context.push<Policy>('/create-policy', extra: _policy);
+    if (result != null && mounted) setState(() => _policy = result);
+  }
+
+  Future<void> _sendNote() async {
+    final text = _noteCtrl.text.trim();
+    final policy = _policy;
+    if (text.isEmpty || policy == null || _sendingNote) return;
+    setState(() => _sendingNote = true);
+    try {
+      await ref.read(noteRepositoryProvider).createPolicyNote(policy.id, text);
+      _noteCtrl.clear();
+      ref.invalidate(policyNotesProvider(policy.id));
+    } catch (_) {
+    } finally {
+      if (mounted) setState(() => _sendingNote = false);
+    }
+  }
+
+  Future<void> _confirmDeleteNote(AgentNote note) async {
+    final policy = _policy;
+    if (policy == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AmConfirmDialog(
+        title: l10n.policiesDeleteNoteTitle,
+        message: l10n.policiesDeleteNoteMsg,
+        confirmLabel: l10n.commonDelete,
+        cancelLabel: l10n.commonCancel,
+        icon: Icons.delete_outline_rounded,
+        iconBgColor: cs.errorContainer,
+        iconFgColor: cs.error,
+        onConfirm: () => Navigator.of(ctx).pop(true),
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ref.read(noteRepositoryProvider).deleteNote(note.id);
+      ref.invalidate(policyNotesProvider(policy.id));
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_loading) {
+      return Scaffold(
+        appBar: AmTopBar(title: l10n.policiesDetailTitle, showBack: true),
+        body: const AmLoader(),
+      );
+    }
+
+    if (_loadError || _policy == null) {
+      return Scaffold(
+        appBar: AmTopBar(title: l10n.policiesDetailTitle, showBack: true),
+        body: SafeArea(
+          top: false,
+          child: Center(
+            child: Text(
+              l10n.policiesDetailLoadError,
+              style: TextStyle(color: cs.error, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
+    final policy = _policy!;
+    ref.watch(policyNotesRealtimeProvider(policy.id));
+    final notesAsync = ref.watch(policyNotesProvider(policy.id));
+    final notes = notesAsync.asData?.value ?? <AgentNote>[];
+
+    return Scaffold(
+      appBar: AmTopBar(
+        title: l10n.policiesDetailTitle,
+        showBack: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: AmPress(
+              onTap: _edit,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: cs.secondaryContainer,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.edit_outlined,
+                    size: 18, color: cs.onSurfaceVariant),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+              AmDimens.screenH, AmDimens.gapM, AmDimens.screenH, 40),
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                AmRamoIcon(ramo: policy.branchName, size: 48),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        policy.productName,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        _carrierAndNumber(policy),
+                        style: TextStyle(fontSize: 13, color: cs.tertiary),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AmDimens.gapL),
+
+            AmSectionLabel(label: l10n.policiesDetailCoverage),
+            const SizedBox(height: AmDimens.gapXS),
+            AmGroupCard(children: [
+              AmInfoRow(
+                icon: Icons.info_outline,
+                label: l10n.policiesStatus,
+                trailing: Text(policy.statusCode),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.shield_outlined,
+                label: l10n.policiesSumInsured,
+                trailing: Text(fmtCurrency(policy.sumInsured)),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.wallet_outlined,
+                label: l10n.policiesPremium,
+                trailing: Text(fmtPremium(policy.premium, policy.frequencyLabel)),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.price_change_outlined,
+                label: l10n.policiesDeductible,
+                trailing: Text(policy.deductible ?? '—'),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.monetization_on_outlined,
+                label: l10n.policiesCurrency,
+                trailing: Text(policy.currencyCode),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.payment_outlined,
+                label: l10n.policiesPaymentMethod,
+                trailing: Text(policy.paymentMethod?.name ?? '—'),
+              ),
+            ]),
+            const SizedBox(height: AmDimens.gapM),
+
+            AmSectionLabel(label: l10n.policiesDetailDates),
+            const SizedBox(height: AmDimens.gapXS),
+            AmGroupCard(children: [
+              AmInfoRow(
+                icon: Icons.calendar_today_outlined,
+                label: l10n.policiesStartDate,
+                trailing: Text(fmtDateFromIso(policy.startDate)),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.event_busy_outlined,
+                label: l10n.policiesEndDate,
+                trailing: Text(fmtDateFromIso(policy.endDate)),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.autorenew_outlined,
+                label: l10n.policiesRenewalDate,
+                trailing: Text(fmtDateFromIso(policy.renewalDate)),
+              ),
+              const AmFormDivider(),
+              AmInfoRow(
+                icon: Icons.next_plan_outlined,
+                label: l10n.policiesNextPaymentDate,
+                trailing: Text(fmtDateFromIso(policy.nextPaymentDate)),
+              ),
+            ]),
+            const SizedBox(height: AmDimens.gapM),
+
+            AmSectionLabel(
+              label: l10n.policiesNotesSection,
+              trailing: GestureDetector(
+                onTap: () => IngestTypePicker.show(
+                  context,
+                  contactId: policy.contactId,
+                  policyId: policy.id,
+                  showPolicyExtraction: false,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.attach_file_outlined, size: 14, color: cs.primary),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.policiesAttachFile,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: cs.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AmDimens.gapXS),
+            AmGroupCard(children: [
+              if (notes.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AmDimens.screenH, vertical: AmDimens.gapS),
+                  child: Text(
+                    l10n.policiesEmptyNotes,
+                    style: TextStyle(fontSize: 13.5, color: cs.tertiary),
+                  ),
+                )
+              else
+                for (final note in notes)
+                  _PolicyDetailNoteRow(
+                    note: note,
+                    onDelete: note.sourceType == 'text'
+                        ? () => _confirmDeleteNote(note)
+                        : null,
+                  ),
+              const AmFormDivider(),
+              Padding(
+                padding: const EdgeInsets.all(AmDimens.gapS),
+                child: AmTextField(
+                  controller: _noteCtrl,
+                  hint: l10n.policiesAddNoteHint,
+                  icon: Icons.edit_note_outlined,
+                  onSubmitted: (_) => _sendNote(),
+                  suffix: Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: _sendingNote
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.send_rounded, color: cs.primary),
+                            onPressed: _sendNote,
+                          ),
+                  ),
+                ),
+              ),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _carrierAndNumber(Policy p) {
+    final parts = <String>[
+      if (p.carrierName.isNotEmpty && p.carrierName != '—') p.carrierName,
+      if (p.policyNumber?.isNotEmpty == true) p.policyNumber!,
+    ];
+    return parts.join(' · ');
+  }
+}
+
+class _PolicyDetailNoteRow extends ConsumerStatefulWidget {
+  const _PolicyDetailNoteRow({required this.note, this.onDelete});
+
+  final AgentNote note;
+  final VoidCallback? onDelete;
+
+  @override
+  ConsumerState<_PolicyDetailNoteRow> createState() => _PolicyDetailNoteRowState();
+}
+
+class _PolicyDetailNoteRowState extends ConsumerState<_PolicyDetailNoteRow> {
+  bool _openingFile = false;
+
+  Future<void> _openFile() async {
+    if (_openingFile || widget.note.storagePath == null) return;
+    setState(() => _openingFile = true);
+    try {
+      final signedUrl = await ref
+          .read(storageRepositoryProvider)
+          .getSignedUrl(widget.note.storagePath!);
+      final uri = Uri.parse(signedUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {
+    } finally {
+      if (mounted) setState(() => _openingFile = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final note = widget.note;
+    final dt = DateTime.tryParse(note.createdAt)?.toLocal();
+    final dateStr = dt != null ? DateFormat.MMMd().format(dt) : '';
+    final isTextNote = note.sourceType == 'text';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AmDimens.screenH, vertical: AmDimens.gapS / 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: cs.primaryContainer.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              isTextNote ? Icons.sticky_note_2_outlined : Icons.picture_as_pdf_outlined,
+              size: 17,
+              color: cs.primary,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isTextNote ? note.content : (note.fileName ?? 'documento.pdf'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: cs.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(dateStr, style: TextStyle(fontSize: 11.5, color: cs.tertiary)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (!isTextNote && note.storagePath != null)
+            GestureDetector(
+              onTap: _openFile,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: cs.secondaryContainer,
+                  borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
+                ),
+                child: _openingFile
+                    ? SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 1.5,
+                          color: cs.onSurfaceVariant,
+                        ),
+                      )
+                    : Icon(Icons.open_in_new_rounded, size: 14, color: cs.onSurfaceVariant),
+              ),
+            ),
+          if (widget.onDelete != null)
+            GestureDetector(
+              onTap: widget.onDelete,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: Icon(Icons.delete_outline_rounded, size: 18, color: cs.error),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
