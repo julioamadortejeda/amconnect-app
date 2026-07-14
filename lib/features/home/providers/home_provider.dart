@@ -261,7 +261,15 @@ final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
   final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
   final clientsCount = ref.watch(clientsProvider).asData?.value.length ?? 0;
 
-  final pending = reminders.where((r) => r.isActive).toList();
+  final pending = reminders.where((r) => r.isActive).toList()
+    ..sort((a, b) {
+      final aDate = a.dueDate;
+      final bDate = b.dueDate;
+      if (aDate == null && bDate == null) return 0;
+      if (aDate == null) return 1;
+      if (bDate == null) return -1;
+      return aDate.compareTo(bDate);
+    });
   final urgentCount = pending.where((r) => r.isUrgent).length;
   final porRenovar = pending.where((r) => r.isRenewal).length;
   final followUps = (pending.where((r) => r.isFollowUp).toList())

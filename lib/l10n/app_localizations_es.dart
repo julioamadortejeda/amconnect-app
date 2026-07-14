@@ -1001,6 +1001,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedSuccessTitle => 'Póliza creada';
 
   @override
+  String get feedSuccessUpdateTitle => 'Póliza actualizada';
+
+  @override
   String feedSuccessFieldsSaved(int count) {
     return '$count datos guardados';
   }
@@ -1059,6 +1062,33 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedPreviewConfirm => 'Confirmar';
+
+  @override
+  String get feedIngestConfirmCta => 'Sí, guardar';
+
+  @override
+  String get feedIngestCorrectCta => 'Corregir / Chatear';
+
+  @override
+  String get feedIngestCancelCta => 'Cancelar';
+
+  @override
+  String get feedIngestHolderLabel => 'Contratante';
+
+  @override
+  String get feedIngestCarrierLabel => 'Aseguradora';
+
+  @override
+  String get feedIngestBranchProductLabel => 'Ramo / Prod.';
+
+  @override
+  String get feedIngestPolicyNumberLabel => 'Nº Póliza';
+
+  @override
+  String get feedIngestPremiumLabel => 'Prima';
+
+  @override
+  String get feedIngestValidityLabel => 'Vigencia';
 
   @override
   String get remindersActionDone => 'Finalizar';

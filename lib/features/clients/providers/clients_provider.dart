@@ -39,7 +39,16 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
   @override
   Future<List<Contact>> build() async {
     _repo = ref.read(contactRepositoryProvider);
-    final initial = await _repo.getAll();
+    final List<Contact> initial;
+    try {
+      initial = await _repo.getAll();
+    } catch (e, st) {
+      // Diagnóstico temporal: ApiClient nunca loggea errores y la UI los
+      // traga en blanco (error: (_, __) => ...) — sin esto es imposible ver
+      // qué está fallando realmente.
+      debugPrint('[clientsProvider] getAll() failed: $e\n$st');
+      rethrow;
+    }
 
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId != null) {
@@ -461,8 +470,20 @@ final contactAiContextProvider =
   }
 
   final policies = ref.watch(contactPoliciesProvider(contactId)).asData?.value;
-  final notes = ref.watch(contactNotesProvider(contactId)).asData?.value;
+  final contactNotes = ref.watch(contactNotesProvider(contactId)).asData?.value ?? [];
 
-  return AiChatContext.fromContact(contact, policies: policies, notes: notes);
+  // El asesor espera que el chat "sepa" todo sobre el cliente, incluidas las
+  // notas que se agregaron desde el detalle de una póliza suya (note_origin
+  // 'policy') — no solo las de conocimiento general (note_origin 'knowledge').
+  final policyNotes = <AgentNote>[
+    for (final p in policies ?? <Policy>[])
+      ...(ref.watch(policyNotesProvider(p.id)).asData?.value ?? <AgentNote>[]),
+  ];
+
+  return AiChatContext.fromContact(
+    contact,
+    policies: policies,
+    notes: [...contactNotes, ...policyNotes],
+  );
 });
 

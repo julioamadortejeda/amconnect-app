@@ -994,6 +994,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedSuccessTitle => 'Policy created';
 
   @override
+  String get feedSuccessUpdateTitle => 'Policy updated';
+
+  @override
   String feedSuccessFieldsSaved(int count) {
     return '$count fields saved';
   }
@@ -1053,6 +1056,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedPreviewConfirm => 'Confirm';
+
+  @override
+  String get feedIngestConfirmCta => 'Yes, save';
+
+  @override
+  String get feedIngestCorrectCta => 'Correct / Chat';
+
+  @override
+  String get feedIngestCancelCta => 'Cancel';
+
+  @override
+  String get feedIngestHolderLabel => 'Policyholder';
+
+  @override
+  String get feedIngestCarrierLabel => 'Carrier';
+
+  @override
+  String get feedIngestBranchProductLabel => 'Branch / Prod.';
+
+  @override
+  String get feedIngestPolicyNumberLabel => 'Policy No.';
+
+  @override
+  String get feedIngestPremiumLabel => 'Premium';
+
+  @override
+  String get feedIngestValidityLabel => 'Validity';
 
   @override
   String get remindersActionDone => 'Mark done';

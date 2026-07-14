@@ -69,6 +69,9 @@ class AmColors {
 
   // Acentos absolutos de badges (mismos en light/dark)
   static const gold = Color(0xFFB9791A);
+
+  // Scrim de modales sobre el contenido — fijo, no depende del theme
+  static const scrim = Color(0x57000000); // black 34%
 }
 
 /// Sombras estándar de cards. Usar SIEMPRE estos tokens en lugar de

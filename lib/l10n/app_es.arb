@@ -416,6 +416,7 @@
   "feedAllNotesTitle": "Todas las notas",
 
   "feedSuccessTitle": "Póliza creada",
+  "feedSuccessUpdateTitle": "Póliza actualizada",
   "feedSuccessFieldsSaved": "{count} datos guardados",
   "@feedSuccessFieldsSaved": {
     "placeholders": { "count": { "type": "int" } }
@@ -444,6 +445,15 @@
   "feedConfirmPolicyTitle": "Confirmar póliza",
   "feedPreviewTitle": "Confirmar archivo",
   "feedPreviewConfirm": "Confirmar",
+  "feedIngestConfirmCta": "Sí, guardar",
+  "feedIngestCorrectCta": "Corregir / Chatear",
+  "feedIngestCancelCta": "Cancelar",
+  "feedIngestHolderLabel": "Contratante",
+  "feedIngestCarrierLabel": "Aseguradora",
+  "feedIngestBranchProductLabel": "Ramo / Prod.",
+  "feedIngestPolicyNumberLabel": "Nº Póliza",
+  "feedIngestPremiumLabel": "Prima",
+  "feedIngestValidityLabel": "Vigencia",
 
   "@_reminderActions": {},
   "remindersActionDone": "Finalizar",

@@ -29,12 +29,20 @@ class IngestFlowOverlay extends ConsumerStatefulWidget {
 class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
   void _handleClose() {
     ref.read(ingestProvider.notifier).reset();
-    ref.invalidate(recentFeedProvider);
-    ref.invalidate(knowledgeListProvider);
-    ref.invalidate(knowledgeStatsProvider);
-    ref.invalidate(clientsProvider);
-    ref.invalidate(policiesProvider);
-    ref.invalidate(policiesCountProvider);
+    // Las invalidaciones se difieren al siguiente frame: si corren en el
+    // mismo tick en que el sheet termina de cerrarse, pueden coincidir con
+    // el build de la pantalla que quedó debajo (ej. el tab de Clientes) y
+    // Riverpod intenta un setState() en pleno build → crash
+    // ("setState() or markNeedsBuild() called during build").
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.invalidate(recentFeedProvider);
+      ref.invalidate(knowledgeListProvider);
+      ref.invalidate(knowledgeStatsProvider);
+      ref.invalidate(clientsProvider);
+      ref.invalidate(policiesProvider);
+      ref.invalidate(policiesCountProvider);
+    });
   }
 
   void _showKnowledgeSuccess(String message) {
@@ -67,8 +75,8 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
       final state = ref.read(ingestProvider);
       if (state.phase == IngestPhase.knowledgeSuccess && state.knowledgeMessage != null) {
         _showKnowledgeSuccess(state.knowledgeMessage!);
-      } else if (state.phase != IngestPhase.idle) {
-        ref.read(ingestProvider.notifier).reset();
+      } else {
+        _handleClose();
       }
     });
   }

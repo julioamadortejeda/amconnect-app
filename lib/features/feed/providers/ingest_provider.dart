@@ -99,6 +99,8 @@ class IngestState {
   final String? statusMessageKey;
   final String? contactId;
   final String? policyId;
+  final bool isDuplicate;
+  final bool isUpdate;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -113,6 +115,8 @@ class IngestState {
     this.statusMessageKey,
     this.contactId,
     this.policyId,
+    this.isDuplicate = false,
+    this.isUpdate = false,
   });
 
   IngestState copyWith({
@@ -128,6 +132,8 @@ class IngestState {
     String? statusMessageKey,
     String? contactId,
     String? policyId,
+    bool? isDuplicate,
+    bool? isUpdate,
   }) =>
       IngestState(
         phase: phase ?? this.phase,
@@ -142,6 +148,8 @@ class IngestState {
         statusMessageKey: statusMessageKey ?? this.statusMessageKey,
         contactId: contactId ?? this.contactId,
         policyId: policyId ?? this.policyId,
+        isDuplicate: isDuplicate ?? this.isDuplicate,
+        isUpdate: isUpdate ?? this.isUpdate,
       );
 }
 
@@ -188,6 +196,7 @@ class IngestNotifier extends Notifier<IngestState> {
         extraction: result.extraction,
         messages: [IngestMessage(role: 'ai', text: result.message)],
         statusMessageKey: null,
+        isDuplicate: result.isDuplicate,
       );
     } catch (e) {
       state = state.copyWith(
@@ -208,18 +217,15 @@ class IngestNotifier extends Notifier<IngestState> {
     try {
       final result = await _repo.chat(text, state.sessionId!);
       final metadata = result.metadata;
-      final isSuccess = metadata != null && metadata['type'] == 'policy_confirmed';
-
-      PolicyConfirmedData? confirmedPolicy;
-      if (isSuccess) {
-        confirmedPolicy = PolicyConfirmedData.fromMap(metadata);
-      }
+      final type = metadata?['type'];
+      final isSuccess = type == 'policy_confirmed' || type == 'policy_updated';
 
       state = state.copyWith(
         messages: [...state.messages, IngestMessage(role: 'ai', text: result.text)],
         isSending: false,
         phase: isSuccess ? IngestPhase.success : IngestPhase.chatting,
-        confirmedPolicy: confirmedPolicy,
+        confirmedPolicy: isSuccess ? PolicyConfirmedData.fromMap(metadata!) : null,
+        isUpdate: isSuccess && type == 'policy_updated',
       );
     } catch (e) {
       state = state.copyWith(
@@ -227,6 +233,16 @@ class IngestNotifier extends Notifier<IngestState> {
         error: mapApiError(e),
       );
     }
+  }
+
+  /// Cierra el sheet de ingesta sin cancelar la sesión de IA — se usa cuando
+  /// el asesor pasa a corregir en el Assistant (ver AssistantResumeArgs),
+  /// que retoma la MISMA sesión. A diferencia de reset(), no llama a
+  /// cancelSession: la sesión sigue viva, solo cambia quién la muestra.
+  /// El phase vuelve a idle para que el overlay cierre el modal y quede
+  /// listo para la siguiente ingesta (ver IngestFlowOverlay).
+  void closeForAssistantHandoff() {
+    state = const IngestState();
   }
 
   Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, bool? makeGeneral}) async {

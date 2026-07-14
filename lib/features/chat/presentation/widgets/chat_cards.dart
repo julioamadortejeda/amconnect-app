@@ -5,6 +5,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/am_theme.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/widgets/am_press.dart';
+import '../../../../core/widgets/am_badge.dart';
+import '../../../../core/widgets/am_section_label.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/providers/home_provider.dart';
@@ -18,6 +20,8 @@ Widget? buildChatCard(Map<String, dynamic> metadata, BuildContext context) {
   switch (type) {
     case 'policy_confirmed':
       return _PolicyConfirmedCard(data: metadata);
+    case 'policy_updated':
+      return _PolicyConfirmedCard(data: metadata, isUpdate: true);
     case 'contact_created':
       return _ContactCreatedCard(data: metadata);
     case 'reminder_created':
@@ -40,8 +44,9 @@ Widget? buildChatCard(Map<String, dynamic> metadata, BuildContext context) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _PolicyConfirmedCard extends StatelessWidget {
-  const _PolicyConfirmedCard({required this.data});
+  const _PolicyConfirmedCard({required this.data, this.isUpdate = false});
   final Map<String, dynamic> data;
+  final bool isUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -52,53 +57,35 @@ class _PolicyConfirmedCard extends StatelessWidget {
     final holder = data['holderName'] as String? ?? '';
     final policyNumber = data['policyNumber'] as String? ?? '';
     final policyId = data['policyId'] as String? ?? '';
-    final reminders = data['reminders'] as List? ?? [];
+    final remindersMap = data['reminders'] as Map<String, dynamic>? ?? {};
+    final reminders = [
+      ...(remindersMap['created'] as List? ?? []),
+      ...(remindersMap['existing'] as List? ?? []),
+    ];
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AmColors.accent.withValues(alpha: 0.08),
-            AmColors.accent.withValues(alpha: 0.03),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AmColors.accent.withValues(alpha: 0.18)),
-        boxShadow: [
-          BoxShadow(
-            color: AmColors.accent.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+        border: Border.all(color: cs.outlineVariant),
+        boxShadow: AmShadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header ──────────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AmColors.accent, Color(0xFF2AB5FF)],
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15),
-                topRight: Radius.circular(15),
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
             child: Row(
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(10),
+                    color: am.greenWash,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.shield_rounded, color: Colors.white, size: 18),
+                  child: Icon(Icons.check_circle_rounded, color: am.green, size: 22),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -106,34 +93,29 @@ class _PolicyConfirmedCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Póliza Creada',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 0.3,
+                        isUpdate ? 'Póliza actualizada' : 'Póliza creada',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: cs.onSurface,
                         ),
                       ),
                       if (policyNumber.isNotEmpty)
                         Text(
                           '#$policyNumber',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.75),
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontSize: 12, color: cs.tertiary),
                         ),
                     ],
                   ),
                 ),
-                Icon(Icons.check_circle_rounded, color: Colors.white.withValues(alpha: 0.85), size: 22),
               ],
             ),
           ),
+          Divider(height: 1, color: cs.outlineVariant),
 
           // ── Body fields ─────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -150,19 +132,10 @@ class _PolicyConfirmedCard extends StatelessWidget {
           // ── Auto-generated reminders ────────────────────────────
           if (reminders.isNotEmpty) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Divider(height: 1, color: cs.outline.withValues(alpha: 0.15)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
-              child: Text(
-                'Recordatorios automáticos',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: cs.tertiary,
-                  letterSpacing: 0.2,
-                ),
+              padding: const EdgeInsets.fromLTRB(14, 4, 14, 6),
+              child: AmSectionLabel(
+                label: 'Recordatorios',
+                trailing: AmBadge(label: '${reminders.length}', tone: AmBadgeTone.accent),
               ),
             ),
             ...reminders.take(3).map((r) {
@@ -183,6 +156,7 @@ class _PolicyConfirmedCard extends StatelessWidget {
                 ),
               );
             }),
+            const SizedBox(height: 6),
           ],
 
           // ── Action button ──────────────────────────────────────
@@ -192,10 +166,8 @@ class _PolicyConfirmedCard extends StatelessWidget {
               child: _CardActionButton(
                 label: 'Ver Póliza',
                 icon: Icons.arrow_forward_rounded,
-                color: AmColors.accent,
-                onTap: () {
-                  // Future: navigate to policy detail when route exists
-                },
+                color: cs.primary,
+                onTap: () => context.push('/policy/$policyId'),
               ),
             ),
         ],

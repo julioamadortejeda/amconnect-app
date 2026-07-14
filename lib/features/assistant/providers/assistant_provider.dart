@@ -19,6 +19,15 @@ export 'package:amconnect/features/chat/data/chat_context.dart' show AiChatConte
 
 // ── Tipos públicos ────────────────────────────────────────────────────────────
 
+/// Datos para retomar una sesión ya iniciada fuera del Assistant (ej. la
+/// sesión de confirmación de una ingesta de póliza) en vez de arrancar una
+/// conversación nueva — ver AssistantNotifier.resumeIngestSession.
+class AssistantResumeArgs {
+  final String sessionId;
+  final List<AssistantMessage> messages;
+  const AssistantResumeArgs({required this.sessionId, required this.messages});
+}
+
 enum AssistantMode { text, voice }
 
 enum VoiceStatus { connecting, listening, modelSpeaking, error }
@@ -225,6 +234,14 @@ class AssistantNotifier extends Notifier<AssistantState> {
   Future<void> resetWithContext(AiChatContext ctx) async {
     await reset();
     state = AssistantState(pendingContext: ctx, activeContext: ctx);
+  }
+
+  /// Retoma una sesión ya iniciada fuera del Assistant (ej. la sesión de
+  /// confirmación de una ingesta de póliza) en vez de arrancar una nueva —
+  /// como sessionId ya no es null, sendText() la trata como continuación.
+  Future<void> resumeIngestSession(String sessionId, List<AssistantMessage> messages) async {
+    await reset();
+    state = AssistantState(sessionId: sessionId, messages: messages);
   }
 
   // ── Voz (Gemini Live, full-duplex) ──────────────────────────────────────────

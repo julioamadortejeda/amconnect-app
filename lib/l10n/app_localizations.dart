@@ -1970,6 +1970,12 @@ abstract class AppLocalizations {
   /// **'Póliza creada'**
   String get feedSuccessTitle;
 
+  /// No description provided for @feedSuccessUpdateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada'**
+  String get feedSuccessUpdateTitle;
+
   /// No description provided for @feedSuccessFieldsSaved.
   ///
   /// In es, this message translates to:
@@ -2077,6 +2083,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Confirmar'**
   String get feedPreviewConfirm;
+
+  /// No description provided for @feedIngestConfirmCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, guardar'**
+  String get feedIngestConfirmCta;
+
+  /// No description provided for @feedIngestCorrectCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Corregir / Chatear'**
+  String get feedIngestCorrectCta;
+
+  /// No description provided for @feedIngestCancelCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get feedIngestCancelCta;
+
+  /// No description provided for @feedIngestHolderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contratante'**
+  String get feedIngestHolderLabel;
+
+  /// No description provided for @feedIngestCarrierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora'**
+  String get feedIngestCarrierLabel;
+
+  /// No description provided for @feedIngestBranchProductLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo / Prod.'**
+  String get feedIngestBranchProductLabel;
+
+  /// No description provided for @feedIngestPolicyNumberLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nº Póliza'**
+  String get feedIngestPolicyNumberLabel;
+
+  /// No description provided for @feedIngestPremiumLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Prima'**
+  String get feedIngestPremiumLabel;
+
+  /// No description provided for @feedIngestValidityLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigencia'**
+  String get feedIngestValidityLabel;
 
   /// No description provided for @remindersActionDone.
   ///

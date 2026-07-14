@@ -25,9 +25,10 @@ const _assistantSuggestions = [
 /// full-duplex) inline al tocar el botón de onda. Un solo historial, sin
 /// distinción visual entre turnos de texto y de voz.
 class AssistantScreen extends ConsumerStatefulWidget {
-  const AssistantScreen({super.key, this.initialContext});
+  const AssistantScreen({super.key, this.initialContext, this.resumeArgs});
 
   final AiChatContext? initialContext;
+  final AssistantResumeArgs? resumeArgs;
 
   @override
   ConsumerState<AssistantScreen> createState() => _AssistantScreenState();
@@ -48,6 +49,12 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _notifier.resetWithContext(widget.initialContext!);
+        }
+      });
+    } else if (widget.resumeArgs != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _notifier.resumeIngestSession(widget.resumeArgs!.sessionId, widget.resumeArgs!.messages);
         }
       });
     }

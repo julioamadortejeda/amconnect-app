@@ -12,12 +12,14 @@ class IngestPolicyResponse {
   final String message;
   final String? documentMetadataId;
   final Map<String, dynamic> extraction;
+  final bool isDuplicate;
 
   const IngestPolicyResponse({
     required this.sessionId,
     required this.message,
     this.documentMetadataId,
     required this.extraction,
+    this.isDuplicate = false,
   });
 }
 
@@ -69,6 +71,7 @@ class IngestRepository {
       message: data['message'] as String,
       documentMetadataId: data['documentMetadataId'] as String?,
       extraction: data['extraction'] as Map<String, dynamic>,
+      isDuplicate: data['isDuplicate'] as bool? ?? false,
     );
   }
 

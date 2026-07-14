@@ -38,4 +38,22 @@ class AgentNote {
       isObsolete: json['isObsolete'] as bool? ?? false,
     );
   }
+
+  /// Notas manuales rápidas (ej. campo de texto del detalle de póliza) no
+  /// generan `summary` con IA — se usa un recorte del contenido como fallback
+  /// para que igual entren al contexto precargado del chat.
+  Map<String, dynamic> toSlimMap() {
+    return {
+      'id': id,
+      'summary': summary ?? _truncateContent(content),
+      'sourceType': sourceType,
+      'createdAt': createdAt,
+    };
+  }
+}
+
+String _truncateContent(String content, {int maxLength = 220}) {
+  final trimmed = content.trim();
+  if (trimmed.length <= maxLength) return trimmed;
+  return '${trimmed.substring(0, maxLength).trim()}…';
 }

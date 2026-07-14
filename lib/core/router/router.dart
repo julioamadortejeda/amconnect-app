@@ -22,6 +22,7 @@ import '../../features/reminders/presentation/reminder_detail_screen.dart';
 import '../../core/models/reminder.dart';
 import '../../features/chat/data/chat_context.dart';
 import '../../features/assistant/presentation/assistant_screen.dart';
+import '../../features/assistant/providers/assistant_provider.dart' show AssistantResumeArgs;
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
@@ -165,11 +166,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/chat',
-        pageBuilder: (_, state) => amTransitionPage(
-          child: AssistantScreen(initialContext: state.extra as AiChatContext?),
-          state: state,
-          type: 'push',
-        ),
+        pageBuilder: (_, state) {
+          final extra = state.extra;
+          final child = extra is AssistantResumeArgs
+              ? AssistantScreen(resumeArgs: extra)
+              : AssistantScreen(initialContext: extra as AiChatContext?);
+          return amTransitionPage(child: child, state: state, type: 'push');
+        },
       ),
       GoRoute(
         path: '/voice-chat',

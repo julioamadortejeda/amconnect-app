@@ -14,7 +14,8 @@ class PolicySuccessSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final data = ref.watch(ingestProvider).confirmedPolicy;
+    final ingestState = ref.watch(ingestProvider);
+    final data = ingestState.confirmedPolicy;
 
     if (data == null) return const SizedBox.shrink();
 
@@ -90,7 +91,7 @@ class PolicySuccessSheet extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  l10n.feedSuccessTitle,
+                                  ingestState.isUpdate ? l10n.feedSuccessUpdateTitle : l10n.feedSuccessTitle,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,

@@ -1,7 +1,6 @@
 import '../../../core/models/agent_note.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
-import '../../../core/utils/formatters.dart';
 import '../../feed/data/feed_item.dart';
 
 class AiChatContext {
@@ -16,26 +15,16 @@ class AiChatContext {
     List<Policy>? policies,
     List<AgentNote>? notes,
   }) {
-    final (firstName, lastName) = splitFullName(contact.fullName);
-
     final slimPolicies = policies?.map((p) => p.toSlimMap()).toList();
 
-    final slimNotes = notes
-        ?.where((n) => n.summary != null)
-        .map((n) => {
-              'id': n.id,
-              'summary': n.summary,
-              'sourceType': n.sourceType,
-              'createdAt': n.createdAt,
-            })
-        .toList();
+    final slimNotes =
+        notes?.where((n) => !n.isObsolete).map((n) => n.toSlimMap()).toList();
 
     return AiChatContext(
       type: 'contact',
       id: contact.id,
       data: {
-        'firstName': firstName,
-        if (lastName != null) 'lastName': lastName,
+        'fullName': contact.fullName,
         if (contact.email != null) 'email': contact.email,
         if (contact.phone != null) 'phone': contact.phone,
         if (contact.birthdate != null) 'birthday': contact.birthdate,

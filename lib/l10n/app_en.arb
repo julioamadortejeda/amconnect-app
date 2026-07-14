@@ -367,6 +367,7 @@
   "feedAllNotesTitle": "All Notes",
 
   "feedSuccessTitle": "Policy created",
+  "feedSuccessUpdateTitle": "Policy updated",
   "feedSuccessFieldsSaved": "{count} fields saved",
   "@feedSuccessFieldsSaved": {
     "placeholders": { "count": { "type": "int" } }
@@ -395,6 +396,15 @@
   "feedConfirmPolicyTitle": "Confirm policy",
   "feedPreviewTitle": "Confirm file",
   "feedPreviewConfirm": "Confirm",
+  "feedIngestConfirmCta": "Yes, save",
+  "feedIngestCorrectCta": "Correct / Chat",
+  "feedIngestCancelCta": "Cancel",
+  "feedIngestHolderLabel": "Policyholder",
+  "feedIngestCarrierLabel": "Carrier",
+  "feedIngestBranchProductLabel": "Branch / Prod.",
+  "feedIngestPolicyNumberLabel": "Policy No.",
+  "feedIngestPremiumLabel": "Premium",
+  "feedIngestValidityLabel": "Validity",
 
   "remindersActionDone": "Mark done",
   "remindersActionInProgress": "In progress",
