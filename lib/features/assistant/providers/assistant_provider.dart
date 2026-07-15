@@ -172,6 +172,24 @@ class AssistantNotifier extends Notifier<AssistantState> {
   int _promptTokens = 0;
   int _completionTokens = 0;
   int _totalTokens = 0;
+  int _textPromptTokens = 0;
+  int _audioPromptTokens = 0;
+  int _textCompletionTokens = 0;
+  int _audioCompletionTokens = 0;
+
+  bool _awaitingFinalUsage = false;
+  Timer? _usageSafetyTimer;
+  String _pendingRoundUserText = '';
+  String _pendingRoundModelText = '';
+  List<Map<String, dynamic>> _pendingRoundToolCalls = [];
+
+  int _pendingRoundPromptTokens = 0;
+  int _pendingRoundCompletionTokens = 0;
+  int _pendingRoundTotalTokens = 0;
+  int _pendingRoundTextPromptTokens = 0;
+  int _pendingRoundAudioPromptTokens = 0;
+  int _pendingRoundTextCompletionTokens = 0;
+  int _pendingRoundAudioCompletionTokens = 0;
 
   // Tool calls ejecutados durante el turno en curso, mandados a /save-round
   // en turnComplete para que el historial refleje lo mismo que persiste el
@@ -186,6 +204,22 @@ class AssistantNotifier extends Notifier<AssistantState> {
     _audioControl.setMethodCallHandler(_handleAudioControlCall);
     ref.onDispose(_cleanup);
     return const AssistantState();
+  }
+
+  void _flushPendingUsageRound() {
+    if (!_awaitingFinalUsage) return;
+    _awaitingFinalUsage = false;
+    _usageSafetyTimer?.cancel();
+    _usageSafetyTimer = null;
+    _saveRoundInSupabase(
+        _pendingRoundUserText, _pendingRoundModelText, _pendingRoundToolCalls);
+    _pendingRoundPromptTokens = 0;
+    _pendingRoundCompletionTokens = 0;
+    _pendingRoundTotalTokens = 0;
+    _pendingRoundTextPromptTokens = 0;
+    _pendingRoundAudioPromptTokens = 0;
+    _pendingRoundTextCompletionTokens = 0;
+    _pendingRoundAudioCompletionTokens = 0;
   }
 
   // ── Texto ─────────────────────────────────────────────────────────────────
@@ -347,9 +381,13 @@ class AssistantNotifier extends Notifier<AssistantState> {
         'sessionId': state.sessionId,
         'userText': userText,
         'modelText': modelText,
-        'promptTokens': _promptTokens,
-        'completionTokens': _completionTokens,
-        'totalTokens': _totalTokens,
+        'promptTokens': _pendingRoundPromptTokens,
+        'completionTokens': _pendingRoundCompletionTokens,
+        'totalTokens': _pendingRoundTotalTokens,
+        'textPromptTokens': _pendingRoundTextPromptTokens,
+        'audioPromptTokens': _pendingRoundAudioPromptTokens,
+        'textCompletionTokens': _pendingRoundTextCompletionTokens,
+        'audioCompletionTokens': _pendingRoundAudioCompletionTokens,
         'toolCalls': toolCalls,
       });
     } catch (e) {
@@ -389,6 +427,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
 
       final sessionId = initData['sessionId'] as String;
       final systemInstruction = initData['systemInstruction'] as String;
+      final dynamicContext = initData['dynamicContext'] as String? ?? '';
       final tools = initData['tools'] as List<dynamic>? ?? [];
 
       state = state.copyWith(voiceStatus: VoiceStatus.connecting, sessionId: sessionId);
@@ -461,6 +500,26 @@ class AssistantNotifier extends Notifier<AssistantState> {
       };
 
       _socket!.add(jsonEncode(setupMessage));
+      debugPrint('[Assistant/Voice] Setup message sent to Gemini. Static SystemInstruction length: ${systemInstruction.length}');
+      debugPrint('[Assistant/Voice] Setup Prompt (Static):\n$systemInstruction');
+
+      if (dynamicContext.isNotEmpty) {
+        final contextMessage = {
+          'clientContent': {
+            'turns': [
+              {
+                'role': 'user',
+                'parts': [
+                  {'text': dynamicContext}
+                ]
+              }
+            ],
+            'turnComplete': false
+          }
+        };
+        _socket!.add(jsonEncode(contextMessage));
+        debugPrint('[Assistant/Voice] Dynamic context sent to Gemini:\n$dynamicContext');
+      }
 
       await _audioControl.invokeMethod<void>('startAudio');
       if (_disposed) {
@@ -547,6 +606,55 @@ class AssistantNotifier extends Notifier<AssistantState> {
           usageMetadata['candidates_token_count'] ??
           0) as int;
       _totalTokens = (usageMetadata['totalTokenCount'] ?? usageMetadata['total_token_count'] ?? 0) as int;
+      final cachedTokens = (usageMetadata['cachedContentTokenCount'] ?? usageMetadata['cached_content_token_count'] ?? 0) as int;
+
+      _textPromptTokens = 0;
+      _audioPromptTokens = 0;
+      final promptDetails = usageMetadata['promptTokensDetails'] ??
+          usageMetadata['prompt_tokens_details'] ??
+          usageMetadata['input_tokens_by_modality'] ??
+          usageMetadata['inputTokensByModality'];
+      if (promptDetails is List) {
+        for (final item in promptDetails) {
+          if (item is Map) {
+            final mod = (item['modality'] ?? '').toString().toUpperCase();
+            final count = (item['tokenCount'] ?? item['token_count'] ?? item['tokens'] ?? 0) as int;
+            if (mod == 'TEXT') _textPromptTokens += count;
+            if (mod == 'AUDIO') _audioPromptTokens += count;
+          }
+        }
+      }
+
+      _textCompletionTokens = 0;
+      _audioCompletionTokens = 0;
+      final candidateDetails = usageMetadata['candidatesTokensDetails'] ??
+          usageMetadata['candidates_tokens_details'] ??
+          usageMetadata['output_tokens_by_modality'] ??
+          usageMetadata['outputTokensByModality'];
+      if (candidateDetails is List) {
+        for (final item in candidateDetails) {
+          if (item is Map) {
+            final mod = (item['modality'] ?? '').toString().toUpperCase();
+            final count = (item['tokenCount'] ?? item['token_count'] ?? item['tokens'] ?? 0) as int;
+            if (mod == 'TEXT') _textCompletionTokens += count;
+            if (mod == 'AUDIO') _audioCompletionTokens += count;
+          }
+        }
+      }
+
+      debugPrint('[Assistant/Voice] Usage tokens updated: prompt=$_promptTokens (text=$_textPromptTokens, audio=$_audioPromptTokens, cached=$cachedTokens) completion=$_completionTokens (text=$_textCompletionTokens, audio=$_audioCompletionTokens) total=$_totalTokens');
+      debugPrint('[Assistant/Voice] Raw usageMetadata received: $usageMetadata');
+
+      if (_awaitingFinalUsage) {
+        _pendingRoundPromptTokens = _promptTokens;
+        _pendingRoundCompletionTokens = _completionTokens;
+        _pendingRoundTotalTokens = _totalTokens;
+        _pendingRoundTextPromptTokens = _textPromptTokens;
+        _pendingRoundAudioPromptTokens = _audioPromptTokens;
+        _pendingRoundTextCompletionTokens = _textCompletionTokens;
+        _pendingRoundAudioCompletionTokens = _audioCompletionTokens;
+        _flushPendingUsageRound();
+      }
     }
 
     final serverContent = msg['serverContent'] ?? msg['server_content'];
@@ -620,6 +728,8 @@ class AssistantNotifier extends Notifier<AssistantState> {
       }
 
       if (serverContent['turnComplete'] == true || serverContent['turn_complete'] == true) {
+        _flushPendingUsageRound();
+
         final chunksThisTurn = _audioChunksReceived;
         _audioChunksReceived = 0;
         _discardingModelTurn = false;
@@ -631,17 +741,39 @@ class AssistantNotifier extends Notifier<AssistantState> {
 
         final toolCalls = List<Map<String, dynamic>>.from(_pendingToolCalls);
         _pendingToolCalls.clear();
-        _saveRoundInSupabase(userText, modelText, toolCalls);
+
+        _pendingRoundUserText = userText;
+        _pendingRoundModelText = modelText;
+        _pendingRoundToolCalls = toolCalls;
+        _pendingRoundPromptTokens = _promptTokens;
+        _pendingRoundCompletionTokens = _completionTokens;
+        _pendingRoundTotalTokens = _totalTokens;
+        _pendingRoundTextPromptTokens = _textPromptTokens;
+        _pendingRoundAudioPromptTokens = _audioPromptTokens;
+        _pendingRoundTextCompletionTokens = _textCompletionTokens;
+        _pendingRoundAudioCompletionTokens = _audioCompletionTokens;
+
+        _promptTokens = 0;
+        _completionTokens = 0;
+        _totalTokens = 0;
+        _textPromptTokens = 0;
+        _audioPromptTokens = 0;
+        _textCompletionTokens = 0;
+        _audioCompletionTokens = 0;
+
+        _awaitingFinalUsage = true;
+        _usageSafetyTimer?.cancel();
+        _usageSafetyTimer = Timer(const Duration(milliseconds: 800), () {
+          debugPrint(
+              '[Assistant/Voice] Usage safety timer fired — saving round with tokens on hand');
+          _flushPendingUsageRound();
+        });
 
         if (chunksThisTurn == 0) {
           state = state.copyWith(voiceStatus: VoiceStatus.listening, clearActiveSkill: true);
         } else {
           state = state.copyWith(clearActiveSkill: true);
         }
-
-        _promptTokens = 0;
-        _completionTokens = 0;
-        _totalTokens = 0;
       }
     }
 

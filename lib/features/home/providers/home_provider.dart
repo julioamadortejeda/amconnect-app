@@ -9,7 +9,7 @@ import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../clients/providers/clients_provider.dart';
 
 class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
-  late final ReminderRepository _repo;
+  late ReminderRepository _repo;
   RealtimeChannel? _channel;
 
   @override

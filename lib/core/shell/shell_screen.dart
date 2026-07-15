@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/feed/presentation/ingest_flow_overlay.dart';
+import '../providers/provider_keep_alive.dart';
 import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
 import '../../l10n/app_localizations.dart';
@@ -58,6 +59,11 @@ class ShellScreen extends ConsumerWidget {
           // dimensionarse por sus hijos no-posicionados en vez de llenar las
           // constraints del Scaffold, colapsando todo a tamaño cero.
           const Positioned.fill(child: IngestFlowOverlay()),
+
+          // Mantiene activos los providers compartidos entre tabs para que
+          // sus rebuilds nunca queden diferidos al resume de un tab oculto —
+          // ver comentario en provider_keep_alive.dart.
+          const Positioned.fill(child: ProviderKeepAlive()),
 
           AnimatedPositioned(
             duration: const Duration(milliseconds: 320),

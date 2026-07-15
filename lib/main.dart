@@ -24,7 +24,23 @@ Future<void> main() async {
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey, // ignore: deprecated_member_use
   );
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(
+    observers: [_ProviderErrorLogger()],
+    child: const MyApp(),
+  ));
+}
+
+/// Las pantallas muestran errores localizados sin detalle y ApiClient no
+/// loggea — sin esto, un provider en AsyncError es invisible en consola.
+final class _ProviderErrorLogger extends ProviderObserver {
+  @override
+  void providerDidFail(
+    ProviderObserverContext context,
+    Object error,
+    StackTrace stackTrace,
+  ) {
+    debugPrint('[provider-error] ${context.provider} failed: $error\n$stackTrace');
+  }
 }
 
 class MyApp extends ConsumerWidget {

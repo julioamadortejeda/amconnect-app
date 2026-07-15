@@ -33,22 +33,13 @@ final policySearchProvider =
     NotifierProvider<_PolicySearchNotifier, String>(_PolicySearchNotifier.new);
 
 class ClientsNotifier extends AsyncNotifier<List<Contact>> {
-  late final ContactRepository _repo;
+  late ContactRepository _repo;
   RealtimeChannel? _channel;
 
   @override
   Future<List<Contact>> build() async {
     _repo = ref.read(contactRepositoryProvider);
-    final List<Contact> initial;
-    try {
-      initial = await _repo.getAll();
-    } catch (e, st) {
-      // Diagnóstico temporal: ApiClient nunca loggea errores y la UI los
-      // traga en blanco (error: (_, __) => ...) — sin esto es imposible ver
-      // qué está fallando realmente.
-      debugPrint('[clientsProvider] getAll() failed: $e\n$st');
-      rethrow;
-    }
+    final initial = await _repo.getAll();
 
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId != null) {
@@ -281,7 +272,7 @@ final createClientProvider =
         CreateClientNotifier.new);
 
 class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
-  late final PolicyRepository _repo;
+  late PolicyRepository _repo;
   RealtimeChannel? _channel;
 
   @override

@@ -74,7 +74,9 @@ class VoiceChatState {
       activeSkill: clearActiveSkill ? null : (activeSkill ?? this.activeSkill),
       error: error ?? this.error,
       timeLeftSeconds: timeLeftSeconds ?? this.timeLeftSeconds,
-      activeWidgetMetadata: clearActiveWidgetMetadata ? null : (activeWidgetMetadata ?? this.activeWidgetMetadata),
+      activeWidgetMetadata: clearActiveWidgetMetadata
+          ? null
+          : (activeWidgetMetadata ?? this.activeWidgetMetadata),
     );
   }
 }
@@ -90,7 +92,7 @@ final voiceChatProvider =
 
 class VoiceChatNotifier extends Notifier<VoiceChatState> {
   static const _audioControl = MethodChannel('com.amconnect/audio');
-  static const _audioInput   = EventChannel('com.amconnect/audio_input');
+  static const _audioInput = EventChannel('com.amconnect/audio_input');
 
   WebSocket? _socket;
   StreamSubscription<dynamic>? _wsSub;
@@ -132,11 +134,12 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   bool _discardingModelTurn = false;
 
   bool get _micSendBlockedByPlayback {
-    if (_discardingModelTurn) return false; // interrupting → keep mic open for barge-in
+    if (_discardingModelTurn) {
+      return false; // interrupting → keep mic open for barge-in
+    }
     if (state.status == VoiceChatStatus.modelSpeaking) return true;
     final last = _lastPlaybackAt;
-    return last != null &&
-        DateTime.now().difference(last) < _playbackHangover;
+    return last != null && DateTime.now().difference(last) < _playbackHangover;
   }
 
   // Silence watchdog: if the mic has been sending audio for > _stuckThreshold
@@ -147,11 +150,34 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   Timer? _watchdogTimer;
   Timer? _countdownTimer;
   String? _timezone; // stored so the watchdog can reconnect
-  
+
   // Token usage trackers
   int _promptTokens = 0;
   int _completionTokens = 0;
   int _totalTokens = 0;
+  int _textPromptTokens = 0;
+  int _audioPromptTokens = 0;
+  int _textCompletionTokens = 0;
+  int _audioCompletionTokens = 0;
+
+  // Gemini can send a turn's final usageMetadata (completion tokens for the
+  // synthesized audio) in its own message AFTER turnComplete. These hold the
+  // round data until that final tally arrives (or the safety timer below
+  // fires), instead of saving+resetting tokens immediately on turnComplete
+  // and losing whatever comes after.
+  bool _awaitingFinalUsage = false;
+  Timer? _usageSafetyTimer;
+  String _pendingRoundUserText = '';
+  String _pendingRoundModelText = '';
+  List<Map<String, dynamic>> _pendingRoundToolCalls = [];
+
+  int _pendingRoundPromptTokens = 0;
+  int _pendingRoundCompletionTokens = 0;
+  int _pendingRoundTotalTokens = 0;
+  int _pendingRoundTextPromptTokens = 0;
+  int _pendingRoundAudioPromptTokens = 0;
+  int _pendingRoundTextCompletionTokens = 0;
+  int _pendingRoundAudioCompletionTokens = 0;
 
   // Tool calls executed during the in-flight turn, sent to /save-round on
   // turnComplete so history mirrors what the text chat loop persists (the
@@ -198,7 +224,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
   }
 
-  Future<dynamic> _executeToolInSupabase(String name, Map<String, dynamic> args) async {
+  Future<dynamic> _executeToolInSupabase(
+      String name, Map<String, dynamic> args) async {
     try {
       final res = await _post('/ai/voice/execute-tool', {
         'sessionId': state.sessionId,
@@ -213,6 +240,27 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     }
   }
 
+  // Saves whatever round is pending finalization and resets the token
+  // trackers. Triggered either by the turn's final usageMetadata arriving,
+  // the safety timer (Gemini never sent one), the next turnComplete (don't
+  // overwrite unflushed data), or session cleanup. Idempotent — a no-op if
+  // nothing is pending, so it's safe to call from multiple call sites.
+  void _flushPendingUsageRound() {
+    if (!_awaitingFinalUsage) return;
+    _awaitingFinalUsage = false;
+    _usageSafetyTimer?.cancel();
+    _usageSafetyTimer = null;
+    _saveRoundInSupabase(
+        _pendingRoundUserText, _pendingRoundModelText, _pendingRoundToolCalls);
+    _pendingRoundPromptTokens = 0;
+    _pendingRoundCompletionTokens = 0;
+    _pendingRoundTotalTokens = 0;
+    _pendingRoundTextPromptTokens = 0;
+    _pendingRoundAudioPromptTokens = 0;
+    _pendingRoundTextCompletionTokens = 0;
+    _pendingRoundAudioCompletionTokens = 0;
+  }
+
   Future<void> _saveRoundInSupabase(
     String userText,
     String modelText,
@@ -223,12 +271,17 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         'sessionId': state.sessionId,
         'userText': userText,
         'modelText': modelText,
-        'promptTokens': _promptTokens,
-        'completionTokens': _completionTokens,
-        'totalTokens': _totalTokens,
+        'promptTokens': _pendingRoundPromptTokens,
+        'completionTokens': _pendingRoundCompletionTokens,
+        'totalTokens': _pendingRoundTotalTokens,
+        'textPromptTokens': _pendingRoundTextPromptTokens,
+        'audioPromptTokens': _pendingRoundAudioPromptTokens,
+        'textCompletionTokens': _pendingRoundTextCompletionTokens,
+        'audioCompletionTokens': _pendingRoundAudioCompletionTokens,
         'toolCalls': toolCalls,
       });
-      debugPrint('[VoiceChat] Round saved in DB (${toolCalls.length} tool calls)');
+      debugPrint(
+          '[VoiceChat] Round saved in DB (${toolCalls.length} tool calls)');
     } catch (e) {
       debugPrint('[VoiceChat] saveRound error: $e');
     }
@@ -259,7 +312,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _prefetched = null;
     _prefetchedAt = null;
     if (pf == null || at == null) return null;
-    if (DateTime.now().difference(at) > const Duration(seconds: 45)) return null;
+    if (DateTime.now().difference(at) > const Duration(seconds: 45)) {
+      return null;
+    }
     return pf;
   }
 
@@ -311,6 +366,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
       final sessionId = initData['sessionId'] as String;
       final systemInstruction = initData['systemInstruction'] as String;
+      final dynamicContext = initData['dynamicContext'] as String? ?? '';
       final tools = initData['tools'] as List<dynamic>? ?? [];
 
       _rootSessionId ??= sessionId;
@@ -318,22 +374,28 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         status: VoiceChatStatus.connecting,
         sessionId: _rootSessionId,
       );
-      ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
-      
+      ref
+          .read(aiBackendProvider.notifier)
+          .set(tokenData['aiBackend'] as String?);
+
       final String wsUrl = tokenData['url'] as String? ?? '';
-      final Map<String, dynamic>? customHeaders = tokenData['headers'] as Map<String, dynamic>?;
+      final Map<String, dynamic>? customHeaders =
+          tokenData['headers'] as Map<String, dynamic>?;
       // Sin fallback local: el backend es la única fuente del modelo — un
       // default aquí enmascararía errores de configuración del servidor.
       final String targetModel = tokenData['model'] as String? ?? '';
 
       if (wsUrl.isEmpty || targetModel.isEmpty) {
-        throw Exception('El servidor no devolvió URL/modelo para el chat de voz.');
+        throw Exception(
+            'El servidor no devolvió URL/modelo para el chat de voz.');
       }
 
-      debugPrint('[VoiceChat] Connecting directly to Gemini Live API — url: $wsUrl');
+      debugPrint(
+          '[VoiceChat] Connecting directly to Gemini Live API — url: $wsUrl');
 
       final headersMap = customHeaders != null
-          ? Map<String, String>.from(customHeaders.map((key, value) => MapEntry(key, value.toString())))
+          ? Map<String, String>.from(customHeaders
+              .map((key, value) => MapEntry(key, value.toString())))
           : <String, String>{};
 
       _socket = await WebSocket.connect(
@@ -341,7 +403,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         headers: headersMap.isNotEmpty ? headersMap : null,
       );
       if (_disposed) {
-        try { _socket?.close(); } catch (_) {}
+        try {
+          _socket?.close();
+        } catch (_) {}
         _socket = null;
         return;
       }
@@ -361,7 +425,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       // Convert tools from snake_case to camelCase
       final camelTools = tools.map((t) {
         if (t is Map) {
-          final funcDecls = t['function_declarations'] ?? t['functionDeclarations'];
+          final funcDecls =
+              t['function_declarations'] ?? t['functionDeclarations'];
           if (funcDecls != null) {
             return {
               'functionDeclarations': funcDecls,
@@ -377,6 +442,14 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           'model': targetModel,
           'generationConfig': {
             'responseModalities': ['AUDIO'],
+            'speechConfig': {
+              'voiceConfig': {
+                'prebuiltVoiceConfig': {
+                  'voiceName':
+                      'Aoede', // Supported voices: Puck, Aoede, Charon, Fenrir, Kore...
+                }
+              }
+            }
           },
           'realtimeInputConfig': {
             'automaticActivityDetection': {
@@ -386,8 +459,12 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
               'silenceDurationMs': 500,
             },
           },
-          'inputAudioTranscription': {},
-          'outputAudioTranscription': {},
+          'inputAudioTranscription': {
+            'languageCodes': ['es-419'],
+          },
+          'outputAudioTranscription': {
+            'languageCodes': ['es-419'],
+          },
           'systemInstruction': {
             'parts': [
               {'text': systemInstruction}
@@ -398,12 +475,35 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       };
 
       _socket!.add(jsonEncode(setupMessage));
-      debugPrint('[VoiceChat] Setup message sent to Gemini');
+      debugPrint(
+          '[VoiceChat] Setup message sent to Gemini. Static SystemInstruction length: ${systemInstruction.length}');
+      debugPrint('[VoiceChat] Setup Prompt (Static):\n$systemInstruction');
+
+      if (dynamicContext.isNotEmpty) {
+        final contextMessage = {
+          'clientContent': {
+            'turns': [
+              {
+                'role': 'user',
+                'parts': [
+                  {'text': dynamicContext}
+                ]
+              }
+            ],
+            'turnComplete': false
+          }
+        };
+        _socket!.add(jsonEncode(contextMessage));
+        debugPrint(
+            '[VoiceChat] Dynamic context sent to Gemini:\n$dynamicContext');
+      }
 
       // Start the native audio engine (capture + playback in one AVAudioEngine)
       await _audioControl.invokeMethod<void>('startAudio');
       if (_disposed) {
-        try { await _audioControl.invokeMethod<void>('stopAudio'); } catch (_) {}
+        try {
+          await _audioControl.invokeMethod<void>('stopAudio');
+        } catch (_) {}
         return;
       }
     } catch (e) {
@@ -431,8 +531,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     if (user.isEmpty && model.isEmpty) return;
     final newTurns = [...state.turns];
     if (user.isNotEmpty) newTurns.add(VoiceChatTurn(isUser: true, text: user));
-    if (model.isNotEmpty) newTurns.add(VoiceChatTurn(isUser: false, text: model));
-    state = state.copyWith(turns: newTurns, liveUserText: '', liveModelText: '');
+    if (model.isNotEmpty) {
+      newTurns.add(VoiceChatTurn(isUser: false, text: model));
+    }
+    state =
+        state.copyWith(turns: newTurns, liveUserText: '', liveModelText: '');
   }
 
   Future<void> interrupt() async {
@@ -477,9 +580,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
       // Imprime el mensaje crudo de Gemini pero limpia/trunca el audio base64 para no inundar la consola
       final cleanMsg = Map<String, dynamic>.from(msg);
-      final serverContent = cleanMsg['serverContent'] ?? cleanMsg['server_content'];
+      final serverContent =
+          cleanMsg['serverContent'] ?? cleanMsg['server_content'];
       if (serverContent is Map) {
-        final modelTurn = serverContent['modelTurn'] ?? serverContent['model_turn'];
+        final modelTurn =
+            serverContent['modelTurn'] ?? serverContent['model_turn'];
         if (modelTurn is Map && modelTurn['parts'] is List) {
           final parts = List<dynamic>.from(modelTurn['parts']);
           for (var i = 0; i < parts.length; i++) {
@@ -498,10 +603,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           }
           cleanMsg['serverContent'] = {
             ...serverContent,
-            'modelTurn': {
-              ...modelTurn,
-              'parts': parts
-            }
+            'modelTurn': {...modelTurn, 'parts': parts}
           };
         }
       }
@@ -518,7 +620,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     // Handle setupComplete
     final setupComplete = msg['setupComplete'] ?? msg['setup_complete'];
     if (setupComplete != null) {
-      debugPrint('[VoiceChat] ▶ Gemini ready — entering LISTENING mode, starting mic');
+      debugPrint(
+          '[VoiceChat] ▶ Gemini ready — entering LISTENING mode, starting mic');
       state = state.copyWith(status: VoiceChatStatus.listening);
       _touchGeminiActivity();
       _startMicStream();
@@ -529,7 +632,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     // Handle usageMetadata
     final usageMetadata = msg['usageMetadata'] ?? msg['usage_metadata'];
     if (usageMetadata is Map) {
-      _promptTokens = (usageMetadata['promptTokenCount'] ?? usageMetadata['prompt_token_count'] ?? 0) as int;
+      _promptTokens = (usageMetadata['promptTokenCount'] ??
+          usageMetadata['prompt_token_count'] ??
+          0) as int;
       // Studio Live reporta responseTokenCount; Vertex Live, candidatesTokenCount
       // (verificado 2026-07-09 contra ambos WebSockets).
       _completionTokens = (usageMetadata['responseTokenCount'] ??
@@ -537,8 +642,63 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           usageMetadata['candidatesTokenCount'] ??
           usageMetadata['candidates_token_count'] ??
           0) as int;
-      _totalTokens = (usageMetadata['totalTokenCount'] ?? usageMetadata['total_token_count'] ?? 0) as int;
-      debugPrint('[VoiceChat] Usage tokens updated: prompt=$_promptTokens completion=$_completionTokens total=$_totalTokens');
+      _totalTokens = (usageMetadata['totalTokenCount'] ??
+          usageMetadata['total_token_count'] ??
+          0) as int;
+      final cachedTokens = (usageMetadata['cachedContentTokenCount'] ??
+          usageMetadata['cached_content_token_count'] ??
+          0) as int;
+
+      _textPromptTokens = 0;
+      _audioPromptTokens = 0;
+      final promptDetails = usageMetadata['promptTokensDetails'] ??
+          usageMetadata['prompt_tokens_details'] ??
+          usageMetadata['input_tokens_by_modality'] ??
+          usageMetadata['inputTokensByModality'];
+      if (promptDetails is List) {
+        for (final item in promptDetails) {
+          if (item is Map) {
+            final mod = (item['modality'] ?? '').toString().toUpperCase();
+            final count = (item['tokenCount'] ?? item['token_count'] ?? item['tokens'] ?? 0) as int;
+            if (mod == 'TEXT') _textPromptTokens += count;
+            if (mod == 'AUDIO') _audioPromptTokens += count;
+          }
+        }
+      }
+
+      _textCompletionTokens = 0;
+      _audioCompletionTokens = 0;
+      final candidateDetails = usageMetadata['candidatesTokensDetails'] ??
+          usageMetadata['candidates_tokens_details'] ??
+          usageMetadata['output_tokens_by_modality'] ??
+          usageMetadata['outputTokensByModality'];
+      if (candidateDetails is List) {
+        for (final item in candidateDetails) {
+          if (item is Map) {
+            final mod = (item['modality'] ?? '').toString().toUpperCase();
+            final count = (item['tokenCount'] ?? item['token_count'] ?? item['tokens'] ?? 0) as int;
+            if (mod == 'TEXT') _textCompletionTokens += count;
+            if (mod == 'AUDIO') _audioCompletionTokens += count;
+          }
+        }
+      }
+
+      debugPrint(
+          '[VoiceChat] Usage tokens updated: prompt=$_promptTokens (text=$_textPromptTokens, audio=$_audioPromptTokens, cached=$cachedTokens) completion=$_completionTokens (text=$_textCompletionTokens, audio=$_audioCompletionTokens) total=$_totalTokens');
+      debugPrint('[VoiceChat] Raw usageMetadata received: $usageMetadata');
+
+      // This usageMetadata belongs to the turn that just completed and is
+      // waiting on its final tally — save now, no need to wait for the timer.
+      if (_awaitingFinalUsage) {
+        _pendingRoundPromptTokens = _promptTokens;
+        _pendingRoundCompletionTokens = _completionTokens;
+        _pendingRoundTotalTokens = _totalTokens;
+        _pendingRoundTextPromptTokens = _textPromptTokens;
+        _pendingRoundAudioPromptTokens = _audioPromptTokens;
+        _pendingRoundTextCompletionTokens = _textCompletionTokens;
+        _pendingRoundAudioCompletionTokens = _audioCompletionTokens;
+        _flushPendingUsageRound();
+      }
     }
 
     // Handle serverContent
@@ -551,7 +711,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       if (serverContent['interrupted'] == true) {
         final chunksBeforeInterrupt = _audioChunksReceived;
         _audioChunksReceived = 0;
-        debugPrint('[VoiceChat] ⚡ INTERRUPTED after $chunksBeforeInterrupt chunks — flushing playback');
+        debugPrint(
+            '[VoiceChat] ⚡ INTERRUPTED after $chunksBeforeInterrupt chunks — flushing playback');
         try {
           await _audioControl.invokeMethod<void>('stopPlayback');
         } catch (_) {}
@@ -568,8 +729,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       // Handle modelTurn (audio chunks). Skipped entirely while discarding an
       // interrupted turn — playing/queuing this audio would re-arm modelSpeaking
       // and the echo guard, blocking the user's barge-in.
-      final modelTurn = serverContent['modelTurn'] ?? serverContent['model_turn'];
-      if (modelTurn is Map && modelTurn['parts'] is List && !_discardingModelTurn) {
+      final modelTurn =
+          serverContent['modelTurn'] ?? serverContent['model_turn'];
+      if (modelTurn is Map &&
+          modelTurn['parts'] is List &&
+          !_discardingModelTurn) {
         final parts = modelTurn['parts'] as List;
         for (final part in parts) {
           if (part is Map) {
@@ -580,7 +744,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
                 _audioChunksReceived++;
                 _lastPlaybackAt = DateTime.now(); // arm the echo guard hangover
                 try {
-                  await _audioControl.invokeMethod<void>('playPcm', {'data': base64Audio});
+                  await _audioControl
+                      .invokeMethod<void>('playPcm', {'data': base64Audio});
                 } catch (e) {
                   debugPrint('[VoiceChat] playPcm error: $e');
                 }
@@ -598,8 +763,11 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       // Handle outputTranscription (model text). Also skipped while discarding —
       // the partial was already committed at interrupt; trailing text would
       // append a second, out-of-place bubble.
-      final outputTrans = serverContent['outputTranscription'] ?? serverContent['output_transcription'];
-      if (outputTrans is Map && outputTrans['text'] is String && !_discardingModelTurn) {
+      final outputTrans = serverContent['outputTranscription'] ??
+          serverContent['output_transcription'];
+      if (outputTrans is Map &&
+          outputTrans['text'] is String &&
+          !_discardingModelTurn) {
         var text = outputTrans['text'] as String;
         text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
         debugPrint('[VoiceChat] 🤖 Model: "$text"');
@@ -610,7 +778,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       }
 
       // Handle inputTranscription (user text)
-      final inputTrans = serverContent['inputTranscription'] ?? serverContent['input_transcription'];
+      final inputTrans = serverContent['inputTranscription'] ??
+          serverContent['input_transcription'];
       if (inputTrans is Map && inputTrans['text'] is String) {
         var text = inputTrans['text'] as String;
         text = text.replaceAll(RegExp(r'<ctrl\d+>'), '');
@@ -623,21 +792,55 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       }
 
       // Handle turnComplete
-      if (serverContent['turnComplete'] == true || serverContent['turn_complete'] == true) {
+      if (serverContent['turnComplete'] == true ||
+          serverContent['turn_complete'] == true) {
         final chunksThisTurn = _audioChunksReceived;
         _audioChunksReceived = 0;
         _discardingModelTurn = false; // turn ended — resume normal flow
-        debugPrint('[VoiceChat] ✅ TURN COMPLETE ($chunksThisTurn chunks played) — saving round');
+        debugPrint(
+            '[VoiceChat] ✅ TURN COMPLETE ($chunksThisTurn chunks played)');
+
+        // A previous turn may still be waiting on its final usageMetadata —
+        // flush it now with whatever it has instead of letting this new
+        // turn's pending data silently overwrite it.
+        _flushPendingUsageRound();
 
         final userText = state.liveUserText;
         final modelText = state.liveModelText;
 
         _commitCurrentTurn(); // user first, then model — clears the live buffers
 
-        // Save round to Supabase asynchronously so it doesn't block the UI
         final toolCalls = List<Map<String, dynamic>>.from(_pendingToolCalls);
         _pendingToolCalls.clear();
-        _saveRoundInSupabase(userText, modelText, toolCalls);
+
+        // Don't save+reset tokens yet — Gemini may still send this turn's
+        // final usageMetadata (audio completion tokens) in a later message.
+        _pendingRoundUserText = userText;
+        _pendingRoundModelText = modelText;
+        _pendingRoundToolCalls = toolCalls;
+        _pendingRoundPromptTokens = _promptTokens;
+        _pendingRoundCompletionTokens = _completionTokens;
+        _pendingRoundTotalTokens = _totalTokens;
+        _pendingRoundTextPromptTokens = _textPromptTokens;
+        _pendingRoundAudioPromptTokens = _audioPromptTokens;
+        _pendingRoundTextCompletionTokens = _textCompletionTokens;
+        _pendingRoundAudioCompletionTokens = _audioCompletionTokens;
+
+        _promptTokens = 0;
+        _completionTokens = 0;
+        _totalTokens = 0;
+        _textPromptTokens = 0;
+        _audioPromptTokens = 0;
+        _textCompletionTokens = 0;
+        _audioCompletionTokens = 0;
+
+        _awaitingFinalUsage = true;
+        _usageSafetyTimer?.cancel();
+        _usageSafetyTimer = Timer(const Duration(milliseconds: 800), () {
+          debugPrint(
+              '[VoiceChat] Usage safety timer fired — saving round with tokens on hand');
+          _flushPendingUsageRound();
+        });
 
         if (chunksThisTurn == 0) {
           state = state.copyWith(
@@ -649,22 +852,18 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
             clearActiveSkill: true,
           );
         }
-
-        // Reset usage token trackers
-        _promptTokens = 0;
-        _completionTokens = 0;
-        _totalTokens = 0;
       }
     }
 
     // Handle toolCall
     final toolCall = msg['toolCall'] ?? msg['tool_call'];
     if (toolCall is Map) {
-      final functionCalls = toolCall['functionCalls'] ?? toolCall['function_calls'];
+      final functionCalls =
+          toolCall['functionCalls'] ?? toolCall['function_calls'];
       if (functionCalls is List && functionCalls.isNotEmpty) {
         _touchGeminiActivity(); // Gemini is responding (calling a tool) — cancel watchdog
         debugPrint('[VoiceChat] Tool calls received: $functionCalls');
-        
+
         final futures = functionCalls.map((call) async {
           if (call is Map) {
             try {
@@ -677,7 +876,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
               // Backend signals the plan limit was hit — stop here, show the
               // message and tear down. Don't forward a tool response to Gemini.
-              if (executionRes is Map && executionRes['quotaExceeded'] == true) {
+              if (executionRes is Map &&
+                  executionRes['quotaExceeded'] == true) {
                 await _handleQuotaExceeded(executionRes['message'] as String?);
                 return null;
               }
@@ -697,7 +897,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
                 state = state.copyWith(activeWidgetMetadata: metadata);
               }
 
-              _pendingToolCalls.add({'name': name, 'args': args, 'response': result});
+              _pendingToolCalls
+                  .add({'name': name, 'args': args, 'response': result});
 
               final resMap = {
                 'name': name,
@@ -715,7 +916,9 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
           return null;
         }).toList();
 
-        final results = (await Future.wait(futures)).whereType<Map<String, dynamic>>().toList();
+        final results = (await Future.wait(futures))
+            .whereType<Map<String, dynamic>>()
+            .toList();
 
         // Send tool responses back to Gemini
         final toolResponse = {
@@ -725,7 +928,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         };
         _socket?.add(jsonEncode(toolResponse));
         debugPrint('[VoiceChat] Sent tool responses to Gemini');
-        
+
         state = state.copyWith(clearActiveSkill: true);
       }
     }
@@ -734,12 +937,16 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
   void _onSocketClosed() {
     final code = _socket?.closeCode;
     final reason = _socket?.closeReason;
-    debugPrint('[VoiceChat] Socket closed by server: code=$code reason="$reason"');
-    if (_disposed || _terminated) return; // user-ended or quota-terminated — no reconnect
+    debugPrint(
+        '[VoiceChat] Socket closed by server: code=$code reason="$reason"');
+    if (_disposed || _terminated) {
+      return; // user-ended or quota-terminated — no reconnect
+    }
 
     // Gemini Live sessions have a duration/context limit and the server can close
     // mid-turn. Reconnect transparently so the user doesn't lose the session.
-    debugPrint('[VoiceChat] ♻ Server closed socket — reconnecting transparently');
+    debugPrint(
+        '[VoiceChat] ♻ Server closed socket — reconnecting transparently');
     _reconnect();
   }
 
@@ -757,13 +964,15 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
         if (data is! Uint8List) return;
         if (!_hasReceivedMicData) {
           _hasReceivedMicData = true;
-          debugPrint('[VoiceChat] 🎙 First mic chunk arrived (${data.length} bytes)');
+          debugPrint(
+              '[VoiceChat] 🎙 First mic chunk arrived (${data.length} bytes)');
         }
         // Echo guard: while the model is speaking (and a short hangover after),
         // don't forward mic audio — otherwise the speaker bleed trips Gemini's VAD
         // and the model interrupts itself. The mic still captures; we just hold the
         // send. Tapping the screen (interrupt()) re-opens the send immediately.
-        if (_socket?.readyState == WebSocket.open && !_micSendBlockedByPlayback) {
+        if (_socket?.readyState == WebSocket.open &&
+            !_micSendBlockedByPlayback) {
           _micChunksSent++;
           if (_micChunksSent % 50 == 0) {
             debugPrint('[VoiceChat] 📤 Mic streaming ($_micChunksSent chunks)');
@@ -802,8 +1011,10 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _watchdogTimer?.cancel();
     _watchdogTimer = Timer(_stuckThreshold, () {
       if (_disposed) return;
-      final since = DateTime.now().difference(_lastGeminiActivity ?? DateTime.now());
-      debugPrint('[VoiceChat] ⚠ Watchdog: no Gemini activity for ${since.inSeconds}s — reconnecting');
+      final since =
+          DateTime.now().difference(_lastGeminiActivity ?? DateTime.now());
+      debugPrint(
+          '[VoiceChat] ⚠ Watchdog: no Gemini activity for ${since.inSeconds}s — reconnecting');
       _reconnect();
     });
   }
@@ -835,8 +1046,12 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
     _audioSub = null;
     await _wsSub?.cancel();
     _wsSub = null;
-    try { await _audioControl.invokeMethod<void>('stopAudio'); } catch (_) {}
-    try { await _socket?.close(); } catch (_) {}
+    try {
+      await _audioControl.invokeMethod<void>('stopAudio');
+    } catch (_) {}
+    try {
+      await _socket?.close();
+    } catch (_) {}
     _socket = null;
   }
 
@@ -864,7 +1079,8 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
       if (state.timeLeftSeconds <= 1) {
         timer.cancel();
         _countdownTimer = null;
-        debugPrint('[VoiceChat] ⏰ Session time limit reached (10 minutes). Ending session...');
+        debugPrint(
+            '[VoiceChat] ⏰ Session time limit reached (10 minutes). Ending session...');
         endSession();
       } else {
         state = state.copyWith(timeLeftSeconds: state.timeLeftSeconds - 1);
@@ -874,6 +1090,7 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
   Future<void> _cleanup() async {
     _disposed = true;
+    _flushPendingUsageRound(); // don't drop the last round's tokens on session end
     _audioControl.setMethodCallHandler(null);
     _rootSessionId = null;
     _watchdogTimer?.cancel();

@@ -39,6 +39,7 @@ Si una regla entra en conflicto con una instrucción puntual, pregunta antes de 
 - Flujo obligatorio: `Pantalla → Provider/Notifier → Repository → ApiClient/SDK`.
 - **Prohibido `Supabase.instance` (o cualquier SDK) en widgets o pantallas** — incluso para signed URLs de Storage: eso va en un repository.
 - Riverpod 3.x: no existe `StateProvider` — usar `Notifier`/`AsyncNotifier` + sus providers.
+- Riverpod 3.x reutiliza la instancia del Notifier al invalidar (`build()` se re-ejecuta sobre el MISMO objeto). **Prohibido `late final` en campos asignados dentro de `build()`** — revienta con `LateInitializationError` en el primer `ref.invalidate` y el provider queda en `AsyncError` silencioso. Usar `late` a secas.
 - Providers de UI state (búsqueda, filtros, tabs) viven en `features/<f>/providers/<f>_provider.dart`, no en la pantalla.
 - Capturar el notifier ANTES de `Navigator.pop`/`await`: `final n = ref.read(p.notifier); Navigator.pop(context); n.accion();`
 - Funciones async inline en `build`: prohibidas.

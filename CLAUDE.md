@@ -494,6 +494,13 @@ assets/logo/
 - [x] Ingesta de documentos (Feed)
 - [x] Voz real en VoiceOverlay (integrada con Gemini 3.1 Live API por WebSocket con audio PCM bidireccional y transcripciones visibles)
 
+## Gemini Live API & Token Tracking Rules
+
+*   **Audio Token Conversion Rates**: Input/Output audio is converted to native tokens. Audio files and streams translate to approximately **32 tokens per second** (or **25 tokens per second** in active Live API WebSocket sessions).
+*   **Compounding Billing Model**: Gemini Live API operates on a WebSocket connection. Because of this, it bills per **turn** for **all tokens currently inside the active session context window**. This means that previous turns (both input and output audio) are re-processed and re-billed on every single new turn.
+*   **Transcription Surcharges**: When audio transcription is enabled (`inputAudioTranscription` or `outputAudioTranscription`), generated text tokens are billed at standard output text rates **in addition** to the native audio token costs.
+*   **Usage Metadata Timing & Delay**: In WebSocket streams, the final `usageMetadata` packet (containing final `completion_tokens` and total token count) can arrive in a separate, final server packet **after** the `turnComplete` event. To prevent loss of token counts, client applications must not immediately write or reset counters on `turnComplete`; a small delay (e.g. 400ms) or buffering should be used.
+
 ### Pendiente
 - [ ] Acciones rápidas de cliente (llamar, mensaje — placeholders)
 - [ ] Pantalla de pólizas por cliente (tabs vacíos en ClientDetail)
@@ -505,4 +512,5 @@ assets/logo/
 
 - **Chat de Texto y Voz:** El chat de texto y los ajustes del chat de voz (con las correcciones del nuevo formato de audio `realtimeInput.audio` para evitar la desconexión del WebSocket en Gemini 3.1 Live API) están listos y validados.
 - **Optimización y Estabilización de UI en Voz:** Se optimizó `AmAurora` para suspender el pintado durante las transiciones de ruta (eliminando el lag al entrar/salir de la pantalla) y se fijó la altura de la barra inferior a 76px (junto con una onda de voz de 28px de altura máxima) para evitar desplazamientos verticales del orbe del micrófono al cambiar de estado (detalles en [walkthrough.md](file:///Users/julio/.gemini/antigravity/brain/a411ae05-c358-412b-93b2-578d9f685c96/walkthrough.md)).
+
 

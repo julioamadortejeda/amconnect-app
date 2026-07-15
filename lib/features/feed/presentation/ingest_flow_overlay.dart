@@ -42,6 +42,13 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
       ref.invalidate(clientsProvider);
       ref.invalidate(policiesProvider);
       ref.invalidate(policiesCountProvider);
+      // Familias por contacto/póliza (sin autoDispose, caché permanente): la
+      // ingesta cambia sus datos mientras ninguna pantalla las observa, así
+      // que su Realtime (autoDispose) no está activo para invalidarlas —
+      // invalidar la familia completa refresca todas las instancias cacheadas.
+      ref.invalidate(policyNotesProvider);
+      ref.invalidate(contactNotesProvider);
+      ref.invalidate(contactPoliciesProvider);
     });
   }
 

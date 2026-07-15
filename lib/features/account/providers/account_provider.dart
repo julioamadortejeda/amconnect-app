@@ -7,7 +7,7 @@ import '../../../core/repositories/supabase_subscription_repository.dart';
 import '../../home/providers/home_provider.dart';
 
 class AgentProfileNotifier extends AsyncNotifier<AgentProfile> {
-  late final AgentRepository _repo;
+  late AgentRepository _repo;
 
   @override
   Future<AgentProfile> build() async {

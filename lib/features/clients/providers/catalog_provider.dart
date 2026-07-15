@@ -8,7 +8,7 @@ import '../../../core/repositories/supabase_catalog_repository.dart';
 // ─── Custom Catalogs (Mutable) ────────────────────────────────────────────────
 
 class CarriersNotifier extends AsyncNotifier<List<Carrier>> {
-  late final CatalogRepository _repo;
+  late CatalogRepository _repo;
   RealtimeChannel? _channel;
 
   @override
@@ -113,7 +113,7 @@ final carriersProvider =
     AsyncNotifierProvider<CarriersNotifier, List<Carrier>>(CarriersNotifier.new);
 
 class BranchesNotifier extends AsyncNotifier<List<Branch>> {
-  late final CatalogRepository _repo;
+  late CatalogRepository _repo;
   RealtimeChannel? _channel;
 
   @override
@@ -218,7 +218,7 @@ final branchesProvider =
     AsyncNotifierProvider<BranchesNotifier, List<Branch>>(BranchesNotifier.new);
 
 class ProductsNotifier extends AsyncNotifier<List<Product>> {
-  late final CatalogRepository _repo;
+  late CatalogRepository _repo;
   RealtimeChannel? _channel;
 
   @override
