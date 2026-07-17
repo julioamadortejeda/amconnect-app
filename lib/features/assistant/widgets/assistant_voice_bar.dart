@@ -16,12 +16,16 @@ class AssistantVoiceBar extends StatelessWidget {
     required this.activeSkill,
     required this.error,
     required this.onClose,
+    required this.onOutput,
   });
 
   final VoiceStatus status;
   final String? activeSkill;
   final String? error;
   final VoidCallback onClose;
+
+  /// Abre el selector de salida de audio (bocina / audífonos).
+  final VoidCallback onOutput;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +96,20 @@ class AssistantVoiceBar extends StatelessWidget {
             const VoiceWaveformBars(maxHeight: 24),
           ],
           const SizedBox(width: 12),
+          GestureDetector(
+            onTap: onOutput,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.16),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.volume_up_rounded,
+                  color: Colors.white, size: 18),
+            ),
+          ),
+          const SizedBox(width: 8),
           GestureDetector(
             onTap: onClose,
             child: Container(

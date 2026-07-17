@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Ruteo del chat de voz a audífonos Bluetooth (setCommunicationDevice /
+         SCO). Runtime en API 31+; si se niega, la voz sigue por bocina/mic
+         del teléfono. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <!-- Equivalente en APIs viejas (<31) para startBluetoothSco -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <application
         android:label="amconnect"
         android:name="${applicationName}"

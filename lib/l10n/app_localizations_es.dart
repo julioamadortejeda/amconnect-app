@@ -841,6 +841,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceChatThinking => 'Pensando…';
 
   @override
+  String get voiceOutputTitle => 'Salida de audio';
+
+  @override
+  String get voiceOutputSpeaker => 'Altavoz del teléfono';
+
+  @override
+  String get voiceOutputBluetooth => 'Dispositivo Bluetooth';
+
+  @override
+  String get voiceOutputWired => 'Audífonos con cable';
+
+  @override
+  String get voiceOutputOther => 'Otro dispositivo';
+
+  @override
+  String get voiceOutputNone => 'No hay dispositivos de audio disponibles';
+
+  @override
   String get assistantVoiceActive => 'Voz activa';
 
   @override

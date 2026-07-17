@@ -311,6 +311,12 @@
   "voiceChatPermissionDenied": "Microphone permission denied",
   "voiceChatSkillActive": "Looking up data…",
   "voiceChatThinking": "Thinking…",
+  "voiceOutputTitle": "Audio output",
+  "voiceOutputSpeaker": "Phone speaker",
+  "voiceOutputBluetooth": "Bluetooth device",
+  "voiceOutputWired": "Wired headphones",
+  "voiceOutputOther": "Other device",
+  "voiceOutputNone": "No audio devices available",
 
   "assistantVoiceActive": "Voice active",
   "chatTitle": "Assistant",

@@ -25,6 +25,9 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
     // AVAudioEngine nunca dispara con BT (ver buildAndStartEngine).
     private var captureSession: AVCaptureSession?
     private var captureDelegate: MicCaptureDelegate?
+    // Selector de salida: el usuario forzó la bocina aunque haya headset.
+    // Se resetea al iniciar cada sesión de voz.
+    private var forcedSpeaker = false
     // Debounce de reinicios por cambio de ruta: al levantar SCO (HFP) iOS
     // dispara varias AVAudioEngineConfigurationChange seguidas.
     private var restartWorkItem: DispatchWorkItem?
@@ -112,6 +115,7 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             log("Warning: Engine already exists. Tearing down first.")
             stop()
         }
+        forcedSpeaker = false // cada sesión arranca en ruteo automático
 
         // Fail fast if mic is explicitly denied
         let perm = AVAudioSession.sharedInstance().recordPermission
@@ -150,6 +154,11 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
     // BT/wired headset the route is left untouched so audio and mic stay on
     // the headset. Re-evaluated on every engine (re)build.
     private func applySpeakerOverrideIfNeeded(_ session: AVAudioSession) throws {
+        if forcedSpeaker {
+            try session.overrideOutputAudioPort(.speaker)
+            log("Session route check. forcedSpeaker=true → speaker.")
+            return
+        }
         let externalPorts: [AVAudioSession.Port] = [
             .bluetoothHFP, .bluetoothA2DP, .bluetoothLE,
             .headphones, .usbAudio, .carAudio,
@@ -158,6 +167,62 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             .contains { externalPorts.contains($0.portType) }
         try session.overrideOutputAudioPort(hasExternalOutput ? .none : .speaker)
         log("Session route check. externalOutput=\(hasExternalOutput). Route: \(session.currentRoute)")
+    }
+
+    // ── Selector de salida (contrato compartido con Android) ─────────────────
+    //  getAudioDevices → [{id, name, type: speaker|bluetooth|wired|other, selected}]
+    //  selectAudioDevice(id) — "speaker" es un pseudo-id; el resto son UIDs de
+    //  availableInputs. Cambiar la ruta dispara AVAudioEngineConfigurationChange
+    //  y el rebuild re-decide el camino de captura (tap vs AVCaptureSession).
+
+    func getAudioDevices() -> [[String: Any]] {
+        let session = AVAudioSession.sharedInstance()
+        let outputTypes = session.currentRoute.outputs.map { $0.portType }
+        let onSpeaker = outputTypes.contains(.builtInSpeaker)
+        var devices: [[String: Any]] = [
+            ["id": "speaker", "name": "", "type": "speaker", "selected": onSpeaker],
+        ]
+        for input in session.availableInputs ?? [] {
+            switch input.portType {
+            case .bluetoothHFP, .bluetoothLE:
+                devices.append([
+                    "id": input.uid, "name": input.portName, "type": "bluetooth",
+                    "selected": !onSpeaker &&
+                        (outputTypes.contains(.bluetoothHFP) || outputTypes.contains(.bluetoothLE)),
+                ])
+            case .headsetMic:
+                devices.append([
+                    "id": input.uid, "name": input.portName, "type": "wired",
+                    "selected": !onSpeaker && outputTypes.contains(.headphones),
+                ])
+            default:
+                break
+            }
+        }
+        return devices
+    }
+
+    func selectAudioDevice(_ id: String) {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            if id == "speaker" {
+                forcedSpeaker = true
+                if let builtin = session.availableInputs?
+                    .first(where: { $0.portType == .builtInMic }) {
+                    try session.setPreferredInput(builtin)
+                }
+                try session.overrideOutputAudioPort(.speaker)
+            } else {
+                forcedSpeaker = false
+                if let port = session.availableInputs?.first(where: { $0.uid == id }) {
+                    try session.setPreferredInput(port)
+                }
+                try session.overrideOutputAudioPort(.none)
+            }
+            log("selectAudioDevice(\(id)). Route now: \(session.currentRoute)")
+        } catch {
+            log("ERROR selectAudioDevice(\(id)): \(error.localizedDescription)")
+        }
     }
 
     // Builds the engine graph on whatever route the (already active) session

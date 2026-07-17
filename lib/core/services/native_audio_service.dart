@@ -9,6 +9,36 @@ final nativeAudioServiceProvider = Provider<NativeAudioService>((ref) {
   return service;
 });
 
+/// Dispositivo de salida de audio disponible durante la sesión de voz.
+/// Contrato compartido iOS/Android — ver getAudioDevices en AudioManager.swift
+/// y MainActivity.kt.
+class AudioOutputDevice {
+  const AudioOutputDevice({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.selected,
+  });
+
+  final String id;
+
+  /// Nombre del dispositivo tal como lo reporta el sistema (vacío para la
+  /// bocina — la UI usa su propia etiqueta localizada según [type]).
+  final String name;
+
+  /// speaker | bluetooth | wired | other
+  final String type;
+  final bool selected;
+
+  factory AudioOutputDevice.fromMap(Map<dynamic, dynamic> map) =>
+      AudioOutputDevice(
+        id: map['id'] as String? ?? '',
+        name: map['name'] as String? ?? '',
+        type: map['type'] as String? ?? 'other',
+        selected: map['selected'] as bool? ?? false,
+      );
+}
+
 class NativeAudioService {
   static const MethodChannel _audioControl =
       MethodChannel('com.amconnect/audio');
@@ -84,6 +114,31 @@ class NativeAudioService {
       debugPrint('[NativeAudioService] Native audio playback stopped.');
     } catch (e) {
       debugPrint('[NativeAudioService] stopPlayback error: $e');
+    }
+  }
+
+  /// Dispositivos de salida disponibles para la sesión de voz activa.
+  Future<List<AudioOutputDevice>> getAudioDevices() async {
+    try {
+      final res =
+          await _audioControl.invokeMethod<List<dynamic>>('getAudioDevices');
+      return (res ?? [])
+          .whereType<Map<dynamic, dynamic>>()
+          .map(AudioOutputDevice.fromMap)
+          .toList();
+    } catch (e) {
+      debugPrint('[NativeAudioService] getAudioDevices error: $e');
+      return const [];
+    }
+  }
+
+  /// Cambia la salida (y el mic asociado) de la sesión de voz. El nativo se
+  /// encarga del re-ruteo; en iOS el cambio de ruta reconstruye el engine.
+  Future<void> selectAudioDevice(String id) async {
+    try {
+      await _audioControl.invokeMethod<void>('selectAudioDevice', {'id': id});
+    } catch (e) {
+      debugPrint('[NativeAudioService] selectAudioDevice error: $e');
     }
   }
 

@@ -14,6 +14,7 @@ import '../widgets/assistant_bubble.dart';
 import '../widgets/assistant_composer.dart';
 import '../widgets/assistant_header.dart';
 import '../widgets/assistant_voice_bar.dart';
+import '../widgets/voice_output_sheet.dart';
 
 const _assistantSuggestions = [
   '¿Quién vence pronto?',
@@ -236,6 +237,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       activeSkill: state.activeSkill,
                       error: state.error,
                       onClose: () => ref.read(assistantProvider.notifier).endVoice(),
+                      onOutput: () => VoiceOutputSheet.show(context),
                     )
                   : AssistantComposer(
                       controller: _ctrl,

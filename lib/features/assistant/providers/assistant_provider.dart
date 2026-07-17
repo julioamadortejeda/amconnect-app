@@ -183,6 +183,14 @@ class AssistantNotifier extends Notifier<AssistantState> {
     stopVoice();
   }
 
+  /// Dispositivos de salida disponibles (selector de audio en modo voz).
+  Future<List<AudioOutputDevice>> audioOutputDevices() =>
+      ref.read(nativeAudioServiceProvider).getAudioDevices();
+
+  /// Cambia la salida de audio de la sesión de voz activa.
+  Future<void> selectAudioOutput(String id) =>
+      ref.read(nativeAudioServiceProvider).selectAudioDevice(id);
+
   void prefetch(String timezone) {
     if (_engine.isConnected || _prefetched != null) return;
     _prefetchedAt = DateTime.now();

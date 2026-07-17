@@ -358,6 +358,12 @@
   "voiceChatPermissionDenied": "Permiso de micrófono denegado",
   "voiceChatSkillActive": "Consultando datos…",
   "voiceChatThinking": "Pensando…",
+  "voiceOutputTitle": "Salida de audio",
+  "voiceOutputSpeaker": "Altavoz del teléfono",
+  "voiceOutputBluetooth": "Dispositivo Bluetooth",
+  "voiceOutputWired": "Audífonos con cable",
+  "voiceOutputOther": "Otro dispositivo",
+  "voiceOutputNone": "No hay dispositivos de audio disponibles",
 
   "@_chat": {},
   "assistantVoiceActive": "Voz activa",

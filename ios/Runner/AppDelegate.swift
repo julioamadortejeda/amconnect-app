@@ -74,6 +74,18 @@ import AVFoundation
         VoiceAudioManager.shared.stop()
         result(nil as Any?)
 
+      case "getAudioDevices":
+        result(VoiceAudioManager.shared.getAudioDevices())
+
+      case "selectAudioDevice":
+        guard let args = call.arguments as? [String: Any],
+              let id = args["id"] as? String else {
+          result(FlutterError(code: "BAD_ARGS", message: "Expected {id: String}", details: nil))
+          return
+        }
+        VoiceAudioManager.shared.selectAudioDevice(id)
+        result(nil as Any?)
+
       default:
         result(FlutterMethodNotImplemented)
       }

@@ -1652,6 +1652,42 @@ abstract class AppLocalizations {
   /// **'Pensando…'**
   String get voiceChatThinking;
 
+  /// No description provided for @voiceOutputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Salida de audio'**
+  String get voiceOutputTitle;
+
+  /// No description provided for @voiceOutputSpeaker.
+  ///
+  /// In es, this message translates to:
+  /// **'Altavoz del teléfono'**
+  String get voiceOutputSpeaker;
+
+  /// No description provided for @voiceOutputBluetooth.
+  ///
+  /// In es, this message translates to:
+  /// **'Dispositivo Bluetooth'**
+  String get voiceOutputBluetooth;
+
+  /// No description provided for @voiceOutputWired.
+  ///
+  /// In es, this message translates to:
+  /// **'Audífonos con cable'**
+  String get voiceOutputWired;
+
+  /// No description provided for @voiceOutputOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro dispositivo'**
+  String get voiceOutputOther;
+
+  /// No description provided for @voiceOutputNone.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay dispositivos de audio disponibles'**
+  String get voiceOutputNone;
+
   /// No description provided for @assistantVoiceActive.
   ///
   /// In es, this message translates to:
