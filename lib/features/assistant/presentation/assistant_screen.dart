@@ -7,6 +7,7 @@ import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/device_timezone.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../chat/presentation/widgets/chat_cards.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 import '../providers/assistant_provider.dart';
 import '../widgets/assistant_bubble.dart';
@@ -84,11 +85,12 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
   @override
   void dispose() {
     // Si el usuario sale de la pantalla con la voz activa, hay que cerrar el
-    // WebSocket/audio nativo explícitamente.
-    // Usamos el notifier guardado en initState y el modo guardado en build
-    // para evitar usar ref o leer notifier.state en dispose.
+    // WebSocket/audio nativo explícitamente. Diferido con Future(): endVoice
+    // escribe state del provider, y Riverpod prohíbe modificar providers
+    // dentro de dispose (el árbol de widgets se está finalizando).
     if (_currentMode == AssistantMode.voice) {
-      _notifier.endVoice();
+      final notifier = _notifier; // capturado en initState — no usa ref
+      Future(() => notifier.endVoice());
     }
     _ctrl.dispose();
     _scrollCtrl.dispose();
@@ -119,6 +121,13 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       }
       if (state.liveModelText.isNotEmpty) {
         trailingItems.add(AssistantBubble(role: 'ai', text: state.liveModelText, isLive: true));
+      }
+      // Card transitoria del skill en vuelo (clientes, pólizas, recordatorios…)
+      // — al commitear el turno queda anclada a la burbuja del modelo y esta
+      // desaparece (clearActiveWidgetMetadata en el provider).
+      if (state.activeWidgetMetadata != null) {
+        final card = buildChatCard(state.activeWidgetMetadata!, context);
+        if (card != null) trailingItems.add(card);
       }
     } else if (state.isLoading) {
       trailingItems.add(const AssistantTypingBubble());

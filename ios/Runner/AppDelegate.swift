@@ -35,6 +35,14 @@ import AVFoundation
       }
     }
 
+    // Reenvía los logs nativos de audio a Dart — print() de Swift no aparece
+    // en la consola de `flutter run` cuando corre en dispositivo físico.
+    VoiceAudioManager.shared.onLog = { msg in
+      DispatchQueue.main.async {
+        controlChannel.invokeMethod("nativeLog", arguments: msg)
+      }
+    }
+
     controlChannel.setMethodCallHandler { (call, result) in
       switch call.method {
 
