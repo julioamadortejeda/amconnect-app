@@ -142,6 +142,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
             AssistantHeader(
               mode: state.mode,
               sessionActive: state.sessionId != null,
+              activeSkill: state.activeSkill,
               onBack: () => context.pop(),
               onReset: () => ref.read(assistantProvider.notifier).reset(),
             ),
@@ -230,7 +231,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
               ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                  AmDimens.screenH, 6, AmDimens.screenH, 12),
+                  AmDimens.screenH, 6, AmDimens.screenH, 0),
               child: isVoice
                   ? AssistantVoiceBar(
                       status: state.voiceStatus,
@@ -238,6 +239,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       error: state.error,
                       onClose: () => ref.read(assistantProvider.notifier).endVoice(),
                       onOutput: () => VoiceOutputSheet.show(context),
+                      micLevel: ref.read(assistantProvider.notifier).micLevel,
+                      modelLevel: ref.read(assistantProvider.notifier).modelLevel,
                     )
                   : AssistantComposer(
                       controller: _ctrl,

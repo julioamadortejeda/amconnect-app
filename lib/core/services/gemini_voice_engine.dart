@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import '../network/api_client.dart';
 import 'gemini_live_service.dart';
@@ -106,6 +108,7 @@ class GeminiVoiceEngine {
     _usageTracker = GeminiUsageTracker(onRoundReady: _postSaveRound, logTag: logTag);
     _liveSubscription = _liveService.events.listen(_handleLiveEvent);
     _playbackFinishedSubscription = _audioService.onPlaybackFinished.listen((_) {
+      modelLevel.value = 0.0;
       if (_modelSpeaking) {
         _modelSpeaking = false;
         _emit(const EngineListening());
@@ -121,6 +124,13 @@ class GeminiVoiceEngine {
 
   final _eventsController = StreamController<VoiceEngineEvent>.broadcast();
   Stream<VoiceEngineEvent> get events => _eventsController.stream;
+
+  // Nivel de audio (0..1) en vivo — alimenta las animaciones reactivas de la
+  // barra de voz: mic real mientras escucha, salida real mientras responde.
+  // ValueNotifier en vez de VoiceEngineEvent a propósito: llega ~20 veces por
+  // segundo y no debe disparar un rebuild de todo AssistantState/la pantalla.
+  final ValueNotifier<double> micLevel = ValueNotifier<double>(0.0);
+  final ValueNotifier<double> modelLevel = ValueNotifier<double>(0.0);
 
   StreamSubscription<GeminiLiveEvent>? _liveSubscription;
   StreamSubscription<void>? _playbackFinishedSubscription;
@@ -151,7 +161,9 @@ class GeminiVoiceEngine {
   // hangover posterior al último chunk reproducido.
   bool _modelSpeaking = false;
   DateTime? _lastPlaybackAt;
-  static const _playbackHangover = Duration(milliseconds: 700);
+  Duration get _playbackHangover => defaultTargetPlatform == TargetPlatform.android
+      ? const Duration(milliseconds: 1200)
+      : const Duration(milliseconds: 700);
 
   bool get _micSendBlockedByPlayback {
     if (_discardingModelTurn) return false;
@@ -209,6 +221,7 @@ class GeminiVoiceEngine {
     // mantener el mic abierto para que el barge-in del usuario sí llegue.
     _discardingModelTurn = true;
     _modelSpeaking = false;
+    modelLevel.value = 0.0;
     _audioService.stopPlayback();
 
     _commitCurrentTurn(); // conserva la pregunta + lo que el modelo alcanzó a decir
@@ -235,6 +248,8 @@ class GeminiVoiceEngine {
     await _liveService.close();
     _modelSpeaking = false;
     _discardingModelTurn = false;
+    micLevel.value = 0.0;
+    modelLevel.value = 0.0;
     debugPrint('[$_logTag] Engine shutdown done');
   }
 
@@ -246,6 +261,8 @@ class GeminiVoiceEngine {
     _liveSubscription?.cancel();
     _usageTracker.dispose();
     _liveService.dispose();
+    micLevel.dispose();
+    modelLevel.dispose();
     _eventsController.close();
   }
 
@@ -278,6 +295,7 @@ class GeminiVoiceEngine {
             _modelSpeaking = true;
             _emit(const EngineModelSpeaking());
           }
+          modelLevel.value = _pcm16Level(base64Decode(base64PcmAudio));
           _audioService.playPcm(base64PcmAudio);
         }
 
@@ -338,12 +356,14 @@ class GeminiVoiceEngine {
     // — hacerlo aquí, si no el mic queda bloqueado por el echo guard.
     if (chunksThisTurn == 0) {
       _modelSpeaking = false;
+      modelLevel.value = 0.0;
       _emit(const EngineListening());
     }
   }
 
   void _handleInterrupted() {
     debugPrint('[$_logTag] ⚡ INTERRUPTED — flushing playback');
+    modelLevel.value = 0.0;
     _audioService.stopPlayback();
     // Barge-in puro por voz (sin tap previo): conservar el parcial en orden.
     // Tras un tap el turno ya se comprometió — no recomitear, fragmentaría la
@@ -475,6 +495,9 @@ class GeminiVoiceEngine {
         _hasReceivedMicData = true;
         debugPrint('[$_logTag] 🎙 Primer chunk de mic (${data.length} bytes)');
       }
+      // Nivel real del mic — independiente del echo guard: el usuario sigue
+      // "escuchándose" visualmente aunque ese chunk no se reenvíe a Gemini.
+      micLevel.value = _pcm16Level(data);
       if (_liveService.isConnected && !_micSendBlockedByPlayback) {
         _micChunksSent++;
         if (_micChunksSent % 50 == 0) {
@@ -519,6 +542,30 @@ class GeminiVoiceEngine {
       debugPrint('[$_logTag] Silence watchdog fired — no response in 12s');
       _emit(const EngineWatchdogTimeout());
     });
+  }
+
+  // RMS de un buffer PCM16 mono LE, mapeado a 0..1 en escala de dB (no
+  // lineal): la voz hablada tiene picos altos pero promedio bajo, así que un
+  // gain lineal solo se nota "gritando". En dB, ruido de piso/silencio cae
+  // bajo _dbFloor y voz conversacional normal ya ocupa la mayor parte del
+  // rango hasta _dbCeil (gritar satura el resto).
+  static const _dbFloor = -45.0;
+  static const _dbCeil = -8.0;
+
+  double _pcm16Level(Uint8List bytes) {
+    if (bytes.length < 2) return 0.0;
+    final data = ByteData.sublistView(bytes);
+    final sampleCount = bytes.length ~/ 2;
+    double sumSquares = 0;
+    for (var i = 0; i < sampleCount; i++) {
+      final sample = data.getInt16(i * 2, Endian.little) / 32768.0;
+      sumSquares += sample * sample;
+    }
+    final rms = math.sqrt(sumSquares / sampleCount);
+    if (rms <= 0) return 0.0;
+    final db = 20 * math.log(rms) / math.ln10;
+    final normalized = (db - _dbFloor) / (_dbCeil - _dbFloor);
+    return normalized.clamp(0.0, 1.0);
   }
 
   void _fail(String message) {

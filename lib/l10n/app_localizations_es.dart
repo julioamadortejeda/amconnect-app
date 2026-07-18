@@ -859,6 +859,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceOutputNone => 'No hay dispositivos de audio disponibles';
 
   @override
+  String get voiceSkillSearchingContacts => 'Buscando cliente…';
+
+  @override
+  String get voiceSkillReviewingContacts => 'Revisando tus clientes…';
+
+  @override
+  String get voiceSkillSavingContact => 'Actualizando cliente…';
+
+  @override
+  String get voiceSkillSearchingNotes => 'Buscando en tus notas…';
+
+  @override
+  String get voiceSkillSavingNote => 'Guardando nota…';
+
+  @override
+  String get voiceSkillSearchingPolicies => 'Buscando póliza…';
+
+  @override
+  String get voiceSkillReviewingPolicies => 'Revisando tus pólizas…';
+
+  @override
+  String get voiceSkillSavingPolicy => 'Guardando póliza…';
+
+  @override
+  String get voiceSkillSearchingReminders => 'Buscando recordatorios…';
+
+  @override
+  String get voiceSkillSavingReminder => 'Actualizando recordatorio…';
+
+  @override
+  String get voiceSkillCatalog => 'Consultando catálogo…';
+
+  @override
+  String get voiceSkillSavingCatalog => 'Guardando en catálogo…';
+
+  @override
+  String get voiceSkillPendingTask => 'Anotando pendiente…';
+
+  @override
+  String get voiceSkillKnowledge => 'Buscando en tu base de conocimiento…';
+
+  @override
   String get assistantVoiceActive => 'Voz activa';
 
   @override

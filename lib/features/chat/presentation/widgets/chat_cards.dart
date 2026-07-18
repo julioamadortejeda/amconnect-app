@@ -808,7 +808,7 @@ class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
             label: l10n.chatCardGoToAgenda,
             icon: Icons.arrow_forward_rounded,
             color: am.amber,
-            onTap: () => context.push('/reminders'),
+            onTap: () => context.go('/reminders'),
           ),
         ],
       ),

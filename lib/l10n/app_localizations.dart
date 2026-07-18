@@ -1688,6 +1688,90 @@ abstract class AppLocalizations {
   /// **'No hay dispositivos de audio disponibles'**
   String get voiceOutputNone;
 
+  /// No description provided for @voiceSkillSearchingContacts.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando cliente…'**
+  String get voiceSkillSearchingContacts;
+
+  /// No description provided for @voiceSkillReviewingContacts.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando tus clientes…'**
+  String get voiceSkillReviewingContacts;
+
+  /// No description provided for @voiceSkillSavingContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando cliente…'**
+  String get voiceSkillSavingContact;
+
+  /// No description provided for @voiceSkillSearchingNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando en tus notas…'**
+  String get voiceSkillSearchingNotes;
+
+  /// No description provided for @voiceSkillSavingNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando nota…'**
+  String get voiceSkillSavingNote;
+
+  /// No description provided for @voiceSkillSearchingPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando póliza…'**
+  String get voiceSkillSearchingPolicies;
+
+  /// No description provided for @voiceSkillReviewingPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando tus pólizas…'**
+  String get voiceSkillReviewingPolicies;
+
+  /// No description provided for @voiceSkillSavingPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando póliza…'**
+  String get voiceSkillSavingPolicy;
+
+  /// No description provided for @voiceSkillSearchingReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando recordatorios…'**
+  String get voiceSkillSearchingReminders;
+
+  /// No description provided for @voiceSkillSavingReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando recordatorio…'**
+  String get voiceSkillSavingReminder;
+
+  /// No description provided for @voiceSkillCatalog.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultando catálogo…'**
+  String get voiceSkillCatalog;
+
+  /// No description provided for @voiceSkillSavingCatalog.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando en catálogo…'**
+  String get voiceSkillSavingCatalog;
+
+  /// No description provided for @voiceSkillPendingTask.
+  ///
+  /// In es, this message translates to:
+  /// **'Anotando pendiente…'**
+  String get voiceSkillPendingTask;
+
+  /// No description provided for @voiceSkillKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando en tu base de conocimiento…'**
+  String get voiceSkillKnowledge;
+
   /// No description provided for @assistantVoiceActive.
   ///
   /// In es, this message translates to:

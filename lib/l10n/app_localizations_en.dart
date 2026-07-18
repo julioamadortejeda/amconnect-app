@@ -853,6 +853,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceOutputNone => 'No audio devices available';
 
   @override
+  String get voiceSkillSearchingContacts => 'Looking up client…';
+
+  @override
+  String get voiceSkillReviewingContacts => 'Reviewing your clients…';
+
+  @override
+  String get voiceSkillSavingContact => 'Updating client…';
+
+  @override
+  String get voiceSkillSearchingNotes => 'Searching your notes…';
+
+  @override
+  String get voiceSkillSavingNote => 'Saving note…';
+
+  @override
+  String get voiceSkillSearchingPolicies => 'Looking up policy…';
+
+  @override
+  String get voiceSkillReviewingPolicies => 'Reviewing your policies…';
+
+  @override
+  String get voiceSkillSavingPolicy => 'Saving policy…';
+
+  @override
+  String get voiceSkillSearchingReminders => 'Looking up reminders…';
+
+  @override
+  String get voiceSkillSavingReminder => 'Updating reminder…';
+
+  @override
+  String get voiceSkillCatalog => 'Checking catalog…';
+
+  @override
+  String get voiceSkillSavingCatalog => 'Saving to catalog…';
+
+  @override
+  String get voiceSkillPendingTask => 'Noting a pending item…';
+
+  @override
+  String get voiceSkillKnowledge => 'Searching your knowledge base…';
+
+  @override
   String get assistantVoiceActive => 'Voice active';
 
   @override

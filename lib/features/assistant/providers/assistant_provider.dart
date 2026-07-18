@@ -183,6 +183,14 @@ class AssistantNotifier extends Notifier<AssistantState> {
     stopVoice();
   }
 
+  /// Nivel de audio en vivo (0..1) para las animaciones reactivas de la barra
+  /// de voz — mic real mientras escucha, salida real del modelo mientras
+  /// responde. Expuestos como [ValueListenable] (no como parte de
+  /// [AssistantState]) porque cambian ~20 veces/seg y no deben disparar un
+  /// rebuild de toda la pantalla.
+  ValueListenable<double> get micLevel => _engine.micLevel;
+  ValueListenable<double> get modelLevel => _engine.modelLevel;
+
   /// Dispositivos de salida disponibles (selector de audio en modo voz).
   Future<List<AudioOutputDevice>> audioOutputDevices() =>
       ref.read(nativeAudioServiceProvider).getAudioDevices();

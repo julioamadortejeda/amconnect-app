@@ -97,6 +97,11 @@ class GeminiLiveService {
         },
       );
 
+      // Este voiceName solo aplica de verdad en Vertex: ahí el WS no usa
+      // token efímero con constraints, así que el `setup` que manda el
+      // cliente sí se respeta. En Studio (token efímero v1alpha) el backend
+      // ya fija la voz al crear el token (liveConnectConstraints.config) y
+      // este bloque se ignora en silencio — ver gemini.provider.ts.
       final setupMessage = {
         'setup': {
           'model': modelName,
@@ -104,7 +109,7 @@ class GeminiLiveService {
             'responseModalities': ['AUDIO'],
             'speechConfig': {
               'voiceConfig': {
-                'prebuiltVoiceConfig': {'voiceName': 'Puck'}
+                'prebuiltVoiceConfig': {'voiceName': 'Aoede'}
               }
             }
           },

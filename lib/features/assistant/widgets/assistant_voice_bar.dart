@@ -1,14 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_fade_switcher.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../chat/widgets/voice_waveform_bars.dart';
 import '../providers/assistant_provider.dart';
+import 'model_speaking_pulse.dart';
+import 'reactive_voice_waveform.dart';
+import 'thinking_pulse.dart';
+import 'voice_mic_indicator.dart';
 
-/// Barra inferior en modo voz — reemplaza el composer de texto. Onda + estado
-/// + botón de cerrar, dentro de un pill de acento fijo (mismo azul de marca
-/// que el resto de la app) para que las barras blancas de [VoiceWaveformBars]
-/// siempre se vean bien, sin necesidad de oscurecer el resto de la pantalla.
+/// Barra inferior en modo voz — reemplaza el composer de texto. Animación +
+/// estado + botón de cerrar, dentro de un pill de acento fijo (mismo azul de
+/// marca que el resto de la app). Tres animaciones distintas a propósito:
+/// [ThinkingPulse] mientras hay una skill en vuelo (tool call — casi siempre
+/// ocurre con status todavía `listening`, por eso va primero en la
+/// prioridad), [ReactiveVoiceWaveform] (barras) cuando habla el usuario, y
+/// [ModelSpeakingPulse] (blob reactivo a audio real) cuando responde el
+/// modelo — para que de un vistazo quede claro qué está pasando, sin
+/// depender solo del texto.
 class AssistantVoiceBar extends StatelessWidget {
   const AssistantVoiceBar({
     super.key,
@@ -17,6 +27,8 @@ class AssistantVoiceBar extends StatelessWidget {
     required this.error,
     required this.onClose,
     required this.onOutput,
+    required this.micLevel,
+    required this.modelLevel,
   });
 
   final VoiceStatus status;
@@ -27,11 +39,14 @@ class AssistantVoiceBar extends StatelessWidget {
   /// Abre el selector de salida de audio (bocina / audífonos).
   final VoidCallback onOutput;
 
+  /// Nivel de audio en vivo (0..1) del mic y de la salida del modelo — ver
+  /// [GeminiVoiceEngine.micLevel]/[modelLevel].
+  final ValueListenable<double> micLevel;
+  final ValueListenable<double> modelLevel;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isActive =
-        status == VoiceStatus.listening || status == VoiceStatus.modelSpeaking;
 
     final label = error != null
         ? context.translateError(error)
@@ -52,30 +67,14 @@ class AssistantVoiceBar extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Deja explícito cuándo el usuario aún NO puede hablar (conectando:
+          // ícono atenuado + anillo pulsante) y el instante exacto en que ya
+          // sí (rebote + destello + haptic) — antes solo cambiaba el texto y
+          // la transición pasaba desapercibida.
+          VoiceMicIndicator(status: status),
+          const SizedBox(width: 10),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-                final Set<Key> seenKeys = {};
-                if (currentChild?.key != null) {
-                  seenKeys.add(currentChild!.key!);
-                }
-                final List<Widget> safePrevious = [];
-                for (final child in previousChildren) {
-                  final key = child.key;
-                  if (key == null || !seenKeys.contains(key)) {
-                    if (key != null) seenKeys.add(key);
-                    safePrevious.add(child);
-                  }
-                }
-                return Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    ...safePrevious,
-                    if (currentChild != null) currentChild,
-                  ],
-                );
-              },
+            child: AmFadeSwitcher(
               child: Text(
                 label,
                 key: ValueKey(label),
@@ -91,9 +90,15 @@ class AssistantVoiceBar extends StatelessWidget {
               ),
             ),
           ),
-          if (isActive) ...[
+          if (activeSkill != null) ...[
             const SizedBox(width: 12),
-            const VoiceWaveformBars(maxHeight: 24),
+            const ThinkingPulse(color: Colors.white, size: 18),
+          ] else if (status == VoiceStatus.listening) ...[
+            const SizedBox(width: 12),
+            ReactiveVoiceWaveform(level: micLevel, maxHeight: 24),
+          ] else if (status == VoiceStatus.modelSpeaking) ...[
+            const SizedBox(width: 12),
+            ModelSpeakingPulse(level: modelLevel, size: 22),
           ],
           const SizedBox(width: 12),
           GestureDetector(
