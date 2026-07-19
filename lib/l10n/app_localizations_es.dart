@@ -1025,7 +1025,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedStepProcessing => 'Procesando archivo con IA…';
 
   @override
-  String get feedViewModeIngest => 'Ingestar';
+  String get feedViewModeIngest => 'Cargar';
 
   @override
   String get feedViewModeKnowledge => 'Conocimiento';

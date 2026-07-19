@@ -423,7 +423,7 @@
   "feedStepGettingUrl": "Obteniendo enlace de subida…",
   "feedStepUploading": "Subiendo archivo al servidor…",
   "feedStepProcessing": "Procesando archivo con IA…",
-  "feedViewModeIngest": "Ingestar",
+  "feedViewModeIngest": "Cargar",
   "feedViewModeKnowledge": "Conocimiento",
   "feedStatsPDFs": "PDFs",
   "feedStatsImages": "Imágenes",

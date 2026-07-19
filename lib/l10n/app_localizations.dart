@@ -2021,7 +2021,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedViewModeIngest.
   ///
   /// In es, this message translates to:
-  /// **'Ingestar'**
+  /// **'Cargar'**
   String get feedViewModeIngest;
 
   /// No description provided for @feedViewModeKnowledge.
