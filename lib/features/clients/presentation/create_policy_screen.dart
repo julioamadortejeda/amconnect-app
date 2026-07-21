@@ -82,6 +82,9 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
     } else {
       _contactId = widget.clientId;
     }
+    // El selector de cliente necesita la cartera completa, no solo la
+    // primera página cargada por scroll.
+    Future.microtask(() => ref.read(clientsProvider.notifier).loadAll());
   }
 
   @override

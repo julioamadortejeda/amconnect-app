@@ -18,8 +18,9 @@ class AnalyticsScreen extends ConsumerWidget {
 
     final contactsAsync = ref.watch(clientsProvider);
     final policiesAsync = ref.watch(policiesProvider);
+    final fullDataAsync = ref.watch(ensureFullPortfolioDataProvider);
 
-    if (contactsAsync.isLoading || policiesAsync.isLoading) {
+    if (contactsAsync.isLoading || policiesAsync.isLoading || fullDataAsync.isLoading) {
       return const Scaffold(
         appBar: AmTopBar(
           title: '',

@@ -101,6 +101,38 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
     }
   }
 
+  Future<void> _confirmDeletePolicy() async {
+    final policy = _policy;
+    if (policy == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final cs = Theme.of(context).colorScheme;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AmConfirmDialog(
+        title: l10n.policiesDeleteTitle,
+        message: l10n.policiesDeleteMessage,
+        confirmLabel: l10n.commonDelete,
+        cancelLabel: l10n.commonCancel,
+        icon: Icons.delete_outline_rounded,
+        iconBgColor: cs.errorContainer,
+        iconFgColor: cs.error,
+        onConfirm: () => Navigator.of(ctx).pop(true),
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ref.read(policiesProvider.notifier).delete(policy.id);
+      if (mounted) context.pop();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.policiesErrDelete),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
+  }
+
   Future<void> _confirmDeleteNote(AgentNote note) async {
     final policy = _policy;
     if (policy == null) return;
@@ -176,6 +208,21 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                 ),
                 child: Icon(Icons.edit_outlined,
                     size: 18, color: cs.onSurfaceVariant),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: AmPress(
+              onTap: _confirmDeletePolicy,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: cs.errorContainer,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.delete_outline_rounded,
+                    size: 18, color: cs.error),
               ),
             ),
           ),

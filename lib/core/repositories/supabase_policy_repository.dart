@@ -24,13 +24,17 @@ class SupabasePolicyRepository implements PolicyRepository {
   }
 
   @override
-  Future<List<Policy>> getAll() async {
-    final res = await _client.get('policies?pageSize=100');
+  Future<({List<Policy> items, bool hasMore})> getAll({
+    int page = 1,
+    int pageSize = 30,
+  }) async {
+    final res = await _client.get('policies?page=$page&pageSize=$pageSize');
     final wrapper = res['data'] as Map<String, dynamic>;
     final items = wrapper['data'] as List<dynamic>;
-    return items
-        .map((e) => Policy.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return (
+      items: items.map((e) => Policy.fromJson(e as Map<String, dynamic>)).toList(),
+      hasMore: wrapper['hasMore'] as bool? ?? false,
+    );
   }
 
   @override
@@ -50,6 +54,11 @@ class SupabasePolicyRepository implements PolicyRepository {
   Future<Policy> update(String id, Map<String, dynamic> data) async {
     final res = await _client.patch('policies/$id', body: data);
     return Policy.fromJson(res['data'] as Map<String, dynamic>);
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await _client.delete('policies/$id');
   }
 }
 

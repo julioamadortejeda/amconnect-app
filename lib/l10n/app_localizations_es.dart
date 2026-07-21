@@ -571,6 +571,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsError => 'Error al cargar clientes';
 
   @override
+  String get clientsDeleteTitle => '¿Eliminar cliente?';
+
+  @override
+  String get clientsDeleteMessage =>
+      'Se eliminará este cliente y no aparecerá más en tu cartera. Esta acción no se puede deshacer.';
+
+  @override
+  String get clientsErrDelete =>
+      'No se pudo eliminar el cliente. Intenta de nuevo.';
+
+  @override
   String get clientsContactSection => 'Contacto';
 
   @override
@@ -728,9 +739,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String remindersAskAbout(String title) {
-    return 'Preguntar sobre $title';
-  }
+  String get remindersAskAbout => 'Preguntar sobre esto';
 
   @override
   String get remindersTitle => 'Agenda';
@@ -751,6 +760,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersFilterCalls => 'Llamadas';
+
+  @override
+  String get remindersFilterCompleted => 'Completados';
 
   @override
   String get remindersFilterDeleted => 'Eliminados';
@@ -1478,6 +1490,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get policiesDeleteNoteMsg =>
       '¿Deseas eliminar esta nota? Esta acción no se puede deshacer.';
+
+  @override
+  String get policiesDeleteTitle => '¿Eliminar póliza?';
+
+  @override
+  String get policiesDeleteMessage =>
+      'Se eliminará esta póliza y no aparecerá más en tu cartera. Esta acción no se puede deshacer.';
+
+  @override
+  String get policiesErrDelete =>
+      'No se pudo eliminar la póliza. Intenta de nuevo.';
 
   @override
   String get policiesAttachFile => 'Adjuntar';

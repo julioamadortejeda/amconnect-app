@@ -61,6 +61,9 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
     Future.microtask(() {
       if (mounted) ref.read(createReminderProvider.notifier).reset();
     });
+    // Necesita la cartera completa para poder mostrar/buscar el cliente
+    // seleccionado, no solo la primera página cargada por scroll.
+    Future.microtask(() => ref.read(clientsProvider.notifier).loadAll());
   }
 
   void _rebuild() => setState(() {});

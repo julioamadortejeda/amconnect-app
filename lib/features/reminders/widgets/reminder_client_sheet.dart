@@ -32,6 +32,8 @@ class _ReminderClientSheetState extends ConsumerState<ReminderClientSheet> {
   void initState() {
     super.initState();
     _searchCtrl.addListener(_onQueryChanged);
+    // El selector necesita la cartera completa, no solo la primera página.
+    Future.microtask(() => ref.read(clientsProvider.notifier).loadAll());
   }
 
   void _onQueryChanged() => setState(() => _query = _searchCtrl.text);

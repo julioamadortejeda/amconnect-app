@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_top_bar.dart';
@@ -20,6 +21,39 @@ class ClientDetailScreen extends ConsumerWidget {
 
   final String clientId;
   final bool fromChat;
+
+  void _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    ColorScheme cs,
+  ) {
+    showDialog(
+      context: context,
+      builder: (_) => AmConfirmDialog(
+        title: l10n.clientsDeleteTitle,
+        message: l10n.clientsDeleteMessage,
+        confirmLabel: l10n.commonDelete,
+        cancelLabel: l10n.commonCancel,
+        icon: Icons.delete_outline_rounded,
+        iconBgColor: cs.errorContainer,
+        iconFgColor: cs.error,
+        onConfirm: () async {
+          try {
+            await ref.read(clientsProvider.notifier).delete(clientId);
+            if (context.mounted) context.pop();
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(l10n.clientsErrDelete),
+                behavior: SnackBarBehavior.floating,
+              ));
+            }
+          }
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,6 +83,21 @@ class ClientDetailScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
             ),
             child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
+          ),
+        ),
+        const SizedBox(width: 10),
+        AmPress(
+          onTap: contact == null
+              ? null
+              : () => _confirmDelete(context, ref, l10n, cs),
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: cs.errorContainer,
+              borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
+            ),
+            child: Icon(Icons.delete_outline_rounded, size: 18, color: cs.error),
           ),
         ),
         const SizedBox(width: AmDimens.screenH),

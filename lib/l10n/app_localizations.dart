@@ -1136,6 +1136,24 @@ abstract class AppLocalizations {
   /// **'Error al cargar clientes'**
   String get clientsError;
 
+  /// No description provided for @clientsDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar cliente?'**
+  String get clientsDeleteTitle;
+
+  /// No description provided for @clientsDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminará este cliente y no aparecerá más en tu cartera. Esta acción no se puede deshacer.'**
+  String get clientsDeleteMessage;
+
+  /// No description provided for @clientsErrDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar el cliente. Intenta de nuevo.'**
+  String get clientsErrDelete;
+
   /// No description provided for @clientsContactSection.
   ///
   /// In es, this message translates to:
@@ -1421,8 +1439,8 @@ abstract class AppLocalizations {
   /// No description provided for @remindersAskAbout.
   ///
   /// In es, this message translates to:
-  /// **'Preguntar sobre {title}'**
-  String remindersAskAbout(String title);
+  /// **'Preguntar sobre esto'**
+  String get remindersAskAbout;
 
   /// No description provided for @remindersTitle.
   ///
@@ -1459,6 +1477,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Llamadas'**
   String get remindersFilterCalls;
+
+  /// No description provided for @remindersFilterCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completados'**
+  String get remindersFilterCompleted;
 
   /// No description provided for @remindersFilterDeleted.
   ///
@@ -2875,6 +2899,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Deseas eliminar esta nota? Esta acción no se puede deshacer.'**
   String get policiesDeleteNoteMsg;
+
+  /// No description provided for @policiesDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar póliza?'**
+  String get policiesDeleteTitle;
+
+  /// No description provided for @policiesDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminará esta póliza y no aparecerá más en tu cartera. Esta acción no se puede deshacer.'**
+  String get policiesDeleteMessage;
+
+  /// No description provided for @policiesErrDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la póliza. Intenta de nuevo.'**
+  String get policiesErrDelete;
 
   /// No description provided for @policiesAttachFile.
   ///

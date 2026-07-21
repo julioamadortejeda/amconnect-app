@@ -567,6 +567,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsError => 'Error loading clients';
 
   @override
+  String get clientsDeleteTitle => 'Delete client?';
+
+  @override
+  String get clientsDeleteMessage =>
+      'This client will be deleted and will no longer appear in your portfolio. This action cannot be undone.';
+
+  @override
+  String get clientsErrDelete =>
+      'Couldn\'t delete the client. Please try again.';
+
+  @override
   String get clientsContactSection => 'Contact';
 
   @override
@@ -723,9 +734,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String remindersAskAbout(String title) {
-    return 'Ask about $title';
-  }
+  String get remindersAskAbout => 'Ask about this';
 
   @override
   String get remindersTitle => 'Agenda';
@@ -746,6 +755,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersFilterCalls => 'Calls';
+
+  @override
+  String get remindersFilterCompleted => 'Completed';
 
   @override
   String get remindersFilterDeleted => 'Deleted';
@@ -1471,6 +1483,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get policiesDeleteNoteMsg =>
       'Do you want to delete this note? This action cannot be undone.';
+
+  @override
+  String get policiesDeleteTitle => 'Delete policy?';
+
+  @override
+  String get policiesDeleteMessage =>
+      'This policy will be deleted and will no longer appear in your portfolio. This action cannot be undone.';
+
+  @override
+  String get policiesErrDelete =>
+      'Couldn\'t delete the policy. Please try again.';
 
   @override
   String get policiesAttachFile => 'Attach';

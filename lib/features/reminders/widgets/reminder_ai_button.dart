@@ -13,7 +13,7 @@ class ReminderAiButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AmAiAskButton(
-      label: l10n.remindersAskAbout(reminder.title),
+      label: l10n.remindersAskAbout,
       aiContext: AiChatContext.fromReminder(reminder),
     );
   }

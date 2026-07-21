@@ -60,6 +60,9 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
   if (filter == 'eliminados') {
     return reminders.where((r) => r.cancelled).toList();
   }
+  if (filter == 'completados') {
+    return reminders.where((r) => r.done).toList();
+  }
   final active = reminders.where((r) => r.isActive).toList();
   if (filter == 'todos') return active;
   return active.where((r) => r.type == filter).toList();

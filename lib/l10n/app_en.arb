@@ -217,6 +217,9 @@
   "clientsErrorPolicies": "Error loading policies",
   "clientsEmpty": "No registered clients",
   "clientsError": "Error loading clients",
+  "clientsDeleteTitle": "Delete client?",
+  "clientsDeleteMessage": "This client will be deleted and will no longer appear in your portfolio. This action cannot be undone.",
+  "clientsErrDelete": "Couldn't delete the client. Please try again.",
   "clientsContactSection": "Contact",
   "clientsNoPolicies": "No registered policies",
   "clientsNoNotes": "No notes",
@@ -274,16 +277,14 @@
   "clientsPolicyDeleteNoteMsg": "This version is no longer active. Do you want to delete it?",
   "clientsAskAbout": "Ask about {name}",
 
-  "remindersAskAbout": "Ask about {title}",
-  "@remindersAskAbout": {
-    "placeholders": { "title": { "type": "String" } }
-  },
+  "remindersAskAbout": "Ask about this",
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pending",
   "remindersFilterAll": "All",
   "remindersFilterPayments": "Payments",
   "remindersFilterRenewals": "Renewals",
   "remindersFilterCalls": "Calls",
+  "remindersFilterCompleted": "Completed",
   "remindersFilterDeleted": "Deleted",
   "remindersDeletedWarning": "Deleted reminders cannot be restored.",
   "remindersEmpty": "No reminders to show",
@@ -545,6 +546,9 @@
   "policiesAddNoteHint": "Write a note...",
   "policiesDeleteNoteTitle": "Delete note",
   "policiesDeleteNoteMsg": "Do you want to delete this note? This action cannot be undone.",
+  "policiesDeleteTitle": "Delete policy?",
+  "policiesDeleteMessage": "This policy will be deleted and will no longer appear in your portfolio. This action cannot be undone.",
+  "policiesErrDelete": "Couldn't delete the policy. Please try again.",
   "policiesAttachFile": "Attach",
 
   "catalogsTitle": "Catalogs",

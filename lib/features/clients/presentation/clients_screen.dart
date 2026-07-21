@@ -16,6 +16,11 @@ import '../widgets/client_search_bar.dart';
 import '../widgets/client_policy_card.dart';
 import '../../../l10n/app_localizations.dart';
 
+/// Distancia (en px) al final del scroll a partir de la cual se dispara la
+/// carga de la siguiente página — suficiente margen para que no se note el
+/// "salto" al llegar al fondo real de la lista.
+const _kLoadMoreThreshold = 300.0;
+
 class ClientsScreen extends ConsumerStatefulWidget {
   const ClientsScreen({super.key});
 
@@ -25,6 +30,40 @@ class ClientsScreen extends ConsumerStatefulWidget {
 
 class _ClientsScreenState extends ConsumerState<ClientsScreen> {
   int _tabIdx = 0; // 0 = Clientes, 1 = Pólizas
+  final _clientsScrollCtrl = ScrollController();
+  final _policiesScrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _clientsScrollCtrl.addListener(_onClientsScroll);
+    _policiesScrollCtrl.addListener(_onPoliciesScroll);
+  }
+
+  @override
+  void dispose() {
+    _clientsScrollCtrl.removeListener(_onClientsScroll);
+    _policiesScrollCtrl.removeListener(_onPoliciesScroll);
+    _clientsScrollCtrl.dispose();
+    _policiesScrollCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onClientsScroll() {
+    if (!_clientsScrollCtrl.hasClients) return;
+    final pos = _clientsScrollCtrl.position;
+    if (pos.pixels >= pos.maxScrollExtent - _kLoadMoreThreshold) {
+      ref.read(clientsProvider.notifier).loadMore();
+    }
+  }
+
+  void _onPoliciesScroll() {
+    if (!_policiesScrollCtrl.hasClients) return;
+    final pos = _policiesScrollCtrl.position;
+    if (pos.pixels >= pos.maxScrollExtent - _kLoadMoreThreshold) {
+      ref.read(policiesProvider.notifier).loadMore();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +220,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     final q = ref.watch(clientSearchProvider);
     final allContacts = contactsAsync.asData?.value ?? [];
     final list = allContacts.where((c) => c.matchesQuery(q)).toList();
+    final isLoadingMore = ref.watch(clientsPageInfoProvider).isLoadingMore;
 
     return KeyedSubtree(
       key: const ValueKey('clients_view'),
@@ -201,18 +241,27 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             )
           : ListView.separated(
               key: const PageStorageKey('clients_list'),
+              controller: _clientsScrollCtrl,
               padding: const EdgeInsets.fromLTRB(
                 AmDimens.screenH,
                 0,
                 AmDimens.screenH,
                 AmDimens.scrollBottomPad,
               ),
-              itemCount: list.length,
+              itemCount: list.length + (isLoadingMore ? 1 : 0),
               separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (_, i) => AmAnimateIn(
-                index: i + 1,
-                child: ClientRow(contact: list[i]),
-              ),
+              itemBuilder: (_, i) {
+                if (i >= list.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
+                    child: Center(child: AmLoader()),
+                  );
+                }
+                return AmAnimateIn(
+                  index: i + 1,
+                  child: ClientRow(contact: list[i]),
+                );
+              },
             ),
       ),
     );
@@ -226,6 +275,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     final q = ref.watch(policySearchProvider);
     final allPolicies = policiesAsync.asData?.value ?? [];
     final list = allPolicies.where((p) => p.matchesQuery(q)).toList();
+    final isLoadingMore = ref.watch(policiesPageInfoProvider).isLoadingMore;
 
     return KeyedSubtree(
       key: const ValueKey('policies_view'),
@@ -246,18 +296,27 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             )
           : ListView.separated(
               key: const PageStorageKey('policies_list'),
+              controller: _policiesScrollCtrl,
               padding: const EdgeInsets.fromLTRB(
                 AmDimens.screenH,
                 0,
                 AmDimens.screenH,
                 AmDimens.scrollBottomPad,
               ),
-              itemCount: list.length,
+              itemCount: list.length + (isLoadingMore ? 1 : 0),
               separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (_, i) => AmAnimateIn(
-                index: i + 1,
-                child: ClientPolicyCard(policy: list[i]),
-              ),
+              itemBuilder: (_, i) {
+                if (i >= list.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
+                    child: Center(child: AmLoader()),
+                  );
+                }
+                return AmAnimateIn(
+                  index: i + 1,
+                  child: ClientPolicyCard(policy: list[i]),
+                );
+              },
             ),
       ),
     );

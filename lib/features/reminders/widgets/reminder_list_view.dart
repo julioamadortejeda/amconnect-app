@@ -69,6 +69,16 @@ class ReminderListView extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ReminderFilterChip(
+                    label: l10n.remindersFilterCompleted,
+                    active: ui.filter == 'completados',
+                    onTap: () => ref
+                        .read(remindersUiProvider.notifier)
+                        .setFilter('completados'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ReminderFilterChip(
                     label: l10n.remindersFilterDeleted,
                     active: ui.filter == 'eliminados',
                     danger: true,
@@ -113,7 +123,7 @@ class ReminderListView extends ConsumerWidget {
                     style: TextStyle(fontSize: 14, color: cs.tertiary),
                   ),
                 )
-              : ui.filter == 'eliminados'
+              : (ui.filter == 'eliminados' || ui.filter == 'completados')
                   ? SingleChildScrollView(
                       padding: const EdgeInsets.only(bottom: AmDimens.scrollBottomPad),
                       child: const DeletedRemindersView(),

@@ -1,7 +1,11 @@
 import '../models/contact.dart';
 
 abstract class ContactRepository {
-  Future<List<Contact>> getAll({String? query});
+  Future<int> getCount();
+  Future<({List<Contact> items, bool hasMore})> getAll({
+    int page = 1,
+    int pageSize = 30,
+  });
   Future<Contact> getById(String id);
   Future<Contact> create({
     required String fullName,
@@ -26,4 +30,5 @@ abstract class ContactRepository {
     String? curp,
     String? notes,
   });
+  Future<void> delete(String id);
 }
