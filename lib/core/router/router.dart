@@ -25,6 +25,7 @@ import '../../features/assistant/presentation/assistant_screen.dart';
 import '../../features/assistant/providers/assistant_provider.dart' show AssistantResumeArgs;
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
+import '../../features/onboarding/presentation/forgot_password_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
 import '../../features/chat/presentation/voice_chat_screen.dart';
 import '../../features/chat_tts/presentation/chat_tts_screen.dart';
@@ -39,7 +40,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final user = ref.read(authUserProvider).value;
       final loc = state.matchedLocation;
-      final onPublic = loc == '/' || loc == '/login' || loc == '/email-login' || loc == '/register';
+      final onPublic = loc == '/' ||
+          loc == '/login' ||
+          loc == '/email-login' ||
+          loc == '/register' ||
+          loc == '/forgot-password';
       if (user == null && !onPublic) return '/login';
       if (user != null && onPublic) return '/home';
       return null;
@@ -60,6 +65,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         pageBuilder: (_, state) => amTransitionPage(child: const RegisterScreen(), state: state, type: 'push'),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        pageBuilder: (_, state) => amTransitionPage(
+            child: const ForgotPasswordScreen(), state: state, type: 'push'),
       ),
 
       StatefulShellRoute.indexedStack(

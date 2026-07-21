@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,10 +27,29 @@ Future<void> main() async {
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey, // ignore: deprecated_member_use
   );
+  await _initCrashReporting();
   runApp(ProviderScope(
     observers: [_ProviderErrorLogger()],
     child: const MyApp(),
   ));
+}
+
+/// Inicializa Firebase antes de `runApp` (no solo tras login, como hace
+/// NotificationService) para que Crashlytics capture errores desde la
+/// primera pantalla. Tolerante a fallos si Firebase no está configurado.
+Future<void> _initCrashReporting() async {
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  } catch (e) {
+    debugPrint('[crash-reporting] No se pudo inicializar Firebase Crashlytics: $e');
+  }
 }
 
 /// Las pantallas muestran errores localizados sin detalle y ApiClient no
@@ -40,6 +62,15 @@ final class _ProviderErrorLogger extends ProviderObserver {
     StackTrace stackTrace,
   ) {
     debugPrint('[provider-error] ${context.provider} failed: $error\n$stackTrace');
+    try {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'Riverpod provider failed: ${context.provider}',
+      );
+    } catch (_) {
+      // Crashlytics no disponible (Firebase sin configurar) — ya quedó el debugPrint.
+    }
   }
 }
 

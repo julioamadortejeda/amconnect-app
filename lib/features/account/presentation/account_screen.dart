@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_confirm_dialog.dart';
+import '../../../core/widgets/am_group_card.dart';
+import '../../../core/widgets/am_info_row.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -11,6 +14,15 @@ import '../providers/account_provider.dart';
 import '../widgets/account_plan_card.dart';
 import '../widgets/account_profile_hero.dart';
 import '../../../l10n/app_localizations.dart';
+
+const _kSupportEmail = 'jacatsoft@gmail.com';
+
+// El equipo de soporte lee en español siempre, sin importar el idioma del
+// dispositivo del asesor — a diferencia del resto de la UI, este texto no
+// pasa por AppLocalizations porque su destinatario no es el usuario de la app.
+const _kSupportEmailSubject = 'AmConnect – Reporte';
+String _supportEmailBody(String agentEmail) =>
+    'Cuéntanos qué pasó:\n\n\n—\nAsesor: $agentEmail';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -53,20 +65,40 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         _saving = false;
         _editing = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(l10n.accountSaved),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ));
+      _showSnack(l10n.accountSaved);
     } catch (_) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(l10n.accountErrSave),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ));
+      _showSnack(l10n.accountErrSave);
     }
+  }
+
+  Future<void> _openSupportEmail(AppLocalizations l10n, String agentEmail) async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: _kSupportEmail,
+      queryParameters: {
+        'subject': _kSupportEmailSubject,
+        'body': _supportEmailBody(agentEmail),
+      },
+    );
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else if (mounted) {
+        _showSnack(l10n.clientsActionLaunchError);
+      }
+    } catch (_) {
+      if (mounted) _showSnack(l10n.clientsActionLaunchError);
+    }
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 2),
+    ));
   }
 
   void _confirmSignOut(AppLocalizations l10n, ColorScheme cs) {
@@ -168,6 +200,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             AmSectionLabel(label: l10n.accountPlanTitle),
             const SizedBox(height: AmDimens.gapXS),
             AccountPlanCard(info: subscription),
+            const SizedBox(height: AmDimens.gapL),
+            AmSectionLabel(label: l10n.accountHelpTitle),
+            const SizedBox(height: AmDimens.gapXS),
+            AmGroupCard(children: [
+              AmInfoRow(
+                icon: Icons.help_outline,
+                label: l10n.accountHelp,
+                trailing: const SizedBox.shrink(),
+                chevron: true,
+                onTap: () => _openSupportEmail(l10n, profile.email),
+              ),
+            ]),
             const SizedBox(height: AmDimens.gapL),
             AmPress(
               onTap: () => _confirmSignOut(l10n, cs),

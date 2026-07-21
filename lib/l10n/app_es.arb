@@ -39,6 +39,22 @@
   "emailLoginBtn": "Iniciar sesión",
   "emailLoginNoAccount": "¿No tienes cuenta? ",
   "emailLoginCreateAccount": "Crear cuenta",
+  "@_forgotPassword": {},
+  "forgotPasswordTitle": "Recupera tu acceso",
+  "forgotPasswordSubtitleEmail": "Ingresa tu correo y te mandamos un código para restablecer tu contraseña.",
+  "forgotPasswordSubtitleReset": "Ingresa el código que te enviamos y tu nueva contraseña.",
+  "forgotPasswordCodeSentTo": "Enviamos un código a {email}",
+  "@forgotPasswordCodeSentTo": {
+    "placeholders": { "email": { "type": "String" } }
+  },
+  "forgotPasswordSendCodeBtn": "Enviar código",
+  "forgotPasswordResetBtn": "Restablecer contraseña",
+  "forgotPasswordBackToEmail": "Usar otro correo",
+  "forgotPasswordSuccessTitle": "Contraseña actualizada",
+  "forgotPasswordSuccessMsg": "Ya puedes iniciar sesión con tu nueva contraseña.",
+  "forgotPasswordSuccessBtn": "Iniciar sesión",
+  "errRequestCodeFailed": "No pudimos enviar el código. Intenta de nuevo.",
+  "errInvalidCode": "El código no es válido o ya expiró.",
 
   "@_register": {},
   "registerTitle": "Crear cuenta",
@@ -51,6 +67,7 @@
   "fieldEmail": "Correo electrónico",
   "fieldPassword": "Contraseña",
   "fieldConfirm": "Confirmar contraseña",
+  "fieldCode": "Código de verificación",
   "fieldFullName": "Nombre completo",
   "fieldPhone": "Teléfono",
   "fieldOccupation": "Ocupación",
@@ -90,6 +107,8 @@
   },
   "accountSignOutTitle": "¿Cerrar sesión?",
   "accountSignOutMessage": "Podrás volver a iniciar sesión cuando quieras.",
+  "accountHelpTitle": "Ayuda",
+  "accountHelp": "Ayuda y soporte",
 
   "@_errors": {},
   "errInvalidEmail": "Ingresa un correo electrónico válido",
@@ -254,6 +273,7 @@
   "clientsCreated": "Cliente creado",
   "clientsUpdated": "Cliente actualizado",
   "clientsFieldNoBirthdate": "Sin fecha",
+  "clientsFieldInvalidPhone": "Ingresa un teléfono válido (10 a 15 dígitos)",
   "clientsSectionPersonal": "Datos personales",
   "clientsSectionFiscal": "Fiscal",
   "clientsFieldGeneralNotes": "Notas generales",
@@ -267,6 +287,9 @@
   "clientsActionRemind": "Recordar",
   "clientsActionUpload": "Subir",
   "clientsActionAsk": "Preguntar",
+  "clientsActionNoPhone": "Este cliente no tiene teléfono registrado",
+  "clientsActionLaunchError": "No se pudo abrir la aplicación",
+  "clientsActionInvalidPhone": "El teléfono de este cliente no es válido",
   "clientsPoliciesTab": "Pólizas · {count}",
   "@clientsPoliciesTab": {
     "placeholders": { "count": { "type": "int" } }
@@ -295,6 +318,10 @@
   },
 
   "@_reminders": {},
+  "remindersAskAbout": "Preguntar sobre {title}",
+  "@remindersAskAbout": {
+    "placeholders": { "title": { "type": "String" } }
+  },
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pendientes",
   "@remindersPendingCount": {

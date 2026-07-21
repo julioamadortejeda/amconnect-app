@@ -260,6 +260,78 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get emailLoginCreateAccount;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recupera tu acceso'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitleEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.'**
+  String get forgotPasswordSubtitleEmail;
+
+  /// No description provided for @forgotPasswordSubtitleReset.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el código que te enviamos y tu nueva contraseña.'**
+  String get forgotPasswordSubtitleReset;
+
+  /// No description provided for @forgotPasswordCodeSentTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos un código a {email}'**
+  String forgotPasswordCodeSentTo(String email);
+
+  /// No description provided for @forgotPasswordSendCodeBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar código'**
+  String get forgotPasswordSendCodeBtn;
+
+  /// No description provided for @forgotPasswordResetBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get forgotPasswordResetBtn;
+
+  /// No description provided for @forgotPasswordBackToEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar otro correo'**
+  String get forgotPasswordBackToEmail;
+
+  /// No description provided for @forgotPasswordSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña actualizada'**
+  String get forgotPasswordSuccessTitle;
+
+  /// No description provided for @forgotPasswordSuccessMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes iniciar sesión con tu nueva contraseña.'**
+  String get forgotPasswordSuccessMsg;
+
+  /// No description provided for @forgotPasswordSuccessBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get forgotPasswordSuccessBtn;
+
+  /// No description provided for @errRequestCodeFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código. Intenta de nuevo.'**
+  String get errRequestCodeFailed;
+
+  /// No description provided for @errInvalidCode.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o ya expiró.'**
+  String get errInvalidCode;
+
   /// No description provided for @registerTitle.
   ///
   /// In es, this message translates to:
@@ -307,6 +379,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Confirmar contraseña'**
   String get fieldConfirm;
+
+  /// No description provided for @fieldCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de verificación'**
+  String get fieldCode;
 
   /// No description provided for @fieldFullName.
   ///
@@ -457,6 +535,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Podrás volver a iniciar sesión cuando quieras.'**
   String get accountSignOutMessage;
+
+  /// No description provided for @accountHelpTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda'**
+  String get accountHelpTitle;
+
+  /// No description provided for @accountHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda y soporte'**
+  String get accountHelp;
 
   /// No description provided for @errInvalidEmail.
   ///
@@ -1142,6 +1232,12 @@ abstract class AppLocalizations {
   /// **'Sin fecha'**
   String get clientsFieldNoBirthdate;
 
+  /// No description provided for @clientsFieldInvalidPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un teléfono válido (10 a 15 dígitos)'**
+  String get clientsFieldInvalidPhone;
+
   /// No description provided for @clientsSectionPersonal.
   ///
   /// In es, this message translates to:
@@ -1219,6 +1315,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Preguntar'**
   String get clientsActionAsk;
+
+  /// No description provided for @clientsActionNoPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Este cliente no tiene teléfono registrado'**
+  String get clientsActionNoPhone;
+
+  /// No description provided for @clientsActionLaunchError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir la aplicación'**
+  String get clientsActionLaunchError;
+
+  /// No description provided for @clientsActionInvalidPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'El teléfono de este cliente no es válido'**
+  String get clientsActionInvalidPhone;
 
   /// No description provided for @clientsPoliciesTab.
   ///
@@ -1303,6 +1417,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Preguntar sobre {name}'**
   String clientsAskAbout(String name);
+
+  /// No description provided for @remindersAskAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntar sobre {title}'**
+  String remindersAskAbout(String title);
 
   /// No description provided for @remindersTitle.
   ///

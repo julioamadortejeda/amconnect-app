@@ -16,6 +16,7 @@ import '../widgets/reminder_detail_info_section.dart';
 import '../widgets/reminder_detail_relations_section.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
+import '../widgets/reminder_ai_button.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../../l10n/app_localizations.dart';
@@ -283,6 +284,7 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: r.cancelled ? null : ReminderAiButton(reminder: r),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(

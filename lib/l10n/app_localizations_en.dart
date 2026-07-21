@@ -94,6 +94,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailLoginCreateAccount => 'Create account';
 
   @override
+  String get forgotPasswordTitle => 'Recover your account';
+
+  @override
+  String get forgotPasswordSubtitleEmail =>
+      'Enter your email and we\'ll send you a code to reset your password.';
+
+  @override
+  String get forgotPasswordSubtitleReset =>
+      'Enter the code we sent you and your new password.';
+
+  @override
+  String forgotPasswordCodeSentTo(String email) {
+    return 'We sent a code to $email';
+  }
+
+  @override
+  String get forgotPasswordSendCodeBtn => 'Send code';
+
+  @override
+  String get forgotPasswordResetBtn => 'Reset password';
+
+  @override
+  String get forgotPasswordBackToEmail => 'Use a different email';
+
+  @override
+  String get forgotPasswordSuccessTitle => 'Password updated';
+
+  @override
+  String get forgotPasswordSuccessMsg =>
+      'You can now sign in with your new password.';
+
+  @override
+  String get forgotPasswordSuccessBtn => 'Sign in';
+
+  @override
+  String get errRequestCodeFailed =>
+      'We couldn\'t send the code. Please try again.';
+
+  @override
+  String get errInvalidCode => 'The code is invalid or has expired.';
+
+  @override
   String get registerTitle => 'Create account';
 
   @override
@@ -116,6 +158,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldConfirm => 'Confirm password';
+
+  @override
+  String get fieldCode => 'Verification code';
 
   @override
   String get fieldFullName => 'Full name';
@@ -197,6 +242,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignOutMessage => 'You can sign back in anytime.';
+
+  @override
+  String get accountHelpTitle => 'Help';
+
+  @override
+  String get accountHelp => 'Help & support';
 
   @override
   String get errInvalidEmail => 'Enter a valid email address';
@@ -568,6 +619,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsFieldNoBirthdate => 'No date set';
 
   @override
+  String get clientsFieldInvalidPhone =>
+      'Enter a valid phone number (10 to 15 digits)';
+
+  @override
   String get clientsSectionPersonal => 'Personal info';
 
   @override
@@ -605,6 +660,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsActionAsk => 'Ask';
+
+  @override
+  String get clientsActionNoPhone => 'This client has no phone number on file';
+
+  @override
+  String get clientsActionLaunchError => 'Couldn\'t open the app';
+
+  @override
+  String get clientsActionInvalidPhone =>
+      'This client\'s phone number isn\'t valid';
 
   @override
   String clientsPoliciesTab(int count) {
@@ -655,6 +720,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String clientsAskAbout(String name) {
     return 'Ask about $name';
+  }
+
+  @override
+  String remindersAskAbout(String title) {
+    return 'Ask about $title';
   }
 
   @override

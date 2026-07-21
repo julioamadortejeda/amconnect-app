@@ -30,6 +30,21 @@
   "emailLoginBtn": "Sign in",
   "emailLoginNoAccount": "Don't have an account? ",
   "emailLoginCreateAccount": "Create account",
+  "forgotPasswordTitle": "Recover your account",
+  "forgotPasswordSubtitleEmail": "Enter your email and we'll send you a code to reset your password.",
+  "forgotPasswordSubtitleReset": "Enter the code we sent you and your new password.",
+  "forgotPasswordCodeSentTo": "We sent a code to {email}",
+  "@forgotPasswordCodeSentTo": {
+    "placeholders": { "email": { "type": "String" } }
+  },
+  "forgotPasswordSendCodeBtn": "Send code",
+  "forgotPasswordResetBtn": "Reset password",
+  "forgotPasswordBackToEmail": "Use a different email",
+  "forgotPasswordSuccessTitle": "Password updated",
+  "forgotPasswordSuccessMsg": "You can now sign in with your new password.",
+  "forgotPasswordSuccessBtn": "Sign in",
+  "errRequestCodeFailed": "We couldn't send the code. Please try again.",
+  "errInvalidCode": "The code is invalid or has expired.",
 
   "registerTitle": "Create account",
   "registerSubtitle": "Sign up to start using AMConnect",
@@ -40,6 +55,7 @@
   "fieldEmail": "Email address",
   "fieldPassword": "Password",
   "fieldConfirm": "Confirm password",
+  "fieldCode": "Verification code",
   "fieldFullName": "Full name",
   "fieldPhone": "Phone",
   "fieldOccupation": "Occupation",
@@ -78,6 +94,8 @@
   },
   "accountSignOutTitle": "Sign out?",
   "accountSignOutMessage": "You can sign back in anytime.",
+  "accountHelpTitle": "Help",
+  "accountHelp": "Help & support",
 
   "errInvalidEmail": "Enter a valid email address",
   "errEmptyCredentials": "Please fill in all fields",
@@ -221,6 +239,7 @@
   "clientsCreated": "Client created",
   "clientsUpdated": "Client updated",
   "clientsFieldNoBirthdate": "No date set",
+  "clientsFieldInvalidPhone": "Enter a valid phone number (10 to 15 digits)",
   "clientsSectionPersonal": "Personal info",
   "clientsSectionFiscal": "Fiscal",
   "clientsFieldGeneralNotes": "General notes",
@@ -234,6 +253,9 @@
   "clientsActionRemind": "Remind",
   "clientsActionUpload": "Upload",
   "clientsActionAsk": "Ask",
+  "clientsActionNoPhone": "This client has no phone number on file",
+  "clientsActionLaunchError": "Couldn't open the app",
+  "clientsActionInvalidPhone": "This client's phone number isn't valid",
   "clientsPoliciesTab": "Policies · {count}",
   "clientsNotesTab": "Notes · {count}",
   "clientsPolicyActive": "Active",
@@ -252,6 +274,10 @@
   "clientsPolicyDeleteNoteMsg": "This version is no longer active. Do you want to delete it?",
   "clientsAskAbout": "Ask about {name}",
 
+  "remindersAskAbout": "Ask about {title}",
+  "@remindersAskAbout": {
+    "placeholders": { "title": { "type": "String" } }
+  },
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pending",
   "remindersFilterAll": "All",

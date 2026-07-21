@@ -36,10 +36,14 @@ class NotificationService {
     if (_initialized) return;
 
     try {
-      // 1. Inicializar Firebase
+      // 1. Inicializar Firebase (ya lo hace main() antes de runApp para
+      // Crashlytics, pero se deja este guard por si este servicio llegara a
+      // inicializarse primero en algún flujo futuro).
       // Si google-services.json o GoogleService-Info.plist no existen, esto lanzará un error.
       // Lo manejamos con try-catch para no romper la app en desarrollo inicial.
-      await Firebase.initializeApp();
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
       _firebaseConfigured = true;
 
       // 2. Configurar el handler de background

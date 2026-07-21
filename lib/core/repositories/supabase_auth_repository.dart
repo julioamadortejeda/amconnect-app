@@ -34,6 +34,24 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> signUp({required String email, required String password}) =>
       _client.auth.signUp(email: email, password: password);
 
+  @override
+  Future<void> requestPasswordReset(String email) =>
+      _client.auth.resetPasswordForEmail(email);
+
+  @override
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    await _client.auth.verifyOTP(
+      type: OtpType.recovery,
+      email: email,
+      token: token,
+    );
+    await _client.auth.updateUser(UserAttributes(password: newPassword));
+  }
+
   // ---------------------------------------------------------------------------
   // Google  (google_sign_in ^7.x)
   //

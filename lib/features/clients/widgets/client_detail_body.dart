@@ -74,7 +74,7 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
           const SizedBox(height: AmDimens.gapM),
           AmAnimateIn(
             index: idx++,
-            child: ClientQuickActions(clientId: widget.clientId),
+            child: ClientQuickActions(clientId: widget.clientId, phone: contact.phone),
           ),
           const SizedBox(height: AmDimens.gapM),
           AmAnimateIn(

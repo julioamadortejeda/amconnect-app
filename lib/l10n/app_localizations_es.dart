@@ -94,6 +94,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get emailLoginCreateAccount => 'Crear cuenta';
 
   @override
+  String get forgotPasswordTitle => 'Recupera tu acceso';
+
+  @override
+  String get forgotPasswordSubtitleEmail =>
+      'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordSubtitleReset =>
+      'Ingresa el código que te enviamos y tu nueva contraseña.';
+
+  @override
+  String forgotPasswordCodeSentTo(String email) {
+    return 'Enviamos un código a $email';
+  }
+
+  @override
+  String get forgotPasswordSendCodeBtn => 'Enviar código';
+
+  @override
+  String get forgotPasswordResetBtn => 'Restablecer contraseña';
+
+  @override
+  String get forgotPasswordBackToEmail => 'Usar otro correo';
+
+  @override
+  String get forgotPasswordSuccessTitle => 'Contraseña actualizada';
+
+  @override
+  String get forgotPasswordSuccessMsg =>
+      'Ya puedes iniciar sesión con tu nueva contraseña.';
+
+  @override
+  String get forgotPasswordSuccessBtn => 'Iniciar sesión';
+
+  @override
+  String get errRequestCodeFailed =>
+      'No pudimos enviar el código. Intenta de nuevo.';
+
+  @override
+  String get errInvalidCode => 'El código no es válido o ya expiró.';
+
+  @override
   String get registerTitle => 'Crear cuenta';
 
   @override
@@ -116,6 +158,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fieldConfirm => 'Confirmar contraseña';
+
+  @override
+  String get fieldCode => 'Código de verificación';
 
   @override
   String get fieldFullName => 'Nombre completo';
@@ -199,6 +244,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get accountSignOutMessage =>
       'Podrás volver a iniciar sesión cuando quieras.';
+
+  @override
+  String get accountHelpTitle => 'Ayuda';
+
+  @override
+  String get accountHelp => 'Ayuda y soporte';
 
   @override
   String get errInvalidEmail => 'Ingresa un correo electrónico válido';
@@ -572,6 +623,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsFieldNoBirthdate => 'Sin fecha';
 
   @override
+  String get clientsFieldInvalidPhone =>
+      'Ingresa un teléfono válido (10 a 15 dígitos)';
+
+  @override
   String get clientsSectionPersonal => 'Datos personales';
 
   @override
@@ -609,6 +664,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsActionAsk => 'Preguntar';
+
+  @override
+  String get clientsActionNoPhone =>
+      'Este cliente no tiene teléfono registrado';
+
+  @override
+  String get clientsActionLaunchError => 'No se pudo abrir la aplicación';
+
+  @override
+  String get clientsActionInvalidPhone =>
+      'El teléfono de este cliente no es válido';
 
   @override
   String clientsPoliciesTab(int count) {
@@ -659,6 +725,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String clientsAskAbout(String name) {
     return 'Preguntar sobre $name';
+  }
+
+  @override
+  String remindersAskAbout(String title) {
+    return 'Preguntar sobre $title';
   }
 
   @override

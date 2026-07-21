@@ -169,11 +169,16 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                         ),
                       ),
                       SizedBox(height: 8 * vScale),
-                      Text(
-                        l10n.emailLoginForgot,
-                        style: TextStyle(
-                          fontSize: 13 * scale,
-                          color: AmColors.authSubtitle,
+                      GestureDetector(
+                        onTap: () => context.push('/forgot-password'),
+                        child: Text(
+                          l10n.emailLoginForgot,
+                          style: TextStyle(
+                            fontSize: 13 * scale,
+                            color: AmColors.authSubtitle,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AmColors.authSubtitle,
+                          ),
                         ),
                       ),
                       if (errorMsg != null) ...[

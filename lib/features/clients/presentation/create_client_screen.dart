@@ -6,6 +6,7 @@ import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../core/utils/phone_utils.dart';
 import '../../../core/widgets/am_form_row.dart';
 import '../../../core/widgets/am_group_card.dart';
 import '../../../core/widgets/am_info_row.dart';
@@ -59,6 +60,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
           : null;
     }
     _nameCtrl.addListener(_rebuild);
+    _phoneCtrl.addListener(_rebuild);
     // Estado del provider de creación es compartido entre visitas a esta
     // pantalla — limpiar cualquier error de un intento anterior. Diferido
     // porque Riverpod prohíbe modificar un provider durante el build.
@@ -72,6 +74,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
   @override
   void dispose() {
     _nameCtrl.removeListener(_rebuild);
+    _phoneCtrl.removeListener(_rebuild);
     _nameCtrl.dispose();
     _phoneCtrl.dispose();
     _emailCtrl.dispose();
@@ -150,7 +153,10 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     final createState = ref.watch(createClientProvider);
-    final canSave = _nameCtrl.text.trim().isNotEmpty && !createState.loading;
+    final phoneValid = isValidPhone(_phoneCtrl.text);
+    final canSave = _nameCtrl.text.trim().isNotEmpty &&
+        phoneValid &&
+        !createState.loading;
 
     return Scaffold(
       appBar: AmTopBar(
@@ -204,6 +210,15 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                       icon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
                     ),
+                    if (!phoneValid)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                            AmDimens.screenH, 0, AmDimens.screenH, AmDimens.gapXS),
+                        child: Text(
+                          l10n.clientsFieldInvalidPhone,
+                          style: TextStyle(fontSize: 12, color: cs.error),
+                        ),
+                      ),
                     const AmFormDivider(),
                     AmFormRow(
                       label: l10n.fieldEmail,

@@ -28,6 +28,20 @@ class AuthNotifier extends Notifier<void> {
   Future<void> signUp({required String email, required String password}) =>
       _repo.signUp(email: email, password: password);
 
+  Future<void> requestPasswordReset(String email) =>
+      _repo.requestPasswordReset(email);
+
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) =>
+      _repo.confirmPasswordReset(
+        email: email,
+        token: token,
+        newPassword: newPassword,
+      );
+
   Future<void> signInWithGoogle() => _repo.signInWithGoogle();
 
   Future<void> signInWithApple() => _repo.signInWithApple();

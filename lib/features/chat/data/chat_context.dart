@@ -1,6 +1,7 @@
 import '../../../core/models/agent_note.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
+import '../../../core/models/reminder.dart';
 import '../../feed/data/feed_item.dart';
 
 class AiChatContext {
@@ -34,6 +35,24 @@ class AiChatContext {
         if (contact.curp != null) 'curp': contact.curp,
         if (slimPolicies != null && slimPolicies.isNotEmpty) 'policies': slimPolicies,
         if (slimNotes != null && slimNotes.isNotEmpty) 'notes': slimNotes,
+      },
+    );
+  }
+
+  factory AiChatContext.fromReminder(Reminder reminder) {
+    return AiChatContext(
+      type: 'reminder',
+      id: reminder.id,
+      data: {
+        'title': reminder.title,
+        'type': reminder.type,
+        'statusCode': reminder.statusCode,
+        if (reminder.description != null) 'description': reminder.description,
+        if (reminder.dueDate != null) 'dueDate': reminder.dueDate!.toIso8601String(),
+        if (reminder.contactId != null) 'contactId': reminder.contactId,
+        if (reminder.contactName != null) 'contactName': reminder.contactName,
+        if (reminder.policyId != null) 'policyId': reminder.policyId,
+        if (reminder.policyNumber != null) 'policyNumber': reminder.policyNumber,
       },
     );
   }
