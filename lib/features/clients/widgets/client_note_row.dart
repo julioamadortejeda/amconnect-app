@@ -70,6 +70,7 @@ class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
               Container(
                 width: 38,
                 height: 38,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: bg,
                   borderRadius: BorderRadius.circular(10),

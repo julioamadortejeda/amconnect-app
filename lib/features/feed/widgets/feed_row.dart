@@ -33,6 +33,7 @@ class _FeedRowState extends ConsumerState<FeedRow> {
       'pdf' || 'doc' || 'document' => AmColors.srcDoc,
       'audio' || 'wave'            => AmColors.srcWave,
       'image' || 'photo'           => AmColors.srcImage,
+      'text'                       => AmColors.srcNote,
       _                            => AmColors.srcWhatsApp,
     },
   );
@@ -82,6 +83,7 @@ class _FeedRowState extends ConsumerState<FeedRow> {
       'pdf' || 'doc' || 'document' => l10n.clientsNoteTypePdf,
       'audio' || 'wave'            => l10n.clientsNoteTypeAudio,
       'image' || 'photo'           => l10n.clientsNoteTypeImage,
+      'whatsapp'                   => l10n.clientsNoteTypeWhatsapp,
       'text' || _                  => l10n.clientsNoteTypeText,
     };
     final subtitleText = '$typeLabel · $date';
