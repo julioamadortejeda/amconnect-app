@@ -49,6 +49,16 @@ post_install do |installer|
       else
         config.build_settings['CODE_SIGNING_ALLOWED'] = 'YES'
       end
+
+      # permission_handler solo compila los permisos que habilitamos aquí.
+      # La app únicamente usa micrófono (voz) y notificaciones (recordatorios);
+      # el resto queda en 0 para no arrastrar SDKs/permisos que no pedimos.
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] += [
+        'PERMISSION_MICROPHONE=1',
+        'PERMISSION_SPEECH_RECOGNIZER=1',
+        'PERMISSION_NOTIFICATIONS=1',
+      ]
     end
   end
 end

@@ -12,7 +12,6 @@ class Contact {
     this.birthdate,
     this.rfc,
     this.curp,
-    this.notes,
     this.createdAt,
     this.isProspect = false,
   });
@@ -26,7 +25,6 @@ class Contact {
   final String? birthdate;
   final String? rfc;
   final String? curp;
-  final String? notes;
   final String? createdAt;
   final bool isProspect;
 
@@ -75,7 +73,6 @@ class Contact {
         birthdate: json['birthdate'] as String?,
         rfc: json['rfc'] as String?,
         curp: json['curp'] as String?,
-        notes: json['notes'] as String?,
         createdAt: json['createdAt'] as String?,
         isProspect: json['isProspect'] as bool? ?? json['is_prospect'] as bool? ?? false,
       );

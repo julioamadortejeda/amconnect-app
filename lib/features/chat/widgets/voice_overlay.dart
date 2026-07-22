@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/widgets/am_aurora.dart';
 import '../providers/chat_provider.dart';
 import '../providers/stt_provider.dart';
@@ -86,7 +87,9 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
   }
 
   void _onMicTap(SttState stt) {
-    if (stt.transcript.isNotEmpty && !stt.isListening) {
+    if (stt.permanentlyDenied) {
+      openAppSettings();
+    } else if (stt.transcript.isNotEmpty && !stt.isListening) {
       _submitToChat(stt.transcript);
     } else if (stt.isListening) {
       _stt.stop();
@@ -115,6 +118,9 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
   }
 
   String _statusText(SttState stt, AppLocalizations l10n) {
+    // El mensaje completo ya se muestra en el banner superior — aquí solo
+    // reforzamos la acción, sin repetir el texto entero.
+    if (stt.permanentlyDenied) return l10n.voiceOpenSettingsHint;
     if (stt.error != null) return l10n.voiceNotAvailable;
     if (stt.transcript.isNotEmpty && !stt.isListening) return l10n.voiceTapToSend;
     if (stt.isListening) return l10n.voiceListening;
@@ -178,6 +184,47 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                               ),
                             ),
 
+                            // Banner de permiso denegado — visible de inmediato
+                            // al entrar, sin esperar a que el usuario toque el mic.
+                            if (stt.permanentlyDenied)
+                              Positioned(
+                                top: 56,
+                                left: 16,
+                                right: 16,
+                                child: GestureDetector(
+                                  onTap: () => openAppSettings(),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber.withValues(alpha: 0.16),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                          color: Colors.amber.withValues(alpha: 0.4)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.mic_off_rounded,
+                                            size: 18, color: Colors.amber),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            '${l10n.voiceChatPermissionDenied}. ${l10n.voiceOpenSettingsHint}.',
+                                            style: const TextStyle(
+                                              fontSize: 12.5,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(Icons.chevron_right,
+                                            size: 16, color: Colors.amber),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
                             // Mic + waveform + transcript
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,20 +237,26 @@ class _VoiceOverlayState extends ConsumerState<VoiceOverlay> {
                                 ),
                                 const SizedBox(height: 28),
 
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 200),
-                                  child: Text(
-                                    _statusText(stt, l10n),
-                                    key: ValueKey(_statusText(stt, l10n)),
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: (stt.transcript.isNotEmpty && !stt.isListening)
-                                          ? Colors.white.withValues(alpha: 0.9)
-                                          : Colors.white.withValues(alpha: 0.6),
-                                      fontWeight: (stt.transcript.isNotEmpty && !stt.isListening)
-                                          ? FontWeight.w600
-                                          : FontWeight.w400,
-                                      letterSpacing: 0.4,
+                                GestureDetector(
+                                  onTap: stt.permanentlyDenied
+                                      ? () => openAppSettings()
+                                      : null,
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Text(
+                                      _statusText(stt, l10n),
+                                      key: ValueKey(_statusText(stt, l10n)),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: (stt.transcript.isNotEmpty && !stt.isListening)
+                                            ? Colors.white.withValues(alpha: 0.9)
+                                            : Colors.white.withValues(alpha: 0.6),
+                                        fontWeight: (stt.transcript.isNotEmpty && !stt.isListening)
+                                            ? FontWeight.w600
+                                            : FontWeight.w400,
+                                        letterSpacing: 0.4,
+                                      ),
                                     ),
                                   ),
                                 ),

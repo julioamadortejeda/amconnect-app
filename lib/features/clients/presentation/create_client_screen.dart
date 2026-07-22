@@ -36,7 +36,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
   final _addressCtrl = TextEditingController();
   final _rfcCtrl = TextEditingController();
   final _curpCtrl = TextEditingController();
-  final _notesCtrl = TextEditingController();
   DateTime? _birthdate;
   bool _showSuccess = false;
 
@@ -54,7 +53,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
       _addressCtrl.text = contact.address ?? '';
       _rfcCtrl.text = contact.rfc ?? '';
       _curpCtrl.text = contact.curp ?? '';
-      _notesCtrl.text = contact.notes ?? '';
       _birthdate = contact.birthdate != null
           ? DateTime.tryParse(contact.birthdate!)
           : null;
@@ -82,7 +80,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
     _addressCtrl.dispose();
     _rfcCtrl.dispose();
     _curpCtrl.dispose();
-    _notesCtrl.dispose();
     super.dispose();
   }
 
@@ -112,8 +109,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
         _addressCtrl.text.trim().isEmpty ? null : _addressCtrl.text.trim();
     final rfc = _rfcCtrl.text.trim().isEmpty ? null : _rfcCtrl.text.trim();
     final curp = _curpCtrl.text.trim().isEmpty ? null : _curpCtrl.text.trim();
-    final notes =
-        _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim();
 
     final saved = _isEditing
         ? await notifier.updateContact(
@@ -126,7 +121,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
             address: address,
             rfc: rfc,
             curp: curp,
-            notes: notes,
           )
         : await notifier.submit(
             fullName: fullName,
@@ -137,7 +131,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
             address: address,
             rfc: rfc,
             curp: curp,
-            notes: notes,
           );
     if (!mounted || saved == null) return;
     setState(() => _showSuccess = true);
@@ -254,18 +247,6 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                           ),
                         ),
                       ],
-                    ),
-                  ]),
-                  const SizedBox(height: AmDimens.gapM),
-                  AmSectionLabel(label: l10n.clientsFieldGeneralNotes),
-                  const SizedBox(height: AmDimens.gapXS),
-                  AmGroupCard(children: [
-                    AmFormRow(
-                      label: l10n.clientsFieldGeneralNotes,
-                      controller: _notesCtrl,
-                      icon: Icons.notes_outlined,
-                      minLines: 2,
-                      maxLines: 4,
                     ),
                   ]),
                   const SizedBox(height: AmDimens.gapL),

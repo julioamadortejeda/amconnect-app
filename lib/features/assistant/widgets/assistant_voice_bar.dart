@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_fade_switcher.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/assistant_provider.dart';
@@ -48,8 +47,11 @@ class AssistantVoiceBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    // El detalle del error (y el tap para abrir Ajustes si aplica) ya se
+    // muestra en el banner rojo arriba del composer — aquí solo un status
+    // corto, igual que el resto de los estados.
     final label = error != null
-        ? context.translateError(error)
+        ? l10n.voiceChatError
         : activeSkill != null
             ? l10n.voiceChatSkillActive
             : switch (status) {

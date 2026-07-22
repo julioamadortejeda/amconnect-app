@@ -121,6 +121,7 @@ class IngestRepository {
     String? contactId,
     String? policyId,
     bool? makeGeneral,
+    bool isClientNote = false,
   }) async {
     final res = await _api.post('ai/ingest-text', body: {
       'content': content,
@@ -128,6 +129,7 @@ class IngestRepository {
       if (contactId != null) 'contactId': contactId,
       if (policyId != null) 'policyId': policyId,
       if (makeGeneral != null) 'makeGeneral': makeGeneral,
+      if (isClientNote) 'isClientNote': true,
     });
     final data = res['data'] as Map<String, dynamic>;
     return IngestKnowledgeResponse(

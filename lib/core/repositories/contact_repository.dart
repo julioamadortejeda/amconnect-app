@@ -16,7 +16,6 @@ abstract class ContactRepository {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   });
   Future<Contact> update(
     String id, {
@@ -28,7 +27,6 @@ abstract class ContactRepository {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   });
   Future<void> delete(String id);
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import '../network/api_client.dart';
 import 'gemini_live_service.dart';
 import 'gemini_usage_tracker.dart';
@@ -282,6 +283,11 @@ class GeminiVoiceEngine {
           debugPrint('[$_logTag] 🎙 Mic abierto tras SetupComplete');
         }).catchError((e) {
           debugPrint('[$_logTag] startAudio error tras setup: $e');
+          // Sin esto, un permiso denegado dejaba la UI trabada en "Escuchando…"
+          // para siempre — el mic nunca abrió pero nadie se enteraba.
+          _fail(e is PlatformException && e.code == 'MIC_PERMISSION_DENIED'
+              ? 'MIC_PERMISSION_DENIED'
+              : 'errUnknown');
         });
         _startCountdown();
 

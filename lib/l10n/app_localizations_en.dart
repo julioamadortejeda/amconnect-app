@@ -37,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonLoading => 'Loading...';
 
   @override
+  String get commonOpenSettings => 'Open Settings';
+
+  @override
   String get homeEmptyPendientes => 'No pending reminders';
 
   @override
@@ -250,6 +253,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountHelp => 'Help & support';
 
   @override
+  String get accountNotificationsDisabled => 'Notifications disabled';
+
+  @override
   String get errInvalidEmail => 'Enter a valid email address';
 
   @override
@@ -372,6 +378,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analyticsCarrierDist => 'Distribution by Carrier';
+
+  @override
+  String get homeNotificationsBannerTitle => 'Notifications disabled';
+
+  @override
+  String get homeNotificationsBannerSubtitle =>
+      'Turn them on so you don\'t miss your reminders';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -643,6 +656,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsFieldGeneralNotes => 'General notes';
 
   @override
+  String get clientsAddNote => 'Add note';
+
+  @override
+  String get clientsAddNoteHint => 'Write a note about this client…';
+
+  @override
   String get clientsNoteTypePdf => 'PDF document';
 
   @override
@@ -652,7 +671,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsNoteTypeImage => 'Image';
 
   @override
-  String get clientsNoteTypeText => 'Chat message';
+  String get clientsNoteTypeText => 'Note';
+
+  @override
+  String get clientsNoteTypeWhatsapp => 'WhatsApp';
 
   @override
   String get clientsNoteOpenFile => 'Open file';
@@ -909,6 +931,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceChatPermissionDenied => 'Microphone permission denied';
+
+  @override
+  String get voiceOpenSettingsHint => 'Tap to open Settings';
 
   @override
   String get voiceChatSkillActive => 'Looking up data…';

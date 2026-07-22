@@ -204,7 +204,6 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     final created = await _repo.create(
       fullName: fullName,
@@ -215,7 +214,6 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
       address: address,
       rfc: rfc,
       curp: curp,
-      notes: notes,
     );
     if (state.asData?.value.any((c) => c.id == created.id) != true) {
       state = AsyncData([...state.requireValue, created]);
@@ -233,7 +231,6 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     final updated = await _repo.update(
       id,
@@ -245,7 +242,6 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
       address: address,
       rfc: rfc,
       curp: curp,
-      notes: notes,
     );
     state = AsyncData([
       for (final c in state.requireValue) if (c.id == id) updated else c,
@@ -295,7 +291,6 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
@@ -308,7 +303,6 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
         address: address,
         rfc: rfc,
         curp: curp,
-        notes: notes,
       );
       state = state.copyWith(loading: false);
       return created;
@@ -328,7 +322,6 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
@@ -342,7 +335,6 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
         address: address,
         rfc: rfc,
         curp: curp,
-        notes: notes,
       );
       state = state.copyWith(loading: false);
       return updated;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,6 +35,7 @@ class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
       'pdf' || 'document' => AmColors.srcDoc,
       'audio'             => AmColors.srcWave,
       'image'             => AmColors.srcImage,
+      'text'              => AmColors.srcNote,
       _                   => AmColors.srcWhatsApp,
     },
     AmIcons.forSourceType(widget.note.sourceType),
@@ -72,7 +74,9 @@ class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
                   color: bg,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, size: 19, color: color),
+                child: widget.note.sourceType == 'whatsapp'
+                    ? FaIcon(AmIcons.whatsappBrand, size: 17, color: color)
+                    : Icon(icon, size: 19, color: color),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -173,6 +177,7 @@ class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
       'pdf' || 'document' => l10n.clientsNoteTypePdf,
       'audio'             => l10n.clientsNoteTypeAudio,
       'image'             => l10n.clientsNoteTypeImage,
+      'whatsapp'          => l10n.clientsNoteTypeWhatsapp,
       'text' || _         => l10n.clientsNoteTypeText,
     };
     final dt = DateTime.tryParse(widget.note.createdAt)?.toLocal();

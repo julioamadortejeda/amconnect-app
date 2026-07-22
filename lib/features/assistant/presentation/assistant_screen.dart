@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/device_timezone.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../chat/presentation/widgets/chat_cards.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 import '../providers/assistant_provider.dart';
@@ -102,6 +104,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final am = context.am;
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(assistantProvider);
     _currentMode = state.mode;
     final isVoice = state.mode == AssistantMode.voice;
@@ -170,27 +173,36 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                 ),
               ),
             ),
-            if (!isVoice && state.error != null)
+            if (state.error != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                     AmDimens.screenH, 0, AmDimens.screenH, 8),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: cs.errorContainer,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(children: [
-                    Icon(Icons.error_outline_rounded,
-                        color: cs.onErrorContainer, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(context.translateError(state.error),
-                          style: TextStyle(
-                              fontSize: 13, color: cs.onErrorContainer)),
+                child: GestureDetector(
+                  onTap: state.error == 'MIC_PERMISSION_DENIED'
+                      ? () => openAppSettings()
+                      : null,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: cs.errorContainer,
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                  ]),
+                    child: Row(children: [
+                      Icon(Icons.error_outline_rounded,
+                          color: cs.onErrorContainer, size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          state.error == 'MIC_PERMISSION_DENIED'
+                              ? '${context.translateError(state.error)} · ${l10n.voiceOpenSettingsHint}'
+                              : context.translateError(state.error),
+                          style: TextStyle(
+                              fontSize: 13, color: cs.onErrorContainer),
+                        ),
+                      ),
+                    ]),
+                  ),
                 ),
               ),
             if (showSugg)

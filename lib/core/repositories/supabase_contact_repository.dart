@@ -44,7 +44,6 @@ class SupabaseContactRepository implements ContactRepository {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     final res = await _client.post('contacts', body: {
       'fullName': fullName,
@@ -55,7 +54,6 @@ class SupabaseContactRepository implements ContactRepository {
       if (address != null && address.isNotEmpty) 'address': address,
       if (rfc != null && rfc.isNotEmpty) 'rfc': rfc,
       if (curp != null && curp.isNotEmpty) 'curp': curp,
-      if (notes != null && notes.isNotEmpty) 'notes': notes,
     });
     return Contact.fromJson(res['data'] as Map<String, dynamic>);
   }
@@ -71,7 +69,6 @@ class SupabaseContactRepository implements ContactRepository {
     String? address,
     String? rfc,
     String? curp,
-    String? notes,
   }) async {
     final res = await _client.patch('contacts/$id', body: {
       'fullName': fullName,
@@ -82,7 +79,6 @@ class SupabaseContactRepository implements ContactRepository {
       'address': address,
       'rfc': rfc,
       'curp': curp,
-      'notes': notes,
     });
     return Contact.fromJson(res['data'] as Map<String, dynamic>);
   }

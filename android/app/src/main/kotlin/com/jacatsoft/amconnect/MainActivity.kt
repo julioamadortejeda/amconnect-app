@@ -172,7 +172,7 @@ class MainActivity : FlutterActivity() {
         if (micGranted) {
             startEngine(result)
         } else {
-            result.error("AUDIO_START_ERROR", "Microphone permission denied", null)
+            result.error("MIC_PERMISSION_DENIED", "Microphone permission denied", null)
         }
     }
 

@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Cargando...'**
   String get commonLoading;
 
+  /// No description provided for @commonOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Ajustes'**
+  String get commonOpenSettings;
+
   /// No description provided for @homeEmptyPendientes.
   ///
   /// In es, this message translates to:
@@ -548,6 +554,12 @@ abstract class AppLocalizations {
   /// **'Ayuda y soporte'**
   String get accountHelp;
 
+  /// No description provided for @accountNotificationsDisabled.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones desactivadas'**
+  String get accountNotificationsDisabled;
+
   /// No description provided for @errInvalidEmail.
   ///
   /// In es, this message translates to:
@@ -769,6 +781,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Distribución por Aseguradora'**
   String get analyticsCarrierDist;
+
+  /// No description provided for @homeNotificationsBannerTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones desactivadas'**
+  String get homeNotificationsBannerTitle;
+
+  /// No description provided for @homeNotificationsBannerSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actívalas para no perderte tus recordatorios'**
+  String get homeNotificationsBannerSubtitle;
 
   /// No description provided for @homeTitle.
   ///
@@ -1274,6 +1298,18 @@ abstract class AppLocalizations {
   /// **'Notas generales'**
   String get clientsFieldGeneralNotes;
 
+  /// No description provided for @clientsAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar nota'**
+  String get clientsAddNote;
+
+  /// No description provided for @clientsAddNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una nota sobre este cliente…'**
+  String get clientsAddNoteHint;
+
   /// No description provided for @clientsNoteTypePdf.
   ///
   /// In es, this message translates to:
@@ -1295,8 +1331,14 @@ abstract class AppLocalizations {
   /// No description provided for @clientsNoteTypeText.
   ///
   /// In es, this message translates to:
-  /// **'WhatsApp'**
+  /// **'Nota'**
   String get clientsNoteTypeText;
+
+  /// No description provided for @clientsNoteTypeWhatsapp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get clientsNoteTypeWhatsapp;
 
   /// No description provided for @clientsNoteOpenFile.
   ///
@@ -1783,6 +1825,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Permiso de micrófono denegado'**
   String get voiceChatPermissionDenied;
+
+  /// No description provided for @voiceOpenSettingsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para abrir Ajustes'**
+  String get voiceOpenSettingsHint;
 
   /// No description provided for @voiceChatSkillActive.
   ///

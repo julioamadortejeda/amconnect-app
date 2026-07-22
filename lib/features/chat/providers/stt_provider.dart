@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SttState {
@@ -8,6 +9,7 @@ class SttState {
   final String transcript;
   final bool isFinal;
   final String? error;
+  final bool permanentlyDenied;
 
   const SttState({
     this.isAvailable = false,
@@ -15,6 +17,7 @@ class SttState {
     this.transcript = '',
     this.isFinal = false,
     this.error,
+    this.permanentlyDenied = false,
   });
 
   SttState copyWith({
@@ -24,6 +27,7 @@ class SttState {
     bool? isFinal,
     String? error,
     bool clearError = false,
+    bool? permanentlyDenied,
   }) =>
       SttState(
         isAvailable: isAvailable ?? this.isAvailable,
@@ -31,6 +35,7 @@ class SttState {
         transcript: transcript ?? this.transcript,
         isFinal: isFinal ?? this.isFinal,
         error: clearError ? null : (error ?? this.error),
+        permanentlyDenied: permanentlyDenied ?? this.permanentlyDenied,
       );
 }
 
@@ -39,6 +44,19 @@ class SttNotifier extends Notifier<SttState> {
 
   @override
   SttState build() => const SttState();
+
+  // speech_to_text pide DOS permisos por separado en iOS (micrófono +
+  // reconocimiento de voz). Además, tras una negación previa, `initialize()`
+  // puede devolver `available: true` sin que el permiso real esté concedido
+  // (queda "escuchando" pero no oye nada) — por eso el estado del permiso se
+  // revisa aparte con permission_handler, en vez de confiar solo en ese bool.
+  Future<bool> _checkPermanentlyDenied() async {
+    final micStatus = await Permission.microphone.status;
+    final speechStatus = await Permission.speech.status;
+    final denied = micStatus.isPermanentlyDenied || speechStatus.isPermanentlyDenied;
+    state = state.copyWith(permanentlyDenied: denied);
+    return denied;
+  }
 
   Future<bool> _initialize() async {
     final available = await _speech.initialize(
@@ -55,6 +73,9 @@ class SttNotifier extends Notifier<SttState> {
     );
     debugPrint('[STT] initialize → available=$available');
     state = state.copyWith(isAvailable: available);
+
+    if (!available) await _checkPermanentlyDenied();
+
     return available;
   }
 
@@ -62,10 +83,14 @@ class SttNotifier extends Notifier<SttState> {
     // Siempre limpiar estado anterior antes de intentar
     state = state.copyWith(transcript: '', isFinal: false, clearError: true);
 
+    // Chequeo proactivo: si el permiso ya está negado permanentemente, ni
+    // siquiera intentamos inicializar/escuchar (evita el falso "escuchando").
+    if (await _checkPermanentlyDenied()) return;
+
     final available = state.isAvailable ? true : await _initialize();
     if (!available) return;
 
-    state = state.copyWith(isListening: true);
+    state = state.copyWith(isListening: true, permanentlyDenied: false);
 
     await _speech.listen(
       onResult: (result) {
@@ -93,8 +118,10 @@ class SttNotifier extends Notifier<SttState> {
 
   Future<void> cancel() async {
     await _speech.cancel();
-    final wasAvailable = state.isAvailable;
-    state = SttState(isAvailable: wasAvailable);
+    state = SttState(
+      isAvailable: state.isAvailable,
+      permanentlyDenied: state.permanentlyDenied,
+    );
   }
 
   void clear() => state = state.copyWith(

@@ -49,8 +49,15 @@ import AVFoundation
       case "startAudio":
         VoiceAudioManager.shared.startRequestingPermissionIfNeeded { error in
           if let error = error {
-            result(FlutterError(code: "AUDIO_START_ERROR",
-                                message: error.localizedDescription, details: nil))
+            let nsError = error as NSError
+            // code -1/-2 en el dominio "VoiceAudio" = permiso de mic denegado
+            // (ver AudioManager.swift) — se distingue para que Dart pueda
+            // mostrar "permiso denegado" en vez de un error genérico.
+            let isPermissionDenied = nsError.domain == "VoiceAudio"
+                && (nsError.code == -1 || nsError.code == -2)
+            result(FlutterError(
+                code: isPermissionDenied ? "MIC_PERMISSION_DENIED" : "AUDIO_START_ERROR",
+                message: error.localizedDescription, details: nil))
           } else {
             result(nil as Any?)
           }

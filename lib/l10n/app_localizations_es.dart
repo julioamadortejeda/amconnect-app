@@ -37,6 +37,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commonLoading => 'Cargando...';
 
   @override
+  String get commonOpenSettings => 'Abrir Ajustes';
+
+  @override
   String get homeEmptyPendientes => 'Sin recordatorios pendientes';
 
   @override
@@ -252,6 +255,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accountHelp => 'Ayuda y soporte';
 
   @override
+  String get accountNotificationsDisabled => 'Notificaciones desactivadas';
+
+  @override
   String get errInvalidEmail => 'Ingresa un correo electrónico válido';
 
   @override
@@ -375,6 +381,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get analyticsCarrierDist => 'Distribución por Aseguradora';
+
+  @override
+  String get homeNotificationsBannerTitle => 'Notificaciones desactivadas';
+
+  @override
+  String get homeNotificationsBannerSubtitle =>
+      'Actívalas para no perderte tus recordatorios';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -647,6 +660,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsFieldGeneralNotes => 'Notas generales';
 
   @override
+  String get clientsAddNote => 'Agregar nota';
+
+  @override
+  String get clientsAddNoteHint => 'Escribe una nota sobre este cliente…';
+
+  @override
   String get clientsNoteTypePdf => 'Documento PDF';
 
   @override
@@ -656,7 +675,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsNoteTypeImage => 'Imagen';
 
   @override
-  String get clientsNoteTypeText => 'WhatsApp';
+  String get clientsNoteTypeText => 'Nota';
+
+  @override
+  String get clientsNoteTypeWhatsapp => 'WhatsApp';
 
   @override
   String get clientsNoteOpenFile => 'Ver archivo';
@@ -916,6 +938,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get voiceChatPermissionDenied => 'Permiso de micrófono denegado';
+
+  @override
+  String get voiceOpenSettingsHint => 'Toca para abrir Ajustes';
 
   @override
   String get voiceChatSkillActive => 'Consultando datos…';

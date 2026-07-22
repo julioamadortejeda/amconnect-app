@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/permission_provider.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_group_card.dart';
@@ -132,6 +134,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     final profile = ref.watch(agentProfileProvider).asData?.value;
     final subscription = ref.watch(subscriptionInfoProvider).asData?.value;
+    final notifPermission = ref.watch(notificationPermissionStatusProvider).asData?.value;
+    final showNotifRow = notifPermission != null &&
+        (notifPermission.isDenied || notifPermission.isPermanentlyDenied);
     if (profile == null || subscription == null) {
       return Scaffold(
         appBar: AmTopBar(title: l10n.commonAccount, showBack: true),
@@ -211,6 +216,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 chevron: true,
                 onTap: () => _openSupportEmail(l10n, profile.email),
               ),
+              if (showNotifRow)
+                AmInfoRow(
+                  icon: Icons.notifications_off_outlined,
+                  label: l10n.accountNotificationsDisabled,
+                  trailing: Text(l10n.commonOpenSettings,
+                      style: TextStyle(fontSize: 13, color: cs.primary)),
+                  chevron: true,
+                  onTap: () => openAppSettings(),
+                ),
             ]),
             const SizedBox(height: AmDimens.gapL),
             AmPress(
