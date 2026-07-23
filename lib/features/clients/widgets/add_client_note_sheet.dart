@@ -67,6 +67,7 @@ class _AddClientNoteSheetState extends State<AddClientNoteSheet> {
               autofocus: true,
               minLines: 3,
               maxLines: 6,
+              maxLength: 300,
               style: TextStyle(fontSize: 14.5, color: cs.onSurface),
               decoration: InputDecoration(
                 hintText: l10n.clientsAddNoteHint,

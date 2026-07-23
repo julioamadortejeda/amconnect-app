@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/providers/ai_backend_provider.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/services/gemini_voice_engine.dart';
 import '../../../core/services/native_audio_service.dart';
 import '../data/assistant_repository.dart';
@@ -278,12 +279,4 @@ class AssistantNotifier extends Notifier<AssistantState> {
     });
     return (initData, tokenData);
   }
-}
-
-String mapApiError(dynamic e) {
-  final str = e.toString();
-  if (str.contains('429') || str.contains('Quota') || str.contains('límite')) {
-    return 'Has alcanzado el límite de uso de tu plan actual.';
-  }
-  return 'Ocurrió un error inesperado al procesar la solicitud.';
 }
