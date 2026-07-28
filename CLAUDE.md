@@ -89,7 +89,8 @@ lib/
     ├── clients/              # lista, detalle, provider, widgets
     ├── reminders/            # agenda, detalle, crear, provider, widgets
     ├── chat/                 # chat IA, voice overlay, widgets
-    └── feed/                 # ingesta de documentos
+    ├── feed/                 # ingesta de documentos
+    └── share_target/         # contenido compartido desde otras apps
 ```
 
 ---
@@ -110,6 +111,7 @@ lib/
 | `/create-reminder` | CreateReminderScreen | push slide |
 | `/reminder/:id` | ReminderDetailScreen | push slide |
 | `/chat` | ChatScreen | push slide |
+| `/share-target` | ShareTargetScreen | push slide |
 
 ---
 
@@ -493,6 +495,16 @@ assets/logo/
 - [x] Chat IA — integrado con Edge Function `amconnect-api`
 - [x] Ingesta de documentos (Feed)
 - [x] Voz real en VoiceOverlay (integrada con Gemini 3.1 Live API por WebSocket con audio PCM bidireccional y transcripciones visibles)
+- [x] Share target — recibir archivos/texto compartidos desde otras apps y asignarlos a alta de póliza, cliente, póliza, recordatorio o base de conocimiento
+
+## Share target (contenido compartido desde otras apps)
+
+`ShareHandlerListener` (montado en `ShellScreen`) escucha `flutter_sharing_intent` y hace push de `/share-target`. En esa pantalla se elige el destino y `ShareTargetNotifier.dispatch()` delega en `ingestProvider` — el mismo pipeline del Feed, así que `IngestFlowOverlay` muestra progreso, confirmación y errores.
+
+- **Alta de póliza** (`processPolicy`): solo PDF/imagen. Flujo automático — detección de cliente, catálogos y recordatorios.
+- **Cliente / Póliza / Recordatorio / Global**: `processKnowledgeFile` o `processKnowledgeText` → nota (`agent_notes`) ligada SOLO al destino elegido (`contactId`, `policyId` o `reminderId`); global no lleva ninguno.
+- **iOS**: la Share Extension (`ios/ShareExtension/`) debe redirigir a `SharingMedia-<bundle id>://dataUrl=SharingKey` — el plugin ignora cualquier otro scheme — y guardar el payload en el App Group con el shape exacto de su modelo `SharingFile` (`type` es el enum `text,url,image,video,file`). Las rutas van con prefijo `file://`.
+- Cerrar `/share-target` ANTES de despachar la ingesta: los sheets del overlay usan el mismo navigator que GoRouter.
 
 ## Gemini Live API & Token Tracking Rules
 
