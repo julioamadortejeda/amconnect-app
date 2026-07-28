@@ -14,6 +14,7 @@ class ReminderCommentBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: AmDimens.gapXS),
       padding: const EdgeInsets.all(AmDimens.gapS),
       decoration: BoxDecoration(

@@ -245,7 +245,7 @@ class IngestNotifier extends Notifier<IngestState> {
     state = const IngestState();
   }
 
-  Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, bool? makeGeneral}) async {
+  Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral}) async {
     final mimeType = _mimeFromFileName(fileName);
     state = IngestState(
       phase: IngestPhase.uploading,
@@ -271,6 +271,7 @@ class IngestNotifier extends Notifier<IngestState> {
         mimeType: mimeType,
         contactId: contactId,
         policyId: policyId,
+        reminderId: reminderId,
         makeGeneral: makeGeneral,
       );
       state = state.copyWith(
@@ -305,7 +306,7 @@ class IngestNotifier extends Notifier<IngestState> {
     };
   }
 
-  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, bool? makeGeneral}) async {
+  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral}) async {
     state = IngestState(
       phase: IngestPhase.processing,
       statusMessageKey: 'feedStepProcessing',
@@ -318,6 +319,7 @@ class IngestNotifier extends Notifier<IngestState> {
         sourceType: sourceType,
         contactId: contactId,
         policyId: policyId,
+        reminderId: reminderId,
         makeGeneral: makeGeneral,
       );
       state = state.copyWith(

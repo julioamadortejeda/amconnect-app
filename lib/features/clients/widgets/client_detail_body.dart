@@ -6,6 +6,7 @@ import '../../../core/models/policy.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_note_row.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_segmented.dart';
 import '../../../core/widgets/am_stagger.dart';
@@ -16,7 +17,6 @@ import 'add_client_note_sheet.dart';
 import 'client_avatar_header.dart';
 import 'client_contact_info.dart';
 import 'client_fiscal_info.dart';
-import 'client_note_row.dart';
 import 'client_policy_card.dart';
 import 'client_quick_actions.dart';
 import '../../../l10n/app_localizations.dart';
@@ -288,7 +288,7 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
         addNoteButton,
         ...notes.map((n) => Padding(
               padding: const EdgeInsets.only(bottom: AmDimens.gapS),
-              child: ClientNoteRow(note: n),
+              child: AmNoteRow(note: n),
             )),
       ],
     );

@@ -668,6 +668,12 @@ abstract class AppLocalizations {
   /// **'No se pudo subir el archivo. Intenta de nuevo.'**
   String get errUploadFailed;
 
+  /// No description provided for @errSharedFileMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo compartido ya no está disponible. Compártelo de nuevo.'**
+  String get errSharedFileMissing;
+
   /// No description provided for @errRefCode.
   ///
   /// In es, this message translates to:
@@ -2606,18 +2612,6 @@ abstract class AppLocalizations {
   /// **'Guardar'**
   String get remindersDetailSave;
 
-  /// No description provided for @remindersDetailNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Notas'**
-  String get remindersDetailNotes;
-
-  /// No description provided for @remindersDetailNoNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin notas'**
-  String get remindersDetailNoNotes;
-
   /// No description provided for @remindersDetailNoClient.
   ///
   /// In es, this message translates to:
@@ -2719,6 +2713,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Relaciones'**
   String get remindersDetailRelations;
+
+  /// No description provided for @remindersDetailAttachments.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos adjuntos'**
+  String get remindersDetailAttachments;
+
+  /// No description provided for @remindersDetailNoAttachments.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin archivos adjuntos'**
+  String get remindersDetailNoAttachments;
 
   /// No description provided for @remindersDetailTomorrow.
   ///
@@ -3133,6 +3139,168 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.'**
   String get catalogsDeleteMessage;
+
+  /// No description provided for @shareTargetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recurso compartido'**
+  String get shareTargetTitle;
+
+  /// No description provided for @shareTargetSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona a dónde deseas asignar este contenido'**
+  String get shareTargetSubtitle;
+
+  /// No description provided for @shareTargetPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa'**
+  String get shareTargetPreview;
+
+  /// No description provided for @shareTargetEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No se recibió contenido para procesar'**
+  String get shareTargetEmpty;
+
+  /// No description provided for @shareTargetDestinationPolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Alta de póliza'**
+  String get shareTargetDestinationPolicyIngest;
+
+  /// No description provided for @shareTargetDestinationPolicyIngestSub.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura automática del documento'**
+  String get shareTargetDestinationPolicyIngestSub;
+
+  /// No description provided for @shareTargetPolicyIngestUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo disponible para PDF o imágenes'**
+  String get shareTargetPolicyIngestUnavailable;
+
+  /// No description provided for @shareTargetDestinationGlobal.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingesta Global (Base de Conocimiento)'**
+  String get shareTargetDestinationGlobal;
+
+  /// No description provided for @shareTargetDestinationClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get shareTargetDestinationClient;
+
+  /// No description provided for @shareTargetDestinationPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza'**
+  String get shareTargetDestinationPolicy;
+
+  /// No description provided for @shareTargetDestinationReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get shareTargetDestinationReminder;
+
+  /// No description provided for @shareTargetNoticePolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Se generará todo en automático: se detecta el cliente, la aseguradora, el producto y las coberturas, y se crean los recordatorios de pago y renovación. Podrás revisar y corregir antes de guardar.'**
+  String get shareTargetNoticePolicyIngest;
+
+  /// No description provided for @shareTargetNoticeGlobal.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota en tu base de conocimiento general.'**
+  String get shareTargetNoticeGlobal;
+
+  /// No description provided for @shareTargetNoticeClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota en el expediente de {name}.'**
+  String shareTargetNoticeClient(String name);
+
+  /// No description provided for @shareTargetNoticePickClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un cliente para guardar el contenido como nota en su expediente.'**
+  String get shareTargetNoticePickClient;
+
+  /// No description provided for @shareTargetNoticePolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota de la póliza {policy}.'**
+  String shareTargetNoticePolicy(String policy);
+
+  /// No description provided for @shareTargetNoticePickPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una póliza para guardar el contenido como nota suya.'**
+  String get shareTargetNoticePickPolicy;
+
+  /// No description provided for @shareTargetNoticeReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota ligada al recordatorio {reminder}.'**
+  String shareTargetNoticeReminder(String reminder);
+
+  /// No description provided for @shareTargetNoticePickReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un recordatorio para ligarle el contenido como nota.'**
+  String get shareTargetNoticePickReminder;
+
+  /// No description provided for @shareTargetActionIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar recurso'**
+  String get shareTargetActionIngest;
+
+  /// No description provided for @shareTargetActionPolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesar póliza'**
+  String get shareTargetActionPolicyIngest;
+
+  /// No description provided for @shareTargetSelectClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get shareTargetSelectClient;
+
+  /// No description provided for @shareTargetSelectPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar póliza'**
+  String get shareTargetSelectPolicy;
+
+  /// No description provided for @shareTargetSelectReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar recordatorio'**
+  String get shareTargetSelectReminder;
+
+  /// No description provided for @shareTargetSearchReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar recordatorio…'**
+  String get shareTargetSearchReminderHint;
+
+  /// No description provided for @shareTargetPolicyNoNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin número'**
+  String get shareTargetPolicyNoNumber;
+
+  /// No description provided for @shareTargetCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get shareTargetCancel;
 }
 
 class _AppLocalizationsDelegate

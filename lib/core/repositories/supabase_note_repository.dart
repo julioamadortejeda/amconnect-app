@@ -29,6 +29,16 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
+  Future<List<AgentNote>> getByReminderId(String reminderId) async {
+    final res = await _client.get('reminders/$reminderId/notes');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items
+        .map((e) => AgentNote.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
   Future<void> createPolicyNote(String policyId, String content) async {
     await _client.post('policies/$policyId/notes', body: {'content': content});
   }

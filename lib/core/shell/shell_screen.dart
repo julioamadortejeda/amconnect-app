@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/feed/presentation/ingest_flow_overlay.dart';
 import '../providers/provider_keep_alive.dart';
+import '../../features/share_target/widgets/share_handler_listener.dart';
 import '../theme/app_colors.dart';
 import '../widgets/am_press.dart';
 import '../../l10n/app_localizations.dart';
@@ -47,7 +48,8 @@ class ShellScreen extends ConsumerWidget {
     final barVisible =
         activeIndex != 0 || ref.watch(homeReadyProvider).hasValue;
 
-    return Scaffold(
+    return ShareHandlerListener(
+      child: Scaffold(
       body: Stack(
         children: [
           Positioned.fill(child: navigationShell),
@@ -90,7 +92,8 @@ class ShellScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 

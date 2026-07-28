@@ -117,6 +117,7 @@
   "errAccessDenied": "You don't have permission to perform this action.",
   "errAiFailed": "The assistant had a problem processing your request. Please try again.",
   "errUploadFailed": "The file could not be uploaded. Please try again.",
+  "errSharedFileMissing": "The shared file is no longer available. Please share it again.",
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {
@@ -488,8 +489,6 @@
   "remindersDetailTitle": "Reminder",
   "remindersDetailEdit": "Edit",
   "remindersDetailSave": "Save",
-  "remindersDetailNotes": "Notes",
-  "remindersDetailNoNotes": "No notes",
   "remindersDetailNoClient": "No client assigned",
   "remindersDetailSaved": "Changes saved",
   "remindersDetailStatus": "Status",
@@ -507,6 +506,8 @@
   "remindersDetailNoComments": "No comments",
   "remindersDetailNoDescription": "No description",
   "remindersDetailRelations": "Relations",
+  "remindersDetailAttachments": "Attached files",
+  "remindersDetailNoAttachments": "No attached files",
   "remindersDetailTomorrow": "Tomorrow",
   "remindersDetailDaysLeft": "{count}d",
   "@remindersDetailDaysLeft": {
@@ -585,5 +586,41 @@
   "catalogsProductCreated": "Product created",
   "catalogsProductUpdated": "Product updated",
   "catalogsDeleteTitle": "Delete item",
-  "catalogsDeleteMessage": "Are you sure you want to delete it? This action cannot be undone."
+  "catalogsDeleteMessage": "Are you sure you want to delete it? This action cannot be undone.",
+  "shareTargetTitle": "Shared resource",
+  "shareTargetSubtitle": "Select where you want to assign this content",
+  "shareTargetPreview": "Preview",
+  "shareTargetEmpty": "No content was received to process",
+  "shareTargetDestinationPolicyIngest": "Policy intake",
+  "shareTargetDestinationPolicyIngestSub": "Automatic document reading",
+  "shareTargetPolicyIngestUnavailable": "Only available for PDFs or images",
+  "shareTargetDestinationGlobal": "Global Ingest (Knowledge Base)",
+  "shareTargetDestinationClient": "Client",
+  "shareTargetDestinationPolicy": "Policy",
+  "shareTargetDestinationReminder": "Reminder",
+  "shareTargetNoticePolicyIngest": "Everything is generated automatically: the client, carrier, product and coverages are detected, and payment and renewal reminders are created. You can review and correct before saving.",
+  "shareTargetNoticeGlobal": "It will be processed as a note in your general knowledge base.",
+  "shareTargetNoticeClient": "It will be processed as a note in {name}'s file.",
+  "@shareTargetNoticeClient": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "shareTargetNoticePickClient": "Pick a client to save this content as a note in their file.",
+  "shareTargetNoticePolicy": "It will be processed as a note on policy {policy}.",
+  "@shareTargetNoticePolicy": {
+    "placeholders": { "policy": { "type": "String" } }
+  },
+  "shareTargetNoticePickPolicy": "Pick a policy to save this content as one of its notes.",
+  "shareTargetNoticeReminder": "It will be processed as a note linked to reminder {reminder}.",
+  "@shareTargetNoticeReminder": {
+    "placeholders": { "reminder": { "type": "String" } }
+  },
+  "shareTargetNoticePickReminder": "Pick a reminder to link this content to as a note.",
+  "shareTargetActionIngest": "Upload resource",
+  "shareTargetActionPolicyIngest": "Process policy",
+  "shareTargetSelectClient": "Select client",
+  "shareTargetSelectPolicy": "Select policy",
+  "shareTargetSelectReminder": "Select reminder",
+  "shareTargetSearchReminderHint": "Search reminder…",
+  "shareTargetPolicyNoNumber": "No number",
+  "shareTargetCancel": "Discard"
 }

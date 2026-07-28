@@ -319,6 +319,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The file could not be uploaded. Please try again.';
 
   @override
+  String get errSharedFileMissing =>
+      'The shared file is no longer available. Please share it again.';
+
+  @override
   String errRefCode(String ref) {
     return 'Reference code: $ref';
   }
@@ -1334,12 +1338,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersDetailSave => 'Save';
 
   @override
-  String get remindersDetailNotes => 'Notes';
-
-  @override
-  String get remindersDetailNoNotes => 'No notes';
-
-  @override
   String get remindersDetailNoClient => 'No client assigned';
 
   @override
@@ -1389,6 +1387,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersDetailRelations => 'Relations';
+
+  @override
+  String get remindersDetailAttachments => 'Attached files';
+
+  @override
+  String get remindersDetailNoAttachments => 'No attached files';
 
   @override
   String get remindersDetailTomorrow => 'Tomorrow';
@@ -1604,4 +1608,99 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get catalogsDeleteMessage =>
       'Are you sure you want to delete it? This action cannot be undone.';
+
+  @override
+  String get shareTargetTitle => 'Shared resource';
+
+  @override
+  String get shareTargetSubtitle =>
+      'Select where you want to assign this content';
+
+  @override
+  String get shareTargetPreview => 'Preview';
+
+  @override
+  String get shareTargetEmpty => 'No content was received to process';
+
+  @override
+  String get shareTargetDestinationPolicyIngest => 'Policy intake';
+
+  @override
+  String get shareTargetDestinationPolicyIngestSub =>
+      'Automatic document reading';
+
+  @override
+  String get shareTargetPolicyIngestUnavailable =>
+      'Only available for PDFs or images';
+
+  @override
+  String get shareTargetDestinationGlobal => 'Global Ingest (Knowledge Base)';
+
+  @override
+  String get shareTargetDestinationClient => 'Client';
+
+  @override
+  String get shareTargetDestinationPolicy => 'Policy';
+
+  @override
+  String get shareTargetDestinationReminder => 'Reminder';
+
+  @override
+  String get shareTargetNoticePolicyIngest =>
+      'Everything is generated automatically: the client, carrier, product and coverages are detected, and payment and renewal reminders are created. You can review and correct before saving.';
+
+  @override
+  String get shareTargetNoticeGlobal =>
+      'It will be processed as a note in your general knowledge base.';
+
+  @override
+  String shareTargetNoticeClient(String name) {
+    return 'It will be processed as a note in $name\'s file.';
+  }
+
+  @override
+  String get shareTargetNoticePickClient =>
+      'Pick a client to save this content as a note in their file.';
+
+  @override
+  String shareTargetNoticePolicy(String policy) {
+    return 'It will be processed as a note on policy $policy.';
+  }
+
+  @override
+  String get shareTargetNoticePickPolicy =>
+      'Pick a policy to save this content as one of its notes.';
+
+  @override
+  String shareTargetNoticeReminder(String reminder) {
+    return 'It will be processed as a note linked to reminder $reminder.';
+  }
+
+  @override
+  String get shareTargetNoticePickReminder =>
+      'Pick a reminder to link this content to as a note.';
+
+  @override
+  String get shareTargetActionIngest => 'Upload resource';
+
+  @override
+  String get shareTargetActionPolicyIngest => 'Process policy';
+
+  @override
+  String get shareTargetSelectClient => 'Select client';
+
+  @override
+  String get shareTargetSelectPolicy => 'Select policy';
+
+  @override
+  String get shareTargetSelectReminder => 'Select reminder';
+
+  @override
+  String get shareTargetSearchReminderHint => 'Search reminder…';
+
+  @override
+  String get shareTargetPolicyNoNumber => 'No number';
+
+  @override
+  String get shareTargetCancel => 'Discard';
 }

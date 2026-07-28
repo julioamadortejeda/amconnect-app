@@ -131,6 +131,7 @@
   "errAccessDenied": "No tienes permiso para realizar esta acción.",
   "errAiFailed": "El asistente tuvo un problema al procesar tu solicitud. Intenta de nuevo.",
   "errUploadFailed": "No se pudo subir el archivo. Intenta de nuevo.",
+  "errSharedFileMissing": "El archivo compartido ya no está disponible. Compártelo de nuevo.",
   "errRefCode": "Código de referencia: {ref}",
   "@errRefCode": {
     "placeholders": {
@@ -540,8 +541,6 @@
   "remindersDetailTitle": "Recordatorio",
   "remindersDetailEdit": "Editar",
   "remindersDetailSave": "Guardar",
-  "remindersDetailNotes": "Notas",
-  "remindersDetailNoNotes": "Sin notas",
   "remindersDetailNoClient": "Sin cliente asignado",
   "remindersDetailSaved": "Cambios guardados",
   "remindersDetailStatus": "Estado",
@@ -559,6 +558,8 @@
   "remindersDetailNoComments": "Sin comentarios",
   "remindersDetailNoDescription": "Sin descripción",
   "remindersDetailRelations": "Relaciones",
+  "remindersDetailAttachments": "Archivos adjuntos",
+  "remindersDetailNoAttachments": "Sin archivos adjuntos",
   "remindersDetailTomorrow": "Mañana",
   "remindersDetailDaysLeft": "{count}d",
   "@remindersDetailDaysLeft": {
@@ -638,5 +639,41 @@
   "catalogsProductCreated": "Producto creado",
   "catalogsProductUpdated": "Producto actualizado",
   "catalogsDeleteTitle": "Eliminar elemento",
-  "catalogsDeleteMessage": "¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer."
+  "catalogsDeleteMessage": "¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.",
+  "shareTargetTitle": "Recurso compartido",
+  "shareTargetSubtitle": "Selecciona a dónde deseas asignar este contenido",
+  "shareTargetPreview": "Vista previa",
+  "shareTargetEmpty": "No se recibió contenido para procesar",
+  "shareTargetDestinationPolicyIngest": "Alta de póliza",
+  "shareTargetDestinationPolicyIngestSub": "Lectura automática del documento",
+  "shareTargetPolicyIngestUnavailable": "Solo disponible para PDF o imágenes",
+  "shareTargetDestinationGlobal": "Ingesta Global (Base de Conocimiento)",
+  "shareTargetDestinationClient": "Cliente",
+  "shareTargetDestinationPolicy": "Póliza",
+  "shareTargetDestinationReminder": "Recordatorio",
+  "shareTargetNoticePolicyIngest": "Se generará todo en automático: se detecta el cliente, la aseguradora, el producto y las coberturas, y se crean los recordatorios de pago y renovación. Podrás revisar y corregir antes de guardar.",
+  "shareTargetNoticeGlobal": "Se procesará como nota en tu base de conocimiento general.",
+  "shareTargetNoticeClient": "Se procesará como nota en el expediente de {name}.",
+  "@shareTargetNoticeClient": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "shareTargetNoticePickClient": "Elige un cliente para guardar el contenido como nota en su expediente.",
+  "shareTargetNoticePolicy": "Se procesará como nota de la póliza {policy}.",
+  "@shareTargetNoticePolicy": {
+    "placeholders": { "policy": { "type": "String" } }
+  },
+  "shareTargetNoticePickPolicy": "Elige una póliza para guardar el contenido como nota suya.",
+  "shareTargetNoticeReminder": "Se procesará como nota ligada al recordatorio {reminder}.",
+  "@shareTargetNoticeReminder": {
+    "placeholders": { "reminder": { "type": "String" } }
+  },
+  "shareTargetNoticePickReminder": "Elige un recordatorio para ligarle el contenido como nota.",
+  "shareTargetActionIngest": "Cargar recurso",
+  "shareTargetActionPolicyIngest": "Procesar póliza",
+  "shareTargetSelectClient": "Seleccionar cliente",
+  "shareTargetSelectPolicy": "Seleccionar póliza",
+  "shareTargetSelectReminder": "Seleccionar recordatorio",
+  "shareTargetSearchReminderHint": "Buscar recordatorio…",
+  "shareTargetPolicyNoNumber": "Sin número",
+  "shareTargetCancel": "Descartar"
 }

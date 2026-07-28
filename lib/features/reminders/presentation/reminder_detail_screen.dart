@@ -14,6 +14,7 @@ import '../widgets/reminder_comment_bubble.dart';
 import '../widgets/reminder_detail_hero.dart';
 import '../widgets/reminder_detail_info_section.dart';
 import '../widgets/reminder_detail_relations_section.dart';
+import '../widgets/reminder_notes_section.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
 import '../widgets/reminder_ai_button.dart';
@@ -385,6 +386,20 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                     )
                   else
                     ...r.comments.map((c) => ReminderCommentBubble(comment: c)),
+                ],
+              ),
+            ),
+            const SizedBox(height: AmDimens.gapM),
+
+            // ── ARCHIVOS ADJUNTOS ────────────────────────────────
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(label: l10n.remindersDetailAttachments),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ReminderNotesSection(reminderId: r.id),
                 ],
               ),
             ),

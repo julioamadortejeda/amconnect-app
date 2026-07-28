@@ -35,6 +35,7 @@ extension ErrorTranslator on BuildContext {
       'ACCESS_DENIED' => l10n.errAccessDenied,
       'AI_ERROR' || 'AI_INVOCATION_FAILED' => l10n.errAiFailed,
       'UPLOAD_FAILED' => l10n.errUploadFailed,
+      'SHARED_FILE_MISSING' => l10n.errSharedFileMissing,
       'INTERNAL_ERROR' || 'errUnknown' => l10n.errUnknown,
       'MIC_PERMISSION_DENIED' => l10n.voiceChatPermissionDenied,
       _ => key,

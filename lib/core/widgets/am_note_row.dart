@@ -3,23 +3,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/am_icons.dart';
-import '../../../core/theme/app_dimensions.dart';
-import '../../../core/models/agent_note.dart';
-import '../../../core/repositories/supabase_storage_repository.dart';
-import '../../../l10n/app_localizations.dart';
+import '../models/agent_note.dart';
+import '../repositories/supabase_storage_repository.dart';
+import '../theme/app_colors.dart';
+import '../theme/am_icons.dart';
+import '../theme/app_dimensions.dart';
+import '../../l10n/app_localizations.dart';
 
-class ClientNoteRow extends ConsumerStatefulWidget {
-  const ClientNoteRow({super.key, required this.note});
+/// Card expandible para una `AgentNote` — usado en el detalle de cliente,
+/// póliza y recordatorio. Muestra el resumen (o el contenido crudo si no hay
+/// resumen), coloreado por `sourceType`, con botón para abrir el archivo
+/// cuando la nota viene de un documento.
+class AmNoteRow extends ConsumerStatefulWidget {
+  const AmNoteRow({super.key, required this.note});
 
   final AgentNote note;
 
   @override
-  ConsumerState<ClientNoteRow> createState() => _ClientNoteRowState();
+  ConsumerState<AmNoteRow> createState() => _AmNoteRowState();
 }
 
-class _ClientNoteRowState extends ConsumerState<ClientNoteRow> {
+class _AmNoteRowState extends ConsumerState<AmNoteRow> {
   bool _expanded = false;
   bool _loadingFile = false;
 

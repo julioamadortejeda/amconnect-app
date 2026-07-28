@@ -97,6 +97,7 @@ class IngestRepository {
     required String mimeType,
     String? contactId,
     String? policyId,
+    String? reminderId,
     bool? makeGeneral,
   }) async {
     final res = await _api.post('ai/ingest', body: {
@@ -105,6 +106,7 @@ class IngestRepository {
       'mimeType': mimeType,
       if (contactId != null) 'contactId': contactId,
       if (policyId != null) 'policyId': policyId,
+      if (reminderId != null) 'reminderId': reminderId,
       if (makeGeneral != null) 'makeGeneral': makeGeneral,
     });
     final data = res['data'] as Map<String, dynamic>;
@@ -120,6 +122,7 @@ class IngestRepository {
     required String sourceType,
     String? contactId,
     String? policyId,
+    String? reminderId,
     bool? makeGeneral,
     bool isClientNote = false,
   }) async {
@@ -128,6 +131,7 @@ class IngestRepository {
       'sourceType': sourceType,
       if (contactId != null) 'contactId': contactId,
       if (policyId != null) 'policyId': policyId,
+      if (reminderId != null) 'reminderId': reminderId,
       if (makeGeneral != null) 'makeGeneral': makeGeneral,
       if (isClientNote) 'isClientNote': true,
     });

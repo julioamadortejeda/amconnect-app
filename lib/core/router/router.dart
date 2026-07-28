@@ -23,6 +23,7 @@ import '../../core/models/reminder.dart';
 import '../../features/chat/data/chat_context.dart';
 import '../../features/assistant/presentation/assistant_screen.dart';
 import '../../features/assistant/providers/assistant_provider.dart' show AssistantResumeArgs;
+import '../../features/share_target/presentation/screens/share_target_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/forgot_password_screen.dart';
@@ -212,6 +213,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/catalogs',
         pageBuilder: (_, state) => amTransitionPage(
           child: const CatalogsScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/share-target',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const ShareTargetScreen(),
           state: state,
           type: 'push',
         ),

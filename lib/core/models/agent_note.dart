@@ -3,6 +3,7 @@ class AgentNote {
     required this.id,
     required this.contactId,
     required this.policyId,
+    this.reminderId,
     required this.sourceType,
     required this.content,
     required this.createdAt,
@@ -15,6 +16,7 @@ class AgentNote {
   final String id;
   final String? contactId;
   final String? policyId;
+  final String? reminderId;
   final String sourceType;
   final String content;
   final String createdAt;
@@ -29,6 +31,7 @@ class AgentNote {
       id: json['id'] as String,
       contactId: json['contact_id'] as String?,
       policyId: json['policy_id'] as String?,
+      reminderId: json['reminder_id'] as String?,
       sourceType: json['source_type'] as String? ?? 'text',
       content: (json['content'] ?? '') as String,
       createdAt: json['created_at'] as String,

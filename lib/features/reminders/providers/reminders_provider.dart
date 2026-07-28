@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/models/agent_note.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../home/providers/home_provider.dart';
 
@@ -145,6 +148,33 @@ class CreateReminderNotifier extends Notifier<CreateReminderState> {
 final createReminderProvider =
     NotifierProvider<CreateReminderNotifier, CreateReminderState>(
         CreateReminderNotifier.new);
+
+/// Notas ligadas a un recordatorio (creadas vía Share Target).
+final reminderNotesProvider =
+    FutureProvider.family<List<AgentNote>, String>((ref, reminderId) async {
+  return ref.read(noteRepositoryProvider).getByReminderId(reminderId);
+});
+
+// Watching this provider activates Realtime for notes of a reminder —
+// necesario porque la ingesta de archivo/texto con IA es asíncrona.
+final reminderNotesRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, reminderId) {
+  final channel = Supabase.instance.client
+      .channel('notes:reminder:$reminderId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'agent_notes',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'reminder_id',
+          value: reminderId,
+        ),
+        callback: (_) => ref.invalidate(reminderNotesProvider(reminderId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
+});
 
 /// Mapa fecha → recordatorios para pintar puntos en el calendario.
 final remindersByDateProvider = Provider<Map<DateTime, List<Reminder>>>((ref) {

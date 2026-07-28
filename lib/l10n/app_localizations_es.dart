@@ -322,6 +322,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo subir el archivo. Intenta de nuevo.';
 
   @override
+  String get errSharedFileMissing =>
+      'El archivo compartido ya no está disponible. Compártelo de nuevo.';
+
+  @override
   String errRefCode(String ref) {
     return 'Código de referencia: $ref';
   }
@@ -1341,12 +1345,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersDetailSave => 'Guardar';
 
   @override
-  String get remindersDetailNotes => 'Notas';
-
-  @override
-  String get remindersDetailNoNotes => 'Sin notas';
-
-  @override
   String get remindersDetailNoClient => 'Sin cliente asignado';
 
   @override
@@ -1396,6 +1394,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersDetailRelations => 'Relaciones';
+
+  @override
+  String get remindersDetailAttachments => 'Archivos adjuntos';
+
+  @override
+  String get remindersDetailNoAttachments => 'Sin archivos adjuntos';
 
   @override
   String get remindersDetailTomorrow => 'Mañana';
@@ -1611,4 +1615,100 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get catalogsDeleteMessage =>
       '¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.';
+
+  @override
+  String get shareTargetTitle => 'Recurso compartido';
+
+  @override
+  String get shareTargetSubtitle =>
+      'Selecciona a dónde deseas asignar este contenido';
+
+  @override
+  String get shareTargetPreview => 'Vista previa';
+
+  @override
+  String get shareTargetEmpty => 'No se recibió contenido para procesar';
+
+  @override
+  String get shareTargetDestinationPolicyIngest => 'Alta de póliza';
+
+  @override
+  String get shareTargetDestinationPolicyIngestSub =>
+      'Lectura automática del documento';
+
+  @override
+  String get shareTargetPolicyIngestUnavailable =>
+      'Solo disponible para PDF o imágenes';
+
+  @override
+  String get shareTargetDestinationGlobal =>
+      'Ingesta Global (Base de Conocimiento)';
+
+  @override
+  String get shareTargetDestinationClient => 'Cliente';
+
+  @override
+  String get shareTargetDestinationPolicy => 'Póliza';
+
+  @override
+  String get shareTargetDestinationReminder => 'Recordatorio';
+
+  @override
+  String get shareTargetNoticePolicyIngest =>
+      'Se generará todo en automático: se detecta el cliente, la aseguradora, el producto y las coberturas, y se crean los recordatorios de pago y renovación. Podrás revisar y corregir antes de guardar.';
+
+  @override
+  String get shareTargetNoticeGlobal =>
+      'Se procesará como nota en tu base de conocimiento general.';
+
+  @override
+  String shareTargetNoticeClient(String name) {
+    return 'Se procesará como nota en el expediente de $name.';
+  }
+
+  @override
+  String get shareTargetNoticePickClient =>
+      'Elige un cliente para guardar el contenido como nota en su expediente.';
+
+  @override
+  String shareTargetNoticePolicy(String policy) {
+    return 'Se procesará como nota de la póliza $policy.';
+  }
+
+  @override
+  String get shareTargetNoticePickPolicy =>
+      'Elige una póliza para guardar el contenido como nota suya.';
+
+  @override
+  String shareTargetNoticeReminder(String reminder) {
+    return 'Se procesará como nota ligada al recordatorio $reminder.';
+  }
+
+  @override
+  String get shareTargetNoticePickReminder =>
+      'Elige un recordatorio para ligarle el contenido como nota.';
+
+  @override
+  String get shareTargetActionIngest => 'Cargar recurso';
+
+  @override
+  String get shareTargetActionPolicyIngest => 'Procesar póliza';
+
+  @override
+  String get shareTargetSelectClient => 'Seleccionar cliente';
+
+  @override
+  String get shareTargetSelectPolicy => 'Seleccionar póliza';
+
+  @override
+  String get shareTargetSelectReminder => 'Seleccionar recordatorio';
+
+  @override
+  String get shareTargetSearchReminderHint => 'Buscar recordatorio…';
+
+  @override
+  String get shareTargetPolicyNoNumber => 'Sin número';
+
+  @override
+  String get shareTargetCancel => 'Descartar';
 }

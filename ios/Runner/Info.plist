@@ -31,11 +31,33 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>amconnect</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- Scheme con el que la Share Extension reabre la app.
+				     flutter_sharing_intent SOLO procesa URLs con este prefijo
+				     exacto (kSchemePrefix "SharingMedia" + bundle id). -->
+				<string>SharingMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<!-- Reversed iOS OAuth client ID — requerido por google_sign_in -->
 				<string>com.googleusercontent.apps.209849163943-dugb3qfo959i86rdkgrq3jvtbovnl7m9</string>
 			</array>
 		</dict>
 	</array>
+	<!-- App Group compartido con ShareExtension — lo lee flutter_sharing_intent -->
+	<key>AppGroupId</key>
+	<string>group.com.jacatsoft.amconnect</string>
 	<key>GIDClientID</key>
 	<string>209849163943-dugb3qfo959i86rdkgrq3jvtbovnl7m9.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
