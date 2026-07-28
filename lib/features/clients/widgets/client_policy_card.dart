@@ -7,7 +7,6 @@ import '../../../core/models/agent_note.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_storage_repository.dart';
-import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_card.dart';
@@ -15,6 +14,7 @@ import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_ramo_icon.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
+import 'policy_status_chip.dart';
 
 class ClientPolicyCard extends ConsumerStatefulWidget {
   const ClientPolicyCard({super.key, required this.policy});
@@ -31,10 +31,8 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final policy = widget.policy;
-    final isActive = policy.statusCode == 'ACTIVE';
 
     final notesAsync = ref.watch(policyNotesProvider(policy.id));
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
@@ -96,24 +94,9 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? am.green.withValues(alpha: 0.08)
-                      : cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  isActive ? l10n.clientsPolicyActive : policy.statusCode,
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                    color:
-                        isActive ? am.green : cs.tertiary,
-                  ),
-                ),
+              PolicyStatusChip(
+                statusCode: policy.statusCode,
+                rawName: policy.status?.name,
               ),
             ],
           ),

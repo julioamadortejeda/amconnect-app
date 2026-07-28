@@ -17,6 +17,32 @@ class ShareDestinationNotice extends StatelessWidget {
     final cs = theme.colorScheme;
     final isPolicyIngest = state.destinationType == ShareDestinationType.policyIngest;
 
+    // El tipo de archivo bloquea cualquier destino que no sea alta de póliza
+    // (esa ya se auto-deshabilita con su propio aviso en el selector) — se
+    // muestra encima de cualquier otro mensaje.
+    if (!isPolicyIngest && state.isUnsupportedFile) {
+      return Container(
+        padding: const EdgeInsets.all(AmDimens.gapM),
+        decoration: BoxDecoration(
+          color: cs.errorContainer,
+          borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.error_outline, size: 18, color: cs.error),
+            const SizedBox(width: AmDimens.gapS),
+            Expanded(
+              child: Text(
+                l10n.shareTargetUnsupportedFile,
+                style: theme.textTheme.bodySmall?.copyWith(color: cs.error, height: 1.4),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     final message = switch (state.destinationType) {
       ShareDestinationType.policyIngest => l10n.shareTargetNoticePolicyIngest,
       ShareDestinationType.global => l10n.shareTargetNoticeGlobal,

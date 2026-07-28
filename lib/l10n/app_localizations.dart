@@ -674,6 +674,12 @@ abstract class AppLocalizations {
   /// **'El archivo compartido ya no está disponible. Compártelo de nuevo.'**
   String get errSharedFileMissing;
 
+  /// No description provided for @errSharedTextTooLarge.
+  ///
+  /// In es, this message translates to:
+  /// **'El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.'**
+  String get errSharedTextTooLarge;
+
   /// No description provided for @errRefCode.
   ///
   /// In es, this message translates to:
@@ -3181,6 +3187,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Solo disponible para PDF o imágenes'**
   String get shareTargetPolicyIngestUnavailable;
+
+  /// No description provided for @shareTargetUnsupportedFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Este archivo no se puede procesar. Comparte un PDF, una imagen (JPG, PNG, WEBP, GIF), un audio (MP3, WAV, OGG, M4A, WEBM) o un chat exportado en texto (.txt) — las exportaciones con medios adjuntos (.zip) no son compatibles.'**
+  String get shareTargetUnsupportedFile;
 
   /// No description provided for @shareTargetDestinationGlobal.
   ///

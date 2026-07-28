@@ -17,6 +17,21 @@ enum ShareDestinationType {
   reminder,
 }
 
+/// Extensiones que el backend acepta para ingesta de archivos — debe reflejar
+/// `ALLOWED_MIME_TYPES` en `storage.service.ts`. Validar aquí evita un viaje
+/// de red a `ai/upload-url` que el backend rechazaría de todos modos (ej.
+/// alguien comparte un .zip de "Exportar chat" de WhatsApp).
+const _supportedFileExtensions = {
+  'pdf', 'jpg', 'jpeg', 'png', 'webp', 'gif',
+  'm4a', 'mp4', 'mp3', 'ogg', 'wav', 'webm',
+};
+
+/// Tope de caracteres para un `.txt` compartido (ej. "Exportar chat → sin
+/// medios" de WhatsApp) — protege contra un historial descomunal sin
+/// bloquear una conversación normal con un cliente. Se valida ANTES de
+/// gastar la ingesta (que sí cobra cuota).
+const _maxTextFileLength = 200000;
+
 class ShareTargetState {
   final List<SharedFile>? sharedFiles;
   final String? sharedText;
@@ -54,6 +69,17 @@ class ShareTargetState {
 
   bool get hasContent => hasFile || hasText;
 
+  /// El archivo compartido es un `.txt` — típicamente "Exportar chat → sin
+  /// medios" de WhatsApp. Se procesa como texto (`ai/ingest-text`, se lee su
+  /// contenido en `validate()`), no como archivo binario.
+  bool get isTextFile => hasFile && _extensionOf(firstFile!) == 'txt';
+
+  /// El archivo compartido no es un tipo que el backend acepte ingestar
+  /// (ej. un `.zip` de "Exportar chat CON medios" de WhatsApp, un `.docx`,
+  /// etc.). `.txt` no cuenta como no soportado — va por la ruta de texto.
+  bool get isUnsupportedFile =>
+      hasFile && !isTextFile && !_supportedFileExtensions.contains(_extensionOf(firstFile!));
+
   /// El alta automática de póliza solo corre sobre PDF o imagen — el backend
   /// rechaza cualquier otro mime en `ai/ingest-policy`.
   bool get canIngestAsPolicy {
@@ -62,9 +88,13 @@ class ShareTargetState {
     return mime == 'application/pdf' || mime.startsWith('image/');
   }
 
-  /// Si falta elegir el destino concreto, no hay nada que enviar.
+  /// Si falta elegir el destino concreto, o el archivo no es un tipo
+  /// soportado, no hay nada que enviar.
   bool get canSubmit {
     if (!hasContent || isIngesting) return false;
+    if (destinationType != ShareDestinationType.policyIngest && isUnsupportedFile) {
+      return false;
+    }
     return switch (destinationType) {
       ShareDestinationType.policyIngest => canIngestAsPolicy,
       ShareDestinationType.global => true,
@@ -161,17 +191,68 @@ class ShareTargetNotifier extends Notifier<ShareTargetState> {
     state = const ShareTargetState();
   }
 
-  /// Comprueba que el contenido siga disponible antes de cerrar la pantalla.
-  /// Si el archivo ya no está en disco deja el motivo en `state.error` para
-  /// que la pantalla lo traduzca, y devuelve `false`.
+  /// Comprueba que el contenido siga disponible antes de cerrar la pantalla,
+  /// y normaliza un `.txt` compartido a texto plano antes de despachar.
+  ///
+  /// Los dos SO entregan un `.txt` (ej. "Exportar chat → sin medios" de
+  /// WhatsApp) de forma distinta: iOS lo manda como archivo (`isTextFile`,
+  /// ver `_extensionOf`); Android lo clasifica como TEXT pero el plugin pone
+  /// la RUTA del archivo en `value`, no su contenido (`getSharingUris` copia
+  /// el content:// a caché y regresa el path — ver `getMediaType` en
+  /// `FlutterSharingIntentPlugin.kt`). Detectar ese segundo caso es solo
+  /// comprobar si `sharedText` apunta a un archivo real en disco.
   Future<bool> validate() async {
     final current = state;
     if (!current.canSubmit) return false;
 
-    if (current.hasFile && !await File(current.firstFile!.value!).exists()) {
+    if (current.hasFile) {
+      if (!await File(current.firstFile!.value!).exists()) {
+        state = current.copyWith(error: 'SHARED_FILE_MISSING');
+        return false;
+      }
+      if (current.isTextFile) {
+        return _promoteFileToText(current, current.firstFile!.value!);
+      }
+      return true;
+    }
+
+    if (current.hasText && await File(current.sharedText!).exists()) {
+      return _promoteFileToText(current, current.sharedText!);
+    }
+
+    return true;
+  }
+
+  /// Lee `path`, valida tamaño/contenido, y reemplaza el estado dejando el
+  /// texto listo en `sharedText` — de ahí en adelante `dispatch()` no
+  /// necesita saber que alguna vez fue un archivo.
+  Future<bool> _promoteFileToText(ShareTargetState current, String path) async {
+    final String content;
+    try {
+      content = await File(path).readAsString();
+    } catch (_) {
       state = current.copyWith(error: 'SHARED_FILE_MISSING');
       return false;
     }
+    if (content.trim().isEmpty) {
+      state = current.copyWith(error: 'SHARED_FILE_MISSING');
+      return false;
+    }
+    if (content.length > _maxTextFileLength) {
+      state = current.copyWith(error: 'SHARED_TEXT_TOO_LARGE');
+      return false;
+    }
+
+    state = ShareTargetState(
+      sharedText: content,
+      destinationType: current.destinationType,
+      selectedClientId: current.selectedClientId,
+      selectedClientName: current.selectedClientName,
+      selectedPolicyId: current.selectedPolicyId,
+      selectedPolicyNumber: current.selectedPolicyNumber,
+      selectedReminderId: current.selectedReminderId,
+      selectedReminderTitle: current.selectedReminderTitle,
+    );
     return true;
   }
 
@@ -231,6 +312,18 @@ String _fileNameOf(SharedFile file) {
   if (name.contains('.')) return name;
   final ext = _extensionForMime(_mimeOf(file));
   return ext == null ? name : '$name.$ext';
+}
+
+/// Extensión del archivo compartido, sin el punto — de `mimeType` si el SO
+/// lo declaró, si no del nombre del archivo.
+String _extensionOf(SharedFile file) {
+  final declared = file.mimeType;
+  if (declared != null && declared.isNotEmpty) {
+    final ext = _extensionForMime(declared);
+    if (ext != null) return ext;
+  }
+  final name = (file.value ?? '').split('/').last;
+  return name.contains('.') ? name.split('.').last.toLowerCase() : '';
 }
 
 String _mimeOf(SharedFile file) {

@@ -263,7 +263,15 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       onAttach: () {
                         final ctx = state.activeContext;
                         final contactId = ctx?.type == 'contact' ? ctx?.id : null;
-                        IngestTypePicker.show(context, contactId: contactId);
+                        final reminderId = ctx?.type == 'reminder' ? ctx?.id : null;
+                        IngestTypePicker.show(
+                          context,
+                          contactId: contactId,
+                          reminderId: reminderId,
+                          // Extraer una póliza nueva no aplica en el contexto
+                          // de un recordatorio ya existente.
+                          showPolicyExtraction: reminderId == null,
+                        );
                       },
                       onVoiceToggle: () =>
                           ref.read(assistantProvider.notifier).startVoice(DeviceTimezone.name),

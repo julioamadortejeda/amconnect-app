@@ -111,20 +111,63 @@ class ShareViewController: UIViewController {
                             append(SharingFile(value: stored.path, mimeType: stored.mimeType, type: .file))
                         }
                     }
-                } else if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
+                } else if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier)
+                    || provider.hasItemConformingToTypeIdentifier(UTType.text.identifier) {
+                    // Algunas apps (WhatsApp entre ellas) registran el texto
+                    // compartido bajo el UTI genérico `public.text`
+                    // (UTType.text) en vez del más específico
+                    // `public.plain-text` (UTType.plainText). Pedir siempre
+                    // `plainText` cuando el provider solo ofrece `text` hace
+                    // que `loadItem` falle su conformance check, cae al
+                    // catch-all de `UTType.item` de abajo y el texto termina
+                    // guardado como binario opaco (mimeType no soportado por
+                    // el backend). Hay que pedir el identifier que el
+                    // provider realmente declara.
+                    let textId = provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier)
+                        ? UTType.plainText.identifier
+                        : UTType.text.identifier
                     dispatchGroup.enter()
-                    provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) { (data, error) in
+                    provider.loadItem(forTypeIdentifier: textId, options: nil) { (data, error) in
                         defer { dispatchGroup.leave() }
                         if let text = data as? String {
                             append(SharingFile(value: text, type: .text))
+                        } else if let url = data as? URL {
+                            // Un proveedor de texto respaldado por archivo (ej. un
+                            // .txt) entrega una file URL, no un String — hay que
+                            // leer su contenido. Si es un link real (no file://),
+                            // sí es una URL de verdad.
+                            if url.isFileURL, let text = try? String(contentsOf: url, encoding: .utf8) {
+                                append(SharingFile(value: text, type: .text))
+                            } else if !url.isFileURL {
+                                append(SharingFile(value: url.absoluteString, type: .url))
+                            }
                         }
                     }
                 } else if provider.hasItemConformingToTypeIdentifier(UTType.item.identifier) {
                     dispatchGroup.enter()
                     provider.loadItem(forTypeIdentifier: UTType.item.identifier, options: nil) { [weak self] (data, error) in
                         defer { dispatchGroup.leave() }
-                        guard let self = self,
-                              let stored = self.store(data, provider: provider, fallbackExtension: "dat") else { return }
+                        guard let self = self else { return }
+                        // Catch-all genérico: algunas apps (WhatsApp entre ellas)
+                        // ofrecen adjuntos tipo "documento" sin declarar un UTI de
+                        // texto reconocible. Si los bytes decodifican como UTF-8
+                        // válido, es texto de verdad — se trata como tal en vez de
+                        // guardarlo como binario opaco.
+                        if let text = data as? String {
+                            append(SharingFile(value: text, type: .text))
+                            return
+                        }
+                        if let url = data as? URL, url.isFileURL,
+                           let text = try? String(contentsOf: url, encoding: .utf8), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            append(SharingFile(value: text, type: .text))
+                            return
+                        }
+                        if let raw = data as? Data,
+                           let text = String(data: raw, encoding: .utf8), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            append(SharingFile(value: text, type: .text))
+                            return
+                        }
+                        guard let stored = self.store(data, provider: provider, fallbackExtension: "dat") else { return }
                         append(SharingFile(value: stored.path, mimeType: stored.mimeType, type: .file))
                     }
                 }

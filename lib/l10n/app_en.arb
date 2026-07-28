@@ -118,6 +118,7 @@
   "errAiFailed": "The assistant had a problem processing your request. Please try again.",
   "errUploadFailed": "The file could not be uploaded. Please try again.",
   "errSharedFileMissing": "The shared file is no longer available. Please share it again.",
+  "errSharedTextTooLarge": "The text is too long to process. Share a shorter chat or just the relevant messages.",
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {
@@ -594,6 +595,7 @@
   "shareTargetDestinationPolicyIngest": "Policy intake",
   "shareTargetDestinationPolicyIngestSub": "Automatic document reading",
   "shareTargetPolicyIngestUnavailable": "Only available for PDFs or images",
+  "shareTargetUnsupportedFile": "This file can't be processed. Share a PDF, an image (JPG, PNG, WEBP, GIF), an audio file (MP3, WAV, OGG, M4A, WEBM), or a chat exported as text (.txt) — exports with attached media (.zip) aren't supported.",
   "shareTargetDestinationGlobal": "Global Ingest (Knowledge Base)",
   "shareTargetDestinationClient": "Client",
   "shareTargetDestinationPolicy": "Policy",

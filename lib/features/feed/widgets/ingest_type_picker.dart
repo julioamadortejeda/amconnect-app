@@ -18,11 +18,13 @@ class IngestTypePicker extends ConsumerStatefulWidget {
     super.key,
     this.contactId,
     this.policyId,
+    this.reminderId,
     this.showPolicyExtraction = true,
   });
 
   final String? contactId;
   final String? policyId;
+  final String? reminderId;
 
   /// Si es `false`, oculta las tiles de "PDF de póliza"/"Foto de póliza"
   /// (extraer una póliza NUEVA) — úsalo al abrir el picker desde el detalle
@@ -33,6 +35,7 @@ class IngestTypePicker extends ConsumerStatefulWidget {
     BuildContext context, {
     String? contactId,
     String? policyId,
+    String? reminderId,
     bool showPolicyExtraction = true,
   }) {
     return showModalBottomSheet(
@@ -46,6 +49,7 @@ class IngestTypePicker extends ConsumerStatefulWidget {
       builder: (_) => IngestTypePicker(
         contactId: contactId,
         policyId: policyId,
+        reminderId: reminderId,
         showPolicyExtraction: showPolicyExtraction,
       ),
     );
@@ -94,6 +98,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         sourceType: sourceType,
         contactId: widget.contactId,
         policyId: widget.policyId,
+        reminderId: widget.reminderId,
         makeGeneral: _makeGeneral,
       ),
     );
@@ -129,6 +134,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         final notifier = ref.read(ingestProvider.notifier);
         final contactId = widget.contactId;
         final policyId = widget.policyId;
+        final reminderId = widget.reminderId;
         final makeGeneral = _makeGeneral;
 
         if (mounted) Navigator.of(context).pop();
@@ -156,6 +162,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
                   fileName,
                   contactId: contactId,
                   policyId: policyId,
+                  reminderId: reminderId,
                   makeGeneral: makeGeneral,
                 );
               }

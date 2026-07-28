@@ -326,6 +326,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'El archivo compartido ya no está disponible. Compártelo de nuevo.';
 
   @override
+  String get errSharedTextTooLarge =>
+      'El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.';
+
+  @override
   String errRefCode(String ref) {
     return 'Código de referencia: $ref';
   }
@@ -1639,6 +1643,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get shareTargetPolicyIngestUnavailable =>
       'Solo disponible para PDF o imágenes';
+
+  @override
+  String get shareTargetUnsupportedFile =>
+      'Este archivo no se puede procesar. Comparte un PDF, una imagen (JPG, PNG, WEBP, GIF), un audio (MP3, WAV, OGG, M4A, WEBM) o un chat exportado en texto (.txt) — las exportaciones con medios adjuntos (.zip) no son compatibles.';
 
   @override
   String get shareTargetDestinationGlobal =>
