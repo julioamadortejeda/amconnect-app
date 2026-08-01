@@ -113,6 +113,14 @@ class GeminiLiveService {
               }
             }
           },
+          'realtimeInputConfig': {
+            'automaticActivityDetection': {
+              'startOfSpeechSensitivity': 'START_SENSITIVITY_HIGH',
+              'endOfSpeechSensitivity': 'END_SENSITIVITY_LOW',
+              'prefixPaddingMs': 200,
+              'silenceDurationMs': 1800,
+            },
+          },
           'systemInstruction': {
             'parts': [
               {'text': systemInstruction}

@@ -114,7 +114,16 @@ class IngestChatSheet extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (state.isDuplicate && lastAiText.isNotEmpty) ...[
-                        _DuplicateWarningBanner(text: lastAiText),
+                        _AttentionBanner(text: lastAiText),
+                        const SizedBox(height: AmDimens.gapM),
+                      ],
+                      if (state.contactMismatchResolvedToScreen == true && state.contactMismatch != null) ...[
+                        _AttentionBanner(
+                          text: l10n.feedContactMismatchResolvedBanner(
+                            state.contactMismatch!.screenContactName,
+                            state.contactMismatch!.detectedContactName,
+                          ),
+                        ),
                         const SizedBox(height: AmDimens.gapM),
                       ],
                       _PolicySummaryCard(extraction: extraction, l10n: l10n),
@@ -228,8 +237,8 @@ class IngestChatSheet extends ConsumerWidget {
   }
 }
 
-class _DuplicateWarningBanner extends StatelessWidget {
-  const _DuplicateWarningBanner({required this.text});
+class _AttentionBanner extends StatelessWidget {
+  const _AttentionBanner({required this.text});
   final String text;
 
   @override

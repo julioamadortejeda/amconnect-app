@@ -513,6 +513,30 @@
   "feedIngestPremiumLabel": "Prima",
   "feedIngestValidityLabel": "Vigencia",
 
+  "feedContactMismatchTitle": "¿A quién asignamos esta póliza?",
+  "feedContactMismatchBody": "El documento indica que el titular es {detectedName}, pero estás en la pantalla de {screenName}.",
+  "@feedContactMismatchBody": {
+    "placeholders": {
+      "detectedName": { "type": "String" },
+      "screenName": { "type": "String" }
+    }
+  },
+  "feedContactMismatchAssignCta": "Sí, asignar a {screenName}",
+  "@feedContactMismatchAssignCta": {
+    "placeholders": { "screenName": { "type": "String" } }
+  },
+  "feedContactMismatchUseDetectedCta": "No, usar {detectedName}",
+  "@feedContactMismatchUseDetectedCta": {
+    "placeholders": { "detectedName": { "type": "String" } }
+  },
+  "feedContactMismatchResolvedBanner": "Esta póliza se asignará a {screenName}. El documento identificaba a {detectedName} como titular.",
+  "@feedContactMismatchResolvedBanner": {
+    "placeholders": {
+      "screenName": { "type": "String" },
+      "detectedName": { "type": "String" }
+    }
+  },
+
   "@_reminderActions": {},
   "remindersActionDone": "Finalizar",
   "remindersActionInProgress": "En proceso",

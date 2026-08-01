@@ -1260,6 +1260,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedIngestValidityLabel => 'Validity';
 
   @override
+  String get feedContactMismatchTitle => 'Who should we assign this policy to?';
+
+  @override
+  String feedContactMismatchBody(String detectedName, String screenName) {
+    return 'The document shows $detectedName as the policyholder, but you\'re on $screenName\'s screen.';
+  }
+
+  @override
+  String feedContactMismatchAssignCta(String screenName) {
+    return 'Yes, assign to $screenName';
+  }
+
+  @override
+  String feedContactMismatchUseDetectedCta(String detectedName) {
+    return 'No, use $detectedName';
+  }
+
+  @override
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName) {
+    return 'This policy will be assigned to $screenName. The document identified $detectedName as the policyholder.';
+  }
+
+  @override
   String get remindersActionDone => 'Mark done';
 
   @override

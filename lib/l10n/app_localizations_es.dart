@@ -1267,6 +1267,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedIngestValidityLabel => 'Vigencia';
 
   @override
+  String get feedContactMismatchTitle => '¿A quién asignamos esta póliza?';
+
+  @override
+  String feedContactMismatchBody(String detectedName, String screenName) {
+    return 'El documento indica que el titular es $detectedName, pero estás en la pantalla de $screenName.';
+  }
+
+  @override
+  String feedContactMismatchAssignCta(String screenName) {
+    return 'Sí, asignar a $screenName';
+  }
+
+  @override
+  String feedContactMismatchUseDetectedCta(String detectedName) {
+    return 'No, usar $detectedName';
+  }
+
+  @override
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName) {
+    return 'Esta póliza se asignará a $screenName. El documento identificaba a $detectedName como titular.';
+  }
+
+  @override
   String get remindersActionDone => 'Finalizar';
 
   @override

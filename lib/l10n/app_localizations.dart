@@ -2462,6 +2462,37 @@ abstract class AppLocalizations {
   /// **'Vigencia'**
   String get feedIngestValidityLabel;
 
+  /// No description provided for @feedContactMismatchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿A quién asignamos esta póliza?'**
+  String get feedContactMismatchTitle;
+
+  /// No description provided for @feedContactMismatchBody.
+  ///
+  /// In es, this message translates to:
+  /// **'El documento indica que el titular es {detectedName}, pero estás en la pantalla de {screenName}.'**
+  String feedContactMismatchBody(String detectedName, String screenName);
+
+  /// No description provided for @feedContactMismatchAssignCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, asignar a {screenName}'**
+  String feedContactMismatchAssignCta(String screenName);
+
+  /// No description provided for @feedContactMismatchUseDetectedCta.
+  ///
+  /// In es, this message translates to:
+  /// **'No, usar {detectedName}'**
+  String feedContactMismatchUseDetectedCta(String detectedName);
+
+  /// No description provided for @feedContactMismatchResolvedBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta póliza se asignará a {screenName}. El documento identificaba a {detectedName} como titular.'**
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName);
+
   /// No description provided for @remindersActionDone.
   ///
   /// In es, this message translates to:

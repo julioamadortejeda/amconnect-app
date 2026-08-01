@@ -5,9 +5,9 @@ import '../../../core/utils/api_error_mapper.dart';
 import '../data/ingest_repository.dart';
 
 export 'package:amconnect/features/feed/data/ingest_repository.dart'
-    show IngestPolicyResponse, IngestKnowledgeResponse;
+    show IngestPolicyResponse, IngestKnowledgeResponse, ContactMismatchInfo;
 
-enum IngestPhase { idle, uploading, processing, chatting, success, knowledgeSuccess, error }
+enum IngestPhase { idle, uploading, processing, chatting, contactMismatch, success, knowledgeSuccess, error }
 
 class IngestMessage {
   final String role; // 'user' | 'ai'
@@ -101,6 +101,8 @@ class IngestState {
   final String? policyId;
   final bool isDuplicate;
   final bool isUpdate;
+  final ContactMismatchInfo? contactMismatch;
+  final bool? contactMismatchResolvedToScreen;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -117,6 +119,8 @@ class IngestState {
     this.policyId,
     this.isDuplicate = false,
     this.isUpdate = false,
+    this.contactMismatch,
+    this.contactMismatchResolvedToScreen,
   });
 
   IngestState copyWith({
@@ -134,6 +138,8 @@ class IngestState {
     String? policyId,
     bool? isDuplicate,
     bool? isUpdate,
+    ContactMismatchInfo? contactMismatch,
+    bool? contactMismatchResolvedToScreen,
   }) =>
       IngestState(
         phase: phase ?? this.phase,
@@ -150,6 +156,8 @@ class IngestState {
         policyId: policyId ?? this.policyId,
         isDuplicate: isDuplicate ?? this.isDuplicate,
         isUpdate: isUpdate ?? this.isUpdate,
+        contactMismatchResolvedToScreen: contactMismatchResolvedToScreen ?? this.contactMismatchResolvedToScreen,
+        contactMismatch: contactMismatch ?? this.contactMismatch,
       );
 }
 
@@ -189,15 +197,16 @@ class IngestNotifier extends Notifier<IngestState> {
         contactId: contactId,
       );
 
-      state = state.copyWith(
-        phase: IngestPhase.chatting,
-        sessionId: result.sessionId,
-        documentMetadataId: result.documentMetadataId,
-        extraction: result.extraction,
-        messages: [IngestMessage(role: 'ai', text: result.message)],
-        statusMessageKey: null,
-        isDuplicate: result.isDuplicate,
-      );
+      if (result.contactMismatch != null) {
+        state = state.copyWith(
+          phase: IngestPhase.contactMismatch,
+          sessionId: result.sessionId,
+          statusMessageKey: null,
+          contactMismatch: result.contactMismatch,
+        );
+      } else {
+        _enterChatting(result);
+      }
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
@@ -205,6 +214,39 @@ class IngestNotifier extends Notifier<IngestState> {
         statusMessageKey: null,
       );
     }
+  }
+
+  /// El asesor resolvió la pregunta de a quién asignar la póliza (ver
+  /// `contactMismatch` en IngestState) — arranca el chat de confirmación
+  /// normal con la decisión ya persistida en la sesión.
+  Future<void> resolveContactMismatch(bool assignToScreenContact) async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+    state = state.copyWith(isSending: true, error: null);
+    try {
+      final result = await _repo.resolveContactMismatch(sessionId, assignToScreenContact);
+      state = state.copyWith(contactMismatchResolvedToScreen: assignToScreenContact);
+      _enterChatting(result);
+    } catch (e) {
+      state = state.copyWith(
+        phase: IngestPhase.error,
+        isSending: false,
+        error: mapApiError(e),
+      );
+    }
+  }
+
+  void _enterChatting(IngestPolicyResponse result) {
+    state = state.copyWith(
+      phase: IngestPhase.chatting,
+      sessionId: result.sessionId,
+      documentMetadataId: result.documentMetadataId,
+      extraction: result.extraction,
+      messages: [IngestMessage(role: 'ai', text: result.message ?? '')],
+      statusMessageKey: null,
+      isDuplicate: result.isDuplicate,
+      isSending: false,
+    );
   }
 
   Future<void> sendMessage(String text) async {

@@ -109,28 +109,24 @@ class VoiceChatNotifier extends Notifier<VoiceChatState> {
 
     try {
       final api = ref.read(apiClientProvider);
-      final initData = await api.post('ai/voice/init', body: {
+      final sessionData = await api.post('ai/voice/init-session', body: {
         'timezone': timezone,
       });
-      final tokenData = await api.post('ai/voice/token', body: {
-        'systemInstruction': initData['systemInstruction'],
-        'tools': initData['tools'] ?? [],
-      });
 
-      final sessionId = initData['sessionId'] as String;
-      ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
+      final sessionId = sessionData['sessionId'] as String;
+      ref.read(aiBackendProvider.notifier).set(sessionData['aiBackend'] as String?);
       state = state.copyWith(sessionId: sessionId);
 
       await _engine.connect(
         sessionId: sessionId,
         timezone: timezone,
-        systemInstruction: initData['systemInstruction'] as String,
-        dynamicContext: initData['dynamicContext'] as String? ?? '',
-        tools: initData['tools'] as List<dynamic>? ?? [],
-        url: tokenData['url'] as String,
-        token: tokenData['token'] as String,
-        headersMap: tokenData['headers'] as Map<String, dynamic>?,
-        modelName: tokenData['model'] as String? ?? 'models/gemini-2.0-flash-exp',
+        systemInstruction: sessionData['systemInstruction'] as String,
+        dynamicContext: sessionData['dynamicContext'] as String? ?? '',
+        tools: sessionData['tools'] as List<dynamic>? ?? [],
+        url: sessionData['url'] as String,
+        token: sessionData['token'] as String,
+        headersMap: sessionData['headers'] as Map<String, dynamic>?,
+        modelName: sessionData['model'] as String? ?? 'models/gemini-2.0-flash-exp',
       );
       // El paso a `listening` llega con EngineListening cuando Gemini confirma
       // el setup — no antes.

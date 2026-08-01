@@ -5,6 +5,7 @@ import '../../features/feed/presentation/feed_screen.dart' show recentFeedProvid
 import '../../features/feed/providers/knowledge_dashboard_provider.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/reminders/providers/reminders_provider.dart';
+import '../../features/account/providers/account_provider.dart';
 
 /// Workaround para un bug de flutter_riverpod 3.3.2 (última versión a hoy):
 /// Riverpod pausa las suscripciones de widgets ocultos (tabs inactivos del
@@ -42,6 +43,9 @@ class ProviderKeepAlive extends ConsumerWidget {
     ref.listen(filteredRemindersProvider, (_, __) {});
     ref.listen(selectedDayRemindersProvider, (_, __) {});
     ref.listen(remindersByDateProvider, (_, __) {});
+    ref.listen(agentProfileProvider, (_, __) {});
+    ref.listen(subscriptionInfoProvider, (_, __) {});
+    ref.listen(accountReadyProvider, (_, __) {});
     return const SizedBox.shrink();
   }
 }

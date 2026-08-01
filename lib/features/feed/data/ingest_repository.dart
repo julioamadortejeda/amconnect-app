@@ -7,19 +7,30 @@ class UploadUrlResponse {
   const UploadUrlResponse({required this.signedUrl, required this.filePath});
 }
 
+class ContactMismatchInfo {
+  final String screenContactName;
+  final String detectedContactName;
+  const ContactMismatchInfo({
+    required this.screenContactName,
+    required this.detectedContactName,
+  });
+}
+
 class IngestPolicyResponse {
   final String sessionId;
-  final String message;
+  final String? message;
   final String? documentMetadataId;
-  final Map<String, dynamic> extraction;
+  final Map<String, dynamic>? extraction;
   final bool isDuplicate;
+  final ContactMismatchInfo? contactMismatch;
 
   const IngestPolicyResponse({
     required this.sessionId,
-    required this.message,
+    this.message,
     this.documentMetadataId,
-    required this.extraction,
+    this.extraction,
     this.isDuplicate = false,
+    this.contactMismatch,
   });
 }
 
@@ -65,13 +76,34 @@ class IngestRepository {
       'mimeType': mimeType,
       if (contactId != null) 'contactId': contactId,
     });
-    final data = res['data'] as Map<String, dynamic>;
+    return _parseIngestPolicyResponse(res['data'] as Map<String, dynamic>);
+  }
+
+  Future<IngestPolicyResponse> resolveContactMismatch(
+    String sessionId,
+    bool assignToScreenContact,
+  ) async {
+    final res = await _api.post(
+      'ai/sessions/$sessionId/resolve-contact-mismatch',
+      body: {'assignToScreenContact': assignToScreenContact},
+    );
+    return _parseIngestPolicyResponse(res['data'] as Map<String, dynamic>);
+  }
+
+  IngestPolicyResponse _parseIngestPolicyResponse(Map<String, dynamic> data) {
+    final mismatchData = data['contactMismatch'] as Map<String, dynamic>?;
     return IngestPolicyResponse(
       sessionId: data['sessionId'] as String,
-      message: data['message'] as String,
+      message: data['message'] as String?,
       documentMetadataId: data['documentMetadataId'] as String?,
-      extraction: data['extraction'] as Map<String, dynamic>,
+      extraction: data['extraction'] as Map<String, dynamic>?,
       isDuplicate: data['isDuplicate'] as bool? ?? false,
+      contactMismatch: mismatchData != null
+          ? ContactMismatchInfo(
+              screenContactName: mismatchData['screenContactName'] as String,
+              detectedContactName: mismatchData['detectedContactName'] as String,
+            )
+          : null,
     );
   }
 

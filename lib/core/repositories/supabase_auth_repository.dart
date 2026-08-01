@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,7 +13,6 @@ import 'auth_repository.dart';
 /// solo se reemplaza esta clase — el resto del código no cambia.
 class SupabaseAuthRepository implements AuthRepository {
   final SupabaseClient _client;
-  bool _googleInitialized = false;
 
   SupabaseAuthRepository(this._client);
 
@@ -67,22 +69,32 @@ class SupabaseAuthRepository implements AuthRepository {
   //  your Supabase project (Authentication → Providers → Google → Client ID).
   //  Set that same value as serverClientId in initialize() below, or configure
   //  GIDServerClientID in Info.plist (iOS) / google-services.json (Android).
+  //
+  // Nonce:
+  //  El SDK nativo de Google mete un claim `nonce` en el idToken aunque no se
+  //  lo pidas explícitamente, y Supabase rechaza el intercambio si el token
+  //  trae `nonce` y tú no le mandas uno ("Passed nonce and nonce in id_token
+  //  should either both exist or not."). Patrón oficial: nonce crudo (random)
+  //  → SHA-256 → se manda hasheado a Google (initialize) para que quede en el
+  //  claim del token; el crudo se manda tal cual a signInWithIdToken, que lo
+  //  hashea internamente para comparar. Debe regenerarse en cada intento
+  //  (un nonce reusado no cumple su propósito anti-replay) — por eso
+  //  initialize() se re-llama en cada signInWithGoogle() en vez de una sola
+  //  vez al arrancar.
   // ---------------------------------------------------------------------------
 
-  Future<void> _ensureGoogleInitialized() async {
-    if (_googleInitialized) return;
+  @override
+  Future<void> signInWithGoogle() async {
+    final rawNonce = _generateRawNonce();
+    final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
     await GoogleSignIn.instance.initialize(
       // Web OAuth client ID del proyecto GCP (amconnect-jacatsoft). Debe
       // coincidir con el client_id configurado en Supabase Auth → Google.
       serverClientId:
           '209849163943-tnlpoo835d1ijmjc3umaesqco07o5qti.apps.googleusercontent.com',
+      nonce: hashedNonce,
     );
-    _googleInitialized = true;
-  }
-
-  @override
-  Future<void> signInWithGoogle() async {
-    await _ensureGoogleInitialized();
 
     final GoogleSignInAccount googleUser;
     try {
@@ -112,6 +124,7 @@ class SupabaseAuthRepository implements AuthRepository {
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
+      nonce: rawNonce,
     );
   }
 
@@ -142,12 +155,20 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async {
-    if (_googleInitialized) {
-      try {
-        await GoogleSignIn.instance.signOut();
-      } catch (_) {}
-    }
+    // Inofensivo si el usuario nunca inició sesión con Google (initialize()
+    // ahora corre por intento en signInWithGoogle, no una sola vez) — el
+    // try/catch cubre el caso en que el SDK de Google no esté inicializado.
+    try {
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {}
     await _client.auth.signOut();
+  }
+
+  /// Nonce aleatorio para el intercambio OIDC con Google — ver comentario en
+  /// signInWithGoogle(). Debe regenerarse en cada intento.
+  String _generateRawNonce() {
+    final random = Random.secure();
+    return base64Url.encode(List<int>.generate(16, (_) => random.nextInt(256)));
   }
 }
 

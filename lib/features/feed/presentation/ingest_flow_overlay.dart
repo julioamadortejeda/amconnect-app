@@ -8,6 +8,7 @@ import '../presentation/feed_screen.dart' show recentFeedProvider;
 import '../providers/knowledge_dashboard_provider.dart';
 import '../../clients/providers/clients_provider.dart';
 import '../../home/providers/home_provider.dart';
+import 'contact_mismatch_sheet.dart';
 import 'ingest_chat_sheet.dart';
 import 'knowledge_success_sheet.dart';
 import 'policy_success_sheet.dart';
@@ -341,6 +342,8 @@ class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomS
         );
       case IngestPhase.chatting:
         return IngestChatSheet(onClose: handleClose);
+      case IngestPhase.contactMismatch:
+        return ContactMismatchSheet(onClose: handleClose);
       case IngestPhase.success:
         return PolicySuccessSheet(onClose: handleClose);
       case IngestPhase.error:

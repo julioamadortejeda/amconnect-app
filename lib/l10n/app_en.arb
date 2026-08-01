@@ -463,6 +463,30 @@
   "feedIngestPremiumLabel": "Premium",
   "feedIngestValidityLabel": "Validity",
 
+  "feedContactMismatchTitle": "Who should we assign this policy to?",
+  "feedContactMismatchBody": "The document shows {detectedName} as the policyholder, but you're on {screenName}'s screen.",
+  "@feedContactMismatchBody": {
+    "placeholders": {
+      "detectedName": { "type": "String" },
+      "screenName": { "type": "String" }
+    }
+  },
+  "feedContactMismatchAssignCta": "Yes, assign to {screenName}",
+  "@feedContactMismatchAssignCta": {
+    "placeholders": { "screenName": { "type": "String" } }
+  },
+  "feedContactMismatchUseDetectedCta": "No, use {detectedName}",
+  "@feedContactMismatchUseDetectedCta": {
+    "placeholders": { "detectedName": { "type": "String" } }
+  },
+  "feedContactMismatchResolvedBanner": "This policy will be assigned to {screenName}. The document identified {detectedName} as the policyholder.",
+  "@feedContactMismatchResolvedBanner": {
+    "placeholders": {
+      "screenName": { "type": "String" },
+      "detectedName": { "type": "String" }
+    }
+  },
+
   "remindersActionDone": "Mark done",
   "remindersActionInProgress": "In progress",
   "remindersActionReschedule": "Reschedule",

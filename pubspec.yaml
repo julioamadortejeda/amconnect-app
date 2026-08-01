@@ -43,6 +43,7 @@ dependencies:
   supabase_flutter: ^2.14.1
   flutter_dotenv: ^6.0.1
   http: ^1.6.0
+  crypto: ^3.0.6
   file_picker: ^11.0.2
   google_sign_in: ^7.2.0
   sign_in_with_apple: ^8.1.0

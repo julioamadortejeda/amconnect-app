@@ -188,67 +188,82 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       ),
       body: SafeArea(
         top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-              AmDimens.screenH, AmDimens.gapM, AmDimens.screenH, 40),
-          children: [
-            AmSectionLabel(label: l10n.accountProfileTitle),
-            const SizedBox(height: AmDimens.gapXS),
-            AccountProfileHero(
-              profile: profile,
-              editing: _editing,
-              nameCtrl: _nameCtrl,
-              phoneCtrl: _phoneCtrl,
-              onEdit: () => _enterEdit(profile.fullName, profile.phone),
-            ),
-            const SizedBox(height: AmDimens.gapL),
-            AmSectionLabel(label: l10n.accountPlanTitle),
-            const SizedBox(height: AmDimens.gapXS),
-            AccountPlanCard(info: subscription),
-            const SizedBox(height: AmDimens.gapL),
-            AmSectionLabel(label: l10n.accountHelpTitle),
-            const SizedBox(height: AmDimens.gapXS),
-            AmGroupCard(children: [
-              AmInfoRow(
-                icon: Icons.help_outline,
-                label: l10n.accountHelp,
-                trailing: const SizedBox.shrink(),
-                chevron: true,
-                onTap: () => _openSupportEmail(l10n, profile.email),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(
+                  AmDimens.screenH, AmDimens.gapM, AmDimens.screenH, AmDimens.gapM),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - AmDimens.gapM * 2,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AmSectionLabel(label: l10n.accountProfileTitle),
+                      const SizedBox(height: AmDimens.gapXS),
+                      AccountProfileHero(
+                        profile: profile,
+                        editing: _editing,
+                        nameCtrl: _nameCtrl,
+                        phoneCtrl: _phoneCtrl,
+                        onEdit: () => _enterEdit(profile.fullName, profile.phone),
+                      ),
+                      const SizedBox(height: AmDimens.gapL),
+                      AmSectionLabel(label: l10n.accountPlanTitle),
+                      const SizedBox(height: AmDimens.gapXS),
+                      AccountPlanCard(info: subscription),
+                      const SizedBox(height: AmDimens.gapL),
+                      AmSectionLabel(label: l10n.accountHelpTitle),
+                      const SizedBox(height: AmDimens.gapXS),
+                      AmGroupCard(children: [
+                        AmInfoRow(
+                          icon: Icons.help_outline,
+                          label: l10n.accountHelp,
+                          trailing: const SizedBox.shrink(),
+                          chevron: true,
+                          onTap: () => _openSupportEmail(l10n, profile.email),
+                        ),
+                        if (showNotifRow)
+                          AmInfoRow(
+                            icon: Icons.notifications_off_outlined,
+                            label: l10n.accountNotificationsDisabled,
+                            trailing: Text(l10n.commonOpenSettings,
+                                style: TextStyle(fontSize: 13, color: cs.primary)),
+                            chevron: true,
+                            onTap: () => openAppSettings(),
+                          ),
+                      ]),
+                      const Spacer(),
+                      const SizedBox(height: AmDimens.gapL),
+                      AmPress(
+                        onTap: () => _confirmSignOut(l10n, cs),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: AmDimens.gapS),
+                          decoration: BoxDecoration(
+                            color: cs.errorContainer,
+                            borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout, size: 18, color: cs.error),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.commonSignOut,
+                                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: cs.error),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              if (showNotifRow)
-                AmInfoRow(
-                  icon: Icons.notifications_off_outlined,
-                  label: l10n.accountNotificationsDisabled,
-                  trailing: Text(l10n.commonOpenSettings,
-                      style: TextStyle(fontSize: 13, color: cs.primary)),
-                  chevron: true,
-                  onTap: () => openAppSettings(),
-                ),
-            ]),
-            const SizedBox(height: AmDimens.gapL),
-            AmPress(
-              onTap: () => _confirmSignOut(l10n, cs),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: AmDimens.gapS),
-                decoration: BoxDecoration(
-                  color: cs.errorContainer,
-                  borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout, size: 18, color: cs.error),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.commonSignOut,
-                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: cs.error),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
