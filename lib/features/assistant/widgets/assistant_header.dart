@@ -99,7 +99,7 @@ class AssistantHeader extends StatelessWidget {
             ),
           ),
           const AmAiBackendBadge(),
-          if (sessionActive && !isVoice) ...[
+          if (!isVoice) ...[
             const SizedBox(width: 8),
             AmIconBtn(
               icon: Icons.refresh_rounded,

@@ -701,5 +701,11 @@
   "shareTargetSelectReminder": "Seleccionar recordatorio",
   "shareTargetSearchReminderHint": "Buscar recordatorio…",
   "shareTargetPolicyNoNumber": "Sin número",
-  "shareTargetCancel": "Descartar"
+  "shareTargetCancel": "Descartar",
+  "feedMakeGeneral": "Hacer conocimiento general",
+  "feedMakeGeneralGlobalDesc": "El archivo estará disponible de forma global para la IA",
+  "feedMakeGeneralSub": "Activa si deseas que el archivo sea global y no exclusivo de este contexto",
+  "feedContextAttachReminder": "Se adjuntará a este recordatorio",
+  "feedContextAttachPolicy": "Se adjuntará a esta póliza",
+  "feedContextAttachClient": "Se adjuntará a este cliente"
 }

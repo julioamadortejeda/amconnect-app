@@ -1743,4 +1743,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shareTargetCancel => 'Descartar';
+
+  @override
+  String get feedMakeGeneral => 'Hacer conocimiento general';
+
+  @override
+  String get feedMakeGeneralGlobalDesc =>
+      'El archivo estará disponible de forma global para la IA';
+
+  @override
+  String get feedMakeGeneralSub =>
+      'Activa si deseas que el archivo sea global y no exclusivo de este contexto';
+
+  @override
+  String get feedContextAttachReminder => 'Se adjuntará a este recordatorio';
+
+  @override
+  String get feedContextAttachPolicy => 'Se adjuntará a esta póliza';
+
+  @override
+  String get feedContextAttachClient => 'Se adjuntará a este cliente';
 }

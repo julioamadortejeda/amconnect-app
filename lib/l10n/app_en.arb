@@ -648,5 +648,11 @@
   "shareTargetSelectReminder": "Select reminder",
   "shareTargetSearchReminderHint": "Search reminder…",
   "shareTargetPolicyNoNumber": "No number",
-  "shareTargetCancel": "Discard"
+  "shareTargetCancel": "Discard",
+  "feedMakeGeneral": "Make general knowledge",
+  "feedMakeGeneralGlobalDesc": "The file will be available globally for AI",
+  "feedMakeGeneralSub": "Enable if you want the file to be global rather than context-exclusive",
+  "feedContextAttachReminder": "Will be attached to this reminder",
+  "feedContextAttachPolicy": "Will be attached to this policy",
+  "feedContextAttachClient": "Will be attached to this client"
 }

@@ -259,20 +259,61 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
               ),
             ),
             AmSectionLabel(label: l10n.feedQuestion),
-            if (widget.contactId != null) ...[
+            if (widget.contactId != null ||
+                widget.policyId != null ||
+                widget.reminderId != null) ...[
               const SizedBox(height: AmDimens.gapS),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: cs.primaryContainer.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      widget.reminderId != null
+                          ? Icons.alarm
+                          : (widget.policyId != null
+                              ? Icons.description
+                              : Icons.person),
+                      size: 16,
+                      color: cs.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _makeGeneral
+                            ? l10n.feedMakeGeneralGlobalDesc
+                            : (widget.reminderId != null
+                                ? l10n.feedContextAttachReminder
+                                : (widget.policyId != null
+                                    ? l10n.feedContextAttachPolicy
+                                    : l10n.feedContextAttachClient)),
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
               SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: const Text(
-                  'Hacer conocimiento general',
-                  style: TextStyle(
+                title: Text(
+                  l10n.feedMakeGeneral,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                subtitle: const Text(
-                  'El archivo estará disponible de forma global para la IA',
-                  style: TextStyle(fontSize: 12),
+                subtitle: Text(
+                  l10n.feedMakeGeneralSub,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 value: _makeGeneral,
                 onChanged: (val) => setState(() => _makeGeneral = val),

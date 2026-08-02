@@ -261,16 +261,18 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       onChanged: (v) => setState(() => _hasText = v.trim().isNotEmpty),
                       onSend: _send,
                       onAttach: () {
-                        final ctx = state.activeContext;
+                        final ctx = state.activeContext ?? state.pendingContext;
                         final contactId = ctx?.type == 'contact' ? ctx?.id : null;
+                        final policyId = ctx?.type == 'policy' ? ctx?.id : null;
                         final reminderId = ctx?.type == 'reminder' ? ctx?.id : null;
                         IngestTypePicker.show(
                           context,
                           contactId: contactId,
+                          policyId: policyId,
                           reminderId: reminderId,
                           // Extraer una póliza nueva no aplica en el contexto
-                          // de un recordatorio ya existente.
-                          showPolicyExtraction: reminderId == null,
+                          // de un recordatorio o póliza ya existente.
+                          showPolicyExtraction: reminderId == null && policyId == null,
                         );
                       },
                       onVoiceToggle: () =>

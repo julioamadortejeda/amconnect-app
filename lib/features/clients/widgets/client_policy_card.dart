@@ -36,8 +36,13 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
 
     final notesAsync = ref.watch(policyNotesProvider(policy.id));
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
-    final activeNotes = notes.where((n) => !n.isObsolete).toList();
-    final obsoleteNotes = notes.where((n) => n.isObsolete).toList();
+    // Esta sección es "Files" — solo notas con un documento real adjunto.
+    // Las notas de texto puro (ej. nota manual del asesor, o la traza de
+    // reasignación de contacto) no tienen archivo que abrir; se muestran
+    // igual en la pestaña de Notas del detalle completo de la póliza.
+    final fileNotes = notes.where((n) => n.sourceType != 'text').toList();
+    final activeNotes = fileNotes.where((n) => !n.isObsolete).toList();
+    final obsoleteNotes = fileNotes.where((n) => n.isObsolete).toList();
 
     return AmCard(
       onTap: () => context.push('/policy/${policy.id}', extra: policy),
@@ -139,7 +144,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
             ),
           ),
           // ── Files section ─────────────────────────────────────────────────
-          if (notes.isNotEmpty) ...[
+          if (fileNotes.isNotEmpty) ...[
             const SizedBox(height: 14),
             Divider(color: cs.outlineVariant, height: 1),
             const SizedBox(height: 12),

@@ -3344,6 +3344,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Descartar'**
   String get shareTargetCancel;
+
+  /// No description provided for @feedMakeGeneral.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacer conocimiento general'**
+  String get feedMakeGeneral;
+
+  /// No description provided for @feedMakeGeneralGlobalDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo estará disponible de forma global para la IA'**
+  String get feedMakeGeneralGlobalDesc;
+
+  /// No description provided for @feedMakeGeneralSub.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa si deseas que el archivo sea global y no exclusivo de este contexto'**
+  String get feedMakeGeneralSub;
+
+  /// No description provided for @feedContextAttachReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a este recordatorio'**
+  String get feedContextAttachReminder;
+
+  /// No description provided for @feedContextAttachPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a esta póliza'**
+  String get feedContextAttachPolicy;
+
+  /// No description provided for @feedContextAttachClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a este cliente'**
+  String get feedContextAttachClient;
 }
 
 class _AppLocalizationsDelegate

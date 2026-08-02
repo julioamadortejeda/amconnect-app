@@ -39,7 +39,13 @@ class AiChatContext {
     );
   }
 
-  factory AiChatContext.fromReminder(Reminder reminder) {
+  factory AiChatContext.fromReminder(
+    Reminder reminder, {
+    List<AgentNote>? notes,
+  }) {
+    final slimNotes =
+        notes?.where((n) => !n.isObsolete).map((n) => n.toSlimMap()).toList();
+
     return AiChatContext(
       type: 'reminder',
       id: reminder.id,
@@ -48,11 +54,21 @@ class AiChatContext {
         'type': reminder.type,
         'statusCode': reminder.statusCode,
         if (reminder.description != null) 'description': reminder.description,
-        if (reminder.dueDate != null) 'dueDate': reminder.dueDate!.toIso8601String(),
+        if (reminder.dueDate != null)
+          'dueDate': reminder.dueDate!.toIso8601String(),
         if (reminder.contactId != null) 'contactId': reminder.contactId,
         if (reminder.contactName != null) 'contactName': reminder.contactName,
         if (reminder.policyId != null) 'policyId': reminder.policyId,
-        if (reminder.policyNumber != null) 'policyNumber': reminder.policyNumber,
+        if (reminder.policyNumber != null)
+          'policyNumber': reminder.policyNumber,
+        if (reminder.comments.isNotEmpty)
+          'comments': reminder.comments
+              .map((c) => {
+                    'content': c.content,
+                    'createdAt': c.createdAt.toIso8601String(),
+                  })
+              .toList(),
+        if (slimNotes != null && slimNotes.isNotEmpty) 'notes': slimNotes,
       },
     );
   }

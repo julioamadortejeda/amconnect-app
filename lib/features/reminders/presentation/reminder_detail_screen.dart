@@ -15,6 +15,7 @@ import '../widgets/reminder_detail_hero.dart';
 import '../widgets/reminder_detail_info_section.dart';
 import '../widgets/reminder_detail_relations_section.dart';
 import '../widgets/reminder_notes_section.dart';
+import '../../feed/widgets/ingest_type_picker.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
 import '../widgets/reminder_ai_button.dart';
@@ -285,7 +286,12 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: r.cancelled ? null : ReminderAiButton(reminder: r),
+      bottomNavigationBar: r.cancelled
+          ? null
+          : ReminderAiButton(
+              reminder: r,
+              notes: ref.watch(reminderNotesProvider(r.id)).asData?.value,
+            ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
@@ -397,7 +403,34 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AmSectionLabel(label: l10n.remindersDetailAttachments),
+                  AmSectionLabel(
+                    label: l10n.remindersDetailAttachments,
+                    trailing: r.cancelled
+                        ? null
+                        : GestureDetector(
+                            onTap: () => IngestTypePicker.show(
+                              context,
+                              reminderId: r.id,
+                              showPolicyExtraction: false,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.attach_file_outlined,
+                                    size: 14, color: cs.primary),
+                                const SizedBox(width: 4),
+                                Text(
+                                  l10n.policiesAttachFile,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: cs.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
                   const SizedBox(height: AmDimens.gapXS),
                   ReminderNotesSection(reminderId: r.id),
                 ],

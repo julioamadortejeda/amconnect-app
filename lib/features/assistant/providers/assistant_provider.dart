@@ -57,11 +57,11 @@ class AssistantNotifier extends Notifier<AssistantState> {
 
   void resetWithContext(AiChatContext context) {
     stopVoice();
-    state = AssistantState(pendingContext: context);
+    state = AssistantState(pendingContext: context, activeContext: context);
   }
 
   void setPendingContext(AiChatContext context) {
-    state = state.copyWith(pendingContext: context);
+    state = state.copyWith(pendingContext: context, activeContext: context);
   }
 
   void resumeIngestSession(String sessionId, List<AssistantMessage> messages) {
