@@ -3380,6 +3380,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Se adjuntará a este cliente'**
   String get feedContextAttachClient;
+
+  /// No description provided for @policiesAskAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntar sobre esta póliza'**
+  String get policiesAskAbout;
 }
 
 class _AppLocalizationsDelegate

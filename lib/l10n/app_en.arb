@@ -654,5 +654,6 @@
   "feedMakeGeneralSub": "Enable if you want the file to be global rather than context-exclusive",
   "feedContextAttachReminder": "Will be attached to this reminder",
   "feedContextAttachPolicy": "Will be attached to this policy",
-  "feedContextAttachClient": "Will be attached to this client"
+  "feedContextAttachClient": "Will be attached to this client",
+  "policiesAskAbout": "Ask about this policy"
 }

@@ -1763,4 +1763,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedContextAttachClient => 'Se adjuntará a este cliente';
+
+  @override
+  String get policiesAskAbout => 'Preguntar sobre esta póliza';
 }

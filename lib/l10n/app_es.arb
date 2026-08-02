@@ -707,5 +707,6 @@
   "feedMakeGeneralSub": "Activa si deseas que el archivo sea global y no exclusivo de este contexto",
   "feedContextAttachReminder": "Se adjuntará a este recordatorio",
   "feedContextAttachPolicy": "Se adjuntará a esta póliza",
-  "feedContextAttachClient": "Se adjuntará a este cliente"
+  "feedContextAttachClient": "Se adjuntará a este cliente",
+  "policiesAskAbout": "Preguntar sobre esta póliza"
 }

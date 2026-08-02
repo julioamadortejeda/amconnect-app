@@ -24,6 +24,8 @@ import '../../../core/widgets/am_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
 import '../widgets/policy_status_chip.dart';
+import '../../../core/widgets/am_ai_ask_button.dart';
+import '../../chat/data/chat_context.dart';
 
 class PolicyDetailScreen extends ConsumerStatefulWidget {
   const PolicyDetailScreen({super.key, this.policy, this.policyId})
@@ -193,6 +195,10 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
 
     return Scaffold(
+      bottomNavigationBar: AmAiAskButton(
+        label: l10n.policiesAskAbout,
+        aiContext: AiChatContext.fromPolicy(policy, notes: notes),
+      ),
       appBar: AmTopBar(
         title: l10n.policiesDetailTitle,
         showBack: true,

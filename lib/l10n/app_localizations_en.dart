@@ -1755,4 +1755,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedContextAttachClient => 'Will be attached to this client';
+
+  @override
+  String get policiesAskAbout => 'Ask about this policy';
 }

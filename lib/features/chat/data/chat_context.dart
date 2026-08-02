@@ -73,6 +73,38 @@ class AiChatContext {
     );
   }
 
+  factory AiChatContext.fromPolicy(
+    Policy policy, {
+    List<AgentNote>? notes,
+  }) {
+    final slimNotes =
+        notes?.where((n) => !n.isObsolete).map((n) => n.toSlimMap()).toList();
+
+    return AiChatContext(
+      type: 'policy',
+      id: policy.id,
+      data: {
+        if (policy.policyNumber != null) 'policyNumber': policy.policyNumber,
+        'carrierName': policy.carrierName,
+        'branchName': policy.branchName,
+        'productName': policy.productName,
+        if (policy.contactId != null) 'contactId': policy.contactId,
+        if (policy.contactName != null) 'contactName': policy.contactName,
+        if (policy.sumInsured != null) 'sumInsured': policy.sumInsured,
+        if (policy.premium != null) 'premium': policy.premium,
+        if (policy.deductible != null) 'deductible': policy.deductible,
+        if (policy.startDate != null) 'startDate': policy.startDate,
+        if (policy.endDate != null) 'endDate': policy.endDate,
+        if (policy.renewalDate != null) 'renewalDate': policy.renewalDate,
+        if (policy.nextPaymentDate != null)
+          'nextPaymentDate': policy.nextPaymentDate,
+        if (policy.notes != null && policy.notes!.isNotEmpty)
+          'notesText': policy.notes,
+        if (slimNotes != null && slimNotes.isNotEmpty) 'notes': slimNotes,
+      },
+    );
+  }
+
   factory AiChatContext.fromKnowledgeNote(FeedItem item) {
     return AiChatContext(
       type: 'knowledge',
