@@ -6,6 +6,9 @@ import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../../clients/providers/clients_provider.dart';
+import '../widgets/analytics_metric_row.dart';
+import '../widgets/analytics_status_card.dart';
+import '../widgets/analytics_distribution_row.dart';
 import '../../../l10n/app_localizations.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
@@ -109,13 +112,13 @@ class AnalyticsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _MetricRow(
+                          AnalyticsMetricRow(
                             dotColor: cs.tertiary,
                             label: l10n.analyticsFunnelProspects,
                             value: prospectsCount.toString(),
                           ),
                           const SizedBox(height: 12),
-                          _MetricRow(
+                          AnalyticsMetricRow(
                             dotColor: AmColors.accent,
                             label: l10n.analyticsFunnelClients,
                             value: clientsCount.toString(),
@@ -171,7 +174,7 @@ class AnalyticsScreen extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _StatusCard(
+                    child: AnalyticsStatusCard(
                       icon: Icons.check_circle_outline_rounded,
                       iconColor: cs.primary,
                       bgColor: cs.primaryContainer.withValues(alpha: 0.3),
@@ -181,7 +184,7 @@ class AnalyticsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: AmDimens.gapS),
                   Expanded(
-                    child: _StatusCard(
+                    child: AnalyticsStatusCard(
                       icon: Icons.pending_actions_rounded,
                       iconColor: cs.secondary,
                       bgColor: cs.secondaryContainer.withValues(alpha: 0.3),
@@ -191,7 +194,7 @@ class AnalyticsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: AmDimens.gapS),
                   Expanded(
-                    child: _StatusCard(
+                    child: AnalyticsStatusCard(
                       icon: Icons.error_outline_rounded,
                       iconColor: cs.error,
                       bgColor: cs.errorContainer.withValues(alpha: 0.3),
@@ -226,7 +229,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         children: [
                           for (int i = 0; i < sortedBranches.length; i++) ...[
                             if (i > 0) const SizedBox(height: 14),
-                            _DistributionRow(
+                            AnalyticsDistributionRow(
                               name: sortedBranches[i].key,
                               count: sortedBranches[i].value,
                               total: totalBranchPolicies,
@@ -260,7 +263,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         children: [
                           for (int i = 0; i < sortedCarriers.length; i++) ...[
                             if (i > 0) const SizedBox(height: 14),
-                            _DistributionRow(
+                            AnalyticsDistributionRow(
                               name: sortedCarriers[i].key,
                               count: sortedCarriers[i].value,
                               total: totalCarrierPolicies,
@@ -273,175 +276,6 @@ class AnalyticsScreen extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _MetricRow extends StatelessWidget {
-  const _MetricRow({
-    required this.dotColor,
-    required this.label,
-    required this.value,
-  });
-
-  final Color dotColor;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: dotColor,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: cs.onSurface,
-            ),
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: cs.onSurface,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatusCard extends StatelessWidget {
-  const _StatusCard({
-    required this.icon,
-    required this.iconColor,
-    required this.bgColor,
-    required this.label,
-    required this.count,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final Color bgColor;
-  final String label;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: AmShadows.card,
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: bgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 20, color: iconColor),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            count.toString(),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: cs.onSurface,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: cs.tertiary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DistributionRow extends StatelessWidget {
-  const _DistributionRow({
-    required this.name,
-    required this.count,
-    required this.total,
-  });
-
-  final String name;
-  final int count;
-  final int total;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final double percent = total > 0 ? count / total : 0.0;
-    final int pctLabel = (percent * 100).round();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Text(
-              '$count ($pctLabel%)',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: cs.tertiary,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: percent,
-            minHeight: 6,
-            backgroundColor: cs.secondaryContainer,
-            valueColor: const AlwaysStoppedAnimation<Color>(AmColors.accent),
-          ),
-        ),
-      ],
     );
   }
 }

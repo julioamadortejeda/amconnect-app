@@ -704,6 +704,12 @@ abstract class AppLocalizations {
   /// **'No se pudo obtener la ruta del archivo seleccionado.'**
   String get errFilePathUnavailable;
 
+  /// No description provided for @errFileOpenFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el archivo. Intenta de nuevo.'**
+  String get errFileOpenFailed;
+
   /// No description provided for @shellHome.
   ///
   /// In es, this message translates to:
@@ -3009,6 +3015,18 @@ abstract class AppLocalizations {
   /// **'No se pudo eliminar la póliza. Intenta de nuevo.'**
   String get policiesErrDelete;
 
+  /// No description provided for @policiesErrDeleteNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la nota. Intenta de nuevo.'**
+  String get policiesErrDeleteNote;
+
+  /// No description provided for @policiesErrAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo agregar la nota. Intenta de nuevo.'**
+  String get policiesErrAddNote;
+
   /// No description provided for @policiesAttachFile.
   ///
   /// In es, this message translates to:
@@ -3386,6 +3404,132 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Preguntar sobre esta póliza'**
   String get policiesAskAbout;
+
+  /// No description provided for @commonOpenFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir archivo'**
+  String get commonOpenFile;
+
+  /// No description provided for @chatCardPolicyListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pólizas en tu portafolio'**
+  String get chatCardPolicyListTitle;
+
+  /// No description provided for @chatCardPolicyCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza creada'**
+  String get chatCardPolicyCreated;
+
+  /// No description provided for @chatCardPolicyUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada'**
+  String get chatCardPolicyUpdated;
+
+  /// No description provided for @chatCardFieldHolder.
+  ///
+  /// In es, this message translates to:
+  /// **'Contratante'**
+  String get chatCardFieldHolder;
+
+  /// No description provided for @chatCardFieldInsured.
+  ///
+  /// In es, this message translates to:
+  /// **'Asegurado'**
+  String get chatCardFieldInsured;
+
+  /// No description provided for @chatCardRemindersLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios'**
+  String get chatCardRemindersLabel;
+
+  /// No description provided for @chatCardReminderFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get chatCardReminderFallback;
+
+  /// No description provided for @chatCardContactFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get chatCardContactFallback;
+
+  /// No description provided for @chatCardFieldPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get chatCardFieldPhone;
+
+  /// No description provided for @chatCardFieldEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get chatCardFieldEmail;
+
+  /// No description provided for @chatCardFieldDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get chatCardFieldDate;
+
+  /// No description provided for @chatCardAttachmentFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento'**
+  String get chatCardAttachmentFallback;
+
+  /// No description provided for @chatSuggestion1.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quién vence pronto?'**
+  String get chatSuggestion1;
+
+  /// No description provided for @chatSuggestion2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto cobra Javier?'**
+  String get chatSuggestion2;
+
+  /// No description provided for @chatSuggestion3.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuérdame llamar mañana'**
+  String get chatSuggestion3;
+
+  /// No description provided for @chatSuggestion4.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Pagos esta semana?'**
+  String get chatSuggestion4;
+
+  /// No description provided for @policiesSectionInsuranceDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles de Seguro'**
+  String get policiesSectionInsuranceDetails;
+
+  /// No description provided for @policiesSectionParamsPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Parámetros y Pago'**
+  String get policiesSectionParamsPayment;
+
+  /// No description provided for @policiesSectionAmountsCoverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos y Coberturas'**
+  String get policiesSectionAmountsCoverage;
+
+  /// No description provided for @policiesSectionDatesValidity.
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas de Vigencia y Pago'**
+  String get policiesSectionDatesValidity;
 }
 
 class _AppLocalizationsDelegate

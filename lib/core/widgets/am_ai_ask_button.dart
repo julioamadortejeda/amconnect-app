@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/chat/data/chat_context.dart';
+import '../models/ai_chat_context.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';
 import 'am_press.dart';

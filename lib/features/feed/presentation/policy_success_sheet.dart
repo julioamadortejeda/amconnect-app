@@ -40,7 +40,7 @@ class PolicySuccessSheet extends ConsumerWidget {
     ].join(' · ');
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -76,12 +76,12 @@ class PolicySuccessSheet extends ConsumerWidget {
                             width: 52,
                             height: 52,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE8F5E9),
+                              color: AmColors.successGreenWash,
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: const Icon(
                               Icons.check_circle_outline,
-                              color: Color(0xFF34A853),
+                              color: AmColors.successGreen,
                               size: 28,
                             ),
                           ),
@@ -131,7 +131,7 @@ class PolicySuccessSheet extends ConsumerWidget {
                             _StatChip(
                               label: newLabel(),
                               icon: Icons.notifications_active_outlined,
-                              color: const Color(0xFF34A853),
+                              color: AmColors.successGreen,
                             ),
                         ],
                       ),
@@ -258,12 +258,12 @@ class _ReminderRow extends StatelessWidget {
 
   (IconData, Color) get _iconAndColor {
     return switch (reminder.typeCode) {
-      'PAGO' => (Icons.account_balance_wallet_outlined, const Color(0xFFA07040)),
-      'RENOVACION' => (Icons.refresh, const Color(0xFF34A853)),
-      'ANNIVERSARY' => (Icons.event_repeat_outlined, const Color(0xFF5C6BC0)),
+      'PAGO' => (Icons.account_balance_wallet_outlined, AmColors.reminderPayment),
+      'RENOVACION' => (Icons.refresh, AmColors.successGreen),
+      'ANNIVERSARY' => (Icons.event_repeat_outlined, AmColors.reminderAnniversary),
       'SEGUIMIENTO' => (Icons.phone_outlined, AmColors.accent),
       'LLAMADA' => (Icons.call_outlined, AmColors.accent),
-      'CUMPLEANOS' => (Icons.cake_outlined, const Color(0xFF9B59B6)),
+      'CUMPLEANOS' => (Icons.cake_outlined, AmColors.reminderBirthday),
       _ => (Icons.notifications_outlined, AmColors.accent),
     };
   }
@@ -329,7 +329,7 @@ class _ReminderRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: reminder.isNew
-                  ? const Color(0xFFE8F5E9)
+                  ? AmColors.successGreenWash
                   : cs.secondaryContainer,
               borderRadius: BorderRadius.circular(7),
             ),
@@ -341,7 +341,7 @@ class _ReminderRow extends StatelessWidget {
                 fontSize: 11.5,
                 fontWeight: FontWeight.w600,
                 color: reminder.isNew
-                    ? const Color(0xFF34A853)
+                    ? AmColors.successGreen
                     : cs.tertiary,
               ),
             ),

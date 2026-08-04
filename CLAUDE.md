@@ -97,21 +97,32 @@ lib/
 
 ## Rutas (GoRouter)
 
+> Tabla actualizada 2026-08-04 contra `lib/core/router/router.dart` (la tabla previa estaba desactualizada: decía `/clients` en vez de `/portfolio` y omitía varias rutas).
+
 | Path | Pantalla | Tipo |
 |---|---|---|
-| `/` | SplashScreen | full |
-| `/login` | LoginScreen | full |
-| `/email-login` | EmailLoginScreen | full |
-| `/register` | RegisterScreen | full |
+| `/` | SplashScreen | full (fade) |
+| `/login` | LoginScreen | full (fade) |
+| `/email-login` | EmailLoginScreen | push |
+| `/register` | RegisterScreen | push |
+| `/forgot-password` | ForgotPasswordScreen | push |
 | `/home` | HomeScreen | shell tab |
 | `/reminders` | RemindersScreen | shell tab |
-| `/clients` | ClientsScreen | shell tab |
+| `/portfolio` | ClientsScreen | shell tab |
 | `/data` | FeedScreen | shell tab |
-| `/clients/:id` | ClientDetailScreen | push slide |
-| `/create-reminder` | CreateReminderScreen | push slide |
-| `/reminder/:id` | ReminderDetailScreen | push slide |
-| `/chat` | ChatScreen | push slide |
-| `/share-target` | ShareTargetScreen | push slide |
+| `/analytics` | AnalyticsScreen | push |
+| `/create-client` | CreateClientScreen | push |
+| `/create-policy` | CreatePolicyScreen | push |
+| `/policy/:id` | PolicyDetailScreen | push |
+| `/clients/:id` | ClientDetailScreen | push |
+| `/create-reminder` | CreateReminderScreen | push |
+| `/reminder/:id` | ReminderDetailScreen | push |
+| `/chat` | **AssistantScreen** — única feature de chat de la app | push |
+| `/account` | AccountScreen | push |
+| `/catalogs` | CatalogsScreen | push |
+| `/share-target` | ShareTargetScreen | push |
+
+**Nota (2026-08-04) — consolidación de chat:** hasta julio 2026 coexistían tres features de chat (`features/chat/`, `features/assistant/`, `features/chat_tts/`) con rutas `/chat`, `/voice-chat` y `/voice-chat-tts`. Las dos últimas eran código muerto (sin navegación real) y se eliminaron junto con sus pantallas/providers/widgets. `features/assistant/` (ruta `/chat`, `AssistantScreen`) es ahora la **única** feature de chat — sirve texto y voz, con o sin `AiChatContext` (contexto opcional de pantalla). Los activos compartidos que vivían dentro de `chat/` se movieron a `core/`: `AiChatContext` → `core/models/ai_chat_context.dart`, `buildChatCard` → `core/widgets/chat_cards.dart`.
 
 ---
 

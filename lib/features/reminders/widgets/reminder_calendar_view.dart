@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_calendar.dart';
 import '../../../core/widgets/am_card.dart';
 import '../providers/reminders_provider.dart';
@@ -155,12 +155,8 @@ class _DayHeader extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
     final isToday = date == today;
 
-    final weekDay = DateFormat('EEEE', 'es').format(date);
-    final dayNum = DateFormat('d', 'es').format(date);
-    final month = DateFormat('MMMM', 'es').format(date);
-
-    final label = '${weekDay[0].toUpperCase()}${weekDay.substring(1)} $dayNum · '
-        '${month[0].toUpperCase()}${month.substring(1)}'
+    final label = '${fmtWeekdayFull(date)} ${date.day} · '
+        '${fmtMonthFull(date)}'
         '${isToday ? ' · ${l10n.calendarToday.toUpperCase()}' : ''}';
 
     return Text(

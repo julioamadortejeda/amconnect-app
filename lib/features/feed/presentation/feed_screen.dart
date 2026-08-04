@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/error_translator.dart';
@@ -63,7 +64,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             content: Text(e is TimeoutException
                 ? l10n.errFilePickerTimeout
                 : l10n.errFilePickerOpen),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -147,7 +148,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.errFilePathUnavailable),
-          backgroundColor: Colors.orange,
+          backgroundColor: context.am.amber,
           behavior: SnackBarBehavior.floating,
         ),
       );

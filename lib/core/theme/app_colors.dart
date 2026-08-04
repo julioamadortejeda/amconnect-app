@@ -72,6 +72,33 @@ class AmColors {
 
   // Scrim de modales sobre el contenido — fijo, no depende del theme
   static const scrim = Color(0x57000000); // black 34%
+
+  // Escala de sombras negras por intensidad. Centraliza lo que antes se
+  // escribía inline como Colors.black.withValues(alpha: x). Los valores hex
+  // igualan exactamente el alpha de 8 bits usado antes para no alterar la
+  // elevación.
+  static const shadowFaint = Color(0x0D000000); // black 5%
+  static const shadowSoft = Color(0x0E000000); // black 5.5%
+  static const shadowLow = Color(0x0F000000); // black 6%
+  static const shadowMedium = Color(0x1A000000); // black 10%
+  static const shadowStrong = Color(0x1F000000); // black 12%
+  static const shadowHeavy = Color(0x29000000); // black 16%
+
+  // Extremos de gradiente de las cards del asistente (marca absoluta, mismos
+  // en light/dark — forman degradado con am.amber / am.green / accent).
+  static const amberDeep = Color(0xFFFF8F00);
+  static const greenBright = Color(0xFF00C853);
+  static const accentBright = Color(0xFF2AB5FF);
+
+  // Colores de estado "éxito" (verde Google) y sus washes — usados en las
+  // hojas de confirmación de ingesta. Absolutos, distintos del verde de theme.
+  static const successGreen = Color(0xFF34A853);
+  static const successGreenWash = Color(0xFFE8F5E9);
+
+  // Acentos por tipo de recordatorio en la hoja de éxito de póliza.
+  static const reminderPayment = Color(0xFFA07040);
+  static const reminderAnniversary = Color(0xFF5C6BC0);
+  static const reminderBirthday = Color(0xFF9B59B6);
 }
 
 /// Sombras estándar de cards. Usar SIEMPRE estos tokens en lugar de

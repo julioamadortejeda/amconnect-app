@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -163,11 +164,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 child: _saving
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: cs.onPrimary),
-                      )
+                    ? AmSpinner(size: 16, strokeWidth: 2, color: cs.onPrimary)
                     : Text(
                         l10n.accountSave,
                         style: TextStyle(color: cs.onPrimary, fontWeight: FontWeight.w600),

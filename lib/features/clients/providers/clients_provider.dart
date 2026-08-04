@@ -12,7 +12,7 @@ import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/policy_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
-import '../../chat/data/chat_context.dart';
+import '../../../core/models/ai_chat_context.dart';
 import '../../home/providers/home_provider.dart';
 
 class _SearchNotifier extends Notifier<String> {
@@ -171,7 +171,9 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
     try {
       final contact = await _repo.getById(id);
       state = AsyncData([...state.requireValue, contact]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -186,7 +188,9 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
       state = AsyncData([
         for (final c in state.requireValue) if (c.id == id) contact else c,
       ]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   void _onDelete(Map<String, dynamic> row) {
@@ -448,7 +452,9 @@ class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
     try {
       final policy = await _repo.getById(id);
       state = AsyncData([...state.requireValue, policy]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -463,7 +469,9 @@ class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
       state = AsyncData([
         for (final p in state.requireValue) if (p.id == id) policy else p,
       ]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   void _onDelete(Map<String, dynamic> row) {

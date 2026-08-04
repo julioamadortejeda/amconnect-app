@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -228,7 +229,14 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
     try {
       await ref.read(noteRepositoryProvider).deleteNote(note.id);
       ref.invalidate(policyNotesProvider(widget.policy.id));
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.policiesErrDeleteNote),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
   }
 
   String _carrierAndNumber(Policy p) {
@@ -343,13 +351,10 @@ class _PolicyFileRowState extends ConsumerState<_PolicyFileRow> {
                       BorderRadius.circular(AmDimens.cardRadius / 2),
                 ),
                 child: _loading
-                    ? SizedBox(
-                        width: 12,
-                        height: 12,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: cs.onSurfaceVariant,
-                        ),
+                    ? AmSpinner(
+                        size: 12,
+                        strokeWidth: 1.5,
+                        color: cs.onSurfaceVariant,
                       )
                     : Row(
                         mainAxisSize: MainAxisSize.min,
@@ -394,6 +399,12 @@ class _PolicyFileRowState extends ConsumerState<_PolicyFileRow> {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
     } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.l10n.errFileOpenFailed),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

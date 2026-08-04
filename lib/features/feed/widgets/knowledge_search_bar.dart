@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/knowledge_dashboard_provider.dart';
 
@@ -43,7 +44,7 @@ class _KnowledgeSearchBarState extends ConsumerState<KnowledgeSearchBar> {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.055),
+            color: AmColors.shadowSoft,
             blurRadius: 22,
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/catalog.dart';
 import '../../../core/theme/app_colors.dart';
@@ -164,12 +165,8 @@ class _BranchFormSheetState extends ConsumerState<BranchFormSheet> {
                       ),
                       child: formState.loading
                           ? const Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white),
-                              ),
+                              child: AmSpinner(
+                                  size: 20, strokeWidth: 2, color: Colors.white),
                             )
                           : Text(
                               _isEditing ? l10n.accountSave : l10n.catalogsCreateBtn,

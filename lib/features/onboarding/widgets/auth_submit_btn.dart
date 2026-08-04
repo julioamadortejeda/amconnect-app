@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/am_press.dart';
 
@@ -31,7 +32,7 @@ class AuthSubmitBtn extends StatelessWidget {
           boxShadow: enabled
               ? [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.12),
+                    color: AmColors.shadowStrong,
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   )
@@ -39,13 +40,10 @@ class AuthSubmitBtn extends StatelessWidget {
               : [],
         ),
         child: isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: AmColors.accent,
-                ),
+            ? const AmSpinner(
+                size: 24,
+                strokeWidth: 2.5,
+                color: AmColors.accent,
               )
             : Text(
                 label,

@@ -51,6 +51,8 @@ class AgentNote {
       'summary': summary ?? _truncateContent(content),
       'sourceType': sourceType,
       'createdAt': createdAt,
+      if (storagePath != null) 'storagePath': storagePath,
+      if (fileName != null) 'fileName': fileName,
     };
   }
 }

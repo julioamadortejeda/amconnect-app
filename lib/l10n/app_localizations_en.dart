@@ -343,6 +343,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not get the path of the selected file.';
 
   @override
+  String get errFileOpenFailed => 'Couldn\'t open the file. Please try again.';
+
+  @override
   String get shellHome => 'Home';
 
   @override
@@ -1553,6 +1556,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t delete the policy. Please try again.';
 
   @override
+  String get policiesErrDeleteNote =>
+      'Couldn\'t delete the note. Please try again.';
+
+  @override
+  String get policiesErrAddNote => 'Couldn\'t add the note. Please try again.';
+
+  @override
   String get policiesAttachFile => 'Attach';
 
   @override
@@ -1758,4 +1768,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get policiesAskAbout => 'Ask about this policy';
+
+  @override
+  String get commonOpenFile => 'Open file';
+
+  @override
+  String get chatCardPolicyListTitle => 'Policies in your portfolio';
+
+  @override
+  String get chatCardPolicyCreated => 'Policy created';
+
+  @override
+  String get chatCardPolicyUpdated => 'Policy updated';
+
+  @override
+  String get chatCardFieldHolder => 'Policyholder';
+
+  @override
+  String get chatCardFieldInsured => 'Insured';
+
+  @override
+  String get chatCardRemindersLabel => 'Reminders';
+
+  @override
+  String get chatCardReminderFallback => 'Reminder';
+
+  @override
+  String get chatCardContactFallback => 'Contact';
+
+  @override
+  String get chatCardFieldPhone => 'Phone';
+
+  @override
+  String get chatCardFieldEmail => 'Email';
+
+  @override
+  String get chatCardFieldDate => 'Date';
+
+  @override
+  String get chatCardAttachmentFallback => 'Document';
+
+  @override
+  String get chatSuggestion1 => 'Who\'s due soon?';
+
+  @override
+  String get chatSuggestion2 => 'How much does Javier pay?';
+
+  @override
+  String get chatSuggestion3 => 'Remind me to call tomorrow';
+
+  @override
+  String get chatSuggestion4 => 'Payments this week?';
+
+  @override
+  String get policiesSectionInsuranceDetails => 'Insurance details';
+
+  @override
+  String get policiesSectionParamsPayment => 'Parameters & payment';
+
+  @override
+  String get policiesSectionAmountsCoverage => 'Amounts & coverage';
+
+  @override
+  String get policiesSectionDatesValidity => 'Validity & payment dates';
 }

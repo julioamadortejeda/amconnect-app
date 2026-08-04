@@ -20,7 +20,7 @@ import '../../features/reminders/presentation/reminders_screen.dart';
 import '../../features/reminders/presentation/create_reminder_screen.dart';
 import '../../features/reminders/presentation/reminder_detail_screen.dart';
 import '../../core/models/reminder.dart';
-import '../../features/chat/data/chat_context.dart';
+import '../models/ai_chat_context.dart';
 import '../../features/assistant/presentation/assistant_screen.dart';
 import '../../features/assistant/providers/assistant_provider.dart' show AssistantResumeArgs;
 import '../../features/share_target/presentation/screens/share_target_screen.dart';
@@ -28,8 +28,6 @@ import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
 import '../../features/onboarding/presentation/forgot_password_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
-import '../../features/chat/presentation/voice_chat_screen.dart';
-import '../../features/chat_tts/presentation/chat_tts_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/catalogs/presentation/catalogs_screen.dart';
 
@@ -184,22 +182,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               : AssistantScreen(initialContext: extra as AiChatContext?);
           return amTransitionPage(child: child, state: state, type: 'push');
         },
-      ),
-      GoRoute(
-        path: '/voice-chat',
-        pageBuilder: (_, state) => amTransitionPage(
-          child: const VoiceChatScreen(),
-          state: state,
-          type: 'push',
-        ),
-      ),
-      GoRoute(
-        path: '/voice-chat-tts',
-        pageBuilder: (_, state) => amTransitionPage(
-          child: const ChatTtsScreen(),
-          state: state,
-          type: 'push',
-        ),
       ),
       GoRoute(
         path: '/account',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
@@ -360,12 +361,8 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
                         ),
                         child: createState.loading
                             ? const Center(
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.white),
-                                ),
+                                child: AmSpinner(
+                                    size: 20, strokeWidth: 2, color: Colors.white),
                               )
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -397,7 +394,7 @@ class _CreateReminderScreenState extends ConsumerState<CreateReminderScreen> {
               ),
               if (_showSuccess)
                 Container(
-                  color: Colors.black.withValues(alpha: 0.34),
+                  color: AmColors.scrim,
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(34, 30, 34, 30),

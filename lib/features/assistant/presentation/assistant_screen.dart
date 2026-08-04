@@ -9,7 +9,7 @@ import '../../../core/utils/device_timezone.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../chat/presentation/widgets/chat_cards.dart';
+import '../../../core/widgets/chat_cards.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 import '../providers/assistant_provider.dart';
 import '../widgets/assistant_bubble.dart';
@@ -18,12 +18,12 @@ import '../widgets/assistant_header.dart';
 import '../widgets/assistant_voice_bar.dart';
 import '../widgets/voice_output_sheet.dart';
 
-const _assistantSuggestions = [
-  '¿Quién vence pronto?',
-  '¿Cuánto cobra Javier?',
-  'Recuérdame llamar mañana',
-  '¿Pagos esta semana?',
-];
+List<String> _assistantSuggestions(AppLocalizations l10n) => [
+      l10n.chatSuggestion1,
+      l10n.chatSuggestion2,
+      l10n.chatSuggestion3,
+      l10n.chatSuggestion4,
+    ];
 
 /// Pantalla única de asistente IA — texto por default, voz (Gemini Live
 /// full-duplex) inline al tocar el botón de onda. Un solo historial, sin
@@ -137,18 +137,29 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       trailingItems.add(const AssistantTypingBubble());
     }
 
-    return Scaffold(
-      backgroundColor: am.bg,
-      body: SafeArea(
-        child: Column(
-          children: [
-            AssistantHeader(
-              mode: state.mode,
-              sessionActive: state.sessionId != null,
-              activeSkill: state.activeSkill,
-              onBack: () => context.pop(),
-              onReset: () => ref.read(assistantProvider.notifier).reset(),
-            ),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop && state.mode == AssistantMode.voice) {
+          ref.read(assistantProvider.notifier).stopVoice();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: am.bg,
+        body: SafeArea(
+          child: Column(
+            children: [
+              AssistantHeader(
+                mode: state.mode,
+                sessionActive: state.sessionId != null,
+                activeSkill: state.activeSkill,
+                onBack: () {
+                  if (state.mode == AssistantMode.voice) {
+                    ref.read(assistantProvider.notifier).stopVoice();
+                  }
+                  context.pop();
+                },
+                onReset: () => ref.read(assistantProvider.notifier).reset(),
+              ),
             Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -212,7 +223,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.fromLTRB(
                       AmDimens.screenH, 0, AmDimens.screenH, 6),
-                  children: _assistantSuggestions
+                  children: _assistantSuggestions(l10n)
                       .map((s) => Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: AmPress(
@@ -282,6 +293,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

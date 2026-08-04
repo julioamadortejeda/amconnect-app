@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_info_row.dart';
 import '../../../l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class ReminderDetailRelationsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.055),
+            color: AmColors.shadowSoft,
             blurRadius: 8,
           ),
         ],

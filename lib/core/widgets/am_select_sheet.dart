@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_dimensions.dart';
+import 'am_loader.dart';
 import 'am_press.dart';
 import 'am_text_field.dart';
 
@@ -115,9 +116,7 @@ class _AmSelectSheetState<T> extends State<AmSelectSheet<T>> {
             if (_isCreating)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: AmDimens.gapL),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: AmLoader(),
               )
             else ...[
               if (showCreateButton)

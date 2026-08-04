@@ -63,7 +63,9 @@ class CarriersNotifier extends AsyncNotifier<List<Carrier>> {
     try {
       final carrier = await _repo.getCarrierById(id);
       state = AsyncData([...state.requireValue, carrier]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -78,7 +80,9 @@ class CarriersNotifier extends AsyncNotifier<List<Carrier>> {
       state = AsyncData([
         for (final c in state.requireValue) if (c.id == id) carrier else c,
       ]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   void _onDelete(Map<String, dynamic> row) {
@@ -168,7 +172,9 @@ class BranchesNotifier extends AsyncNotifier<List<Branch>> {
     try {
       final branch = await _repo.getBranchById(id);
       state = AsyncData([...state.requireValue, branch]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -183,7 +189,9 @@ class BranchesNotifier extends AsyncNotifier<List<Branch>> {
       state = AsyncData([
         for (final b in state.requireValue) if (b.id == id) branch else b,
       ]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   void _onDelete(Map<String, dynamic> row) {
@@ -273,7 +281,9 @@ class ProductsNotifier extends AsyncNotifier<List<Product>> {
     try {
       final product = await _repo.getProductById(id);
       state = AsyncData([...state.requireValue, product]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -288,7 +298,9 @@ class ProductsNotifier extends AsyncNotifier<List<Product>> {
       state = AsyncData([
         for (final p in state.requireValue) if (p.id == id) product else p,
       ]);
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: eco de Realtime, se autocorrige con el próximo evento o refetch
+    }
   }
 
   void _onDelete(Map<String, dynamic> row) {

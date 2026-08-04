@@ -24,8 +24,8 @@ final assistantProvider =
 /// (la misma orquestación que usa VoiceChatNotifier) y este Notifier solo mapea
 /// sus eventos a [AssistantState].
 class AssistantNotifier extends Notifier<AssistantState> {
-  late final AssistantRepository _repo;
-  late final GeminiVoiceEngine _engine;
+  late AssistantRepository _repo;
+  late GeminiVoiceEngine _engine;
   StreamSubscription<VoiceEngineEvent>? _engineSubscription;
 
   // Prefetch de init/token para abrir la voz sin esperar los dos POST.
@@ -90,7 +90,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
     if (trimmed.isEmpty) return;
 
     final isFirstMessage = state.sessionId == null;
-    final context = isFirstMessage ? state.pendingContext : null;
+    final context = isFirstMessage ? (state.activeContext ?? state.pendingContext) : null;
 
     state = state.copyWith(
       messages: [...state.messages, AssistantMessage(role: 'user', text: trimmed)],

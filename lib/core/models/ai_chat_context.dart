@@ -1,8 +1,8 @@
-import '../../../core/models/agent_note.dart';
-import '../../../core/models/contact.dart';
-import '../../../core/models/policy.dart';
-import '../../../core/models/reminder.dart';
-import '../../feed/data/feed_item.dart';
+import 'agent_note.dart';
+import 'contact.dart';
+import 'policy.dart';
+import 'reminder.dart';
+import '../../features/feed/data/feed_item.dart';
 
 class AiChatContext {
   final String type; // 'contact' | 'policy' | 'reminder'
@@ -113,6 +113,7 @@ class AiChatContext {
         'sourceType': item.sourceType,
         'createdAt': item.createdAt,
         if (item.fileName != null) 'fileName': item.fileName,
+        if (item.storagePath != null) 'storagePath': item.storagePath,
         if (item.contactName != null) 'contactName': item.contactName,
         if (item.summary != null) 'summary': item.summary,
         if (item.content != null) 'content': item.content,

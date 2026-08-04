@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -69,13 +70,16 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     try {
       await action().timeout(
         const Duration(seconds: 15),
-        onTimeout: () => throw TimeoutException('La selección tardó demasiado.'),
+        onTimeout: () => throw TimeoutException('file picker timeout'),
       );
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(e is TimeoutException ? (e.message ?? 'Timeout') : 'Error: $e'),
-          backgroundColor: Colors.redAccent,
+          content: Text(e is TimeoutException
+              ? l10n.errFilePickerTimeout
+              : l10n.errFilePickerOpen),
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ));
       }
@@ -121,7 +125,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(AppLocalizations.of(context)!.errFilePathUnavailable),
-              backgroundColor: Colors.orange,
+              backgroundColor: context.am.amber,
               behavior: SnackBarBehavior.floating,
             ));
           }

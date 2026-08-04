@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,7 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../chat/data/chat_context.dart';
+import '../../../core/models/ai_chat_context.dart';
 import '../data/feed_item.dart';
 
 /// Fila expandible de un documento/nota en las listas del Feed.
@@ -249,13 +250,10 @@ class _OpenFileButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
       ),
       child: loading
-          ? SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: cs.onSurfaceVariant,
-              ),
+          ? AmSpinner(
+              size: 12,
+              strokeWidth: 1.5,
+              color: cs.onSurfaceVariant,
             )
           : Row(
               mainAxisSize: MainAxisSize.min,

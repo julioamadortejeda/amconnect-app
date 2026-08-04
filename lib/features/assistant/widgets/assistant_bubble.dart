@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../chat/presentation/widgets/chat_cards.dart';
+import '../../../core/widgets/chat_cards.dart';
 import 'thinking_pulse.dart';
 
 /// Burbuja de mensaje — la misma para texto y voz, sin distinción visual de

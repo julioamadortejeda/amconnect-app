@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/agent_note.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
-import '../../../core/repositories/supabase_storage_repository.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../core/utils/catalog_l10n.dart';
 import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_form_row.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
@@ -23,9 +22,10 @@ import '../../../core/widgets/am_text_field.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
+import '../widgets/policy_detail_note_row.dart';
 import '../widgets/policy_status_chip.dart';
 import '../../../core/widgets/am_ai_ask_button.dart';
-import '../../chat/data/chat_context.dart';
+import '../../../core/models/ai_chat_context.dart';
 
 class PolicyDetailScreen extends ConsumerStatefulWidget {
   const PolicyDetailScreen({super.key, this.policy, this.policyId})
@@ -99,6 +99,13 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
       _noteCtrl.clear();
       ref.invalidate(policyNotesProvider(policy.id));
     } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.policiesErrAddNote),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
     } finally {
       if (mounted) setState(() => _sendingNote = false);
     }
@@ -158,7 +165,14 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
     try {
       await ref.read(noteRepositoryProvider).deleteNote(note.id);
       ref.invalidate(policyNotesProvider(policy.id));
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.policiesErrDeleteNote),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
   }
 
   @override
@@ -309,7 +323,9 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
               AmInfoRow(
                 icon: Icons.payment_outlined,
                 label: l10n.policiesPaymentMethod,
-                trailing: Text(policy.paymentMethod?.name ?? '—'),
+                trailing: Text(policy.paymentMethod != null
+                    ? l10n.paymentMethod(policy.paymentMethod!.name.toUpperCase())
+                    : '—'),
               ),
             ]),
             const SizedBox(height: AmDimens.gapM),
@@ -382,7 +398,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                 )
               else
                 for (final note in notes)
-                  _PolicyDetailNoteRow(
+                  PolicyDetailNoteRow(
                     note: note,
                     onDelete: note.sourceType == 'text'
                         ? () => _confirmDeleteNote(note)
@@ -399,11 +415,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                   suffix: Padding(
                     padding: const EdgeInsets.only(right: 6),
                     child: _sendingNote
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const AmSpinner(size: 18, strokeWidth: 2)
                         : IconButton(
                             icon: Icon(Icons.send_rounded, color: cs.primary),
                             onPressed: _sendNote,
@@ -427,113 +439,3 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
   }
 }
 
-class _PolicyDetailNoteRow extends ConsumerStatefulWidget {
-  const _PolicyDetailNoteRow({required this.note, this.onDelete});
-
-  final AgentNote note;
-  final VoidCallback? onDelete;
-
-  @override
-  ConsumerState<_PolicyDetailNoteRow> createState() => _PolicyDetailNoteRowState();
-}
-
-class _PolicyDetailNoteRowState extends ConsumerState<_PolicyDetailNoteRow> {
-  bool _openingFile = false;
-
-  Future<void> _openFile() async {
-    if (_openingFile || widget.note.storagePath == null) return;
-    setState(() => _openingFile = true);
-    try {
-      final signedUrl = await ref
-          .read(storageRepositoryProvider)
-          .getSignedUrl(widget.note.storagePath!);
-      final uri = Uri.parse(signedUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {
-    } finally {
-      if (mounted) setState(() => _openingFile = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final note = widget.note;
-    final dt = DateTime.tryParse(note.createdAt)?.toLocal();
-    final dateStr = dt != null ? DateFormat.MMMd().format(dt) : '';
-    final isTextNote = note.sourceType == 'text';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AmDimens.screenH, vertical: AmDimens.gapS / 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: cs.primaryContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              isTextNote ? Icons.sticky_note_2_outlined : Icons.picture_as_pdf_outlined,
-              size: 17,
-              color: cs.primary,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isTextNote ? note.content : (note.fileName ?? 'documento.pdf'),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: cs.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(dateStr, style: TextStyle(fontSize: 11.5, color: cs.tertiary)),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (!isTextNote && note.storagePath != null)
-            GestureDetector(
-              onTap: _openFile,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: cs.secondaryContainer,
-                  borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
-                ),
-                child: _openingFile
-                    ? SizedBox(
-                        width: 12,
-                        height: 12,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      )
-                    : Icon(Icons.open_in_new_rounded, size: 14, color: cs.onSurfaceVariant),
-              ),
-            ),
-          if (widget.onDelete != null)
-            GestureDetector(
-              onTap: widget.onDelete,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Icon(Icons.delete_outline_rounded, size: 18, color: cs.error),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}

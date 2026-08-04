@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'am_spinner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -207,13 +208,10 @@ class _OpenFileButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
       ),
       child: loading
-          ? SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: cs.onSurfaceVariant,
-              ),
+          ? AmSpinner(
+              size: 12,
+              strokeWidth: 1.5,
+              color: cs.onSurfaceVariant,
             )
           : Row(
               mainAxisSize: MainAxisSize.min,

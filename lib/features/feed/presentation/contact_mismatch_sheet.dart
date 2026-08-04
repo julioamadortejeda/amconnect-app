@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_colors.dart';
@@ -94,13 +95,10 @@ class ContactMismatchSheet extends ConsumerWidget {
                       ? null
                       : () => ref.read(ingestProvider.notifier).resolveContactMismatch(true),
                   child: state.isSending
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
+                      ? const AmSpinner(
+                          size: 20,
+                          strokeWidth: 2.5,
+                          color: Colors.white,
                         )
                       : Text(
                           l10n.feedContactMismatchAssignCta(screenName),

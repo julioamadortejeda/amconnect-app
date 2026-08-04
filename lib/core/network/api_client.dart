@@ -82,7 +82,7 @@ class ApiClient {
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw ApiException(
         statusCode: res.statusCode,
-        message: 'Error al subir archivo',
+        message: 'UPLOAD_FAILED',
         errorCode: 'UPLOAD_FAILED',
       );
     }

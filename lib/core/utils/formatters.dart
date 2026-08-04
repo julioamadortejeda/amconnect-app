@@ -16,6 +16,40 @@ const _months = [
   'dic'
 ];
 const _weekdays = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+const _monthsFull = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre'
+];
+const _weekdaysFull = [
+  'lunes',
+  'martes',
+  'miércoles',
+  'jueves',
+  'viernes',
+  'sábado',
+  'domingo'
+];
+
+String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
+// "Junio 2026" — encabezado de mes del calendario
+String fmtMonthYear(DateTime dt) => '${_cap(_monthsFull[dt.month - 1])} ${dt.year}';
+
+// "Junio" — nombre completo del mes, capitalizado
+String fmtMonthFull(DateTime dt) => _cap(_monthsFull[dt.month - 1]);
+
+// "Lunes" — nombre completo del día de la semana, capitalizado
+String fmtWeekdayFull(DateTime dt) => _cap(_weekdaysFull[dt.weekday - 1]);
 
 // ─── Currency ─────────────────────────────────────────────────────────────────
 

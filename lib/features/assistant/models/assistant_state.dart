@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import '../data/assistant_repository.dart';
-import '../../chat/data/chat_context.dart';
+import '../../../core/models/ai_chat_context.dart';
 
 export 'package:amconnect/features/assistant/data/assistant_repository.dart' show AssistantMessage;
-export 'package:amconnect/features/chat/data/chat_context.dart' show AiChatContext;
+export 'package:amconnect/core/models/ai_chat_context.dart' show AiChatContext;
 
 class AssistantResumeArgs {
   final String sessionId;

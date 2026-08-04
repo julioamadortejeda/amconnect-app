@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/utils/reminder_utils.dart';
@@ -66,7 +67,7 @@ class ReminderDetailHero extends StatelessWidget {
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AmColors.shadowLow,
             blurRadius: 16,
           ),
         ],

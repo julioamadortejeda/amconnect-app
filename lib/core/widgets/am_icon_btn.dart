@@ -39,7 +39,7 @@ class AmIconBtn extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(13),
         boxShadow: shadow
-            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22, offset: const Offset(0, 4))]
+            ? [BoxShadow(color: AmColors.shadowSoft, blurRadius: 22, offset: const Offset(0, 4))]
             : null,
       ),
       child: Stack(

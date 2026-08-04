@@ -2,10 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/account/providers/account_provider.dart';
 import '../../features/assistant/providers/assistant_provider.dart';
-import '../../features/chat/providers/chat_provider.dart';
-import '../../features/chat/providers/stt_provider.dart';
-import '../../features/chat/providers/voice_chat_provider.dart';
-import '../../features/chat_tts/providers/chat_tts_provider.dart';
 import '../../features/clients/providers/catalog_provider.dart';
 import '../../features/clients/providers/clients_provider.dart';
 import '../../features/feed/presentation/feed_screen.dart' show recentFeedProvider;
@@ -60,8 +56,4 @@ void clearUserSessionCache(WidgetRef ref) {
 
   // Chat / voz
   ref.invalidate(assistantProvider);
-  ref.invalidate(chatProvider);
-  ref.invalidate(voiceChatProvider);
-  ref.invalidate(sttProvider);
-  ref.invalidate(chatTtsProvider);
 }

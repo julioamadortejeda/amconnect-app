@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 import 'am_press.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/formatters.dart';
@@ -166,7 +167,7 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.16),
+                color: AmColors.shadowHeavy,
                 blurRadius: 32,
                 offset: const Offset(0, 12),
               ),

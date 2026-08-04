@@ -155,12 +155,13 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async {
-    // Inofensivo si el usuario nunca inició sesión con Google (initialize()
-    // ahora corre por intento en signInWithGoogle, no una sola vez) — el
-    // try/catch cubre el caso en que el SDK de Google no esté inicializado.
     try {
       await GoogleSignIn.instance.signOut();
-    } catch (_) {}
+    } catch (_) {
+      // fire-and-forget: inofensivo si el usuario nunca inició sesión con Google
+      // (initialize() corre por intento en signInWithGoogle, no una sola vez) —
+      // este catch cubre el caso en que el SDK de Google no esté inicializado.
+    }
     await _client.auth.signOut();
   }
 

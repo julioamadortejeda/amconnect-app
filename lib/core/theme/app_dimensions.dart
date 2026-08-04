@@ -14,6 +14,12 @@ abstract final class AmDimens {
   /// Radio de borde de AmCard
   static const cardRadius = 18.0;
 
+  /// Escala de radios menores para contenedores internos, chips e iconos.
+  static const radiusL = 16.0;
+  static const radiusM = 12.0;
+  static const radiusS = 10.0;
+  static const radiusXS = 6.0;
+
   /// Gap entre secciones principales
   static const gapL = 20.0;
 

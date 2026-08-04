@@ -346,6 +346,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo obtener la ruta del archivo seleccionado.';
 
   @override
+  String get errFileOpenFailed =>
+      'No se pudo abrir el archivo. Intenta de nuevo.';
+
+  @override
   String get shellHome => 'Inicio';
 
   @override
@@ -1560,6 +1564,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo eliminar la póliza. Intenta de nuevo.';
 
   @override
+  String get policiesErrDeleteNote =>
+      'No se pudo eliminar la nota. Intenta de nuevo.';
+
+  @override
+  String get policiesErrAddNote =>
+      'No se pudo agregar la nota. Intenta de nuevo.';
+
+  @override
   String get policiesAttachFile => 'Adjuntar';
 
   @override
@@ -1766,4 +1778,67 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get policiesAskAbout => 'Preguntar sobre esta póliza';
+
+  @override
+  String get commonOpenFile => 'Abrir archivo';
+
+  @override
+  String get chatCardPolicyListTitle => 'Pólizas en tu portafolio';
+
+  @override
+  String get chatCardPolicyCreated => 'Póliza creada';
+
+  @override
+  String get chatCardPolicyUpdated => 'Póliza actualizada';
+
+  @override
+  String get chatCardFieldHolder => 'Contratante';
+
+  @override
+  String get chatCardFieldInsured => 'Asegurado';
+
+  @override
+  String get chatCardRemindersLabel => 'Recordatorios';
+
+  @override
+  String get chatCardReminderFallback => 'Recordatorio';
+
+  @override
+  String get chatCardContactFallback => 'Contacto';
+
+  @override
+  String get chatCardFieldPhone => 'Teléfono';
+
+  @override
+  String get chatCardFieldEmail => 'Correo';
+
+  @override
+  String get chatCardFieldDate => 'Fecha';
+
+  @override
+  String get chatCardAttachmentFallback => 'Documento';
+
+  @override
+  String get chatSuggestion1 => '¿Quién vence pronto?';
+
+  @override
+  String get chatSuggestion2 => '¿Cuánto cobra Javier?';
+
+  @override
+  String get chatSuggestion3 => 'Recuérdame llamar mañana';
+
+  @override
+  String get chatSuggestion4 => '¿Pagos esta semana?';
+
+  @override
+  String get policiesSectionInsuranceDetails => 'Detalles de Seguro';
+
+  @override
+  String get policiesSectionParamsPayment => 'Parámetros y Pago';
+
+  @override
+  String get policiesSectionAmountsCoverage => 'Montos y Coberturas';
+
+  @override
+  String get policiesSectionDatesValidity => 'Fechas de Vigencia y Pago';
 }

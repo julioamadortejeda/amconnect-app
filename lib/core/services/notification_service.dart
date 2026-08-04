@@ -16,7 +16,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Inicializa Firebase si es necesario (generalmente ya está inicializado por el OS)
   await Firebase.initializeApp();
   if (kDebugMode) {
-    print('Recibido mensaje en background: ${message.messageId}');
+    debugPrint('Recibido mensaje en background: ${message.messageId}');
   }
 }
 
@@ -64,7 +64,7 @@ class NotificationService {
       // 4. Escuchar mensajes en primer plano (Foreground)
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         if (kDebugMode) {
-          print('Recibido mensaje en foreground: ${message.notification?.title}');
+          debugPrint('Recibido mensaje en foreground: ${message.notification?.title}');
         }
         // En iOS el sistema operativo ya muestra el banner nativo por setForegroundNotificationPresentationOptions.
         // Solo lanzamos la notificación local manual en Android para evitar duplicados.
@@ -76,7 +76,7 @@ class NotificationService {
       // 5. Escuchar cuando el usuario hace clic en una notificación y abre la app (Background)
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         if (kDebugMode) {
-          print('App abierta desde notificación: ${message.data}');
+          debugPrint('App abierta desde notificación: ${message.data}');
         }
         final reminderId = message.data['reminder_id'] ?? message.data['reminderId'];
         if (reminderId != null) {
@@ -87,7 +87,7 @@ class NotificationService {
       // 6. Escuchar cuando el token se refresque automáticamente
       FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
         if (kDebugMode) {
-          print('Token FCM refrescado: $newToken');
+          debugPrint('Token FCM refrescado (valor omitido por seguridad).');
         }
         await _sendTokenToBackend(newToken);
       });
@@ -105,11 +105,11 @@ class NotificationService {
 
       _initialized = true;
       if (kDebugMode) {
-        print('NotificationService inicializado correctamente.');
+        debugPrint('NotificationService inicializado correctamente.');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Advertencia en NotificationService: Firebase no inicializado. '
+        debugPrint('Advertencia en NotificationService: Firebase no inicializado. '
             'Esto es normal si aún no has agregado google-services.json o GoogleService-Info.plist.\n'
             'Detalle del error: $e');
       }
@@ -122,7 +122,7 @@ class NotificationService {
   Future<void> requestPermissionsAndRegister() async {
     if (!_firebaseConfigured) {
       if (kDebugMode) {
-        print('No se puede registrar token: Firebase no está configurado.');
+        debugPrint('No se puede registrar token: Firebase no está configurado.');
       }
       return;
     }
@@ -138,7 +138,7 @@ class NotificationService {
       );
 
       if (kDebugMode) {
-        print('Permiso de notificaciones: ${settings.authorizationStatus}');
+        debugPrint('Permiso de notificaciones: ${settings.authorizationStatus}');
       }
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized ||
@@ -149,7 +149,7 @@ class NotificationService {
           token = await messaging.getToken();
         } catch (e) {
           if (kDebugMode) {
-            print('Error al obtener token FCM directo: $e');
+            debugPrint('Error al obtener token FCM directo: $e');
           }
           if (Platform.isIOS) {
             // Reintento usando APNS en iOS si falla el directo por sincronía
@@ -162,14 +162,14 @@ class NotificationService {
 
         if (token != null) {
           if (kDebugMode) {
-            print('Token FCM obtenido de forma exitosa: $token');
+            debugPrint('Token FCM obtenido de forma exitosa (valor omitido por seguridad).');
           }
           await _sendTokenToBackend(token);
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error al solicitar permisos o registrar token FCM: $e');
+        debugPrint('Error al solicitar permisos o registrar token FCM: $e');
       }
     }
   }
@@ -192,7 +192,7 @@ class NotificationService {
       settings: initSettings,
       onDidReceiveNotificationResponse: (details) {
         if (kDebugMode) {
-          print('Clic en notificación local: ${details.payload}');
+          debugPrint('Clic en notificación local: ${details.payload}');
         }
         if (details.payload != null) {
           try {
@@ -254,11 +254,11 @@ class NotificationService {
         platform: platform,
       );
       if (kDebugMode) {
-        print('Token FCM enviado al backend correctamente.');
+        debugPrint('Token FCM enviado al backend correctamente.');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error al enviar el token FCM al backend: $e');
+        debugPrint('Error al enviar el token FCM al backend: $e');
       }
     }
   }

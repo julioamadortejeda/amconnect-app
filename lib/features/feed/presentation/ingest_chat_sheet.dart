@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -146,13 +147,10 @@ class IngestChatSheet extends ConsumerWidget {
                                   ref.read(ingestProvider.notifier).sendMessage('Sí');
                                 },
                           child: state.isSending
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
+                              ? const AmSpinner(
+                                  size: 20,
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
                                 )
                               : Text(
                                   l10n.feedIngestConfirmCta,

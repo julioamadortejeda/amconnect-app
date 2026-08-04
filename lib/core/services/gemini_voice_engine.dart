@@ -432,8 +432,11 @@ class GeminiVoiceEngine {
   // ── Turnos y persistencia ──────────────────────────────────────────────────
 
   void _commitCurrentTurn() {
-    if (_liveUserText.trim().isEmpty && _liveModelText.trim().isEmpty) return;
-    final modelText = _liveModelText.trim();
+    final cleanModelText = _liveModelText
+        .replaceAll(RegExp(r'response:[a-zA-Z0-9_]+\{.*?\}(?=\s*|\b)', caseSensitive: false, dotAll: true), '')
+        .trim();
+    if (_liveUserText.trim().isEmpty && cleanModelText.isEmpty) return;
+    final modelText = cleanModelText;
     // El metadata solo se consume cuando hay burbuja del modelo que lo ancle;
     // si este commit es solo del usuario, queda pendiente para el siguiente.
     final metadata = modelText.isNotEmpty ? _turnWidgetMetadata : null;

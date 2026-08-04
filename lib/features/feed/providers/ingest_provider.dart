@@ -383,7 +383,9 @@ class IngestNotifier extends Notifier<IngestState> {
     if (sid != null) {
       try {
         await _repo.cancelSession(sid);
-      } catch (_) {}
+      } catch (_) {
+        // fire-and-forget: cancelación de cortesía en el backend, el estado local se resetea igual
+      }
     }
     state = const IngestState();
   }

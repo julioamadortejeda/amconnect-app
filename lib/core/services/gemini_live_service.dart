@@ -249,7 +249,13 @@ class GeminiLiveService {
         String? userText;
 
         if (outputTrans is Map && outputTrans['text'] is String) {
-          modelText = (outputTrans['text'] as String).replaceAll(RegExp(r'<ctrl\d+>'), '');
+          final rawText = outputTrans['text'] as String;
+          final cleaned = rawText
+              .replaceAll(RegExp(r'response:[a-zA-Z0-9_]+\{.*?\}(?=\s*|\b)', caseSensitive: false, dotAll: true), '')
+              .replaceAll(RegExp(r'<ctrl\d+>'), '');
+          if (cleaned.trim().isNotEmpty) {
+            modelText = cleaned;
+          }
         }
         if (inputTrans is Map && inputTrans['text'] is String) {
           userText = (inputTrans['text'] as String).replaceAll(RegExp(r'<ctrl\d+>'), '');
@@ -279,10 +285,25 @@ class GeminiLiveService {
   }
 
   Future<void> close() async {
-    await _socketSubscription?.cancel();
+    final sub = _socketSubscription;
     _socketSubscription = null;
-    await _socket?.close();
+    if (sub != null) {
+      try {
+        await sub.cancel();
+      } catch (_) {
+        // fire-and-forget: cierre de socket en cleanup, el socket ya podría estar cerrado
+      }
+    }
+
+    final ws = _socket;
     _socket = null;
+    if (ws != null) {
+      try {
+        await ws.close();
+      } catch (_) {
+        // Ignorar excepciones de lectura tardía en socket cerrado nativo de Dart
+      }
+    }
   }
 
   void dispose() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/catalog.dart';
 import '../../../core/models/contact.dart';
@@ -395,7 +396,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   const SizedBox(height: AmDimens.gapM),
 
                   // ── Catálogos Editables (Número de póliza, Aseguradora, Ramo, Producto) ─
-                  AmSectionLabel(label: 'Detalles de Seguro'),
+                  AmSectionLabel(label: l10n.policiesSectionInsuranceDetails),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
                     AmFormRow(
@@ -524,7 +525,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   const SizedBox(height: AmDimens.gapM),
 
                   // ── Catálogos Globales (Estado, Moneda, Frecuencia, Método) ───
-                  AmSectionLabel(label: 'Parámetros y Pago'),
+                  AmSectionLabel(label: l10n.policiesSectionParamsPayment),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
                     AmInfoRow(
@@ -655,7 +656,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   const SizedBox(height: AmDimens.gapM),
 
                   // ── Datos Financieros ────────────────────────────────────────
-                  AmSectionLabel(label: 'Montos y Coberturas'),
+                  AmSectionLabel(label: l10n.policiesSectionAmountsCoverage),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
                     Row(
@@ -690,7 +691,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   const SizedBox(height: AmDimens.gapM),
 
                   // ── Fechas ───────────────────────────────────────────────────
-                  AmSectionLabel(label: 'Fechas de Vigencia y Pago'),
+                  AmSectionLabel(label: l10n.policiesSectionDatesValidity),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
                     AmInfoRow(
@@ -799,13 +800,10 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                     ),
                     child: Center(
                       child: _loading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
+                          ? const AmSpinner(
+                              size: 20,
+                              strokeWidth: 2,
+                              color: Colors.white,
                             )
                           : Text(
                               _isEditing ? l10n.policiesSaveChangesBtn : l10n.policiesSaveBtn,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_reschedule_dialog.dart';
+import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../../../core/widgets/am_top_bar.dart';
@@ -175,9 +177,7 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: const AmLoader(),
       );
     }
     if (_loadError != null) {
@@ -237,13 +237,10 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                   ),
                 ),
                 child: _saving
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: cs.onPrimary,
-                        ),
+                    ? AmSpinner(
+                        size: 16,
+                        strokeWidth: 2,
+                        color: cs.onPrimary,
                       )
                     : Text(
                         l10n.remindersDetailSave,

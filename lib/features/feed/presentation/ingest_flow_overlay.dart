@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_translator.dart';
@@ -147,7 +148,7 @@ class _ProcessingOverlay extends StatelessWidget {
     };
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -248,13 +249,10 @@ class _StepRow extends StatelessWidget {
             ),
           );
         case _StepStatus.active:
-          return const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(AmColors.accent),
-            ),
+          return const AmSpinner(
+            size: 20,
+            strokeWidth: 2,
+            color: AmColors.accent,
           );
         case _StepStatus.completed:
           return Container(
@@ -365,7 +363,7 @@ class _UnifiedErrorSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(

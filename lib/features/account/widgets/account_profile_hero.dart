@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/agent_profile.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_avatar.dart';
 import '../../../core/widgets/am_press.dart';
@@ -32,7 +33,7 @@ class AccountProfileHero extends StatelessWidget {
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 16),
+          BoxShadow(color: AmColors.shadowLow, blurRadius: 16),
         ],
       ),
       child: Row(
