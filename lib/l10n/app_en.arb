@@ -227,6 +227,7 @@
   "clientsDeleteTitle": "Delete client?",
   "clientsDeleteMessage": "This client will be deleted and will no longer appear in your portfolio. This action cannot be undone.",
   "clientsErrDelete": "Couldn't delete the client. Please try again.",
+  "clientsErrAddNote": "Couldn't add the note. Please try again.",
   "clientsContactSection": "Contact",
   "clientsNoPolicies": "No registered policies",
   "clientsNoNotes": "No notes",
@@ -253,7 +254,7 @@
   "clientsSectionPersonal": "Personal info",
   "clientsSectionFiscal": "Fiscal",
   "clientsFieldGeneralNotes": "General notes",
-  "clientsAddNote": "Add note",
+  "clientsAddNote": "Add quick note",
   "clientsAddNoteHint": "Write a note about this client…",
   "clientsNoteTypePdf": "PDF document",
   "clientsNoteTypeAudio": "Voice note",
@@ -676,6 +677,23 @@
   "chatSuggestion2": "How much does Javier pay?",
   "chatSuggestion3": "Remind me to call tomorrow",
   "chatSuggestion4": "Payments this week?",
+  "chatContextSuggestionContact": "Ask me anything about **{name}**.",
+  "@chatContextSuggestionContact": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "chatContextSuggestionPolicy": "Ask me anything about this **{carrier}** policy.",
+  "@chatContextSuggestionPolicy": {
+    "placeholders": { "carrier": { "type": "String" } }
+  },
+  "chatContextSuggestionReminder": "Ask me anything about this reminder: **{title}**.",
+  "@chatContextSuggestionReminder": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "chatContextSuggestionKnowledge": "Ask me anything about **{fileName}**.",
+  "@chatContextSuggestionKnowledge": {
+    "placeholders": { "fileName": { "type": "String" } }
+  },
+  "chatContextSuggestionKnowledgeGeneric": "Ask me anything about this document you uploaded.",
   "policiesSectionInsuranceDetails": "Insurance details",
   "policiesSectionParamsPayment": "Parameters & payment",
   "policiesSectionAmountsCoverage": "Amounts & coverage",

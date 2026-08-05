@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/theme/app_dimensions.dart';
-import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_spinner.dart';
 import '../../../core/widgets/am_text_field.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../clients/providers/clients_provider.dart';
@@ -99,7 +99,10 @@ class _ReminderPolicySheetState extends ConsumerState<ReminderPolicySheet> {
             child: policiesAsync.isLoading
                 ? const Padding(
                     padding: EdgeInsets.all(AmDimens.gapL),
-                    child: SizedBox(height: 80, child: AmLoader()),
+                    child: SizedBox(
+                      height: 80,
+                      child: Center(child: AmSpinner()),
+                    ),
                   )
                 : SingleChildScrollView(
                     child: Padding(

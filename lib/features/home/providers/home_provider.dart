@@ -131,6 +131,17 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     ]);
   }
 
+  Future<void> updateRelations(String id,
+      {String? contactId, String? policyId}) async {
+    final updated =
+        await _repo.updateRelations(id, contactId: contactId, policyId: policyId);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
   Future<Reminder?> create({
     required String typeId,
     required String title,

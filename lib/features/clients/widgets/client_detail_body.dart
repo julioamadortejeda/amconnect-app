@@ -41,12 +41,22 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
   Future<void> _addNote() async {
     final content = await AddClientNoteSheet.show(context);
     if (content == null || content.isEmpty) return;
-    await IngestRepository(ref.read(apiClientProvider)).ingestKnowledgeText(
-      content: content,
-      sourceType: 'text',
-      contactId: widget.clientId,
-      isClientNote: true,
-    );
+    try {
+      await IngestRepository(ref.read(apiClientProvider)).ingestKnowledgeText(
+        content: content,
+        sourceType: 'text',
+        contactId: widget.clientId,
+        isClientNote: true,
+      );
+    } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.clientsErrAddNote),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
   }
 
   @override

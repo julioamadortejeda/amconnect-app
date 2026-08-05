@@ -21,6 +21,8 @@ import '../../feed/widgets/ingest_type_picker.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
 import '../widgets/reminder_ai_button.dart';
+import '../widgets/reminder_client_sheet.dart';
+import '../widgets/reminder_policy_sheet.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../../l10n/app_localizations.dart';
@@ -131,6 +133,49 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 2),
     ));
+  }
+
+  void _showClientSheet(BuildContext ctx, Reminder r, ColorScheme cs) {
+    showModalBottomSheet(
+      context: ctx,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderClientSheet(
+        selectedClientId: r.contactId,
+        onSelect: (c) => ref.read(remindersProvider.notifier).updateRelations(
+              r.id,
+              contactId: c?.id,
+              // Cliente distinto al dueño de la póliza actual — se limpia
+              // para no dejar la póliza de otro cliente colgada del recordatorio.
+              policyId: c?.id == r.contactId ? r.policyId : null,
+            ),
+      ),
+    );
+  }
+
+  void _showPolicySheet(BuildContext ctx, Reminder r, ColorScheme cs) {
+    final contactId = r.contactId;
+    if (contactId == null) return;
+    showModalBottomSheet(
+      context: ctx,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderPolicySheet(
+        contactId: contactId,
+        selectedPolicyId: r.policyId,
+        onSelect: (p) => ref.read(remindersProvider.notifier).updateRelations(
+              r.id,
+              contactId: r.contactId,
+              policyId: p?.id,
+            ),
+      ),
+    );
   }
 
   void _showTypeSheet(BuildContext ctx, Reminder r, List<ReminderType> types,
@@ -349,23 +394,30 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             const SizedBox(height: AmDimens.gapM),
 
             // ── RELACIONES ────────────────────────────────────────
-            if (r.policyNumber != null || r.contactId != null) ...[
-              AmAnimateIn(
-                index: aniIdx++,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AmSectionLabel(label: l10n.remindersDetailRelations),
-                    const SizedBox(height: AmDimens.gapXS),
-                    ReminderDetailRelationsSection(
-                      reminder: r,
-                      onTapClient: () => context.push('/clients/${r.contactId}'),
-                    ),
-                  ],
-                ),
+            // Siempre visible (aunque no haya nada asignado) para que el
+            // asesor descubra que puede ligar el recordatorio a un cliente
+            // o póliza, igual que Type/Status.
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(label: l10n.remindersDetailRelations),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ReminderDetailRelationsSection(
+                    contactId: r.contactId,
+                    contactName: r.contactName,
+                    policyId: r.policyId,
+                    policyNumber: r.policyNumber,
+                    onTapClient:
+                        r.cancelled ? null : () => _showClientSheet(context, r, cs),
+                    onTapPolicy:
+                        r.cancelled ? null : () => _showPolicySheet(context, r, cs),
+                  ),
+                ],
               ),
-              const SizedBox(height: AmDimens.gapM),
-            ],
+            ),
+            const SizedBox(height: AmDimens.gapM),
 
             // ── COMENTARIOS ──────────────────────────────────────
             AmAnimateIn(

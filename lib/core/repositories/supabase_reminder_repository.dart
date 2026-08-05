@@ -88,6 +88,16 @@ class SupabaseReminderRepository implements ReminderRepository {
   }
 
   @override
+  Future<Reminder?> updateRelations(String id, {String? contactId, String? policyId}) async {
+    final res = await _client.patch('reminders/$id', body: {
+      'contactId': contactId,
+      'policyId': policyId,
+    });
+    final data = res['data'] as Map<String, dynamic>?;
+    return data != null ? Reminder.fromJson(data) : null;
+  }
+
+  @override
   Future<List<ReminderType>> getTypes() async {
     final res = await _client.get('catalog/reminder-types');
     final items = res['data'] as List<dynamic>;

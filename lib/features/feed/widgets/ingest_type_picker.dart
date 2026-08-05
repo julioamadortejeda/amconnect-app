@@ -398,6 +398,7 @@ class _PickerCard extends StatelessWidget {
 
     return AmCard(
       onTap: disabled ? null : t.onTap,
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

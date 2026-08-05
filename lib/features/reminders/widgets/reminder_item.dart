@@ -78,6 +78,9 @@ class ReminderItem extends ConsumerWidget {
     final String mainSub = r.time != '—'
         ? (r.sub.isNotEmpty ? '${r.sub} · ${r.time}' : r.time)
         : r.sub;
+    final String? relationClient = r.contactName;
+    final String? relationPolicy = r.policyNumber;
+    final bool hasRelation = relationClient != null || relationPolicy != null;
 
     final content = Opacity(
       opacity: r.done ? 0.55 : 1.0,
@@ -136,6 +139,43 @@ class ReminderItem extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
+                    if (hasRelation) ...[
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          if (relationClient != null) ...[
+                            Icon(Icons.person_outline,
+                                size: 11, color: cs.tertiary),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                relationClient,
+                                style:
+                                    TextStyle(fontSize: 11, color: cs.tertiary),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                          if (relationClient != null && relationPolicy != null)
+                            const SizedBox(width: 8),
+                          if (relationPolicy != null) ...[
+                            Icon(Icons.description_outlined,
+                                size: 11, color: cs.tertiary),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                relationPolicy,
+                                style:
+                                    TextStyle(fontSize: 11, color: cs.tertiary),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

@@ -607,6 +607,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo eliminar el cliente. Intenta de nuevo.';
 
   @override
+  String get clientsErrAddNote =>
+      'No se pudo agregar la nota. Intenta de nuevo.';
+
+  @override
   String get clientsContactSection => 'Contacto';
 
   @override
@@ -672,7 +676,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsFieldGeneralNotes => 'Notas generales';
 
   @override
-  String get clientsAddNote => 'Agregar nota';
+  String get clientsAddNote => 'Agregar nota rápida';
 
   @override
   String get clientsAddNoteHint => 'Escribe una nota sobre este cliente…';
@@ -1829,6 +1833,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chatSuggestion4 => '¿Pagos esta semana?';
+
+  @override
+  String chatContextSuggestionContact(String name) {
+    return 'Pregúntame lo que quieras sobre **$name**.';
+  }
+
+  @override
+  String chatContextSuggestionPolicy(String carrier) {
+    return 'Pregúntame lo que quieras sobre esta póliza de **$carrier**.';
+  }
+
+  @override
+  String chatContextSuggestionReminder(String title) {
+    return 'Pregúntame lo que quieras sobre este recordatorio: **$title**.';
+  }
+
+  @override
+  String chatContextSuggestionKnowledge(String fileName) {
+    return 'Pregúntame lo que quieras sobre **$fileName**.';
+  }
+
+  @override
+  String get chatContextSuggestionKnowledgeGeneric =>
+      'Pregúntame lo que quieras sobre este documento que subiste.';
 
   @override
   String get policiesSectionInsuranceDetails => 'Detalles de Seguro';

@@ -55,9 +55,18 @@ class AssistantNotifier extends Notifier<AssistantState> {
     state = const AssistantState();
   }
 
-  void resetWithContext(AiChatContext context) {
+  // [suggestionText] siembra una burbuja "ai" sintética como si el asistente
+  // ya hubiera invitado a preguntar sobre este contexto — nunca se manda al
+  // backend (sendMessage no envía el historial local), es puramente visual.
+  void resetWithContext(AiChatContext context, {String? suggestionText}) {
     stopVoice();
-    state = AssistantState(pendingContext: context, activeContext: context);
+    state = AssistantState(
+      pendingContext: context,
+      activeContext: context,
+      messages: suggestionText != null
+          ? [AssistantMessage(role: 'ai', text: suggestionText)]
+          : const [],
+    );
   }
 
   void setPendingContext(AiChatContext context) {

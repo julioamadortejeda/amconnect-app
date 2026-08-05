@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/models/ai_chat_context.dart';
 
@@ -24,7 +22,6 @@ class AssistantRepository {
       if (sessionId != null) 'sessionId': sessionId,
       if (context != null) 'context': context.toJson(),
     };
-    debugPrint('[ai/chat] ${const JsonEncoder.withIndent('  ').convert(body)}');
     final res = await _api.post('ai/chat', body: body);
     final data = res['data'] as Map<String, dynamic>;
     final rawMeta = data['metadata'];

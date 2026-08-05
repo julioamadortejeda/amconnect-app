@@ -1196,6 +1196,12 @@ abstract class AppLocalizations {
   /// **'No se pudo eliminar el cliente. Intenta de nuevo.'**
   String get clientsErrDelete;
 
+  /// No description provided for @clientsErrAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo agregar la nota. Intenta de nuevo.'**
+  String get clientsErrAddNote;
+
   /// No description provided for @clientsContactSection.
   ///
   /// In es, this message translates to:
@@ -1319,7 +1325,7 @@ abstract class AppLocalizations {
   /// No description provided for @clientsAddNote.
   ///
   /// In es, this message translates to:
-  /// **'Agregar nota'**
+  /// **'Agregar nota rápida'**
   String get clientsAddNote;
 
   /// No description provided for @clientsAddNoteHint.
@@ -3506,6 +3512,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Pagos esta semana?'**
   String get chatSuggestion4;
+
+  /// No description provided for @chatContextSuggestionContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre **{name}**.'**
+  String chatContextSuggestionContact(String name);
+
+  /// No description provided for @chatContextSuggestionPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre esta póliza de **{carrier}**.'**
+  String chatContextSuggestionPolicy(String carrier);
+
+  /// No description provided for @chatContextSuggestionReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre este recordatorio: **{title}**.'**
+  String chatContextSuggestionReminder(String title);
+
+  /// No description provided for @chatContextSuggestionKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre **{fileName}**.'**
+  String chatContextSuggestionKnowledge(String fileName);
+
+  /// No description provided for @chatContextSuggestionKnowledgeGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre este documento que subiste.'**
+  String get chatContextSuggestionKnowledgeGeneric;
 
   /// No description provided for @policiesSectionInsuranceDetails.
   ///

@@ -261,6 +261,7 @@
   "clientsDeleteTitle": "¿Eliminar cliente?",
   "clientsDeleteMessage": "Se eliminará este cliente y no aparecerá más en tu cartera. Esta acción no se puede deshacer.",
   "clientsErrDelete": "No se pudo eliminar el cliente. Intenta de nuevo.",
+  "clientsErrAddNote": "No se pudo agregar la nota. Intenta de nuevo.",
   "clientsContactSection": "Contacto",
   "clientsNoPolicies": "Sin pólizas registradas",
   "clientsNoNotes": "Sin notas",
@@ -287,7 +288,7 @@
   "clientsSectionPersonal": "Datos personales",
   "clientsSectionFiscal": "Fiscal",
   "clientsFieldGeneralNotes": "Notas generales",
-  "clientsAddNote": "Agregar nota",
+  "clientsAddNote": "Agregar nota rápida",
   "clientsAddNoteHint": "Escribe una nota sobre este cliente…",
   "clientsNoteTypePdf": "Documento PDF",
   "clientsNoteTypeAudio": "Nota de voz",
@@ -729,6 +730,23 @@
   "chatSuggestion2": "¿Cuánto cobra Javier?",
   "chatSuggestion3": "Recuérdame llamar mañana",
   "chatSuggestion4": "¿Pagos esta semana?",
+  "chatContextSuggestionContact": "Pregúntame lo que quieras sobre **{name}**.",
+  "@chatContextSuggestionContact": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "chatContextSuggestionPolicy": "Pregúntame lo que quieras sobre esta póliza de **{carrier}**.",
+  "@chatContextSuggestionPolicy": {
+    "placeholders": { "carrier": { "type": "String" } }
+  },
+  "chatContextSuggestionReminder": "Pregúntame lo que quieras sobre este recordatorio: **{title}**.",
+  "@chatContextSuggestionReminder": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "chatContextSuggestionKnowledge": "Pregúntame lo que quieras sobre **{fileName}**.",
+  "@chatContextSuggestionKnowledge": {
+    "placeholders": { "fileName": { "type": "String" } }
+  },
+  "chatContextSuggestionKnowledgeGeneric": "Pregúntame lo que quieras sobre este documento que subiste.",
   "policiesSectionInsuranceDetails": "Detalles de Seguro",
   "policiesSectionParamsPayment": "Parámetros y Pago",
   "policiesSectionAmountsCoverage": "Montos y Coberturas",

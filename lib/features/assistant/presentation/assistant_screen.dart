@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/ai_chat_context_suggestion.dart';
 import '../../../core/utils/device_timezone.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_press.dart';
@@ -52,7 +53,11 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     if (widget.initialContext != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          _notifier.resetWithContext(widget.initialContext!);
+          final l10n = AppLocalizations.of(context)!;
+          _notifier.resetWithContext(
+            widget.initialContext!,
+            suggestionText: buildContextSuggestion(widget.initialContext!, l10n),
+          );
         }
       });
     } else if (widget.resumeArgs != null) {

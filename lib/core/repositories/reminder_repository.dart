@@ -19,4 +19,5 @@ abstract class ReminderRepository {
   Future<Reminder?> reschedule(String id, DateTime dueDate);
   Future<Reminder?> updateDetails(String id, {String? title, String? description});
   Future<Reminder?> updateType(String id, String typeId);
+  Future<Reminder?> updateRelations(String id, {String? contactId, String? policyId});
 }

@@ -30,7 +30,8 @@ final agentProfileProvider =
 
 class SubscriptionInfoNotifier extends AsyncNotifier<SubscriptionInfo> {
   late SubscriptionRepository _repo;
-  RealtimeChannel? _realtimeChannel;
+  RealtimeChannel? _agentsChannel;
+  RealtimeChannel? _usageChannel;
 
   @override
   Future<SubscriptionInfo> build() async {
@@ -44,7 +45,7 @@ class SubscriptionInfoNotifier extends AsyncNotifier<SubscriptionInfo> {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
-    _realtimeChannel = client
+    _agentsChannel = client
         .channel('public:agents:subscription_$userId')
         .onPostgresChanges(
           event: PostgresChangeEvent.update,
@@ -63,8 +64,42 @@ class SubscriptionInfoNotifier extends AsyncNotifier<SubscriptionInfo> {
           debugPrint('[RT:agents:subscription] $status $error');
         });
 
+    // El uso del plan (chat_count/ingestion_count) vive en agent_monthly_usage,
+    // no en agents — canal propio (mismo patrón que contacts/policies/
+    // reminders), no compartido con el de arriba: mezclar dos tablas en un
+    // mismo canal hacía que el binding de "update" de una pisara al de la otra.
+    final usageFilter = PostgresChangeFilter(
+      type: PostgresChangeFilterType.eq,
+      column: 'agent_id',
+      value: userId,
+    );
+    _usageChannel = client
+        .channel('public:agent_monthly_usage:$userId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'agent_monthly_usage',
+          filter: usageFilter,
+          callback: (_) {
+            ref.invalidateSelf();
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'agent_monthly_usage',
+          filter: usageFilter,
+          callback: (_) {
+            ref.invalidateSelf();
+          },
+        )
+        .subscribe((status, error) {
+          debugPrint('[RT:agent_monthly_usage:subscription] $status $error');
+        });
+
     ref.onDispose(() {
-      _realtimeChannel?.unsubscribe();
+      _agentsChannel?.unsubscribe();
+      _usageChannel?.unsubscribe();
     });
   }
 

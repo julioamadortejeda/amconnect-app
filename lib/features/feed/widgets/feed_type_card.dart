@@ -19,6 +19,7 @@ class FeedTypeCard extends StatelessWidget {
 
     return AmCard(
       onTap: t.onTap,
+      padding: compact ? const EdgeInsets.all(12) : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
