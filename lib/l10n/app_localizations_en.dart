@@ -1091,6 +1091,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedTypeAudioDesc => 'Transcribes and extracts data';
 
   @override
+  String get feedAudioSourceTitle => 'How do you want to add it?';
+
+  @override
+  String get feedAudioSourceFile => 'Choose file';
+
+  @override
+  String get feedAudioSourceFileDesc => 'Upload an existing recording';
+
+  @override
+  String get feedAudioSourceRecord => 'Record audio';
+
+  @override
+  String get feedAudioSourceRecordDesc => 'Record a voice note now';
+
+  @override
+  String get feedRecorderTitle => 'Record voice note';
+
+  @override
+  String get feedRecorderTapToStart => 'Tap the button to start recording';
+
+  @override
+  String get feedRecorderRecording => 'Recording…';
+
+  @override
+  String get feedRecorderReady => 'Ready to send';
+
+  @override
+  String get feedRecorderPlaying => 'Playing…';
+
+  @override
+  String get feedRecorderPlay => 'Play';
+
+  @override
+  String get feedRecorderPause => 'Pause';
+
+  @override
+  String get feedRecorderDiscard => 'Discard';
+
+  @override
+  String get feedRecorderAccept => 'Accept';
+
+  @override
+  String get feedRecorderPermissionDenied =>
+      'We need microphone access to record. Enable it in your device settings.';
+
+  @override
+  String get feedRecorderOpenSettings => 'Open settings';
+
+  @override
   String get feedTypeText => 'Text / notes';
 
   @override

@@ -1,2 +1,2 @@
-NSMicrophoneUsageDescription = "To dictate messages to the AI assistant";
+NSMicrophoneUsageDescription = "To dictate messages to the AI assistant and record voice notes";
 NSSpeechRecognitionUsageDescription = "To convert your voice to text and send it to the assistant";

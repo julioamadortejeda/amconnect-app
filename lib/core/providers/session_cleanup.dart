@@ -4,7 +4,6 @@ import '../../features/account/providers/account_provider.dart';
 import '../../features/assistant/providers/assistant_provider.dart';
 import '../../features/clients/providers/catalog_provider.dart';
 import '../../features/clients/providers/clients_provider.dart';
-import '../../features/feed/presentation/feed_screen.dart' show recentFeedProvider;
 import '../../features/feed/providers/knowledge_dashboard_provider.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/reminders/providers/reminders_provider.dart';
@@ -50,7 +49,6 @@ void clearUserSessionCache(WidgetRef ref) {
   ref.invalidate(productsProvider);
 
   // Base de conocimiento (Feed)
-  ref.invalidate(recentFeedProvider);
   ref.invalidate(knowledgeStatsProvider);
   ref.invalidate(knowledgeListProvider);
 

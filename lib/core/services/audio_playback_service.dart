@@ -13,13 +13,25 @@ class AudioPlaybackService {
   /// `mimeType` es obligatorio en iOS: audioplayers_darwin escribe los bytes
   /// a un archivo temporal en caché sin extensión, y sin mimeType AVPlayer no
   /// puede determinar el tipo de archivo (falla con "Failed to set playerItem").
-  Future<void> playBase64(String base64Audio, {required String mimeType}) async {
+  Future<void> playBase64(String base64Audio,
+      {required String mimeType}) async {
     final done = _player.onPlayerComplete.first;
-    await _player.play(BytesSource(base64Decode(base64Audio), mimeType: mimeType));
+    await _player
+        .play(BytesSource(base64Decode(base64Audio), mimeType: mimeType));
     await done;
   }
 
   Future<void> stop() => _player.stop();
+
+  /// Reproduce un archivo local sin esperar a que termine — usado para
+  /// escuchar la previsualización de una nota de voz recién grabada.
+  Future<void> playFile(String path) => _player.play(DeviceFileSource(path));
+
+  Future<void> pause() => _player.pause();
+
+  /// Notifica cuando termina la reproducción — usado para regresar el botón
+  /// de play/pausa a su estado inicial sin sondear manualmente.
+  Stream<void> get onComplete => _player.onPlayerComplete;
 
   void dispose() => _player.dispose();
 }

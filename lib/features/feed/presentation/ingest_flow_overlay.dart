@@ -5,7 +5,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/ingest_provider.dart';
-import '../presentation/feed_screen.dart' show recentFeedProvider;
 import '../providers/knowledge_dashboard_provider.dart';
 import '../../clients/providers/clients_provider.dart';
 import '../../home/providers/home_provider.dart';
@@ -38,7 +37,6 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
     // ("setState() or markNeedsBuild() called during build").
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      ref.invalidate(recentFeedProvider);
       ref.invalidate(knowledgeListProvider);
       ref.invalidate(knowledgeStatsProvider);
       ref.invalidate(clientsProvider);
@@ -82,7 +80,8 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
       builder: (_) => const _UnifiedIngestBottomSheet(),
     ).then((_) {
       final state = ref.read(ingestProvider);
-      if (state.phase == IngestPhase.knowledgeSuccess && state.knowledgeMessage != null) {
+      if (state.phase == IngestPhase.knowledgeSuccess &&
+          state.knowledgeMessage != null) {
         _showKnowledgeSuccess(state.knowledgeMessage!);
       } else {
         _handleClose();
@@ -93,7 +92,8 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
   @override
   Widget build(BuildContext context) {
     ref.listen<IngestState>(ingestProvider, (prev, next) {
-      if ((next.phase == IngestPhase.uploading || next.phase == IngestPhase.processing) &&
+      if ((next.phase == IngestPhase.uploading ||
+              next.phase == IngestPhase.processing) &&
           (prev == null || prev.phase == IngestPhase.idle)) {
         _showIngestBottomSheet();
       }
@@ -130,7 +130,10 @@ class _ProcessingOverlay extends StatelessWidget {
 
     final step1Status = switch (statusMessageKey) {
       'feedStepGettingUrl' => _StepStatus.active,
-      'feedStepUploading' || 'feedStepProcessing' || null => _StepStatus.completed,
+      'feedStepUploading' ||
+      'feedStepProcessing' ||
+      null =>
+        _StepStatus.completed,
       _ => _StepStatus.pending,
     };
 
@@ -277,7 +280,8 @@ class _StepRow extends StatelessWidget {
       _StepStatus.completed => cs.onSurface.withValues(alpha: 0.6),
     };
 
-    final fontWeight = status == _StepStatus.active ? FontWeight.w600 : FontWeight.w500;
+    final fontWeight =
+        status == _StepStatus.active ? FontWeight.w600 : FontWeight.w500;
 
     return Row(
       children: [
@@ -304,14 +308,17 @@ class _UnifiedIngestBottomSheet extends ConsumerStatefulWidget {
   const _UnifiedIngestBottomSheet();
 
   @override
-  ConsumerState<_UnifiedIngestBottomSheet> createState() => _UnifiedIngestBottomSheetState();
+  ConsumerState<_UnifiedIngestBottomSheet> createState() =>
+      _UnifiedIngestBottomSheetState();
 }
 
-class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomSheet> {
+class _UnifiedIngestBottomSheetState
+    extends ConsumerState<_UnifiedIngestBottomSheet> {
   @override
   Widget build(BuildContext context) {
     ref.listen<IngestState>(ingestProvider, (prev, next) {
-      if (next.phase == IngestPhase.idle || next.phase == IngestPhase.knowledgeSuccess) {
+      if (next.phase == IngestPhase.idle ||
+          next.phase == IngestPhase.knowledgeSuccess) {
         Navigator.of(context).pop();
       }
     });
@@ -345,7 +352,10 @@ class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomS
       case IngestPhase.success:
         return PolicySuccessSheet(onClose: handleClose);
       case IngestPhase.error:
-        return _UnifiedErrorSheet(error: context.translateError(state.error ?? 'Error de procesamiento'), onClose: handleClose);
+        return _UnifiedErrorSheet(
+            error:
+                context.translateError(state.error ?? 'Error de procesamiento'),
+            onClose: handleClose);
       default:
         return const SizedBox.shrink();
     }

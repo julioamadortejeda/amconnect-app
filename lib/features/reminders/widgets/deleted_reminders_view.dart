@@ -37,30 +37,26 @@ class DeletedRemindersView extends ConsumerWidget {
           ),
           const SizedBox(height: 6),
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-            child: Opacity(
-              opacity: 0.65,
-              child: AmCard(
-                noPad: true,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (int i = 0; i < entry.value.length; i++) ...[
-                      if (i > 0)
-                        Divider(
-                          height: 0,
-                          indent: AmDimens.screenH,
-                          endIndent: AmDimens.screenH,
-                          color: cs.outlineVariant,
-                        ),
-                      ReminderItem(
-                        reminder: entry.value[i],
-                        showContextMenu: false,
+            padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+            child: AmCard(
+              noPad: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 0; i < entry.value.length; i++) ...[
+                    if (i > 0)
+                      Divider(
+                        height: 0,
+                        indent: AmDimens.screenH,
+                        endIndent: AmDimens.screenH,
+                        color: cs.outlineVariant,
                       ),
-                    ],
+                    ReminderItem(
+                      reminder: entry.value[i],
+                      showContextMenu: false,
+                    ),
                   ],
-                ),
+                ],
               ),
             ),
           ),

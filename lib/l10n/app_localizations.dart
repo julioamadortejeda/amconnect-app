@@ -2138,6 +2138,102 @@ abstract class AppLocalizations {
   /// **'Transcribe y extrae datos'**
   String get feedTypeAudioDesc;
 
+  /// No description provided for @feedAudioSourceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo quieres agregarlo?'**
+  String get feedAudioSourceTitle;
+
+  /// No description provided for @feedAudioSourceFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir archivo'**
+  String get feedAudioSourceFile;
+
+  /// No description provided for @feedAudioSourceFileDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Sube un audio ya grabado'**
+  String get feedAudioSourceFileDesc;
+
+  /// No description provided for @feedAudioSourceRecord.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabar audio'**
+  String get feedAudioSourceRecord;
+
+  /// No description provided for @feedAudioSourceRecordDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Graba una nota de voz ahora'**
+  String get feedAudioSourceRecordDesc;
+
+  /// No description provided for @feedRecorderTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabar nota de voz'**
+  String get feedRecorderTitle;
+
+  /// No description provided for @feedRecorderTapToStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el botón para empezar a grabar'**
+  String get feedRecorderTapToStart;
+
+  /// No description provided for @feedRecorderRecording.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabando…'**
+  String get feedRecorderRecording;
+
+  /// No description provided for @feedRecorderReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista para enviar'**
+  String get feedRecorderReady;
+
+  /// No description provided for @feedRecorderPlaying.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproduciendo…'**
+  String get feedRecorderPlaying;
+
+  /// No description provided for @feedRecorderPlay.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproducir'**
+  String get feedRecorderPlay;
+
+  /// No description provided for @feedRecorderPause.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar'**
+  String get feedRecorderPause;
+
+  /// No description provided for @feedRecorderDiscard.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get feedRecorderDiscard;
+
+  /// No description provided for @feedRecorderAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get feedRecorderAccept;
+
+  /// No description provided for @feedRecorderPermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos acceso al micrófono para grabar. Actívalo en los ajustes del dispositivo.'**
+  String get feedRecorderPermissionDenied;
+
+  /// No description provided for @feedRecorderOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get feedRecorderOpenSettings;
+
   /// No description provided for @feedTypeText.
   ///
   /// In es, this message translates to:

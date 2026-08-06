@@ -49,16 +49,6 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<List<FeedItem>> getRecent({int limit = 20}) async {
-    final res = await _client.get('notes/recent?limit=$limit');
-    final wrapper = res['data'] as Map<String, dynamic>;
-    final items = wrapper['data'] as List<dynamic>;
-    return items
-        .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
-        .toList();
-  }
-
-  @override
   Future<Map<String, int>> getNotesSummary() async {
     final res = await _client.get('notes/summary');
     final wrapper = res['data'] as Map<String, dynamic>;
@@ -66,7 +56,8 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<List<FeedItem>> searchNotes({int limit = 20, int offset = 0, String? query}) async {
+  Future<List<FeedItem>> searchNotes(
+      {int limit = 20, int offset = 0, String? query}) async {
     final buf = StringBuffer('notes/search?limit=$limit&offset=$offset');
     if (query != null && query.trim().isNotEmpty) {
       buf.write('&search=${Uri.encodeComponent(query)}');

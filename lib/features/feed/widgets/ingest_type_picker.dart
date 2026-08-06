@@ -13,6 +13,7 @@ import '../../../l10n/app_localizations.dart';
 import '../presentation/ingest_file_preview_sheet.dart';
 import '../presentation/text_ingest_sheet.dart';
 import '../providers/ingest_provider.dart';
+import 'audio_source_sheet.dart';
 
 class IngestTypePicker extends ConsumerStatefulWidget {
   const IngestTypePicker({
@@ -108,6 +109,25 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     );
   }
 
+  void _openAudioSource() {
+    Navigator.of(context).pop();
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => AudioSourceSheet(
+        contactId: widget.contactId,
+        policyId: widget.policyId,
+        reminderId: widget.reminderId,
+        makeGeneral: _makeGeneral,
+      ),
+    );
+  }
+
   Future<void> _pickFile({
     required FileType type,
     List<String>? extensions,
@@ -124,7 +144,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         if (path == null) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!.errFilePathUnavailable),
+              content:
+                  Text(AppLocalizations.of(context)!.errFilePathUnavailable),
               backgroundColor: context.am.amber,
               behavior: SnackBarBehavior.floating,
             ));
@@ -199,7 +220,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
           color: AmColors.srcImage,
           label: l10n.feedTypePolicyPhoto,
           sub: l10n.feedTypePolicyPhotoDesc,
-          onTap: () => _pickFile(type: FileType.image, isPolicy: true, sourceType: 'image'),
+          onTap: () => _pickFile(
+              type: FileType.image, isPolicy: true, sourceType: 'image'),
         ),
       ],
       _PickerType(
@@ -207,12 +229,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         color: AmColors.srcWave,
         label: l10n.feedTypeAudio,
         sub: l10n.feedTypeAudioDesc,
-        onTap: () => _pickFile(
-          type: FileType.custom,
-          extensions: const ['mp3', 'wav', 'm4a', 'aac'],
-          isPolicy: false,
-          sourceType: 'audio',
-        ),
+        onTap: _openAudioSource,
       ),
       _PickerType(
         icon: AmIcons.text,
@@ -226,7 +243,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         color: AmColors.srcImage,
         label: l10n.feedTypeKnowledgeImage,
         sub: l10n.feedTypeKnowledgeImageDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: false, sourceType: 'image'),
+        onTap: () => _pickFile(
+            type: FileType.image, isPolicy: false, sourceType: 'image'),
       ),
       _PickerType(
         icon: AmIcons.document,
@@ -243,7 +261,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     ];
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.fromLTRB(
             AmDimens.screenH, 14, AmDimens.screenH, 32),
@@ -418,8 +437,7 @@ class _PickerCard extends StatelessWidget {
           const SizedBox(height: 3),
           Flexible(
             child: Text(t.sub,
-                style: TextStyle(
-                    fontSize: 11, color: cs.tertiary, height: 1.3),
+                style: TextStyle(fontSize: 11, color: cs.tertiary, height: 1.3),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/clients/providers/clients_provider.dart';
-import '../../features/feed/presentation/feed_screen.dart' show recentFeedProvider;
 import '../../features/feed/providers/knowledge_dashboard_provider.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/reminders/providers/reminders_provider.dart';
@@ -33,7 +32,6 @@ class ProviderKeepAlive extends ConsumerWidget {
     ref.listen(policiesProvider, (_, __) {});
     ref.listen(remindersProvider, (_, __) {});
     ref.listen(policiesCountProvider, (_, __) {});
-    ref.listen(recentFeedProvider, (_, __) {});
     ref.listen(knowledgeListProvider, (_, __) {});
     ref.listen(knowledgeStatsProvider, (_, __) {});
     // Derivados síncronos de las fuentes anteriores — también deben quedar

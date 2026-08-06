@@ -43,7 +43,8 @@ const _weekdaysFull = [
 String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
 // "Junio 2026" — encabezado de mes del calendario
-String fmtMonthYear(DateTime dt) => '${_cap(_monthsFull[dt.month - 1])} ${dt.year}';
+String fmtMonthYear(DateTime dt) =>
+    '${_cap(_monthsFull[dt.month - 1])} ${dt.year}';
 
 // "Junio" — nombre completo del mes, capitalizado
 String fmtMonthFull(DateTime dt) => _cap(_monthsFull[dt.month - 1]);
@@ -116,6 +117,13 @@ String fmtDateWithWeekday(DateTime? dt) {
 String fmtTime(DateTime? dt, {String fallback = '—'}) {
   if (dt == null || (dt.hour == 0 && dt.minute == 0)) return fallback;
   return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+}
+
+// "mm:ss" — duración de una grabación en curso o terminada.
+String fmtElapsed(Duration d) {
+  final minutes = d.inMinutes.toString().padLeft(2, '0');
+  final seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
 }
 
 // ─── Names and Strings ────────────────────────────────────────────────────────
