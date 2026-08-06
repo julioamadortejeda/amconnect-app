@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/reminder.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_calendar.dart';
 import '../../../core/widgets/am_card.dart';
+import '../../../core/widgets/am_section_label.dart';
 import '../providers/reminders_provider.dart';
 import 'reminder_item.dart';
 import '../../../core/widgets/am_stagger.dart';
@@ -23,6 +25,16 @@ List<Color> _priorityDots(List<Reminder> reminders, ColorScheme cs) {
   if (reminders.any((r) => r.priority == ReminderPriority.normal)) {
     dots.add(cs.primary);
   }
+  return dots;
+}
+
+/// Verde si hubo algo completado ese día, gris si hubo algo cancelado — la
+/// carga ya resuelta, para poder ver de un vistazo qué días tuvieron más
+/// trabajo y redistribuir mejor.
+List<Color> _historyDots(List<Reminder> reminders, ColorScheme cs, AmTheme am) {
+  final dots = <Color>[];
+  if (reminders.any((r) => r.done)) dots.add(am.green);
+  if (reminders.any((r) => r.cancelled)) dots.add(cs.tertiary);
   return dots;
 }
 
@@ -45,34 +57,38 @@ class _ReminderCalendarViewState extends ConsumerState<ReminderCalendarView> {
   }
 
   void _prevMonth() => setState(() {
-        _visibleMonth =
-            DateTime(_visibleMonth.year, _visibleMonth.month - 1);
+        _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month - 1);
       });
 
   void _nextMonth() => setState(() {
-        _visibleMonth =
-            DateTime(_visibleMonth.year, _visibleMonth.month + 1);
+        _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month + 1);
       });
 
   void _goToToday() {
     final today = DateTime.now();
     setState(() => _visibleMonth = DateTime(today.year, today.month));
-    ref.read(remindersUiProvider.notifier).selectDate(
-          DateTime(today.year, today.month, today.day));
+    ref
+        .read(remindersUiProvider.notifier)
+        .selectDate(DateTime(today.year, today.month, today.day));
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
+    final am = context.am;
     final ui = ref.watch(remindersUiProvider);
     final byDate = ref.watch(remindersByDateProvider);
+    final historyByDate = ref.watch(remindersHistoryByDateProvider);
     final dayReminders = ref.watch(selectedDayRemindersProvider);
+    final dayHistory = ref.watch(selectedDayHistoryRemindersProvider);
 
-    final events = {
-      for (final e in byDate.entries)
-        e.key: _priorityDots(e.value, cs),
+    final events = <DateTime, List<Color>>{
+      for (final e in byDate.entries) e.key: _priorityDots(e.value, cs),
     };
+    for (final e in historyByDate.entries) {
+      events[e.key] = [...?events[e.key], ..._historyDots(e.value, cs, am)];
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: AmDimens.scrollBottomPad),
@@ -99,7 +115,8 @@ class _ReminderCalendarViewState extends ConsumerState<ReminderCalendarView> {
             AmAnimateIn(
               index: 1,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
                 child: _DayHeader(date: ui.selectedDate!, l10n: l10n),
               ),
             ),
@@ -136,6 +153,44 @@ class _ReminderCalendarViewState extends ConsumerState<ReminderCalendarView> {
                     ),
                   ),
           ),
+          if (dayHistory.isNotEmpty) ...[
+            const SizedBox(height: AmDimens.gapM),
+            AmAnimateIn(
+              index: 3,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AmSectionLabel(label: l10n.remindersCalendarHistoryLabel),
+                    const SizedBox(height: AmDimens.gapXS),
+                    AmCard(
+                      noPad: true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (int i = 0; i < dayHistory.length; i++) ...[
+                            if (i > 0)
+                              Divider(
+                                height: 0,
+                                indent: AmDimens.screenH,
+                                endIndent: AmDimens.screenH,
+                                color: cs.outlineVariant,
+                              ),
+                            ReminderItem(
+                              reminder: dayHistory[i],
+                              showContextMenu: false,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
         ],
       ),

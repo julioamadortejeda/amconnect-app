@@ -799,6 +799,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersFilterDeleted => 'Deleted';
 
   @override
+  String get remindersFilterSelectTitle => 'Filter by';
+
+  @override
+  String get remindersCalendarHistoryLabel => 'History';
+
+  @override
   String get remindersDeletedWarning => 'Deleted reminders cannot be restored.';
 
   @override

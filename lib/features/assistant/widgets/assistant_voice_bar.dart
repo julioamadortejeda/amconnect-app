@@ -61,10 +61,18 @@ class AssistantVoiceBar extends StatelessWidget {
                 VoiceStatus.error => l10n.voiceChatError,
               };
 
-    return Container(
+    // Azul SOLO cuando el usuario puede hablar (escuchando, sin skill en
+    // vuelo ni error) — gris el resto del tiempo: conectando, IA
+    // respondiendo, o resolviendo una skill. Así el color solo, sin leer el
+    // texto, ya dice si es tu turno.
+    final canUserSpeak =
+        error == null && activeSkill == null && status == VoiceStatus.listening;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
-        color: AmColors.accent,
+        color: canUserSpeak ? AmColors.accent : AmColors.accentMuted,
         borderRadius: BorderRadius.circular(26),
       ),
       child: Row(
@@ -126,7 +134,8 @@ class AssistantVoiceBar extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.16),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
+              child: const Icon(Icons.close_rounded,
+                  color: Colors.white, size: 18),
             ),
           ),
         ],

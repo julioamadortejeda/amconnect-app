@@ -806,6 +806,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFilterDeleted => 'Eliminados';
 
   @override
+  String get remindersFilterSelectTitle => 'Filtrar por';
+
+  @override
+  String get remindersCalendarHistoryLabel => 'Historial';
+
+  @override
   String get remindersDeletedWarning =>
       'Los recordatorios eliminados no pueden restaurarse.';
 

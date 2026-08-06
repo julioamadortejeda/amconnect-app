@@ -344,6 +344,8 @@
   "remindersFilterCalls": "Llamadas",
   "remindersFilterCompleted": "Completados",
   "remindersFilterDeleted": "Eliminados",
+  "remindersFilterSelectTitle": "Filtrar por",
+  "remindersCalendarHistoryLabel": "Historial",
   "remindersDeletedWarning": "Los recordatorios eliminados no pueden restaurarse.",
   "remindersEmpty": "Sin recordatorios para mostrar",
   "remindersError": "Error al cargar recordatorios",

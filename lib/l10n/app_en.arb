@@ -297,6 +297,8 @@
   "remindersFilterCalls": "Calls",
   "remindersFilterCompleted": "Completed",
   "remindersFilterDeleted": "Deleted",
+  "remindersFilterSelectTitle": "Filter by",
+  "remindersCalendarHistoryLabel": "History",
   "remindersDeletedWarning": "Deleted reminders cannot be restored.",
   "remindersEmpty": "No reminders to show",
   "remindersError": "Error loading reminders",

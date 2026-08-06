@@ -1556,6 +1556,18 @@ abstract class AppLocalizations {
   /// **'Eliminados'**
   String get remindersFilterDeleted;
 
+  /// No description provided for @remindersFilterSelectTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por'**
+  String get remindersFilterSelectTitle;
+
+  /// No description provided for @remindersCalendarHistoryLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get remindersCalendarHistoryLabel;
+
   /// No description provided for @remindersDeletedWarning.
   ///
   /// In es, this message translates to:

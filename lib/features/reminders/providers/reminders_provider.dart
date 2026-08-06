@@ -26,11 +26,13 @@ class RemindersState {
     RemindersViewMode? viewMode,
     DateTime? selectedDate,
     bool clearSelectedDate = false,
-  }) => RemindersState(
-    filter: filter ?? this.filter,
-    viewMode: viewMode ?? this.viewMode,
-    selectedDate: clearSelectedDate ? null : selectedDate ?? this.selectedDate,
-  );
+  }) =>
+      RemindersState(
+        filter: filter ?? this.filter,
+        viewMode: viewMode ?? this.viewMode,
+        selectedDate:
+            clearSelectedDate ? null : selectedDate ?? this.selectedDate,
+      );
 }
 
 class RemindersNotifier extends Notifier<RemindersState> {
@@ -45,10 +47,10 @@ class RemindersNotifier extends Notifier<RemindersState> {
   void setFilter(String filter) => state = state.copyWith(filter: filter);
 
   void toggleViewMode() => state = state.copyWith(
-    viewMode: state.viewMode == RemindersViewMode.list
-        ? RemindersViewMode.calendar
-        : RemindersViewMode.list,
-  );
+        viewMode: state.viewMode == RemindersViewMode.list
+            ? RemindersViewMode.calendar
+            : RemindersViewMode.list,
+      );
 
   void selectDate(DateTime date) => state = state.copyWith(selectedDate: date);
 }
@@ -80,7 +82,26 @@ final selectedDayRemindersProvider = Provider<List<Reminder>>((ref) {
     if (!r.isActive) return false;
     final d = r.dueDate;
     if (d == null) return false;
-    return d.year == selected.year && d.month == selected.month && d.day == selected.day;
+    return d.year == selected.year &&
+        d.month == selected.month &&
+        d.day == selected.day;
+  }).toList();
+});
+
+/// Completados/cancelados del día seleccionado — apartado aparte en la vista
+/// calendario, para no perderlos al resolverse (el asesor quiere poder ver
+/// qué hizo tal día).
+final selectedDayHistoryRemindersProvider = Provider<List<Reminder>>((ref) {
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final selected = ref.watch(remindersUiProvider).selectedDate;
+  if (selected == null) return [];
+  return reminders.where((r) {
+    if (r.isActive) return false;
+    final d = r.dueDate;
+    if (d == null) return false;
+    return d.year == selected.year &&
+        d.month == selected.month &&
+        d.day == selected.day;
   }).toList();
 });
 
@@ -104,10 +125,11 @@ class CreateReminderState {
     bool? loading,
     String? error,
     bool clearError = false,
-  }) => CreateReminderState(
-    loading: loading ?? this.loading,
-    error: clearError ? null : (error ?? this.error),
-  );
+  }) =>
+      CreateReminderState(
+        loading: loading ?? this.loading,
+        error: clearError ? null : (error ?? this.error),
+      );
 }
 
 class CreateReminderNotifier extends Notifier<CreateReminderState> {
@@ -126,14 +148,14 @@ class CreateReminderNotifier extends Notifier<CreateReminderState> {
     state = state.copyWith(loading: true, clearError: true);
     try {
       final created = await ref.read(remindersProvider.notifier).create(
-        typeId: typeId,
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        contactId: contactId,
-        policyId: policyId,
-        status: status,
-      );
+            typeId: typeId,
+            title: title,
+            description: description,
+            dueDate: dueDate,
+            contactId: contactId,
+            policyId: policyId,
+            status: status,
+          );
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
@@ -176,12 +198,29 @@ final reminderNotesRealtimeProvider =
   ref.onDispose(() => channel.unsubscribe());
 });
 
-/// Mapa fecha → recordatorios para pintar puntos en el calendario.
+/// Mapa fecha → recordatorios activos, para pintar los puntos de prioridad
+/// en el calendario.
 final remindersByDateProvider = Provider<Map<DateTime, List<Reminder>>>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final map = <DateTime, List<Reminder>>{};
   for (final r in reminders) {
     if (!r.isActive) continue;
+    final d = r.dueDate;
+    if (d == null) continue;
+    final key = DateTime(d.year, d.month, d.day);
+    (map[key] ??= []).add(r);
+  }
+  return map;
+});
+
+/// Mapa fecha → recordatorios completados/cancelados, para el punto de
+/// "carga ya resuelta" del calendario (ver [selectedDayHistoryRemindersProvider]).
+final remindersHistoryByDateProvider =
+    Provider<Map<DateTime, List<Reminder>>>((ref) {
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final map = <DateTime, List<Reminder>>{};
+  for (final r in reminders) {
+    if (r.isActive) continue;
     final d = r.dueDate;
     if (d == null) continue;
     final key = DateTime(d.year, d.month, d.day);

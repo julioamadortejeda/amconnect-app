@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 class AmColors {
   static const accent = Color(0xFF007AC0);
+
+  /// Pill de voz cuando el usuario NO puede hablar (conectando, IA
+  /// respondiendo, skill en vuelo) — mismo pill que `accent` pero apagado,
+  /// fijo (no depende de light/dark) porque el texto/íconos encima son
+  /// blancos siempre.
+  static const accentMuted = Color(0xFF5C6775);
   static const authBg = Color(0xFF1278C5);
   static const white = Colors.white;
   static const authError = Color(0xFFFFB3B3);
