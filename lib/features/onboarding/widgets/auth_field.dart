@@ -72,6 +72,10 @@ class _AuthFieldState extends State<AuthField> {
         focusNode: _focus,
         obscureText: widget.obscure,
         keyboardType: widget.keyboardType,
+        textCapitalization: widget.obscure ||
+                widget.keyboardType == TextInputType.emailAddress
+            ? TextCapitalization.none
+            : TextCapitalization.sentences,
         textInputAction: widget.textInputAction ?? TextInputAction.next,
         onSubmitted: widget.onSubmitted,
         style: const TextStyle(

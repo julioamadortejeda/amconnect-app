@@ -10,6 +10,7 @@ class AmTextField extends StatelessWidget {
     this.obscure = false,
     this.suffix,
     this.onSubmitted,
+    this.textCapitalization = TextCapitalization.sentences,
   });
 
   final TextEditingController controller;
@@ -19,6 +20,7 @@ class AmTextField extends StatelessWidget {
   final bool obscure;
   final Widget? suffix;
   final ValueChanged<String>? onSubmitted;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,8 @@ class AmTextField extends StatelessWidget {
             controller: controller,
             keyboardType: keyboardType,
             obscureText: obscure,
+            textCapitalization:
+                obscure ? TextCapitalization.none : textCapitalization,
             onSubmitted: onSubmitted,
             style: TextStyle(fontSize: 15.5, color: cs.onSurface),
             decoration: InputDecoration(

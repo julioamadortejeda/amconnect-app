@@ -812,6 +812,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersCalendarHistoryLabel => 'Historial';
 
   @override
+  String get remindersGroupOverdue => 'Vencidos';
+
+  @override
+  String get remindersGroupThisWeek => 'Resto de la semana';
+
+  @override
+  String get remindersGroupLater => 'Más adelante';
+
+  @override
   String get remindersDeletedWarning =>
       'Los recordatorios eliminados no pueden restaurarse.';
 

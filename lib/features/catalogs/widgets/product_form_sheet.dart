@@ -238,6 +238,7 @@ class _ProductFormSheetState extends ConsumerState<ProductFormSheet> {
                     label: l10n.catalogsFieldName,
                     controller: _nameCtrl,
                     icon: Icons.local_offer_outlined,
+                    textCapitalization: TextCapitalization.words,
                   ),
                 ]),
                 const SizedBox(height: AmDimens.gapM),

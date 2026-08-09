@@ -149,6 +149,7 @@ class _BranchFormSheetState extends ConsumerState<BranchFormSheet> {
                     label: l10n.catalogsFieldName,
                     controller: _nameCtrl,
                     icon: Icons.category_outlined,
+                    textCapitalization: TextCapitalization.words,
                   ),
                 ]),
                 const SizedBox(height: AmDimens.gapM),

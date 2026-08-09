@@ -13,6 +13,7 @@ class AmFormRow extends StatelessWidget {
     this.keyboardType,
     this.minLines = 1,
     this.maxLines = 1,
+    this.textCapitalization = TextCapitalization.sentences,
   });
 
   final String label;
@@ -21,6 +22,7 @@ class AmFormRow extends StatelessWidget {
   final TextInputType? keyboardType;
   final int minLines;
   final int maxLines;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class AmFormRow extends StatelessWidget {
                   keyboardType: keyboardType,
                   minLines: minLines,
                   maxLines: maxLines,
+                  textCapitalization: textCapitalization,
                   style: TextStyle(fontSize: 15, color: cs.onSurface),
                   decoration: InputDecoration(
                     border: InputBorder.none,

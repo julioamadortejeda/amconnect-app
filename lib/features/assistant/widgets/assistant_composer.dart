@@ -48,6 +48,7 @@ class AssistantComposer extends StatelessWidget {
               enabled: !isLoading,
               minLines: 1,
               maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
               style: TextStyle(fontSize: 15, color: cs.onSurface),
               decoration: InputDecoration(
                 border: InputBorder.none,

@@ -132,6 +132,7 @@ class _AmCancelDialogState extends State<AmCancelDialog> {
                     maxLines: 3,
                     minLines: 2,
                     autofocus: true,
+                    textCapitalization: TextCapitalization.sentences,
                     style: TextStyle(fontSize: 15, color: cs.onSurface),
                     onChanged: (_) {
                       if (_showError) setState(() => _showError = false);

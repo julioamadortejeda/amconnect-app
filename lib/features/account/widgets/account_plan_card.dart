@@ -31,9 +31,7 @@ class AccountPlanCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: [
-          BoxShadow(color: AmColors.shadowLow, blurRadius: 16),
-        ],
+        boxShadow: AmShadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

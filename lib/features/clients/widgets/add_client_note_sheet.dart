@@ -68,6 +68,7 @@ class _AddClientNoteSheetState extends State<AddClientNoteSheet> {
               minLines: 3,
               maxLines: 6,
               maxLength: 300,
+              textCapitalization: TextCapitalization.sentences,
               style: TextStyle(fontSize: 14.5, color: cs.onSurface),
               decoration: InputDecoration(
                 hintText: l10n.clientsAddNoteHint,

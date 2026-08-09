@@ -1568,6 +1568,24 @@ abstract class AppLocalizations {
   /// **'Historial'**
   String get remindersCalendarHistoryLabel;
 
+  /// No description provided for @remindersGroupOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencidos'**
+  String get remindersGroupOverdue;
+
+  /// No description provided for @remindersGroupThisWeek.
+  ///
+  /// In es, this message translates to:
+  /// **'Resto de la semana'**
+  String get remindersGroupThisWeek;
+
+  /// No description provided for @remindersGroupLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Más adelante'**
+  String get remindersGroupLater;
+
   /// No description provided for @remindersDeletedWarning.
   ///
   /// In es, this message translates to:

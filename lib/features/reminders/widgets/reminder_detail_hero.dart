@@ -139,6 +139,7 @@ class ReminderDetailHero extends StatelessWidget {
           editing
               ? TextField(
                   controller: titleCtrl,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -168,6 +169,7 @@ class ReminderDetailHero extends StatelessWidget {
                   controller: descCtrl,
                   minLines: 2,
                   maxLines: 5,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(fontSize: 14.5, color: cs.onSurface),
                   decoration: InputDecoration(
                     border: InputBorder.none,

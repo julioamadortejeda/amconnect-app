@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/repositories/reminder_repository.dart';
+import '../../../core/utils/reminder_utils.dart';
 import '../../../core/repositories/supabase_agent_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
@@ -65,7 +66,8 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     if (state.asData?.value.any((r) => r.id == id) == true) return;
     final reminder = await _repo.getById(id);
     if (reminder == null) return;
-    state = AsyncData([...state.requireValue, reminder]);
+    state = AsyncData([...state.requireValue, reminder]
+      ..sort(compareReminderDueDate));
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -83,7 +85,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData([
       for (final r in state.requireValue)
         if (r.id == id) reminder else r,
-    ]);
+    ]..sort(compareReminderDueDate));
   }
 
   void _onDelete(Map<String, dynamic> row) {
@@ -99,7 +101,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData([
       for (final r in state.requireValue)
         if (r.id == id) updated else r,
-    ]);
+    ]..sort(compareReminderDueDate));
   }
 
   Future<void> reschedule(String id, DateTime dueDate) async {
@@ -319,14 +321,7 @@ final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
   final clientsCount = ref.watch(contactsCountProvider).asData?.value ?? 0;
 
   final pending = reminders.where((r) => r.isActive).toList()
-    ..sort((a, b) {
-      final aDate = a.dueDate;
-      final bDate = b.dueDate;
-      if (aDate == null && bDate == null) return 0;
-      if (aDate == null) return 1;
-      if (bDate == null) return -1;
-      return aDate.compareTo(bDate);
-    });
+    ..sort(compareReminderDueDate);
   final urgentCount = pending.where((r) => r.isUrgent).length;
   final porRenovar = pending.where((r) => r.isRenewal).length;
   final followUps = (pending.where((r) => r.isFollowUp).toList())

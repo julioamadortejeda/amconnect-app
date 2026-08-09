@@ -159,8 +159,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 child: _saving

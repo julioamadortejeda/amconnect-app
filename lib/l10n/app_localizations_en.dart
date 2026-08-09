@@ -805,6 +805,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersCalendarHistoryLabel => 'History';
 
   @override
+  String get remindersGroupOverdue => 'Overdue';
+
+  @override
+  String get remindersGroupThisWeek => 'Rest of the week';
+
+  @override
+  String get remindersGroupLater => 'Later';
+
+  @override
   String get remindersDeletedWarning => 'Deleted reminders cannot be restored.';
 
   @override

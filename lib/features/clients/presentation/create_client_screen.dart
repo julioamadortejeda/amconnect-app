@@ -173,6 +173,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                       label: l10n.fieldFullName,
                       controller: _nameCtrl,
                       icon: Icons.person_outline,
+                      textCapitalization: TextCapitalization.words,
                     ),
                     const AmFormDivider(),
                     AmFormRow(
@@ -203,6 +204,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                       controller: _phoneCtrl,
                       icon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
+                      textCapitalization: TextCapitalization.none,
                     ),
                     if (!phoneValid)
                       Padding(
@@ -219,6 +221,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                       controller: _emailCtrl,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
+                      textCapitalization: TextCapitalization.none,
                     ),
                     const AmFormDivider(),
                     AmFormRow(
@@ -238,6 +241,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                             label: l10n.fieldRfc,
                             controller: _rfcCtrl,
                             icon: Icons.badge_outlined,
+                            textCapitalization: TextCapitalization.characters,
                           ),
                         ),
                         Expanded(
@@ -245,6 +249,7 @@ class _CreateClientScreenState extends ConsumerState<CreateClientScreen> {
                             label: l10n.fieldCurp,
                             controller: _curpCtrl,
                             icon: Icons.fingerprint,
+                            textCapitalization: TextCapitalization.characters,
                           ),
                         ),
                       ],

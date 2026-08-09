@@ -124,6 +124,7 @@ class _TextIngestSheetState extends ConsumerState<TextIngestSheet> {
               minLines: 4,
               autofocus: true,
               textInputAction: TextInputAction.newline,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 hintText: l10n.feedTextInputHint,
                 hintStyle: TextStyle(color: cs.tertiary, fontSize: 14),

@@ -32,6 +32,7 @@ class ClientSearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               onChanged: onChanged,
+              textCapitalization: TextCapitalization.sentences,
               style: TextStyle(fontSize: 15, color: cs.onSurface),
               decoration: InputDecoration(
                 border: InputBorder.none,

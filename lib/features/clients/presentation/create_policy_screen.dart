@@ -668,6 +668,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                             icon: Icons.shield_outlined,
                             keyboardType: const TextInputType.numberWithOptions(
                                 decimal: true),
+                            textCapitalization: TextCapitalization.none,
                           ),
                         ),
                         Expanded(
@@ -677,6 +678,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                             icon: Icons.wallet_outlined,
                             keyboardType: const TextInputType.numberWithOptions(
                                 decimal: true),
+                            textCapitalization: TextCapitalization.none,
                           ),
                         ),
                       ],
@@ -686,6 +688,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       label: l10n.policiesDeductible,
                       controller: _deductibleCtrl,
                       icon: Icons.price_change_outlined,
+                      textCapitalization: TextCapitalization.none,
                     ),
                   ]),
                   const SizedBox(height: AmDimens.gapM),
