@@ -1,8 +1,6 @@
 {
   "@@locale": "en",
-
   "appTitle": "AMConnect Advisor",
-
   "commonTerms": "By continuing, you accept the Terms and Privacy Policy.",
   "commonClose": "Close",
   "commonCancel": "Cancel",
@@ -15,7 +13,6 @@
   "homeEmptyPendientes": "No pending reminders",
   "homeEmptySeguimientos": "No active follow-ups",
   "homeEmptyClientes": "No clients registered yet",
-
   "loginWelcomeTitle": "Welcome to\nAMConnect",
   "loginWelcomeSubtitle": "Your intelligent assistant. Manage your clients, policies, and reminders — and ask it anything.",
   "loginContinueApple": "Continue with Apple",
@@ -24,7 +21,6 @@
   "loginGuest": "Explore as guest",
   "loginErrGoogle": "Couldn't sign in with Google.",
   "loginErrApple": "Couldn't sign in with Apple.",
-
   "emailLoginTitle": "Sign in",
   "emailLoginSubtitle": "Enter your email and password",
   "emailLoginForgot": "Forgot your password?",
@@ -36,7 +32,11 @@
   "forgotPasswordSubtitleReset": "Enter the code we sent you and your new password.",
   "forgotPasswordCodeSentTo": "We sent a code to {email}",
   "@forgotPasswordCodeSentTo": {
-    "placeholders": { "email": { "type": "String" } }
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
   },
   "forgotPasswordSendCodeBtn": "Send code",
   "forgotPasswordResetBtn": "Reset password",
@@ -46,13 +46,11 @@
   "forgotPasswordSuccessBtn": "Sign in",
   "errRequestCodeFailed": "We couldn't send the code. Please try again.",
   "errInvalidCode": "The code is invalid or has expired.",
-
   "registerTitle": "Create account",
   "registerSubtitle": "Sign up to start using AMConnect",
   "registerBtn": "Create account",
   "registerHasAccount": "Already have an account? ",
   "registerSignIn": "Sign in",
-
   "fieldEmail": "Email address",
   "fieldPassword": "Password",
   "fieldConfirm": "Confirm password",
@@ -65,7 +63,6 @@
   "fieldRfc": "RFC",
   "fieldCurp": "CURP",
   "fieldNotes": "Notes",
-
   "accountProfileTitle": "Profile",
   "accountPlanTitle": "Your plan",
   "accountEdit": "Edit",
@@ -74,7 +71,11 @@
   "accountErrSave": "Couldn't save changes. Please try again.",
   "accountPlanPrice": "{price} MXN/month",
   "@accountPlanPrice": {
-    "placeholders": { "price": { "type": "String" } }
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "accountPlanStatusTrial": "Trial",
   "accountPlanStatusActive": "Active",
@@ -82,15 +83,23 @@
   "accountPlanStatusCancelled": "Cancelled",
   "accountTrialDaysLeft": "{count} days left in trial",
   "@accountTrialDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "accountUsageChatLabel": "Chat messages",
   "accountUsageIngestionsLabel": "Documents processed",
   "accountUsageFormat": "{used} of {limit}",
   "@accountUsageFormat": {
     "placeholders": {
-      "used": { "type": "int" },
-      "limit": { "type": "int" }
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
     }
   },
   "accountSignOutTitle": "Sign out?",
@@ -98,7 +107,6 @@
   "accountHelpTitle": "Help",
   "accountHelp": "Help & support",
   "accountNotificationsDisabled": "Notifications disabled",
-
   "errInvalidEmail": "Enter a valid email address",
   "errEmptyCredentials": "Please fill in all fields",
   "errWrongCredentials": "Email or password is incorrect",
@@ -122,19 +130,19 @@
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {
-      "ref": {"type": "String"}
+      "ref": {
+        "type": "String"
+      }
     }
   },
   "errFilePickerTimeout": "File selection took too long. Please try again.",
   "errFilePickerOpen": "Could not open the file picker.",
   "errFilePathUnavailable": "Could not get the path of the selected file.",
   "errFileOpenFailed": "Couldn't open the file. Please try again.",
-
   "shellHome": "Home",
   "shellAgenda": "Agenda",
   "shellClients": "Portfolio",
   "shellData": "Data",
-
   "analyticsTitle": "Portfolio Analytics",
   "analyticsFunnelTitle": "Sales Funnel",
   "analyticsFunnelProspects": "Prospects",
@@ -146,7 +154,6 @@
   "analyticsPolicyPending": "In Underwriting",
   "analyticsBranchDist": "Diversification by Line of Business",
   "analyticsCarrierDist": "Distribution by Carrier",
-
   "homeNotificationsBannerTitle": "Notifications disabled",
   "homeNotificationsBannerSubtitle": "Turn them on so you don't miss your reminders",
   "homeTitle": "AMConnect",
@@ -170,41 +177,36 @@
   "homeViewAllCount": "View all ({count})",
   "@homeViewAllCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "currencyMXN": "Mexican Peso",
   "currencyUSD": "US Dollar",
-
   "paymentMethodDirectDebit": "Direct Debit",
   "paymentMethodBankTransfer": "Bank Transfer",
   "paymentMethodCheck": "Check",
   "paymentMethodCash": "Cash",
   "paymentMethodCreditCard": "Credit Card",
-
   "paymentFrequencyMonthly": "Monthly",
   "paymentFrequencyQuarterly": "Quarterly",
   "paymentFrequencySemiannual": "Semiannual",
   "paymentFrequencyAnnual": "Annual",
-
   "participantRoleHolder": "Holder",
   "participantRoleInsured": "Insured",
   "participantRolePolicyholder": "Policyholder",
   "participantRoleDependent": "Dependent",
-
   "policyStatusActive": "Active",
   "policyStatusCancelled": "Cancelled",
   "policyStatusExpired": "Expired",
   "policyStatusPending": "Pending",
   "policyStatusSuspended": "Suspended",
-
   "reminderStatusCreated": "Created",
   "reminderStatusInProgress": "In Progress",
   "reminderStatusDone": "Done",
   "reminderStatusCancelled": "Cancelled",
   "reminderStatusPaused": "Paused",
-
   "reminderTypePayment": "Payment",
   "reminderTypeRenewal": "Renewal",
   "reminderTypeCancellation": "Cancellation",
@@ -213,7 +215,6 @@
   "reminderTypeAppointment": "Appointment",
   "reminderTypeAnniversary": "Policy Anniversary",
   "reminderTypeOther": "Other",
-
   "clientsTitle": "Clients",
   "clientsTotal": "{count} total",
   "clientsSearchHint": "Search client…",
@@ -237,11 +238,19 @@
   "clientsStatusUpToDate": "Up to date",
   "clientsAge": "{count} years old",
   "@clientsAge": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsMemberSince": "Client since {year}",
   "@clientsMemberSince": {
-    "placeholders": { "year": { "type": "int" } }
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
   },
   "clientsNewClient": "Client",
   "clientsNewTitle": "New client",
@@ -282,12 +291,15 @@
   "clientsPolicyFileObsolete": "Obsolete",
   "clientsPolicyOldVersions": "Previous versions ({count})",
   "@clientsPolicyOldVersions": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsPolicyDeleteNoteTitle": "Delete file",
   "clientsPolicyDeleteNoteMsg": "This version is no longer active. Do you want to delete it?",
   "clientsAskAbout": "Ask about {name}",
-
   "remindersAskAbout": "Ask about this",
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pending",
@@ -336,7 +348,6 @@
   "remindersPolicyNeedsClient": "Choose a client first",
   "remindersPickDateTitle": "Reminder date & time",
   "remindersPickDateMessage": "Choose when you want to be reminded.",
-
   "voiceListening": "Listening…",
   "voiceTapToClose": "Tap to close",
   "voiceInputHint": "Ask anything…",
@@ -375,7 +386,6 @@
   "voiceSkillSavingCatalog": "Saving to catalog…",
   "voiceSkillPendingTask": "Noting a pending item…",
   "voiceSkillKnowledge": "Searching your knowledge base…",
-
   "assistantVoiceActive": "Voice active",
   "chatTitle": "Assistant",
   "chatBackendFree": "Free",
@@ -392,7 +402,6 @@
   "chatCardPolicyInfoTitle": "Policy Found",
   "chatCardActionCall": "Call",
   "chatCardActionWhatsApp": "WhatsApp",
-
   "feedTitle": "Knowledge base",
   "feedSubtitle": "Feed the app",
   "feedQuestion": "What do you want to add?",
@@ -445,28 +454,38 @@
   "feedSearchNoResults": "No notes or documents found.",
   "feedStatsTitle": "Knowledge Summary",
   "feedAllNotesTitle": "All Notes",
-
   "feedSuccessTitle": "Policy created",
   "feedSuccessUpdateTitle": "Policy updated",
   "feedSuccessFieldsSaved": "{count} fields saved",
   "@feedSuccessFieldsSaved": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessNewOne": "1 new reminder",
   "feedSuccessNewMany": "{count} new reminders",
   "@feedSuccessNewMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessExistingOne": "1 already existed",
   "feedSuccessExistingMany": "{count} already existed",
   "@feedSuccessExistingMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessRemindersSection": "REMINDERS",
   "feedSuccessReminderNew": "New",
   "feedSuccessReminderExisting": "Already existed",
   "feedSuccessDone": "Done",
-
   "feedKnowledgeSuccessTitle": "Saved!",
   "feedKnowledgeDone": "Close",
   "feedTextInputTitle": "Add note or text",
@@ -485,31 +504,45 @@
   "feedIngestPolicyNumberLabel": "Policy No.",
   "feedIngestPremiumLabel": "Premium",
   "feedIngestValidityLabel": "Validity",
-
   "feedContactMismatchTitle": "Who should we assign this policy to?",
   "feedContactMismatchBody": "The document shows {detectedName} as the policyholder, but you're on {screenName}'s screen.",
   "@feedContactMismatchBody": {
     "placeholders": {
-      "detectedName": { "type": "String" },
-      "screenName": { "type": "String" }
+      "detectedName": {
+        "type": "String"
+      },
+      "screenName": {
+        "type": "String"
+      }
     }
   },
   "feedContactMismatchAssignCta": "Yes, assign to {screenName}",
   "@feedContactMismatchAssignCta": {
-    "placeholders": { "screenName": { "type": "String" } }
+    "placeholders": {
+      "screenName": {
+        "type": "String"
+      }
+    }
   },
   "feedContactMismatchUseDetectedCta": "No, use {detectedName}",
   "@feedContactMismatchUseDetectedCta": {
-    "placeholders": { "detectedName": { "type": "String" } }
+    "placeholders": {
+      "detectedName": {
+        "type": "String"
+      }
+    }
   },
   "feedContactMismatchResolvedBanner": "This policy will be assigned to {screenName}. The document identified {detectedName} as the policyholder.",
   "@feedContactMismatchResolvedBanner": {
     "placeholders": {
-      "screenName": { "type": "String" },
-      "detectedName": { "type": "String" }
+      "screenName": {
+        "type": "String"
+      },
+      "detectedName": {
+        "type": "String"
+      }
     }
   },
-
   "remindersActionDone": "Mark done",
   "remindersActionInProgress": "In progress",
   "remindersActionReschedule": "Reschedule",
@@ -533,7 +566,6 @@
   "remindersCancelTitle": "Cancel Reminder",
   "remindersCancelHint": "Type the reason for cancellation...",
   "remindersCancelConfirmBtn": "Confirm",
-
   "remindersDetailTitle": "Reminder",
   "remindersDetailEdit": "Edit",
   "remindersDetailSave": "Save",
@@ -559,13 +591,20 @@
   "remindersDetailTomorrow": "Tomorrow",
   "remindersDetailDaysLeft": "{count}d",
   "@remindersDetailDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "remindersDetailDaysOverdue": "{count}d overdue",
   "@remindersDetailDaysOverdue": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "@_policyCreate": {},
   "policiesNewPolicyTitle": "New Policy",
   "policiesPolicyNumber": "Policy number",
@@ -593,7 +632,6 @@
   "policiesEditPolicyTitle": "Edit Policy",
   "policiesSaveChangesBtn": "Save changes",
   "policiesUpdatedSuccess": "Policy updated successfully",
-
   "policiesDetailTitle": "Policy detail",
   "policiesDetailLoadError": "Couldn't load the policy.",
   "policiesDetailCoverage": "Coverage and payment",
@@ -609,7 +647,6 @@
   "policiesErrDeleteNote": "Couldn't delete the note. Please try again.",
   "policiesErrAddNote": "Couldn't add the note. Please try again.",
   "policiesAttachFile": "Attach",
-
   "catalogsTitle": "Catalogs",
   "catalogsTypeCarriers": "Carriers",
   "catalogsTypeBranches": "Branches",
@@ -653,17 +690,29 @@
   "shareTargetNoticeGlobal": "It will be processed as a note in your general knowledge base.",
   "shareTargetNoticeClient": "It will be processed as a note in {name}'s file.",
   "@shareTargetNoticeClient": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickClient": "Pick a client to save this content as a note in their file.",
   "shareTargetNoticePolicy": "It will be processed as a note on policy {policy}.",
   "@shareTargetNoticePolicy": {
-    "placeholders": { "policy": { "type": "String" } }
+    "placeholders": {
+      "policy": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickPolicy": "Pick a policy to save this content as one of its notes.",
   "shareTargetNoticeReminder": "It will be processed as a note linked to reminder {reminder}.",
   "@shareTargetNoticeReminder": {
-    "placeholders": { "reminder": { "type": "String" } }
+    "placeholders": {
+      "reminder": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickReminder": "Pick a reminder to link this content to as a note.",
   "shareTargetActionIngest": "Upload resource",
@@ -700,23 +749,75 @@
   "chatSuggestion4": "Payments this week?",
   "chatContextSuggestionContact": "Ask me anything about **{name}**.",
   "@chatContextSuggestionContact": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionPolicy": "Ask me anything about this **{carrier}** policy.",
   "@chatContextSuggestionPolicy": {
-    "placeholders": { "carrier": { "type": "String" } }
+    "placeholders": {
+      "carrier": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionReminder": "Ask me anything about this reminder: **{title}**.",
   "@chatContextSuggestionReminder": {
-    "placeholders": { "title": { "type": "String" } }
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionKnowledge": "Ask me anything about **{fileName}**.",
   "@chatContextSuggestionKnowledge": {
-    "placeholders": { "fileName": { "type": "String" } }
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionKnowledgeGeneric": "Ask me anything about this document you uploaded.",
   "policiesSectionInsuranceDetails": "Insurance details",
   "policiesSectionParamsPayment": "Parameters & payment",
   "policiesSectionAmountsCoverage": "Amounts & coverage",
-  "policiesSectionDatesValidity": "Validity & payment dates"
+  "policiesSectionDatesValidity": "Validity & payment dates",
+  "reminderTypeBirthday": "Birthday",
+  "reminderSettingsTitle": "Automatic alerts",
+  "reminderSettingsSubtitle": "How far ahead we warn you",
+  "reminderSettingsIntro": "The app warns you about payments, renewals, anniversaries and birthdays on its own. Choose how early here.",
+  "reminderSettingsSameDay": "On the day",
+  "reminderSettingsDaysBefore": "{days} days before",
+  "@reminderSettingsDaysBefore": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderSettingsOff": "No alerts",
+  "reminderSettingsBranchExceptions": "Exceptions by branch",
+  "reminderSettingsAddException": "Add exception",
+  "reminderSettingsAllBranches": "All branches",
+  "reminderSettingsPickDays": "Advance notice",
+  "reminderSettingsPickBranch": "Choose the branch",
+  "reminderSettingsNoBranches": "You don't have any branches in your catalog yet",
+  "policiesPaymentRule": "Payment days",
+  "policiesPaymentMonthly": "Every {day} of the month",
+  "@policiesPaymentMonthly": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "policiesActivityTitle": "Activity",
+  "policiesActivityUpcoming": "Upcoming",
+  "policiesActivityHistory": "History",
+  "policiesActivityEmpty": "No reminders for this policy",
+  "reminderSettingsRemoveException": "Remove exception",
+  "reminderSettingsDefault": "All other branches",
+  "reminderSettingsHint": "Tap an advance notice to change it. Branch exceptions override the value above."
 }

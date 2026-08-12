@@ -10,6 +10,7 @@ import '../../../core/network/api_client.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
+import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../../core/repositories/policy_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
 import '../../../core/models/ai_chat_context.dart';
@@ -552,6 +553,33 @@ final contactNotesProvider =
 final policyNotesProvider =
     FutureProvider.family<List<AgentNote>, String>((ref, policyId) async {
   return ref.read(noteRepositoryProvider).getByPolicyId(policyId);
+});
+
+/// Recordatorios de una póliza — incluye los cerrados, porque es el historial
+/// de pagos y renovaciones que se muestra en su detalle.
+final policyRemindersProvider =
+    FutureProvider.family<List<Reminder>, String>((ref, policyId) async {
+  return ref.read(reminderRepositoryProvider).getByPolicy(policyId);
+});
+
+/// Observar este provider mantiene al día la actividad de una póliza.
+final policyRemindersRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, policyId) {
+  final channel = Supabase.instance.client
+      .channel('reminders:policy:$policyId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'reminders',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'policy_id',
+          value: policyId,
+        ),
+        callback: (_) => ref.invalidate(policyRemindersProvider(policyId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
 });
 
 // Watching this provider activates Realtime for notes of a contact.

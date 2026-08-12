@@ -9,7 +9,8 @@ IconData reminderIcon(String type) => switch (type) {
       'FOLLOW_UP' => Icons.flag_outlined,
       'CALL' => Icons.phone_outlined,
       'APPOINTMENT' => Icons.event_outlined,
-      'ANNIVERSARY' => Icons.cake,
+      'ANNIVERSARY' => Icons.workspace_premium_outlined,
+      'BIRTHDAY' => Icons.cake_outlined,
       _ => Icons.notifications_outlined,
     };
 
@@ -21,6 +22,7 @@ const _reminderTypeOrder = [
   'CALL',
   'APPOINTMENT',
   'ANNIVERSARY',
+  'BIRTHDAY',
   'OTHER',
 ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -213,6 +214,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       AmSectionLabel(label: l10n.accountHelpTitle),
                       const SizedBox(height: AmDimens.gapXS),
                       AmGroupCard(children: [
+                        AmInfoRow(
+                          icon: Icons.notifications_active_outlined,
+                          label: l10n.reminderSettingsTitle,
+                          trailing: const SizedBox.shrink(),
+                          chevron: true,
+                          onTap: () => context.push('/reminder-settings'),
+                        ),
                         AmInfoRow(
                           icon: Icons.help_outline,
                           label: l10n.accountHelp,

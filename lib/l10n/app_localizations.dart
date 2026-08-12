@@ -3692,6 +3692,138 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Fechas de Vigencia y Pago'**
   String get policiesSectionDatesValidity;
+
+  /// No description provided for @reminderTypeBirthday.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumpleaños'**
+  String get reminderTypeBirthday;
+
+  /// No description provided for @reminderSettingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos automáticos'**
+  String get reminderSettingsTitle;
+
+  /// No description provided for @reminderSettingsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con cuánta anticipación te avisamos'**
+  String get reminderSettingsSubtitle;
+
+  /// No description provided for @reminderSettingsIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'La app te avisa sola de pagos, renovaciones, aniversarios y cumpleaños. Aquí eliges con cuánto tiempo.'**
+  String get reminderSettingsIntro;
+
+  /// No description provided for @reminderSettingsSameDay.
+  ///
+  /// In es, this message translates to:
+  /// **'El mismo día'**
+  String get reminderSettingsSameDay;
+
+  /// No description provided for @reminderSettingsDaysBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días antes'**
+  String reminderSettingsDaysBefore(int days);
+
+  /// No description provided for @reminderSettingsOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avisos'**
+  String get reminderSettingsOff;
+
+  /// No description provided for @reminderSettingsBranchExceptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Excepciones por ramo'**
+  String get reminderSettingsBranchExceptions;
+
+  /// No description provided for @reminderSettingsAddException.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar excepción'**
+  String get reminderSettingsAddException;
+
+  /// No description provided for @reminderSettingsAllBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los ramos'**
+  String get reminderSettingsAllBranches;
+
+  /// No description provided for @reminderSettingsPickDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Anticipación'**
+  String get reminderSettingsPickDays;
+
+  /// No description provided for @reminderSettingsPickBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el ramo'**
+  String get reminderSettingsPickBranch;
+
+  /// No description provided for @reminderSettingsNoBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes ramos en tu catálogo'**
+  String get reminderSettingsNoBranches;
+
+  /// No description provided for @policiesPaymentRule.
+  ///
+  /// In es, this message translates to:
+  /// **'Días de pago'**
+  String get policiesPaymentRule;
+
+  /// No description provided for @policiesPaymentMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada día {day} del mes'**
+  String policiesPaymentMonthly(int day);
+
+  /// No description provided for @policiesActivityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad'**
+  String get policiesActivityTitle;
+
+  /// No description provided for @policiesActivityUpcoming.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos'**
+  String get policiesActivityUpcoming;
+
+  /// No description provided for @policiesActivityHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get policiesActivityHistory;
+
+  /// No description provided for @policiesActivityEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin recordatorios para esta póliza'**
+  String get policiesActivityEmpty;
+
+  /// No description provided for @reminderSettingsRemoveException.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar excepción'**
+  String get reminderSettingsRemoveException;
+
+  /// No description provided for @reminderSettingsDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los demás ramos'**
+  String get reminderSettingsDefault;
+
+  /// No description provided for @reminderSettingsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.'**
+  String get reminderSettingsHint;
 }
 
 class _AppLocalizationsDelegate

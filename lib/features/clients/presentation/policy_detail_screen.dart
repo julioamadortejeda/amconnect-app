@@ -3,6 +3,7 @@ import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/agent_note.dart';
+import '../../../core/models/reminder.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
@@ -22,6 +23,7 @@ import '../../../core/widgets/am_text_field.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
+import '../widgets/policy_activity_section.dart';
 import '../widgets/policy_detail_note_row.dart';
 import '../widgets/policy_status_chip.dart';
 import '../../../core/widgets/am_ai_ask_button.dart';
@@ -208,6 +210,12 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
     final notesAsync = ref.watch(policyNotesProvider(policy.id));
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
 
+    // Calendario de pago resuelto por el backend — la app solo lo pinta.
+    final schedule = policy.paymentSchedule;
+    ref.watch(policyRemindersRealtimeProvider(policy.id));
+    final policyReminders =
+        ref.watch(policyRemindersProvider(policy.id)).asData?.value ?? const <Reminder>[];
+
     return Scaffold(
       bottomNavigationBar: AmAiAskButton(
         label: l10n.policiesAskAbout,
@@ -350,13 +358,36 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                 label: l10n.policiesRenewalDate,
                 trailing: Text(fmtDateFromIso(policy.renewalDate)),
               ),
+              if (schedule != null) ...[
+                const AmFormDivider(),
+                AmInfoRow(
+                  icon: Icons.event_repeat_outlined,
+                  label: l10n.policiesPaymentRule,
+                  trailing: Text(
+                    schedule.frequencyMonths == 1
+                        ? l10n.policiesPaymentMonthly(schedule.ruleDays.first.day)
+                        : schedule.ruleDays
+                            .map((d) => fmtMonthDay(d.month, d.day))
+                            .join(' · '),
+                  ),
+                ),
+              ],
               const AmFormDivider(),
               AmInfoRow(
                 icon: Icons.next_plan_outlined,
                 label: l10n.policiesNextPaymentDate,
-                trailing: Text(fmtDateFromIso(policy.nextPaymentDate)),
+                // La fecha guardada es la REGLA y envejece; lo que se muestra
+                // es la siguiente ocurrencia real que calcula el backend.
+                trailing: Text(schedule != null
+                    ? fmtDate(schedule.nextPaymentAsDate)
+                    : fmtDateFromIso(policy.nextPaymentDate)),
               ),
             ]),
+            const SizedBox(height: AmDimens.gapM),
+
+            AmSectionLabel(label: l10n.policiesActivityTitle),
+            const SizedBox(height: AmDimens.gapXS),
+            PolicyActivitySection(reminders: policyReminders),
             const SizedBox(height: AmDimens.gapM),
 
             AmSectionLabel(

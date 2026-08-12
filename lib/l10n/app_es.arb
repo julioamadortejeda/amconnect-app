@@ -1,8 +1,6 @@
 {
   "@@locale": "es",
-
   "appTitle": "AMConnect Advisor",
-
   "@_common": {},
   "commonTerms": "Al continuar, aceptas los Términos y la Política de Privacidad.",
   "commonClose": "Cerrar",
@@ -19,10 +17,11 @@
   "homeViewAllCount": "Ver todos ({count})",
   "@homeViewAllCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "@_login": {},
   "loginWelcomeTitle": "Bienvenido a\nAMConnect",
   "loginWelcomeSubtitle": "Tu asistente inteligente. Concentra a tus clientes, pólizas y recordatorios — y pregúntale lo que sea.",
@@ -32,7 +31,6 @@
   "loginGuest": "Explorar como invitado",
   "loginErrGoogle": "No se pudo iniciar sesión con Google.",
   "loginErrApple": "No se pudo iniciar sesión con Apple.",
-
   "@_emailLogin": {},
   "emailLoginTitle": "Iniciar sesión",
   "emailLoginSubtitle": "Ingresa con tu correo y contraseña",
@@ -46,7 +44,11 @@
   "forgotPasswordSubtitleReset": "Ingresa el código que te enviamos y tu nueva contraseña.",
   "forgotPasswordCodeSentTo": "Enviamos un código a {email}",
   "@forgotPasswordCodeSentTo": {
-    "placeholders": { "email": { "type": "String" } }
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
   },
   "forgotPasswordSendCodeBtn": "Enviar código",
   "forgotPasswordResetBtn": "Restablecer contraseña",
@@ -56,14 +58,12 @@
   "forgotPasswordSuccessBtn": "Iniciar sesión",
   "errRequestCodeFailed": "No pudimos enviar el código. Intenta de nuevo.",
   "errInvalidCode": "El código no es válido o ya expiró.",
-
   "@_register": {},
   "registerTitle": "Crear cuenta",
   "registerSubtitle": "Regístrate para comenzar a usar AMConnect",
   "registerBtn": "Crear cuenta",
   "registerHasAccount": "¿Ya tienes cuenta? ",
   "registerSignIn": "Iniciar sesión",
-
   "@_fields": {},
   "fieldEmail": "Correo electrónico",
   "fieldPassword": "Contraseña",
@@ -77,7 +77,6 @@
   "fieldRfc": "RFC",
   "fieldCurp": "CURP",
   "fieldNotes": "Notas",
-
   "@_account": {},
   "accountProfileTitle": "Perfil",
   "accountPlanTitle": "Tu plan",
@@ -87,7 +86,11 @@
   "accountErrSave": "No se pudieron guardar los cambios. Inténtalo de nuevo.",
   "accountPlanPrice": "{price} MXN/mes",
   "@accountPlanPrice": {
-    "placeholders": { "price": { "type": "String" } }
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "accountPlanStatusTrial": "Prueba",
   "accountPlanStatusActive": "Activo",
@@ -95,15 +98,23 @@
   "accountPlanStatusCancelled": "Cancelado",
   "accountTrialDaysLeft": "{count} días restantes de prueba",
   "@accountTrialDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "accountUsageChatLabel": "Mensajes de chat",
   "accountUsageIngestionsLabel": "Documentos procesados",
   "accountUsageFormat": "{used} de {limit}",
   "@accountUsageFormat": {
     "placeholders": {
-      "used": { "type": "int" },
-      "limit": { "type": "int" }
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
     }
   },
   "accountSignOutTitle": "¿Cerrar sesión?",
@@ -111,7 +122,6 @@
   "accountHelpTitle": "Ayuda",
   "accountHelp": "Ayuda y soporte",
   "accountNotificationsDisabled": "Notificaciones desactivadas",
-
   "@_errors": {},
   "errInvalidEmail": "Ingresa un correo electrónico válido",
   "errEmptyCredentials": "Por favor, llena todos los campos",
@@ -136,20 +146,20 @@
   "errRefCode": "Código de referencia: {ref}",
   "@errRefCode": {
     "placeholders": {
-      "ref": {"type": "String"}
+      "ref": {
+        "type": "String"
+      }
     }
   },
   "errFilePickerTimeout": "La selección de archivo tardó demasiado. Intenta de nuevo.",
   "errFilePickerOpen": "No se pudo abrir el selector de archivos.",
   "errFilePathUnavailable": "No se pudo obtener la ruta del archivo seleccionado.",
   "errFileOpenFailed": "No se pudo abrir el archivo. Intenta de nuevo.",
-
   "@_shell": {},
   "shellHome": "Inicio",
   "shellAgenda": "Agenda",
   "shellClients": "Cartera",
   "shellData": "Datos",
-
   "@_analytics": {},
   "analyticsTitle": "Estadísticas de Cartera",
   "analyticsFunnelTitle": "Embudo de Prospección",
@@ -162,14 +172,17 @@
   "analyticsPolicyPending": "En Trámite",
   "analyticsBranchDist": "Diversificación por Ramo",
   "analyticsCarrierDist": "Distribución por Aseguradora",
-
   "@_home": {},
   "homeNotificationsBannerTitle": "Notificaciones desactivadas",
   "homeNotificationsBannerSubtitle": "Actívalas para no perderte tus recordatorios",
   "homeTitle": "AMConnect",
   "homeGreeting": "Hola, {name}",
   "@homeGreeting": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeGreetingDefault": "¡Hola! Buen día",
   "homeImmediateAttention": "Atención inmediata",
@@ -178,15 +191,27 @@
   "homeAiHint": "Pregúntale sobre tus clientes",
   "homeUrgentCount": "{count} urgente(s)",
   "@homeUrgentCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "homeUrgentToday": "{count} urgente(s) · hoy",
   "@homeUrgentToday": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "homeAttentionDesc": "{count} póliza(s) necesitan tu atención",
   "@homeAttentionDesc": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "homePolicies": "Pólizas",
   "homeToRenew": "Por renovar",
@@ -196,44 +221,37 @@
   "homeClientesRecientes": "Clientes recientes",
   "homeViewAgenda": "Ver agenda",
   "homeViewAll": "Ver todos",
-
   "@_currencies": {},
   "currencyMXN": "Peso Mexicano",
   "currencyUSD": "Dólar Americano",
-
   "@_paymentMethods": {},
   "paymentMethodDirectDebit": "Domiciliación",
   "paymentMethodBankTransfer": "Transferencia Bancaria",
   "paymentMethodCheck": "Cheque",
   "paymentMethodCash": "Efectivo",
   "paymentMethodCreditCard": "Tarjeta de Crédito",
-
   "@_paymentFrequencies": {},
   "paymentFrequencyMonthly": "Mensual",
   "paymentFrequencyQuarterly": "Trimestral",
   "paymentFrequencySemiannual": "Semestral",
   "paymentFrequencyAnnual": "Anual",
-
   "@_participantRoles": {},
   "participantRoleHolder": "Titular",
   "participantRoleInsured": "Asegurado",
   "participantRolePolicyholder": "Contratante",
   "participantRoleDependent": "Dependiente",
-
   "@_policyStatuses": {},
   "policyStatusActive": "Vigente",
   "policyStatusCancelled": "Cancelada",
   "policyStatusExpired": "Vencida",
   "policyStatusPending": "Pendiente",
   "policyStatusSuspended": "Suspendida",
-
   "@_reminderStatuses": {},
   "reminderStatusCreated": "Creado",
   "reminderStatusInProgress": "En Proceso",
   "reminderStatusDone": "Completado",
   "reminderStatusCancelled": "Cancelado",
   "reminderStatusPaused": "En Pausa",
-
   "@_reminderTypes": {},
   "reminderTypePayment": "Pago",
   "reminderTypeRenewal": "Renovación",
@@ -243,12 +261,15 @@
   "reminderTypeAppointment": "Cita",
   "reminderTypeAnniversary": "Aniversario de Póliza",
   "reminderTypeOther": "Otro",
-
   "@_clients": {},
   "clientsTitle": "Clientes",
   "clientsTotal": "{count} en total",
   "@clientsTotal": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsSearchHint": "Buscar cliente…",
   "clientsTabClients": "Clientes",
@@ -271,11 +292,19 @@
   "clientsStatusUpToDate": "Al día",
   "clientsAge": "{count} años",
   "@clientsAge": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsMemberSince": "Cliente desde {year}",
   "@clientsMemberSince": {
-    "placeholders": { "year": { "type": "int" } }
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
   },
   "clientsNewClient": "Cliente",
   "clientsNewTitle": "Nuevo cliente",
@@ -306,11 +335,19 @@
   "clientsActionInvalidPhone": "El teléfono de este cliente no es válido",
   "clientsPoliciesTab": "Pólizas · {count}",
   "@clientsPoliciesTab": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsNotesTab": "Notas · {count}",
   "@clientsNotesTab": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsPolicyActive": "Vigente",
   "clientsPolicySumInsured": "Suma asegurada",
@@ -322,21 +359,32 @@
   "clientsPolicyFileObsolete": "Obsoleto",
   "clientsPolicyOldVersions": "Versiones anteriores ({count})",
   "@clientsPolicyOldVersions": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsPolicyDeleteNoteTitle": "Eliminar archivo",
   "clientsPolicyDeleteNoteMsg": "Esta versión ya no está activa. ¿Deseas eliminarla?",
   "clientsAskAbout": "Preguntar sobre {name}",
   "@clientsAskAbout": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
-
   "@_reminders": {},
   "remindersAskAbout": "Preguntar sobre esto",
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pendientes",
   "@remindersPendingCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "remindersFilterAll": "Todos",
   "remindersFilterPayments": "Pagos",
@@ -383,7 +431,6 @@
   "remindersPolicyNeedsClient": "Elige un cliente primero",
   "remindersPickDateTitle": "Fecha y hora del recordatorio",
   "remindersPickDateMessage": "Elige cuándo quieres que te recuerde esto.",
-
   "@_voice": {},
   "voiceListening": "Escuchando…",
   "voiceTapToClose": "Toca para cerrar",
@@ -423,7 +470,6 @@
   "voiceSkillSavingCatalog": "Guardando en catálogo…",
   "voiceSkillPendingTask": "Anotando pendiente…",
   "voiceSkillKnowledge": "Buscando en tu base de conocimiento…",
-
   "@_chat": {},
   "assistantVoiceActive": "Voz activa",
   "chatTitle": "Asistente",
@@ -441,7 +487,6 @@
   "chatCardPolicyInfoTitle": "Póliza Encontrada",
   "chatCardActionCall": "Llamar",
   "chatCardActionWhatsApp": "WhatsApp",
-
   "@_feed": {},
   "feedTitle": "Base de conocimiento",
   "feedSubtitle": "Alimentar la app",
@@ -495,28 +540,38 @@
   "feedSearchNoResults": "No se encontraron notas o documentos.",
   "feedStatsTitle": "Resumen de conocimiento",
   "feedAllNotesTitle": "Todas las notas",
-
   "feedSuccessTitle": "Póliza creada",
   "feedSuccessUpdateTitle": "Póliza actualizada",
   "feedSuccessFieldsSaved": "{count} datos guardados",
   "@feedSuccessFieldsSaved": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessNewOne": "1 recordatorio nuevo",
   "feedSuccessNewMany": "{count} recordatorios nuevos",
   "@feedSuccessNewMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessExistingOne": "1 ya existía",
   "feedSuccessExistingMany": "{count} ya existían",
   "@feedSuccessExistingMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessRemindersSection": "RECORDATORIOS",
   "feedSuccessReminderNew": "Nuevo",
   "feedSuccessReminderExisting": "Ya existía",
   "feedSuccessDone": "Listo",
-
   "feedKnowledgeSuccessTitle": "¡Guardado!",
   "feedKnowledgeDone": "Cerrar",
   "feedTextInputTitle": "Agregar nota o texto",
@@ -535,31 +590,45 @@
   "feedIngestPolicyNumberLabel": "Nº Póliza",
   "feedIngestPremiumLabel": "Prima",
   "feedIngestValidityLabel": "Vigencia",
-
   "feedContactMismatchTitle": "¿A quién asignamos esta póliza?",
   "feedContactMismatchBody": "El documento indica que el titular es {detectedName}, pero estás en la pantalla de {screenName}.",
   "@feedContactMismatchBody": {
     "placeholders": {
-      "detectedName": { "type": "String" },
-      "screenName": { "type": "String" }
+      "detectedName": {
+        "type": "String"
+      },
+      "screenName": {
+        "type": "String"
+      }
     }
   },
   "feedContactMismatchAssignCta": "Sí, asignar a {screenName}",
   "@feedContactMismatchAssignCta": {
-    "placeholders": { "screenName": { "type": "String" } }
+    "placeholders": {
+      "screenName": {
+        "type": "String"
+      }
+    }
   },
   "feedContactMismatchUseDetectedCta": "No, usar {detectedName}",
   "@feedContactMismatchUseDetectedCta": {
-    "placeholders": { "detectedName": { "type": "String" } }
+    "placeholders": {
+      "detectedName": {
+        "type": "String"
+      }
+    }
   },
   "feedContactMismatchResolvedBanner": "Esta póliza se asignará a {screenName}. El documento identificaba a {detectedName} como titular.",
   "@feedContactMismatchResolvedBanner": {
     "placeholders": {
-      "screenName": { "type": "String" },
-      "detectedName": { "type": "String" }
+      "screenName": {
+        "type": "String"
+      },
+      "detectedName": {
+        "type": "String"
+      }
     }
   },
-
   "@_reminderActions": {},
   "remindersActionDone": "Finalizar",
   "remindersActionInProgress": "En proceso",
@@ -584,7 +653,6 @@
   "remindersCancelTitle": "Cancelar Recordatorio",
   "remindersCancelHint": "Escribe el motivo de la cancelación...",
   "remindersCancelConfirmBtn": "Confirmar",
-
   "@_reminderDetail": {},
   "remindersDetailTitle": "Recordatorio",
   "remindersDetailEdit": "Editar",
@@ -611,13 +679,20 @@
   "remindersDetailTomorrow": "Mañana",
   "remindersDetailDaysLeft": "{count}d",
   "@remindersDetailDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "remindersDetailDaysOverdue": "{count}d venc.",
   "@remindersDetailDaysOverdue": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "@_policyCreate": {},
   "policiesNewPolicyTitle": "Nueva Póliza",
   "policiesPolicyNumber": "Número de póliza",
@@ -645,7 +720,6 @@
   "policiesEditPolicyTitle": "Editar Póliza",
   "policiesSaveChangesBtn": "Guardar cambios",
   "policiesUpdatedSuccess": "Póliza actualizada con éxito",
-
   "@_policyDetail": {},
   "policiesDetailTitle": "Detalle de póliza",
   "policiesDetailLoadError": "No se pudo cargar la póliza.",
@@ -662,7 +736,6 @@
   "policiesErrDeleteNote": "No se pudo eliminar la nota. Intenta de nuevo.",
   "policiesErrAddNote": "No se pudo agregar la nota. Intenta de nuevo.",
   "policiesAttachFile": "Adjuntar",
-
   "catalogsTitle": "Catálogos",
   "catalogsTypeCarriers": "Aseguradoras",
   "catalogsTypeBranches": "Ramos",
@@ -706,17 +779,29 @@
   "shareTargetNoticeGlobal": "Se procesará como nota en tu base de conocimiento general.",
   "shareTargetNoticeClient": "Se procesará como nota en el expediente de {name}.",
   "@shareTargetNoticeClient": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickClient": "Elige un cliente para guardar el contenido como nota en su expediente.",
   "shareTargetNoticePolicy": "Se procesará como nota de la póliza {policy}.",
   "@shareTargetNoticePolicy": {
-    "placeholders": { "policy": { "type": "String" } }
+    "placeholders": {
+      "policy": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickPolicy": "Elige una póliza para guardar el contenido como nota suya.",
   "shareTargetNoticeReminder": "Se procesará como nota ligada al recordatorio {reminder}.",
   "@shareTargetNoticeReminder": {
-    "placeholders": { "reminder": { "type": "String" } }
+    "placeholders": {
+      "reminder": {
+        "type": "String"
+      }
+    }
   },
   "shareTargetNoticePickReminder": "Elige un recordatorio para ligarle el contenido como nota.",
   "shareTargetActionIngest": "Cargar recurso",
@@ -753,23 +838,75 @@
   "chatSuggestion4": "¿Pagos esta semana?",
   "chatContextSuggestionContact": "Pregúntame lo que quieras sobre **{name}**.",
   "@chatContextSuggestionContact": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionPolicy": "Pregúntame lo que quieras sobre esta póliza de **{carrier}**.",
   "@chatContextSuggestionPolicy": {
-    "placeholders": { "carrier": { "type": "String" } }
+    "placeholders": {
+      "carrier": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionReminder": "Pregúntame lo que quieras sobre este recordatorio: **{title}**.",
   "@chatContextSuggestionReminder": {
-    "placeholders": { "title": { "type": "String" } }
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionKnowledge": "Pregúntame lo que quieras sobre **{fileName}**.",
   "@chatContextSuggestionKnowledge": {
-    "placeholders": { "fileName": { "type": "String" } }
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
   },
   "chatContextSuggestionKnowledgeGeneric": "Pregúntame lo que quieras sobre este documento que subiste.",
   "policiesSectionInsuranceDetails": "Detalles de Seguro",
   "policiesSectionParamsPayment": "Parámetros y Pago",
   "policiesSectionAmountsCoverage": "Montos y Coberturas",
-  "policiesSectionDatesValidity": "Fechas de Vigencia y Pago"
+  "policiesSectionDatesValidity": "Fechas de Vigencia y Pago",
+  "reminderTypeBirthday": "Cumpleaños",
+  "reminderSettingsTitle": "Avisos automáticos",
+  "reminderSettingsSubtitle": "Con cuánta anticipación te avisamos",
+  "reminderSettingsIntro": "La app te avisa sola de pagos, renovaciones, aniversarios y cumpleaños. Aquí eliges con cuánto tiempo.",
+  "reminderSettingsSameDay": "El mismo día",
+  "reminderSettingsDaysBefore": "{days} días antes",
+  "@reminderSettingsDaysBefore": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderSettingsOff": "Sin avisos",
+  "reminderSettingsBranchExceptions": "Excepciones por ramo",
+  "reminderSettingsAddException": "Agregar excepción",
+  "reminderSettingsAllBranches": "Todos los ramos",
+  "reminderSettingsPickDays": "Anticipación",
+  "reminderSettingsPickBranch": "Elige el ramo",
+  "reminderSettingsNoBranches": "Todavía no tienes ramos en tu catálogo",
+  "policiesPaymentRule": "Días de pago",
+  "policiesPaymentMonthly": "Cada día {day} del mes",
+  "@policiesPaymentMonthly": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "policiesActivityTitle": "Actividad",
+  "policiesActivityUpcoming": "Próximos",
+  "policiesActivityHistory": "Historial",
+  "policiesActivityEmpty": "Sin recordatorios para esta póliza",
+  "reminderSettingsRemoveException": "Quitar excepción",
+  "reminderSettingsDefault": "Todos los demás ramos",
+  "reminderSettingsHint": "Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba."
 }

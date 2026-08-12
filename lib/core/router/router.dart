@@ -30,6 +30,7 @@ import '../../features/onboarding/presentation/forgot_password_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/catalogs/presentation/catalogs_screen.dart';
+import '../../features/reminders/presentation/reminder_settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -187,6 +188,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/account',
         pageBuilder: (_, state) => amTransitionPage(
           child: const AccountScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/reminder-settings',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const ReminderSettingsScreen(),
           state: state,
           type: 'push',
         ),

@@ -1922,4 +1922,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get policiesSectionDatesValidity => 'Validity & payment dates';
+
+  @override
+  String get reminderTypeBirthday => 'Birthday';
+
+  @override
+  String get reminderSettingsTitle => 'Automatic alerts';
+
+  @override
+  String get reminderSettingsSubtitle => 'How far ahead we warn you';
+
+  @override
+  String get reminderSettingsIntro =>
+      'The app warns you about payments, renewals, anniversaries and birthdays on its own. Choose how early here.';
+
+  @override
+  String get reminderSettingsSameDay => 'On the day';
+
+  @override
+  String reminderSettingsDaysBefore(int days) {
+    return '$days days before';
+  }
+
+  @override
+  String get reminderSettingsOff => 'No alerts';
+
+  @override
+  String get reminderSettingsBranchExceptions => 'Exceptions by branch';
+
+  @override
+  String get reminderSettingsAddException => 'Add exception';
+
+  @override
+  String get reminderSettingsAllBranches => 'All branches';
+
+  @override
+  String get reminderSettingsPickDays => 'Advance notice';
+
+  @override
+  String get reminderSettingsPickBranch => 'Choose the branch';
+
+  @override
+  String get reminderSettingsNoBranches =>
+      'You don\'t have any branches in your catalog yet';
+
+  @override
+  String get policiesPaymentRule => 'Payment days';
+
+  @override
+  String policiesPaymentMonthly(int day) {
+    return 'Every $day of the month';
+  }
+
+  @override
+  String get policiesActivityTitle => 'Activity';
+
+  @override
+  String get policiesActivityUpcoming => 'Upcoming';
+
+  @override
+  String get policiesActivityHistory => 'History';
+
+  @override
+  String get policiesActivityEmpty => 'No reminders for this policy';
+
+  @override
+  String get reminderSettingsRemoveException => 'Remove exception';
+
+  @override
+  String get reminderSettingsDefault => 'All other branches';
+
+  @override
+  String get reminderSettingsHint =>
+      'Tap an advance notice to change it. Branch exceptions override the value above.';
 }

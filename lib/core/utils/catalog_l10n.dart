@@ -44,6 +44,7 @@ extension CatalogL10n on AppLocalizations {
     'CALL':         reminderTypeCall,
     'APPOINTMENT':  reminderTypeAppointment,
     'ANNIVERSARY':  reminderTypeAnniversary,
+    'BIRTHDAY':     reminderTypeBirthday,
     'OTHER':        reminderTypeOther,
   }[code] ?? code;
 

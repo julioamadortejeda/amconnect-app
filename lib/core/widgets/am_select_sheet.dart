@@ -18,6 +18,7 @@ class AmSelectSheet<T> extends StatefulWidget {
     this.itemLeading,
     this.createNewLabel,
     this.onCreateNew,
+    this.itemIsDestructive,
   });
 
   final String title;
@@ -31,6 +32,10 @@ class AmSelectSheet<T> extends StatefulWidget {
   final Widget? Function(BuildContext, T)? itemLeading;
   final String? createNewLabel;
   final Future<T?> Function(String query)? onCreateNew;
+
+  /// Marca una opción como destructiva (quitar, borrar) para pintarla en rojo,
+  /// igual que las acciones destructivas del resto de los sheets.
+  final bool Function(T)? itemIsDestructive;
 
   @override
   State<AmSelectSheet<T>> createState() => _AmSelectSheetState<T>();
@@ -176,6 +181,7 @@ class _AmSelectSheetState<T> extends State<AmSelectSheet<T>> {
                     final label = widget.itemLabel(item);
                     final id = widget.itemId?.call(item) ?? '';
                     final isSelected = widget.selectedId != null && id == widget.selectedId;
+                    final isDestructive = widget.itemIsDestructive?.call(item) ?? false;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -187,10 +193,18 @@ class _AmSelectSheetState<T> extends State<AmSelectSheet<T>> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           decoration: BoxDecoration(
-                            color: isSelected ? cs.primary.withValues(alpha: 0.08) : cs.surface,
+                            color: isDestructive
+                                ? cs.errorContainer.withValues(alpha: 0.4)
+                                : isSelected
+                                    ? cs.primary.withValues(alpha: 0.08)
+                                    : cs.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? cs.primary.withValues(alpha: 0.2) : cs.outline.withValues(alpha: 0.3),
+                              color: isDestructive
+                                  ? cs.error.withValues(alpha: 0.3)
+                                  : isSelected
+                                      ? cs.primary.withValues(alpha: 0.2)
+                                      : cs.outline.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Row(
@@ -204,12 +218,19 @@ class _AmSelectSheetState<T> extends State<AmSelectSheet<T>> {
                                   label,
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                    color: isSelected ? cs.primary : cs.onSurface,
+                                    fontWeight:
+                                        isSelected || isDestructive ? FontWeight.w600 : FontWeight.w400,
+                                    color: isDestructive
+                                        ? cs.error
+                                        : isSelected
+                                            ? cs.primary
+                                            : cs.onSurface,
                                   ),
                                 ),
                               ),
-                              if (isSelected)
+                              if (isDestructive)
+                                Icon(Icons.delete_outline, color: cs.error, size: 20)
+                              else if (isSelected)
                                 Icon(Icons.check_circle, color: cs.primary, size: 20),
                             ],
                           ),

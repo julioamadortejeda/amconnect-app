@@ -74,6 +74,10 @@ String fmtDate(DateTime? dt, {bool showYear = true}) {
   return showYear ? '$base ${dt.year}' : base;
 }
 
+/// Un día recurrente de la regla de pago: "10 may". Sin año a propósito — la
+/// regla se repite cada año, solo la ocurrencia concreta lleva año.
+String fmtMonthDay(int month, int day) => '$day ${_months[month - 1]}';
+
 // Wrapper para ISO strings
 String fmtDateFromIso(String? iso, {bool showYear = true}) {
   if (iso == null) return '—';

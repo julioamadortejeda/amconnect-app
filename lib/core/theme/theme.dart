@@ -4,6 +4,21 @@ import 'am_theme.dart';
 import 'app_colors.dart';
 
 class AzulProTheme {
+
+  /// Switches con el azul de marca. Vive en el tema y no en un widget para que
+  /// cualquier Switch de la app salga correcto sin envolverlo en nada.
+  static SwitchThemeData get _switchTheme => SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? AmColors.onAccent : null,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? AmColors.accent : null,
+        ),
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? AmColors.accent : null,
+        ),
+      );
+
   static ThemeData get lightTheme {
     final base = GoogleFonts.interTextTheme();
     return ThemeData(
@@ -42,6 +57,7 @@ class AzulProTheme {
       scaffoldBackgroundColor: AmColors.bgLight,
       cardColor: AmColors.cardLight,
       dividerColor: AmColors.lineLight,
+      switchTheme: _switchTheme,
       extensions: const [AmTheme.light],
       splashFactory: NoSplash.splashFactory,
       highlightColor: Colors.transparent,
@@ -86,6 +102,7 @@ class AzulProTheme {
       scaffoldBackgroundColor: AmColors.bgDark,
       cardColor: AmColors.cardDark,
       dividerColor: AmColors.lineDark,
+      switchTheme: _switchTheme,
       extensions: const [AmTheme.dark],
       splashFactory: NoSplash.splashFactory,
       highlightColor: Colors.transparent,

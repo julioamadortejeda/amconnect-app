@@ -1933,4 +1933,77 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get policiesSectionDatesValidity => 'Fechas de Vigencia y Pago';
+
+  @override
+  String get reminderTypeBirthday => 'Cumpleaños';
+
+  @override
+  String get reminderSettingsTitle => 'Avisos automáticos';
+
+  @override
+  String get reminderSettingsSubtitle => 'Con cuánta anticipación te avisamos';
+
+  @override
+  String get reminderSettingsIntro =>
+      'La app te avisa sola de pagos, renovaciones, aniversarios y cumpleaños. Aquí eliges con cuánto tiempo.';
+
+  @override
+  String get reminderSettingsSameDay => 'El mismo día';
+
+  @override
+  String reminderSettingsDaysBefore(int days) {
+    return '$days días antes';
+  }
+
+  @override
+  String get reminderSettingsOff => 'Sin avisos';
+
+  @override
+  String get reminderSettingsBranchExceptions => 'Excepciones por ramo';
+
+  @override
+  String get reminderSettingsAddException => 'Agregar excepción';
+
+  @override
+  String get reminderSettingsAllBranches => 'Todos los ramos';
+
+  @override
+  String get reminderSettingsPickDays => 'Anticipación';
+
+  @override
+  String get reminderSettingsPickBranch => 'Elige el ramo';
+
+  @override
+  String get reminderSettingsNoBranches =>
+      'Todavía no tienes ramos en tu catálogo';
+
+  @override
+  String get policiesPaymentRule => 'Días de pago';
+
+  @override
+  String policiesPaymentMonthly(int day) {
+    return 'Cada día $day del mes';
+  }
+
+  @override
+  String get policiesActivityTitle => 'Actividad';
+
+  @override
+  String get policiesActivityUpcoming => 'Próximos';
+
+  @override
+  String get policiesActivityHistory => 'Historial';
+
+  @override
+  String get policiesActivityEmpty => 'Sin recordatorios para esta póliza';
+
+  @override
+  String get reminderSettingsRemoveException => 'Quitar excepción';
+
+  @override
+  String get reminderSettingsDefault => 'Todos los demás ramos';
+
+  @override
+  String get reminderSettingsHint =>
+      'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.';
 }
