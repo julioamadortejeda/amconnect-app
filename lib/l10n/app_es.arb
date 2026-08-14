@@ -143,6 +143,7 @@
   "errUploadFailed": "No se pudo subir el archivo. Intenta de nuevo.",
   "errSharedFileMissing": "El archivo compartido ya no está disponible. Compártelo de nuevo.",
   "errSharedTextTooLarge": "El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.",
+  "errSpeechUnavailable": "El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.",
   "errRefCode": "Código de referencia: {ref}",
   "@errRefCode": {
     "placeholders": {

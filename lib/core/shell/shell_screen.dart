@@ -5,13 +5,13 @@ import '../../features/home/providers/home_provider.dart';
 import '../../features/feed/presentation/ingest_flow_overlay.dart';
 import '../providers/provider_keep_alive.dart';
 import '../../features/share_target/widgets/share_handler_listener.dart';
-import 'widgets/shell_mic_button.dart';
+import 'widgets/shell_assistant_button.dart';
 import 'widgets/shell_pill_bar.dart';
 
-const _kMicRight = 16.0;
+const _kAssistantRight = 16.0;
 const _kGap = 6.0;
 const _kBarLeft = 16.0;
-const _kBarRight = _kMicRight + kShellMicSize + _kGap;
+const _kBarRight = _kAssistantRight + kShellAssistantSize + _kGap;
 
 class ShellScreen extends ConsumerWidget {
   const ShellScreen({super.key, required this.navigationShell});
@@ -75,11 +75,11 @@ class ShellScreen extends ConsumerWidget {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 320),
             curve: Curves.easeInOut,
-            right: _kMicRight,
-            bottom: barVisible ? bottom : -(bottom + kShellMicSize),
-            width: kShellMicSize,
-            height: kShellMicSize,
-            child: const ShellMicButton(),
+            right: _kAssistantRight,
+            bottom: barVisible ? bottom : -(bottom + kShellAssistantSize),
+            width: kShellAssistantSize,
+            height: kShellAssistantSize,
+            child: const ShellAssistantButton(),
           ),
         ],
       ),

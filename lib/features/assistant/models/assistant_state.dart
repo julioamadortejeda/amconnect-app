@@ -32,6 +32,17 @@ class AssistantState {
   final Map<String, dynamic>? activeWidgetMetadata;
   final int voiceTimeLeftSeconds;
 
+  /// El STF del sistema está capturando voz para llenar el campo de texto.
+  /// No tiene nada que ver con [AssistantMode.voice] (Gemini Live) — de hecho
+  /// son excluyentes, ver `AssistantNotifier.startDictation`.
+  final bool isDictating;
+
+  /// Texto que acaba de dictarse, esperando a que la pantalla lo meta en el
+  /// campo. Vive en el estado (y no se envía solo) porque el
+  /// `TextEditingController` es de la pantalla; se limpia con
+  /// [AssistantNotifier.consumeDictationText] en cuanto se aplica.
+  final String? dictationText;
+
   const AssistantState({
     this.messages = const [],
     this.sessionId,
@@ -46,6 +57,8 @@ class AssistantState {
     this.activeSkill,
     this.activeWidgetMetadata,
     this.voiceTimeLeftSeconds = 600,
+    this.isDictating = false,
+    this.dictationText,
   });
 
   AssistantState copyWith({
@@ -66,6 +79,9 @@ class AssistantState {
     Map<String, dynamic>? activeWidgetMetadata,
     bool clearActiveWidgetMetadata = false,
     int? voiceTimeLeftSeconds,
+    bool? isDictating,
+    String? dictationText,
+    bool clearDictationText = false,
   }) {
     return AssistantState(
       messages: messages ?? this.messages,
@@ -82,6 +98,8 @@ class AssistantState {
       activeWidgetMetadata:
           clearActiveWidgetMetadata ? null : (activeWidgetMetadata ?? this.activeWidgetMetadata),
       voiceTimeLeftSeconds: voiceTimeLeftSeconds ?? this.voiceTimeLeftSeconds,
+      isDictating: isDictating ?? this.isDictating,
+      dictationText: clearDictationText ? null : (dictationText ?? this.dictationText),
     );
   }
 }

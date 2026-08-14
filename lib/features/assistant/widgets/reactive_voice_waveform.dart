@@ -10,10 +10,16 @@ class ReactiveVoiceWaveform extends StatefulWidget {
   const ReactiveVoiceWaveform({
     super.key,
     required this.level,
+    required this.color,
     this.maxHeight = 24.0,
   });
 
   final ValueListenable<double> level;
+
+  /// Color de las barras — lo decide quien la usa, porque vive sobre fondos
+  /// distintos: el pill azul de la voz Live y el composer de texto.
+  final Color color;
+
   final double maxHeight;
 
   @override
@@ -89,7 +95,7 @@ class _ReactiveVoiceWaveformState extends State<ReactiveVoiceWaveform>
                 width: isCenter ? 5 : 4,
                 height: h,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: opacity),
+                  color: widget.color.withValues(alpha: opacity),
                   borderRadius: BorderRadius.circular(3),
                 ),
               );

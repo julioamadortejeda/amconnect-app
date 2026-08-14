@@ -141,6 +141,11 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             // re-reads the new input format (HFP runs at 8/16 kHz).
             try session.setCategory(.playAndRecord, mode: .voiceChat,
                                     options: [.allowBluetooth])
+            // Suelta cualquier entrada forzada de antes — el dictado fija el
+            // mic integrado (ver useBuiltInMic) y esa preferencia sobrevive a
+            // la sesión. Sin esto, dictar una vez dejaba a la voz Live hablando
+            // por el headset pero oyendo por el micrófono del teléfono.
+            try session.setPreferredInput(nil)
             try session.setActive(true)
             try applySpeakerOverrideIfNeeded(session)
             try buildAndStartEngine()
@@ -200,6 +205,48 @@ class VoiceAudioManager: NSObject, FlutterStreamHandler {
             }
         }
         return devices
+    }
+
+    /// Fuerza la entrada al micrófono integrado. Para el dictado
+    /// (`speech_to_text`), y hay que llamarlo ANTES de `listen()`.
+    ///
+    /// Ese plugin captura con `inputNode.installTap` de `AVAudioEngine`, que es
+    /// exactamente lo que **nunca entrega buffers en rutas Bluetooth** en iOS
+    /// — la misma limitación que ya obligó a capturar con `AVCaptureSession`
+    /// en la voz Live (ver `buildAndStartEngine`, Apple Forums #819555). No es
+    /// cuestión de A2DP vs HFP: ni con una ruta HFP perfecta dispara el tap.
+    /// Como el plugin no expone forma de cambiar su captura, la única salida es
+    /// que la entrada ya sea el mic integrado cuando instala el tap.
+    ///
+    /// El orden importa: el plugin fija la categoría, instala el tap y arranca
+    /// su engine, todo dentro de `listen()`. Cambiar la ruta después deja el
+    /// tap con un formato que ya no corresponde y la captura muere igual.
+    ///
+    /// NO se desactiva la sesión aquí: hacerlo tira el enlace SCO y dispara el
+    /// bucle de cambios de ruta documentado en `rebuildEngineAfterRouteChange`.
+    func useBuiltInMic() {
+        let session = AVAudioSession.sharedInstance()
+        guard let builtin = session.availableInputs?
+            .first(where: { $0.portType == .builtInMic }) else {
+            log("useBuiltInMic: no built-in mic in availableInputs.")
+            return
+        }
+        do {
+            // `setPreferredInput` falla si la categoría activa no admite
+            // entrada (.ambient, .playback). Al llamarse antes de `listen()`
+            // la sesión bien puede estar en una de ésas, así que primero se
+            // deja en una que grabe. El plugin la vuelve a fijar enseguida con
+            // las suyas; la preferencia de entrada sobrevive porque el puerto
+            // integrado sigue disponible.
+            if session.category != .playAndRecord && session.category != .record {
+                try session.setCategory(.playAndRecord, mode: .default,
+                                        options: [.defaultToSpeaker, .allowBluetoothA2DP])
+            }
+            try session.setPreferredInput(builtin)
+            log("useBuiltInMic. Route now: \(session.currentRoute)")
+        } catch {
+            log("ERROR useBuiltInMic: \(error.localizedDescription)")
+        }
     }
 
     func selectAudioDevice(_ id: String) {

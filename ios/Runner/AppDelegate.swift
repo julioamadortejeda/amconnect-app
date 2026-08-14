@@ -93,6 +93,10 @@ import AVFoundation
         VoiceAudioManager.shared.selectAudioDevice(id)
         result(nil as Any?)
 
+      case "useBuiltInMic":
+        VoiceAudioManager.shared.useBuiltInMic()
+        result(nil as Any?)
+
       default:
         result(FlutterMethodNotImplemented)
       }

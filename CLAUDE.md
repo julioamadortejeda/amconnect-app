@@ -76,7 +76,7 @@ lib/
 │   ├── repositories/         # Interfaces abstractas + implementaciones Supabase
 │   ├── network/              # ApiClient (HTTP al Edge Function)
 │   ├── router/router.dart    # GoRouter
-│   ├── shell/shell_screen.dart   # Bottom tab bar + FAB micrófono
+│   ├── shell/shell_screen.dart   # Bottom tab bar + FAB del asistente (logo → /chat)
 │   ├── theme/
 │   │   ├── app_colors.dart   # AmColors — tokens fijos
 │   │   ├── am_theme.dart     # AmTheme ThemeExtension + context.am
@@ -428,6 +428,28 @@ return Stack(alignment: Alignment.center, children: [...]);
 - `navigateToChat: bool` — si `false` → el overlay envía el mensaje pero NO navega a /chat (úsalo cuando ya estás en la pantalla de chat).
 - `initialContext: AiChatContext?` — si presente → `resetWithContext`.
 - El caller decide la navegación, no el overlay.
+
+## Composer del asistente — dictado vs. voz Live
+
+Dos formas distintas de hablarle, y NO son lo mismo:
+
+- **Dictado** (`core/services/speech_dictation_service.dart`): STT del sistema, on-device. El audio no sale del teléfono; solo el texto viaja después por `POST /ai/chat`. No cuesta tokens.
+- **Voz Live** (`core/services/gemini_voice_engine.dart`): WebSocket full-duplex con Gemini. Cobra el audio a ~25 tokens/seg y recobra el contexto en cada turno.
+
+Los dos se pelean el micrófono — **nunca activos a la vez**. El candado vive en `AssistantNotifier` (`startDictation` se rehúsa en modo voz; `startVoice` cancela el dictado), no en la UI.
+
+A la derecha del composer hay SIEMPRE dos botones, nunca cuatro:
+
+| Estado | izq | centro | gris | azul |
+|---|---|---|---|---|
+| Vacío | clip | campo | mic | onda (Live) |
+| Con texto | clip | campo | mic | enviar |
+| Dictando | clip | ondas | stop | enviar |
+
+- `stop` termina el dictado y deja el texto en el campo; el botón azul lo termina **y envía**.
+- Terminar por silencio (3 s) nunca envía solo — el STT falla con nombres propios y el asesor tiene que poder corregir.
+- El texto parcial no se pinta: parpadea y se corrige solo. La onda ya comunica que está oyendo.
+- Android necesita el `<queries>` de `android.speech.RecognitionService` en el manifest; sin él `initialize()` devuelve false en Android 11+.
 
 ## Animaciones de entrada — `AmAnimateIn` vs `AmStagger`
 

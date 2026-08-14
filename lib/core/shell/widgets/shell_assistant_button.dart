@@ -5,18 +5,23 @@ import 'package:go_router/go_router.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/am_press.dart';
 
-/// Diámetro del botón flotante de micrófono de la shell.
-const kShellMicSize = 64.0;
+/// Diámetro del botón flotante del asistente de la shell.
+const kShellAssistantSize = 64.0;
 
-/// FAB de micrófono que dispara un ripple de pantalla completa y navega a /chat.
-class ShellMicButton extends ConsumerStatefulWidget {
-  const ShellMicButton({super.key});
+/// FAB del asistente: dispara un ripple de pantalla completa y navega a /chat.
+///
+/// Lleva el logo y no un micrófono a propósito. Antes tenía un mic y abría el
+/// chat en modo texto, así que el icono prometía una cosa y pasaba otra. El
+/// botón no declara un modo: la barra del composer decide si se escribe, se
+/// dicta o se abre la voz Live.
+class ShellAssistantButton extends ConsumerStatefulWidget {
+  const ShellAssistantButton({super.key});
 
   @override
-  ConsumerState<ShellMicButton> createState() => _ShellMicButtonState();
+  ConsumerState<ShellAssistantButton> createState() => _ShellAssistantButtonState();
 }
 
-class _ShellMicButtonState extends ConsumerState<ShellMicButton>
+class _ShellAssistantButtonState extends ConsumerState<ShellAssistantButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   OverlayEntry? _ripple;
@@ -85,14 +90,20 @@ class _ShellMicButtonState extends ConsumerState<ShellMicButton>
     return AmPress(
       onTap: _onTap,
       child: Container(
-        width: kShellMicSize,
-        height: kShellMicSize,
+        width: kShellAssistantSize,
+        height: kShellAssistantSize,
         decoration: BoxDecoration(
           color: AmColors.accent,
           shape: BoxShape.circle,
         ),
-        child:
-            const Icon(Icons.mic_none_rounded, color: Colors.white, size: 26),
+        child: Center(
+          child: Image.asset(
+            'assets/logo/logo_t.png',
+            color: AmColors.onAccent,
+            width: 28,
+            height: 28,
+          ),
+        ),
       ),
     );
   }

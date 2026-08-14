@@ -46,6 +46,11 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
   late final AssistantNotifier _notifier;
   AssistantMode? _currentMode;
 
+  /// El asesor tocó enviar durante el dictado: en cuanto llegue el texto se
+  /// manda solo. Terminar por silencio NUNCA envía — ahí el texto se queda en
+  /// el campo para revisarlo.
+  bool _sendAfterDictation = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +83,15 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     _scrollToBottom();
   }
 
+  /// Mete el texto dictado en el campo sin pisar lo que ya estaba escrito —
+  /// se puede empezar a teclear y terminar dictando.
+  void _applyDictated(String text) {
+    final existing = _ctrl.text.trimRight();
+    _ctrl.text = existing.isEmpty ? text : '$existing $text';
+    _ctrl.selection = TextSelection.collapsed(offset: _ctrl.text.length);
+    setState(() => _hasText = _ctrl.text.trim().isNotEmpty);
+  }
+
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 150), () {
       if (_scrollCtrl.hasClients) {
@@ -100,6 +114,9 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       final notifier = _notifier; // capturado en initState — no usa ref
       Future(() => notifier.endVoice());
     }
+    // Mismo motivo que arriba: soltar el micrófono si quedó dictando.
+    final notifier = _notifier;
+    Future(() => notifier.cancelDictation());
     _ctrl.dispose();
     _scrollCtrl.dispose();
     super.dispose();
@@ -119,6 +136,22 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       final liveChanged = prev?.liveUserText != next.liveUserText ||
           prev?.liveModelText != next.liveModelText;
       if (messagesChanged || liveChanged) _scrollToBottom();
+    });
+
+    // El dictado terminó: el texto vive en el provider (el controller es de la
+    // pantalla) y se consume aquí una sola vez.
+    ref.listen(assistantProvider.select((s) => s.dictationText), (_, dictated) {
+      if (dictated == null || dictated.isEmpty) {
+        _sendAfterDictation = false;
+        return;
+      }
+      // Se lee la intención ANTES de consumir: consumir vuelve a disparar este
+      // mismo listener (con null) y ahí se apagaría la bandera.
+      final shouldSend = _sendAfterDictation;
+      _sendAfterDictation = false;
+      _applyDictated(dictated);
+      ref.read(assistantProvider.notifier).consumeDictationText();
+      if (shouldSend) _send();
     });
 
     final showSugg = !isVoice && state.messages.isEmpty && !state.isLoading;
@@ -274,8 +307,20 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       controller: _ctrl,
                       hasText: _hasText,
                       isLoading: state.isLoading,
+                      isDictating: state.isDictating,
+                      dictationLevel:
+                          ref.read(assistantProvider.notifier).dictationLevel,
                       onChanged: (v) => setState(() => _hasText = v.trim().isNotEmpty),
                       onSend: _send,
+                      onDictateStart: () => ref
+                          .read(assistantProvider.notifier)
+                          .startDictation(Localizations.localeOf(context).languageCode),
+                      onDictateStop: () =>
+                          ref.read(assistantProvider.notifier).stopDictation(),
+                      onDictateStopAndSend: () {
+                        _sendAfterDictation = true;
+                        ref.read(assistantProvider.notifier).stopDictation();
+                      },
                       onAttach: () {
                         final ctx = state.activeContext ?? state.pendingContext;
                         final contactId = ctx?.type == 'contact' ? ctx?.id : null;

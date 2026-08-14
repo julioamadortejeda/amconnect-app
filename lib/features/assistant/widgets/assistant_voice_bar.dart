@@ -105,7 +105,7 @@ class AssistantVoiceBar extends StatelessWidget {
             const ThinkingPulse(color: Colors.white, size: 18),
           ] else if (status == VoiceStatus.listening) ...[
             const SizedBox(width: 12),
-            ReactiveVoiceWaveform(level: micLevel, maxHeight: 24),
+            ReactiveVoiceWaveform(level: micLevel, color: Colors.white, maxHeight: 24),
           ] else if (status == VoiceStatus.modelSpeaking) ...[
             const SizedBox(width: 12),
             ModelSpeakingPulse(level: modelLevel, size: 22),

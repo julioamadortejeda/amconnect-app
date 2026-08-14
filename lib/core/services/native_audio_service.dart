@@ -132,6 +132,21 @@ class NativeAudioService {
     }
   }
 
+  /// Fuerza la entrada al micrófono integrado. Solo iOS hoy; en Android es un
+  /// no-op silencioso (`MissingPluginException` capturado abajo).
+  ///
+  /// Lo usa el dictado: `speech_to_text` configura la sesión de audio con
+  /// A2DP permitido y sin forma de cambiarlo, y con audífonos Bluetooth eso
+  /// deja el mic en una ruta que no captura. Ver `useBuiltInMic` en
+  /// AudioManager.swift.
+  Future<void> useBuiltInMic() async {
+    try {
+      await _audioControl.invokeMethod<void>('useBuiltInMic');
+    } catch (e) {
+      debugPrint('[NativeAudioService] useBuiltInMic error: $e');
+    }
+  }
+
   /// Cambia la salida (y el mic asociado) de la sesión de voz. El nativo se
   /// encarga del re-ruteo; en iOS el cambio de ruta reconstruye el engine.
   Future<void> selectAudioDevice(String id) async {

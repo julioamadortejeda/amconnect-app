@@ -680,6 +680,12 @@ abstract class AppLocalizations {
   /// **'El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.'**
   String get errSharedTextTooLarge;
 
+  /// No description provided for @errSpeechUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.'**
+  String get errSpeechUnavailable;
+
   /// No description provided for @errRefCode.
   ///
   /// In es, this message translates to:

@@ -327,6 +327,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The text is too long to process. Share a shorter chat or just the relevant messages.';
 
   @override
+  String get errSpeechUnavailable =>
+      'Voice dictation is not available on this device. Type your message instead.';
+
+  @override
   String errRefCode(String ref) {
     return 'Reference code: $ref';
   }

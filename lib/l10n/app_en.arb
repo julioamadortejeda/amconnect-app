@@ -127,6 +127,7 @@
   "errUploadFailed": "The file could not be uploaded. Please try again.",
   "errSharedFileMissing": "The shared file is no longer available. Please share it again.",
   "errSharedTextTooLarge": "The text is too long to process. Share a shorter chat or just the relevant messages.",
+  "errSpeechUnavailable": "Voice dictation is not available on this device. Type your message instead.",
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {

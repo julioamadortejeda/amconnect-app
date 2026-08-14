@@ -6,6 +6,7 @@ import '../../../core/providers/ai_backend_provider.dart';
 import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/services/gemini_voice_engine.dart';
 import '../../../core/services/native_audio_service.dart';
+import '../../../core/services/speech_dictation_service.dart';
 import '../data/assistant_repository.dart';
 import '../models/assistant_state.dart';
 
@@ -26,11 +27,9 @@ final assistantProvider =
 class AssistantNotifier extends Notifier<AssistantState> {
   late AssistantRepository _repo;
   late GeminiVoiceEngine _engine;
+  late SpeechDictationService _dictation;
   StreamSubscription<VoiceEngineEvent>? _engineSubscription;
-
-  // Prefetch de init/token para abrir la voz sin esperar los dos POST.
-  Future<(Map<String, dynamic>, Map<String, dynamic>)>? _prefetched;
-  DateTime? _prefetchedAt;
+  StreamSubscription<DictationEvent>? _dictationSubscription;
 
   @override
   AssistantState build() {
@@ -40,9 +39,15 @@ class AssistantNotifier extends Notifier<AssistantState> {
       api: ref.read(apiClientProvider),
       logTag: _kLogTag,
     );
+    _dictation = ref.read(speechDictationServiceProvider);
     _engineSubscription = _engine.events.listen(_onEngineEvent);
+    _dictationSubscription = _dictation.events.listen(_onDictationEvent);
     ref.onDispose(() {
       _engineSubscription?.cancel();
+      _dictationSubscription?.cancel();
+      // El servicio de dictado lo dispone su propio provider; aquí solo hay
+      // que soltar el micrófono si quedó una sesión abierta.
+      _dictation.cancel();
       _engine.dispose();
     });
     return const AssistantState();
@@ -52,6 +57,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
 
   void reset() {
     stopVoice();
+    _dictation.cancel();
     state = const AssistantState();
   }
 
@@ -124,9 +130,65 @@ class AssistantNotifier extends Notifier<AssistantState> {
     }
   }
 
+  // ── Dictado (STT del sistema → campo de texto) ─────────────────────────────
+
+  /// Empieza a dictar en [languageCode] ('es', 'en'…). El audio se queda en el
+  /// teléfono: al terminar solo cae texto en el campo, que el asesor revisa y
+  /// envía él mismo. No manda nada al backend por su cuenta.
+  Future<void> startDictation(String languageCode) async {
+    // El dictado y Gemini Live se pelean el micrófono; en modo voz el composer
+    // ni se dibuja, pero el candado va aquí y no en la UI.
+    if (state.mode == AssistantMode.voice || state.isDictating) return;
+
+    state = state.copyWith(isDictating: true, clearError: true, clearDictationText: true);
+    await _dictation.start(languageCode);
+  }
+
+  Future<void> stopDictation() async {
+    if (!state.isDictating) return;
+    await _dictation.stop();
+  }
+
+  /// Aborta el dictado sin entregar texto — al salir de la pantalla o al pasar
+  /// a voz Live.
+  Future<void> cancelDictation() async {
+    if (!state.isDictating) return;
+    state = state.copyWith(isDictating: false, clearDictationText: true);
+    await _dictation.cancel();
+  }
+
+  /// La pantalla ya metió el texto dictado en el campo.
+  void consumeDictationText() {
+    if (state.dictationText == null) return;
+    state = state.copyWith(clearDictationText: true);
+  }
+
+  /// Nivel de voz del dictado (0..1) para la onda del composer.
+  ValueListenable<double> get dictationLevel => _dictation.level;
+
+  void _onDictationEvent(DictationEvent event) {
+    switch (event) {
+      // El texto parcial no se pinta a propósito: con nombres de clientes y
+      // aseguradoras se corrige solo varias veces y parpadear se ve peor que
+      // esperar. La onda ya dice que está oyendo.
+      case DictationPartial():
+        break;
+      case DictationFinished(:final text):
+        state = state.copyWith(
+          isDictating: false,
+          dictationText: text.isEmpty ? null : text,
+        );
+      case DictationFailed(:final code):
+        state = state.copyWith(isDictating: false, error: code);
+    }
+  }
+
   // ── Voz (Gemini Live, full-duplex) ──────────────────────────────────────────
 
   Future<void> startVoice(String timezone) async {
+    // Nunca los dos sobre el mismo micrófono.
+    await cancelDictation();
+
     final isFirstMessage = state.sessionId == null;
 
     state = state.copyWith(
@@ -136,27 +198,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
     );
 
     try {
-      final prefetchFuture = _prefetched;
-      final prefetchAge = _prefetchedAt != null
-          ? DateTime.now().difference(_prefetchedAt!)
-          : null;
-
-      Map<String, dynamic> initData;
-      Map<String, dynamic> tokenData;
-
-      if (prefetchFuture != null && prefetchAge != null && prefetchAge.inSeconds < 45) {
-        debugPrint('[$_kLogTag] Using prefetched session init/token');
-        final res = await prefetchFuture;
-        initData = res.$1;
-        tokenData = res.$2;
-      } else {
-        debugPrint('[$_kLogTag] Prefetch miss — fetching init/token on start');
-        final res = await _fetchInitAndToken(timezone, state.sessionId);
-        initData = res.$1;
-        tokenData = res.$2;
-      }
-      _prefetched = null;
-      _prefetchedAt = null;
+      final (initData, tokenData) = await _fetchInitAndToken(timezone, state.sessionId);
 
       final sessionId = initData['sessionId'] as String;
       ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
@@ -208,16 +250,6 @@ class AssistantNotifier extends Notifier<AssistantState> {
   /// Cambia la salida de audio de la sesión de voz activa.
   Future<void> selectAudioOutput(String id) =>
       ref.read(nativeAudioServiceProvider).selectAudioDevice(id);
-
-  void prefetch(String timezone) {
-    if (_engine.isConnected || _prefetched != null) return;
-    _prefetchedAt = DateTime.now();
-    final future = _fetchInitAndToken(timezone, state.sessionId);
-    // Evita el warning de future no manejado si el prefetch falla antes de que
-    // startVoice lo espere; el error real se maneja en startVoice.
-    future.catchError((_) => (<String, dynamic>{}, <String, dynamic>{}));
-    _prefetched = future;
-  }
 
   // ── Engine event mapping ───────────────────────────────────────────────────
 

@@ -39,6 +39,7 @@ extension ErrorTranslator on BuildContext {
       'SHARED_TEXT_TOO_LARGE' => l10n.errSharedTextTooLarge,
       'INTERNAL_ERROR' || 'errUnknown' => l10n.errUnknown,
       'MIC_PERMISSION_DENIED' => l10n.voiceChatPermissionDenied,
+      'SPEECH_UNAVAILABLE' => l10n.errSpeechUnavailable,
       _ => key,
     };
 
