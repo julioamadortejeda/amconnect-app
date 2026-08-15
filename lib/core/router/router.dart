@@ -40,8 +40,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final user = ref.read(authUserProvider).value;
       final loc = state.matchedLocation;
-      final onPublic = loc == '/' ||
-          loc == '/login' ||
+      if (loc == '/') return null;
+
+      final onPublic = loc == '/login' ||
           loc == '/email-login' ||
           loc == '/register' ||
           loc == '/forgot-password';
