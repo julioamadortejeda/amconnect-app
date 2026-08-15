@@ -481,11 +481,11 @@ class _ContactInfoCard extends StatelessWidget {
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -606,11 +606,11 @@ class _ContactListCarousel extends StatelessWidget {
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -726,11 +726,11 @@ class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         border: Border.all(color: am.amber.withValues(alpha: 0.2)),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -849,11 +849,11 @@ class _PolicyListCard extends StatelessWidget {
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
         border: Border.all(color: cs.primary.withValues(alpha: 0.2)),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -999,8 +999,8 @@ class _PolicyInfoCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
                 colors: [AmColors.accent, AmColors.accentBright],
               ),
               borderRadius: BorderRadius.only(

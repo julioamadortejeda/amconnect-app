@@ -40,14 +40,14 @@ class CatalogsScreen extends ConsumerWidget {
             child: Container(
               width: 36,
               height: 36,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AmColors.accent,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.add, color: Colors.white, size: 20),
             ),
           ),
-          SizedBox(width: AmDimens.screenH),
+          const SizedBox(width: AmDimens.screenH),
         ],
       ),
       body: SafeArea(

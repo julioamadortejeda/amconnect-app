@@ -20,10 +20,10 @@ class ReminderListView extends ConsumerWidget {
 
     return Column(
       children: [
-        AmAnimateIn(
+        const AmAnimateIn(
           index: 0,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+            padding: EdgeInsets.symmetric(horizontal: AmDimens.screenH),
             child: Align(
               alignment: Alignment.centerLeft,
               child: ReminderFilterSelector(),
@@ -62,10 +62,10 @@ class ReminderListView extends ConsumerWidget {
                   ),
                 )
               : (ui.filter == 'eliminados' || ui.filter == 'completados')
-                  ? SingleChildScrollView(
-                      padding: const EdgeInsets.only(
+                  ? const SingleChildScrollView(
+                      padding: EdgeInsets.only(
                           bottom: AmDimens.scrollBottomPad),
-                      child: const DeletedRemindersView(),
+                      child: DeletedRemindersView(),
                     )
                   : ReminderGroupedList(reminders: reminders),
         ),

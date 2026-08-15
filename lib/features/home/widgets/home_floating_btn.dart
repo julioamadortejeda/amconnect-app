@@ -23,14 +23,14 @@ class HomeFloatingBtn extends StatelessWidget {
         children: [
           Container(
             width: 44, height: 44,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color: AmColors.shadowMedium,
                   blurRadius: 18,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                 ),
               ],
             ),

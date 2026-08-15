@@ -247,6 +247,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountSignOutMessage => 'You can sign back in anytime.';
 
   @override
+  String get accountAppearanceTitle => 'Appearance';
+
+  @override
+  String get themeModeSystem => 'System';
+
+  @override
+  String get themeModeLight => 'Light';
+
+  @override
+  String get themeModeDark => 'Dark';
+
+  @override
   String get accountHelpTitle => 'Help';
 
   @override

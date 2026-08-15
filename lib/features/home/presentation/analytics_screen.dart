@@ -137,7 +137,7 @@ class AnalyticsScreen extends ConsumerWidget {
                       children: [
                         Text(
                           '$closeRate%',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w700,
                             color: AmColors.accent,

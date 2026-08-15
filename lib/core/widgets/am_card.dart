@@ -21,11 +21,12 @@ class AmCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final card = Container(
       padding: noPad ? EdgeInsets.zero : (padding ?? const EdgeInsets.all(AmDimens.cardPad)),
       decoration: style ??
           BoxDecoration(
-            color: Colors.white,
+            color: cs.surface,
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
             boxShadow: AmShadows.card,
           ),

@@ -165,11 +165,11 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: AmColors.shadowHeavy,
                 blurRadius: 32,
-                offset: const Offset(0, 12),
+                offset: Offset(0, 12),
               ),
             ],
           ),

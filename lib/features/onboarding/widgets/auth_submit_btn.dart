@@ -31,10 +31,10 @@ class AuthSubmitBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: enabled
               ? [
-                  BoxShadow(
+                  const BoxShadow(
                     color: AmColors.shadowStrong,
                     blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   )
                 ]
               : [],

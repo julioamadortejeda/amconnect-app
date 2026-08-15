@@ -13,6 +13,7 @@ import 'core/config/env.dart';
 import 'core/utils/device_timezone.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'core/providers/session_cleanup.dart';
 
@@ -98,12 +99,13 @@ class MyApp extends ConsumerWidget {
     });
 
     final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       routerConfig: router,
       scrollBehavior: const _BouncingScrollBehavior(),
       localizationsDelegates: const [

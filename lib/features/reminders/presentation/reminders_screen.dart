@@ -33,6 +33,23 @@ class RemindersScreen extends ConsumerWidget {
         subtitle: l10n.remindersPendingCount(pendingCount),
         actions: [
           AmPress(
+            onTap: () => context.push('/reminder-settings'),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: cs.secondaryContainer,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.tune,
+                size: 18,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          AmPress(
             onTap: () =>
                 ref.read(remindersUiProvider.notifier).toggleViewMode(),
             child: Container(
@@ -58,7 +75,7 @@ class RemindersScreen extends ConsumerWidget {
               child: Container(
                 width: 36,
                 height: 36,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AmColors.accent,
                   shape: BoxShape.circle,
                 ),
@@ -66,7 +83,7 @@ class RemindersScreen extends ConsumerWidget {
               ),
             ),
           ],
-          SizedBox(width: AmDimens.screenH),
+          const SizedBox(width: AmDimens.screenH),
         ],
       ),
       body: SafeArea(

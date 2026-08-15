@@ -542,6 +542,30 @@ abstract class AppLocalizations {
   /// **'Podrás volver a iniciar sesión cuando quieras.'**
   String get accountSignOutMessage;
 
+  /// No description provided for @accountAppearanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get accountAppearanceTitle;
+
+  /// No description provided for @themeModeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Automático'**
+  String get themeModeSystem;
+
+  /// No description provided for @themeModeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeModeLight;
+
+  /// No description provided for @themeModeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeModeDark;
+
   /// No description provided for @accountHelpTitle.
   ///
   /// In es, this message translates to:

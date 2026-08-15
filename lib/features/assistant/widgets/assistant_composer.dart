@@ -73,7 +73,7 @@ class AssistantComposer extends StatelessWidget {
           AmIconBtn(
             icon: Icons.attach_file_rounded,
             tone: AmIconBtnTone.ghost,
-            onTap: isDictating ? null : onAttach,
+            onTap: (isDictating || isLoading) ? null : onAttach,
           ),
           const SizedBox(width: 4),
           Expanded(
@@ -108,6 +108,12 @@ class AssistantComposer extends StatelessWidget {
                     ),
                   ),
           ),
+          // Mientras el asistente piensa, TODO queda bloqueado y a la vista:
+          // los botones se apagan solos porque `AmIconBtn` ya se dibuja
+          // atenuado cuando no tiene acción. No hay botón de detener a
+          // propósito — la petición no se puede abortar de verdad (se verificó
+          // el 2026-08-14 que Supabase Edge no propaga la desconexión), y un
+          // botón que dice que paró sin parar nada es peor que no tenerlo.
           const SizedBox(width: 6),
           AmIconBtn(
             icon: isDictating ? Icons.stop_rounded : Icons.mic_none_rounded,

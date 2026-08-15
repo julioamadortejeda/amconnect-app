@@ -121,7 +121,7 @@ class ReminderStatusSelectionSheet extends StatelessWidget {
               ),
             ),
           ),
-          SafeArea(child: const SizedBox.shrink()),
+          const SafeArea(child: SizedBox.shrink()),
         ],
       ),
     );

@@ -118,7 +118,7 @@ class _AuroraPainter extends CustomPainter {
   ];
 
   // Deep navy is at stop 2/4. Rotate so primary blue faces east at loop=0.
-  static final _initialRotation = -(1.0 / 4.0) * 2 * pi;
+  static const _initialRotation = -(1.0 / 4.0) * 2 * pi;
 
   // Matches iPhone screen corner curvature so the glow hugs the corners.
   static const _cornerRadius = 48.0;

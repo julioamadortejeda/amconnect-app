@@ -249,6 +249,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'Podrás volver a iniciar sesión cuando quieras.';
 
   @override
+  String get accountAppearanceTitle => 'Apariencia';
+
+  @override
+  String get themeModeSystem => 'Automático';
+
+  @override
+  String get themeModeLight => 'Claro';
+
+  @override
+  String get themeModeDark => 'Oscuro';
+
+  @override
   String get accountHelpTitle => 'Ayuda';
 
   @override

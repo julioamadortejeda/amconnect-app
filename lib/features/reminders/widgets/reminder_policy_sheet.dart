@@ -177,7 +177,7 @@ class _ReminderPolicySheetState extends ConsumerState<ReminderPolicySheet> {
                     ),
                   ),
           ),
-          SafeArea(child: const SizedBox.shrink()),
+          const SafeArea(child: SizedBox.shrink()),
         ],
       ),
     );

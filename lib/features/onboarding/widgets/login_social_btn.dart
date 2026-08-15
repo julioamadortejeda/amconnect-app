@@ -24,11 +24,11 @@ class LoginSocialBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
                 color: AmColors.shadowStrong,
                 blurRadius: 16,
-                offset: const Offset(0, 4))
+                offset: Offset(0, 4))
           ],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

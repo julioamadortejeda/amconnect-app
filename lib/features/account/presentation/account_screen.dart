@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,6 +16,7 @@ import '../../../core/widgets/am_top_bar.dart';
 import '../providers/account_provider.dart';
 import '../widgets/account_plan_card.dart';
 import '../widgets/account_profile_hero.dart';
+import '../widgets/account_theme_selector.dart';
 import '../../../l10n/app_localizations.dart';
 
 const _kSupportEmail = 'jacatsoft@gmail.com';
@@ -211,16 +211,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       const SizedBox(height: AmDimens.gapXS),
                       AccountPlanCard(info: subscription),
                       const SizedBox(height: AmDimens.gapL),
+                      AmSectionLabel(label: l10n.accountAppearanceTitle),
+                      const SizedBox(height: AmDimens.gapXS),
+                      const AccountThemeSelector(),
+                      const SizedBox(height: AmDimens.gapL),
                       AmSectionLabel(label: l10n.accountHelpTitle),
                       const SizedBox(height: AmDimens.gapXS),
                       AmGroupCard(children: [
-                        AmInfoRow(
-                          icon: Icons.notifications_active_outlined,
-                          label: l10n.reminderSettingsTitle,
-                          trailing: const SizedBox.shrink(),
-                          chevron: true,
-                          onTap: () => context.push('/reminder-settings'),
-                        ),
                         AmInfoRow(
                           icon: Icons.help_outline,
                           label: l10n.accountHelp,

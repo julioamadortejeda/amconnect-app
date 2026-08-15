@@ -150,7 +150,7 @@ class ReminderFilterSelectionSheet extends ConsumerWidget {
               ),
             ),
           ),
-          SafeArea(child: const SizedBox.shrink()),
+          const SafeArea(child: SizedBox.shrink()),
         ],
       ),
     );

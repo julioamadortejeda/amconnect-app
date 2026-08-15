@@ -166,7 +166,7 @@ class _ReminderClientSheetState extends ConsumerState<ReminderClientSheet> {
               ),
             ),
           ),
-          SafeArea(child: const SizedBox.shrink()),
+          const SafeArea(child: SizedBox.shrink()),
         ],
       ),
     );

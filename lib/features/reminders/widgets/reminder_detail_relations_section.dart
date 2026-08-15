@@ -33,7 +33,7 @@ class ReminderDetailRelationsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 8,

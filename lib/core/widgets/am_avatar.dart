@@ -16,7 +16,8 @@ class AmAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Color.alphaBlend(color.withValues(alpha: 0.16), Colors.white);
+    final cs = Theme.of(context).colorScheme;
+    final bg = Color.alphaBlend(color.withValues(alpha: 0.16), cs.surface);
     return Container(
       width: size,
       height: size,

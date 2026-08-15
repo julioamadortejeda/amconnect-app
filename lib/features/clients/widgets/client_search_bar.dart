@@ -18,7 +18,7 @@ class ClientSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowSoft,
             blurRadius: 22,

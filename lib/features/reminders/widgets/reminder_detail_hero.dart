@@ -65,7 +65,7 @@ class ReminderDetailHero extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowLow,
             blurRadius: 16,

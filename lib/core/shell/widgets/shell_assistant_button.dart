@@ -92,7 +92,7 @@ class _ShellAssistantButtonState extends ConsumerState<ShellAssistantButton>
       child: Container(
         width: kShellAssistantSize,
         height: kShellAssistantSize,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AmColors.accent,
           shape: BoxShape.circle,
         ),

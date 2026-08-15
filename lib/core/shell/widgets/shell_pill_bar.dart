@@ -40,11 +40,11 @@ class ShellPillBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(32),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AmColors.shadowStrong,
             blurRadius: 20,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
