@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'AMConnect Advisor';
+  String get appTitle => 'AMConnect';
 
   @override
   String get commonTerms =>
