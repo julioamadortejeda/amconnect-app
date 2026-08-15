@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder_comment.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 
@@ -14,14 +15,15 @@ class ReminderCommentBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: AmDimens.gapXS),
       padding: const EdgeInsets.all(AmDimens.gapS),
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05), blurRadius: 6),
+              color: AmColors.shadowFaint, blurRadius: 6),
         ],
       ),
       child: Column(

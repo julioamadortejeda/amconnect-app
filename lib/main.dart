@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,9 +10,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/services/notification_service.dart';
 import 'core/config/env.dart';
+import 'core/utils/device_timezone.dart';
 import 'core/router/router.dart';
 import 'core/theme/theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'l10n/app_localizations.dart';
+import 'core/providers/session_cleanup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,11 +23,56 @@ Future<void> main() async {
   // en runtime (evita jank en el primer frame y dependencia de red al abrir).
   GoogleFonts.config.allowRuntimeFetching = false;
   await dotenv.load(fileName: '.env');
+  await DeviceTimezone.init();
   await Supabase.initialize(
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey, // ignore: deprecated_member_use
   );
-  runApp(const ProviderScope(child: MyApp()));
+  await _initCrashReporting();
+  runApp(ProviderScope(
+    observers: [_ProviderErrorLogger()],
+    child: const MyApp(),
+  ));
+}
+
+/// Inicializa Firebase antes de `runApp` (no solo tras login, como hace
+/// NotificationService) para que Crashlytics capture errores desde la
+/// primera pantalla. Tolerante a fallos si Firebase no está configurado.
+Future<void> _initCrashReporting() async {
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  } catch (e) {
+    debugPrint('[crash-reporting] No se pudo inicializar Firebase Crashlytics: $e');
+  }
+}
+
+/// Las pantallas muestran errores localizados sin detalle y ApiClient no
+/// loggea — sin esto, un provider en AsyncError es invisible en consola.
+final class _ProviderErrorLogger extends ProviderObserver {
+  @override
+  void providerDidFail(
+    ProviderObserverContext context,
+    Object error,
+    StackTrace stackTrace,
+  ) {
+    debugPrint('[provider-error] ${context.provider} failed: $error\n$stackTrace');
+    try {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'Riverpod provider failed: ${context.provider}',
+      );
+    } catch (_) {
+      // Crashlytics no disponible (Firebase sin configurar) — ya quedó el debugPrint.
+    }
+  }
 }
 
 class MyApp extends ConsumerWidget {
@@ -29,10 +80,17 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Escuchar el estado de autenticación para registrar el token de notificaciones push
+    // Escuchar el estado de autenticación para registrar tokens e invalidar cachés
     ref.listen(authUserProvider, (previous, next) {
-      final user = next.value;
-      if (user != null) {
+      final prevUser = previous?.value;
+      final nextUser = next.value;
+
+      // Si el ID de usuario cambia (login, logout, o cambio de cuenta), limpiamos la caché
+      if (prevUser?.id != nextUser?.id) {
+        clearUserSessionCache(ref);
+      }
+
+      if (nextUser != null) {
         final notificationService = ref.read(notificationServiceProvider);
         notificationService.init().then((_) {
           notificationService.requestPermissionsAndRegister();
@@ -41,12 +99,13 @@ class MyApp extends ConsumerWidget {
     });
 
     final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       routerConfig: router,
       scrollBehavior: const _BouncingScrollBehavior(),
       localizationsDelegates: const [

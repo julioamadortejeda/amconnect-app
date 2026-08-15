@@ -10,17 +10,27 @@ import '../../features/onboarding/presentation/login_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/clients/presentation/clients_screen.dart';
 import '../../features/clients/presentation/client_detail_screen.dart';
+import '../../features/clients/presentation/create_client_screen.dart';
+import '../../features/home/presentation/analytics_screen.dart';
+import '../../core/models/contact.dart';
+import '../../features/clients/presentation/create_policy_screen.dart';
+import '../../features/clients/presentation/policy_detail_screen.dart';
+import '../../core/models/policy.dart';
 import '../../features/reminders/presentation/reminders_screen.dart';
 import '../../features/reminders/presentation/create_reminder_screen.dart';
 import '../../features/reminders/presentation/reminder_detail_screen.dart';
 import '../../core/models/reminder.dart';
-import '../../features/chat/data/chat_context.dart';
-import '../../features/chat/presentation/chat_screen.dart';
+import '../models/ai_chat_context.dart';
+import '../../features/assistant/presentation/assistant_screen.dart';
+import '../../features/assistant/providers/assistant_provider.dart' show AssistantResumeArgs;
+import '../../features/share_target/presentation/screens/share_target_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/onboarding/presentation/email_login_screen.dart';
+import '../../features/onboarding/presentation/forgot_password_screen.dart';
 import '../../features/onboarding/presentation/register_screen.dart';
-import '../../features/chat/presentation/voice_chat_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
+import '../../features/catalogs/presentation/catalogs_screen.dart';
+import '../../features/reminders/presentation/reminder_settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _AuthNotifier(ref);
@@ -30,7 +40,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final user = ref.read(authUserProvider).value;
       final loc = state.matchedLocation;
-      final onPublic = loc == '/' || loc == '/login' || loc == '/email-login' || loc == '/register';
+      if (loc == '/') return null;
+
+      final onPublic = loc == '/login' ||
+          loc == '/email-login' ||
+          loc == '/register' ||
+          loc == '/forgot-password';
       if (user == null && !onPublic) return '/login';
       if (user != null && onPublic) return '/home';
       return null;
@@ -52,6 +67,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         pageBuilder: (_, state) => amTransitionPage(child: const RegisterScreen(), state: state, type: 'push'),
       ),
+      GoRoute(
+        path: '/forgot-password',
+        pageBuilder: (_, state) => amTransitionPage(
+            child: const ForgotPasswordScreen(), state: state, type: 'push'),
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
@@ -71,7 +91,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
-              path: '/clients',
+              path: '/portfolio',
               pageBuilder: (_, state) => const NoTransitionPage(child: ClientsScreen()),
             ),
           ]),
@@ -85,12 +105,56 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        path: '/clients/:id',
+        path: '/analytics',
         pageBuilder: (_, state) => amTransitionPage(
-          child: ClientDetailScreen(clientId: state.pathParameters['id'] ?? ''),
+          child: const AnalyticsScreen(),
           state: state,
           type: 'push',
         ),
+      ),
+      GoRoute(
+        path: '/create-client',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreateClientScreen(contact: state.extra as Contact?),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/create-policy',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: CreatePolicyScreen(
+            clientId: state.uri.queryParameters['client'],
+            policy: state.extra as Policy?,
+          ),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/policy/:id',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: PolicyDetailScreen(
+            policy: state.extra as Policy?,
+            policyId: state.pathParameters['id'],
+          ),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/clients/:id',
+        pageBuilder: (_, state) {
+          final fromChat = state.uri.queryParameters['fromChat'] == 'true';
+          return amTransitionPage(
+            child: ClientDetailScreen(
+              clientId: state.pathParameters['id'] ?? '',
+              fromChat: fromChat,
+            ),
+            state: state,
+            type: 'push',
+          );
+        },
       ),
       GoRoute(
         path: '/create-reminder',
@@ -113,24 +177,42 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/chat',
-        pageBuilder: (_, state) => amTransitionPage(
-          child: ChatScreen(initialContext: state.extra as AiChatContext?),
-          state: state,
-          type: 'push',
-        ),
-      ),
-      GoRoute(
-        path: '/voice-chat',
-        pageBuilder: (_, state) => amTransitionPage(
-          child: const VoiceChatScreen(),
-          state: state,
-          type: 'push',
-        ),
+        pageBuilder: (_, state) {
+          final extra = state.extra;
+          final child = extra is AssistantResumeArgs
+              ? AssistantScreen(resumeArgs: extra)
+              : AssistantScreen(initialContext: extra as AiChatContext?);
+          return amTransitionPage(child: child, state: state, type: 'push');
+        },
       ),
       GoRoute(
         path: '/account',
         pageBuilder: (_, state) => amTransitionPage(
           child: const AccountScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/reminder-settings',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const ReminderSettingsScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/catalogs',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const CatalogsScreen(),
+          state: state,
+          type: 'push',
+        ),
+      ),
+      GoRoute(
+        path: '/share-target',
+        pageBuilder: (_, state) => amTransitionPage(
+          child: const ShareTargetScreen(),
           state: state,
           type: 'push',
         ),

@@ -46,7 +46,9 @@ String _keyFor(ApiException e) {
       }
       return decoded['error']?.toString() ?? decoded['message']?.toString() ?? e.message;
     }
-  } catch (_) {}
+  } catch (_) {
+    // fire-and-forget: intento de parseo de un formato legacy — si falla, cae al `return e.message` de abajo
+  }
 
   return e.message;
 }

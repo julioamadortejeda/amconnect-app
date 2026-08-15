@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'AMConnect Advisor';
+  String get appTitle => 'AMConnect';
 
   @override
   String get commonTerms =>
@@ -35,6 +35,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonLoading => 'Loading...';
+
+  @override
+  String get commonOpenSettings => 'Open Settings';
 
   @override
   String get homeEmptyPendientes => 'No pending reminders';
@@ -94,6 +97,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailLoginCreateAccount => 'Create account';
 
   @override
+  String get forgotPasswordTitle => 'Recover your account';
+
+  @override
+  String get forgotPasswordSubtitleEmail =>
+      'Enter your email and we\'ll send you a code to reset your password.';
+
+  @override
+  String get forgotPasswordSubtitleReset =>
+      'Enter the code we sent you and your new password.';
+
+  @override
+  String forgotPasswordCodeSentTo(String email) {
+    return 'We sent a code to $email';
+  }
+
+  @override
+  String get forgotPasswordSendCodeBtn => 'Send code';
+
+  @override
+  String get forgotPasswordResetBtn => 'Reset password';
+
+  @override
+  String get forgotPasswordBackToEmail => 'Use a different email';
+
+  @override
+  String get forgotPasswordSuccessTitle => 'Password updated';
+
+  @override
+  String get forgotPasswordSuccessMsg =>
+      'You can now sign in with your new password.';
+
+  @override
+  String get forgotPasswordSuccessBtn => 'Sign in';
+
+  @override
+  String get errRequestCodeFailed =>
+      'We couldn\'t send the code. Please try again.';
+
+  @override
+  String get errInvalidCode => 'The code is invalid or has expired.';
+
+  @override
   String get registerTitle => 'Create account';
 
   @override
@@ -118,10 +163,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldConfirm => 'Confirm password';
 
   @override
+  String get fieldCode => 'Verification code';
+
+  @override
   String get fieldFullName => 'Full name';
 
   @override
   String get fieldPhone => 'Phone';
+
+  @override
+  String get fieldOccupation => 'Occupation';
+
+  @override
+  String get fieldAddress => 'Address';
+
+  @override
+  String get fieldBirthdate => 'Birthdate';
+
+  @override
+  String get fieldRfc => 'RFC';
+
+  @override
+  String get fieldCurp => 'CURP';
+
+  @override
+  String get fieldNotes => 'Notes';
 
   @override
   String get accountProfileTitle => 'Profile';
@@ -179,6 +245,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignOutMessage => 'You can sign back in anytime.';
+
+  @override
+  String get accountAppearanceTitle => 'Appearance';
+
+  @override
+  String get themeModeSystem => 'System';
+
+  @override
+  String get themeModeLight => 'Light';
+
+  @override
+  String get themeModeDark => 'Dark';
+
+  @override
+  String get accountHelpTitle => 'Help';
+
+  @override
+  String get accountHelp => 'Help & support';
+
+  @override
+  String get accountNotificationsDisabled => 'Notifications disabled';
 
   @override
   String get errInvalidEmail => 'Enter a valid email address';
@@ -244,6 +331,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'The file could not be uploaded. Please try again.';
 
   @override
+  String get errSharedFileMissing =>
+      'The shared file is no longer available. Please share it again.';
+
+  @override
+  String get errSharedTextTooLarge =>
+      'The text is too long to process. Share a shorter chat or just the relevant messages.';
+
+  @override
+  String get errSpeechUnavailable =>
+      'Voice dictation is not available on this device. Type your message instead.';
+
+  @override
   String errRefCode(String ref) {
     return 'Reference code: $ref';
   }
@@ -260,16 +359,59 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not get the path of the selected file.';
 
   @override
+  String get errFileOpenFailed => 'Couldn\'t open the file. Please try again.';
+
+  @override
   String get shellHome => 'Home';
 
   @override
   String get shellAgenda => 'Agenda';
 
   @override
-  String get shellClients => 'Clients';
+  String get shellClients => 'Portfolio';
 
   @override
   String get shellData => 'Data';
+
+  @override
+  String get analyticsTitle => 'Portfolio Analytics';
+
+  @override
+  String get analyticsFunnelTitle => 'Sales Funnel';
+
+  @override
+  String get analyticsFunnelProspects => 'Prospects';
+
+  @override
+  String get analyticsFunnelClients => 'Clients with Policies';
+
+  @override
+  String get analyticsFunnelRate => 'Close Rate';
+
+  @override
+  String get analyticsPolicyStatus => 'Renewal Status';
+
+  @override
+  String get analyticsPolicyActive => 'Active';
+
+  @override
+  String get analyticsPolicyExpired => 'Expired / Overdue';
+
+  @override
+  String get analyticsPolicyPending => 'In Underwriting';
+
+  @override
+  String get analyticsBranchDist => 'Diversification by Line of Business';
+
+  @override
+  String get analyticsCarrierDist => 'Distribution by Carrier';
+
+  @override
+  String get homeNotificationsBannerTitle => 'Notifications disabled';
+
+  @override
+  String get homeNotificationsBannerSubtitle =>
+      'Turn them on so you don\'t miss your reminders';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -465,6 +607,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsError => 'Error loading clients';
 
   @override
+  String get clientsDeleteTitle => 'Delete client?';
+
+  @override
+  String get clientsDeleteMessage =>
+      'This client will be deleted and will no longer appear in your portfolio. This action cannot be undone.';
+
+  @override
+  String get clientsErrDelete =>
+      'Couldn\'t delete the client. Please try again.';
+
+  @override
+  String get clientsErrAddNote => 'Couldn\'t add the note. Please try again.';
+
+  @override
   String get clientsContactSection => 'Contact';
 
   @override
@@ -499,6 +655,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsNewClient => 'Client';
 
   @override
+  String get clientsNewTitle => 'New client';
+
+  @override
+  String get clientsEditTitle => 'Edit client';
+
+  @override
+  String get clientsCreateBtn => 'Create client';
+
+  @override
+  String get clientsCreated => 'Client created';
+
+  @override
+  String get clientsUpdated => 'Client updated';
+
+  @override
+  String get clientsFieldNoBirthdate => 'No date set';
+
+  @override
+  String get clientsFieldInvalidPhone =>
+      'Enter a valid phone number (10 to 15 digits)';
+
+  @override
+  String get clientsSectionPersonal => 'Personal info';
+
+  @override
+  String get clientsSectionFiscal => 'Fiscal';
+
+  @override
+  String get clientsFieldGeneralNotes => 'General notes';
+
+  @override
+  String get clientsAddNote => 'Add quick note';
+
+  @override
+  String get clientsAddNoteHint => 'Write a note about this client…';
+
+  @override
   String get clientsNoteTypePdf => 'PDF document';
 
   @override
@@ -508,7 +701,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientsNoteTypeImage => 'Image';
 
   @override
-  String get clientsNoteTypeText => 'Chat message';
+  String get clientsNoteTypeText => 'Note';
+
+  @override
+  String get clientsNoteTypeWhatsapp => 'WhatsApp';
 
   @override
   String get clientsNoteOpenFile => 'Open file';
@@ -527,6 +723,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsActionAsk => 'Ask';
+
+  @override
+  String get clientsActionNoPhone => 'This client has no phone number on file';
+
+  @override
+  String get clientsActionLaunchError => 'Couldn\'t open the app';
+
+  @override
+  String get clientsActionInvalidPhone =>
+      'This client\'s phone number isn\'t valid';
 
   @override
   String clientsPoliciesTab(int count) {
@@ -580,6 +786,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get remindersAskAbout => 'Ask about this';
+
+  @override
   String get remindersTitle => 'Agenda';
 
   @override
@@ -600,7 +809,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersFilterCalls => 'Calls';
 
   @override
+  String get remindersFilterCompleted => 'Completed';
+
+  @override
   String get remindersFilterDeleted => 'Deleted';
+
+  @override
+  String get remindersFilterSelectTitle => 'Filter by';
+
+  @override
+  String get remindersCalendarHistoryLabel => 'History';
+
+  @override
+  String get remindersGroupOverdue => 'Overdue';
+
+  @override
+  String get remindersGroupThisWeek => 'Rest of the week';
+
+  @override
+  String get remindersGroupLater => 'Later';
 
   @override
   String get remindersDeletedWarning => 'Deleted reminders cannot be restored.';
@@ -642,6 +869,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersCreated => 'Reminder created';
 
   @override
+  String get remindersSectionInfo => 'Information';
+
+  @override
+  String get remindersSectionDetails => 'Details';
+
+  @override
   String get remindersVoiceHint => 'SAY IT IN YOUR OWN WORDS';
 
   @override
@@ -650,6 +883,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersFieldTitle => 'Title';
+
+  @override
+  String get remindersFieldDescription => 'Description';
 
   @override
   String get remindersFieldType => 'Type';
@@ -664,10 +900,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersFieldTime => 'Time';
 
   @override
+  String get remindersFieldDateTime => 'Date & time';
+
+  @override
   String get remindersRepeatYearly => 'Repeat yearly';
 
   @override
   String get remindersCreateBtn => 'Create reminder';
+
+  @override
+  String get remindersSelectClientTitle => 'Select client';
+
+  @override
+  String get remindersNoClientOption => 'No client';
+
+  @override
+  String get remindersSelectPolicyTitle => 'Select policy';
+
+  @override
+  String get remindersNoPolicyOption => 'No policy';
+
+  @override
+  String get remindersSelectStatusTitle => 'Select status';
+
+  @override
+  String get remindersPolicyNeedsClient => 'Choose a client first';
+
+  @override
+  String get remindersPickDateTitle => 'Reminder date & time';
+
+  @override
+  String get remindersPickDateMessage => 'Choose when you want to be reminded.';
 
   @override
   String get voiceListening => 'Listening…';
@@ -715,10 +978,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceChatPermissionDenied => 'Microphone permission denied';
 
   @override
+  String get voiceOpenSettingsHint => 'Tap to open Settings';
+
+  @override
   String get voiceChatSkillActive => 'Looking up data…';
 
   @override
+  String get voiceChatThinking => 'Thinking…';
+
+  @override
+  String get voiceOutputTitle => 'Audio output';
+
+  @override
+  String get voiceOutputSpeaker => 'Phone speaker';
+
+  @override
+  String get voiceOutputBluetooth => 'Bluetooth device';
+
+  @override
+  String get voiceOutputWired => 'Wired headphones';
+
+  @override
+  String get voiceOutputOther => 'Other device';
+
+  @override
+  String get voiceOutputNone => 'No audio devices available';
+
+  @override
+  String get voiceSkillSearchingContacts => 'Looking up client…';
+
+  @override
+  String get voiceSkillReviewingContacts => 'Reviewing your clients…';
+
+  @override
+  String get voiceSkillSavingContact => 'Updating client…';
+
+  @override
+  String get voiceSkillSearchingNotes => 'Searching your notes…';
+
+  @override
+  String get voiceSkillSavingNote => 'Saving note…';
+
+  @override
+  String get voiceSkillSearchingPolicies => 'Looking up policy…';
+
+  @override
+  String get voiceSkillReviewingPolicies => 'Reviewing your policies…';
+
+  @override
+  String get voiceSkillSavingPolicy => 'Saving policy…';
+
+  @override
+  String get voiceSkillSearchingReminders => 'Looking up reminders…';
+
+  @override
+  String get voiceSkillSavingReminder => 'Updating reminder…';
+
+  @override
+  String get voiceSkillCatalog => 'Checking catalog…';
+
+  @override
+  String get voiceSkillSavingCatalog => 'Saving to catalog…';
+
+  @override
+  String get voiceSkillPendingTask => 'Noting a pending item…';
+
+  @override
+  String get voiceSkillKnowledge => 'Searching your knowledge base…';
+
+  @override
+  String get assistantVoiceActive => 'Voice active';
+
+  @override
   String get chatTitle => 'Assistant';
+
+  @override
+  String get chatBackendFree => 'Free';
+
+  @override
+  String get chatBackendEnterprise => 'Enterprise';
 
   @override
   String get chatSubtitle => 'Connected to your base';
@@ -728,6 +1066,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatInputHint => 'Ask your assistant…';
+
+  @override
+  String get chatCardViewProfile => 'View Profile';
+
+  @override
+  String get chatCardViewPolicy => 'View Policy';
+
+  @override
+  String get chatCardGoToAgenda => 'Go to Agenda';
+
+  @override
+  String get chatCardContactInfoTitle => 'Contact';
+
+  @override
+  String get chatCardContactListTitle => 'Matching Contacts';
+
+  @override
+  String get chatCardReminderListTitle => 'Reminders & Tasks';
+
+  @override
+  String get chatCardPolicyInfoTitle => 'Policy Found';
+
+  @override
+  String get chatCardActionCall => 'Call';
+
+  @override
+  String get chatCardActionWhatsApp => 'WhatsApp';
 
   @override
   String get feedTitle => 'Knowledge base';
@@ -755,6 +1120,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedTypeAudioDesc => 'Transcribes and extracts data';
+
+  @override
+  String get feedAudioSourceTitle => 'How do you want to add it?';
+
+  @override
+  String get feedAudioSourceFile => 'Choose file';
+
+  @override
+  String get feedAudioSourceFileDesc => 'Upload an existing recording';
+
+  @override
+  String get feedAudioSourceRecord => 'Record audio';
+
+  @override
+  String get feedAudioSourceRecordDesc => 'Record a voice note now';
+
+  @override
+  String get feedRecorderTitle => 'Record voice note';
+
+  @override
+  String get feedRecorderTapToStart => 'Tap the button to start recording';
+
+  @override
+  String get feedRecorderRecording => 'Recording…';
+
+  @override
+  String get feedRecorderReady => 'Ready to send';
+
+  @override
+  String get feedRecorderPlaying => 'Playing…';
+
+  @override
+  String get feedRecorderPlay => 'Play';
+
+  @override
+  String get feedRecorderPause => 'Pause';
+
+  @override
+  String get feedRecorderDiscard => 'Discard';
+
+  @override
+  String get feedRecorderAccept => 'Accept';
+
+  @override
+  String get feedRecorderPermissionDenied =>
+      'We need microphone access to record. Enable it in your device settings.';
+
+  @override
+  String get feedRecorderOpenSettings => 'Open settings';
 
   @override
   String get feedTypeText => 'Text / notes';
@@ -841,6 +1255,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedSuccessTitle => 'Policy created';
 
   @override
+  String get feedSuccessUpdateTitle => 'Policy updated';
+
+  @override
   String feedSuccessFieldsSaved(int count) {
     return '$count fields saved';
   }
@@ -900,6 +1317,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedPreviewConfirm => 'Confirm';
+
+  @override
+  String get feedIngestConfirmCta => 'Yes, save';
+
+  @override
+  String get feedIngestCorrectCta => 'Correct / Chat';
+
+  @override
+  String get feedIngestCancelCta => 'Cancel';
+
+  @override
+  String get feedIngestHolderLabel => 'Policyholder';
+
+  @override
+  String get feedIngestCarrierLabel => 'Carrier';
+
+  @override
+  String get feedIngestBranchProductLabel => 'Branch / Prod.';
+
+  @override
+  String get feedIngestPolicyNumberLabel => 'Policy No.';
+
+  @override
+  String get feedIngestPremiumLabel => 'Premium';
+
+  @override
+  String get feedIngestValidityLabel => 'Validity';
+
+  @override
+  String get feedContactMismatchTitle => 'Who should we assign this policy to?';
+
+  @override
+  String feedContactMismatchBody(String detectedName, String screenName) {
+    return 'The document shows $detectedName as the policyholder, but you\'re on $screenName\'s screen.';
+  }
+
+  @override
+  String feedContactMismatchAssignCta(String screenName) {
+    return 'Yes, assign to $screenName';
+  }
+
+  @override
+  String feedContactMismatchUseDetectedCta(String detectedName) {
+    return 'No, use $detectedName';
+  }
+
+  @override
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName) {
+    return 'This policy will be assigned to $screenName. The document identified $detectedName as the policyholder.';
+  }
 
   @override
   String get remindersActionDone => 'Mark done';
@@ -984,12 +1452,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersDetailSave => 'Save';
 
   @override
-  String get remindersDetailNotes => 'Notes';
-
-  @override
-  String get remindersDetailNoNotes => 'No notes';
-
-  @override
   String get remindersDetailNoClient => 'No client assigned';
 
   @override
@@ -1041,6 +1503,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersDetailRelations => 'Relations';
 
   @override
+  String get remindersDetailAttachments => 'Attached files';
+
+  @override
+  String get remindersDetailNoAttachments => 'No attached files';
+
+  @override
   String get remindersDetailTomorrow => 'Tomorrow';
 
   @override
@@ -1052,4 +1520,495 @@ class AppLocalizationsEn extends AppLocalizations {
   String remindersDetailDaysOverdue(int count) {
     return '${count}d overdue';
   }
+
+  @override
+  String get policiesNewPolicyTitle => 'New Policy';
+
+  @override
+  String get policiesPolicyNumber => 'Policy number';
+
+  @override
+  String get policiesCarrier => 'Carrier';
+
+  @override
+  String get policiesBranch => 'Branch';
+
+  @override
+  String get policiesProduct => 'Product';
+
+  @override
+  String get policiesStatus => 'Status';
+
+  @override
+  String get policiesCurrency => 'Currency';
+
+  @override
+  String get policiesPaymentFrequency => 'Payment frequency';
+
+  @override
+  String get policiesPaymentMethod => 'Payment method';
+
+  @override
+  String get policiesSumInsured => 'Sum insured';
+
+  @override
+  String get policiesPremium => 'Premium';
+
+  @override
+  String get policiesDeductible => 'Deductible';
+
+  @override
+  String get policiesStartDate => 'Start date';
+
+  @override
+  String get policiesEndDate => 'End date';
+
+  @override
+  String get policiesRenewalDate => 'Renewal date';
+
+  @override
+  String get policiesNextPaymentDate => 'Next payment';
+
+  @override
+  String get policiesNotes => 'Notes';
+
+  @override
+  String get policiesSaveBtn => 'Save policy';
+
+  @override
+  String get policiesSelectClient => 'Select client';
+
+  @override
+  String get policiesCreateCarrier => 'Create new Carrier';
+
+  @override
+  String get policiesCreateBranch => 'Create new Branch';
+
+  @override
+  String get policiesCreateProduct => 'Create new Product';
+
+  @override
+  String get policiesCreatedSuccess => 'Policy created successfully';
+
+  @override
+  String get policiesEditPolicyTitle => 'Edit Policy';
+
+  @override
+  String get policiesSaveChangesBtn => 'Save changes';
+
+  @override
+  String get policiesUpdatedSuccess => 'Policy updated successfully';
+
+  @override
+  String get policiesDetailTitle => 'Policy detail';
+
+  @override
+  String get policiesDetailLoadError => 'Couldn\'t load the policy.';
+
+  @override
+  String get policiesDetailCoverage => 'Coverage and payment';
+
+  @override
+  String get policiesDetailDates => 'Dates';
+
+  @override
+  String get policiesNotesSection => 'Notes';
+
+  @override
+  String get policiesEmptyNotes => 'No notes yet for this policy.';
+
+  @override
+  String get policiesAddNoteHint => 'Write a note...';
+
+  @override
+  String get policiesDeleteNoteTitle => 'Delete note';
+
+  @override
+  String get policiesDeleteNoteMsg =>
+      'Do you want to delete this note? This action cannot be undone.';
+
+  @override
+  String get policiesDeleteTitle => 'Delete policy?';
+
+  @override
+  String get policiesDeleteMessage =>
+      'This policy will be deleted and will no longer appear in your portfolio. This action cannot be undone.';
+
+  @override
+  String get policiesErrDelete =>
+      'Couldn\'t delete the policy. Please try again.';
+
+  @override
+  String get policiesErrDeleteNote =>
+      'Couldn\'t delete the note. Please try again.';
+
+  @override
+  String get policiesErrAddNote => 'Couldn\'t add the note. Please try again.';
+
+  @override
+  String get policiesAttachFile => 'Attach';
+
+  @override
+  String get catalogsTitle => 'Catalogs';
+
+  @override
+  String get catalogsTypeCarriers => 'Carriers';
+
+  @override
+  String get catalogsTypeBranches => 'Branches';
+
+  @override
+  String get catalogsTypeProducts => 'Products';
+
+  @override
+  String get catalogsSearchHint => 'Search...';
+
+  @override
+  String get catalogsEmpty => 'No results';
+
+  @override
+  String get catalogsError => 'Couldn\'t load catalogs';
+
+  @override
+  String get catalogsFieldName => 'Name';
+
+  @override
+  String get catalogsFieldShortName => 'Short name';
+
+  @override
+  String get catalogsFieldCode => 'Code';
+
+  @override
+  String get catalogsSelectCarrier => 'Select carrier';
+
+  @override
+  String get catalogsSelectBranch => 'Select branch';
+
+  @override
+  String get catalogsNewCarrierTitle => 'New carrier';
+
+  @override
+  String get catalogsEditCarrierTitle => 'Edit carrier';
+
+  @override
+  String get catalogsNewBranchTitle => 'New branch';
+
+  @override
+  String get catalogsEditBranchTitle => 'Edit branch';
+
+  @override
+  String get catalogsNewProductTitle => 'New product';
+
+  @override
+  String get catalogsEditProductTitle => 'Edit product';
+
+  @override
+  String get catalogsCreateBtn => 'Create';
+
+  @override
+  String get catalogsCarrierCreated => 'Carrier created';
+
+  @override
+  String get catalogsCarrierUpdated => 'Carrier updated';
+
+  @override
+  String get catalogsBranchCreated => 'Branch created';
+
+  @override
+  String get catalogsBranchUpdated => 'Branch updated';
+
+  @override
+  String get catalogsProductCreated => 'Product created';
+
+  @override
+  String get catalogsProductUpdated => 'Product updated';
+
+  @override
+  String get catalogsDeleteTitle => 'Delete item';
+
+  @override
+  String get catalogsDeleteMessage =>
+      'Are you sure you want to delete it? This action cannot be undone.';
+
+  @override
+  String get shareTargetTitle => 'Shared resource';
+
+  @override
+  String get shareTargetSubtitle =>
+      'Select where you want to assign this content';
+
+  @override
+  String get shareTargetPreview => 'Preview';
+
+  @override
+  String get shareTargetEmpty => 'No content was received to process';
+
+  @override
+  String get shareTargetDestinationPolicyIngest => 'Policy intake';
+
+  @override
+  String get shareTargetDestinationPolicyIngestSub =>
+      'Automatic document reading';
+
+  @override
+  String get shareTargetPolicyIngestUnavailable =>
+      'Only available for PDFs or images';
+
+  @override
+  String get shareTargetUnsupportedFile =>
+      'This file can\'t be processed. Share a PDF, an image (JPG, PNG, WEBP, GIF), an audio file (MP3, WAV, OGG, M4A, WEBM), or a chat exported as text (.txt) — exports with attached media (.zip) aren\'t supported.';
+
+  @override
+  String get shareTargetDestinationGlobal => 'Global Ingest (Knowledge Base)';
+
+  @override
+  String get shareTargetDestinationClient => 'Client';
+
+  @override
+  String get shareTargetDestinationPolicy => 'Policy';
+
+  @override
+  String get shareTargetDestinationReminder => 'Reminder';
+
+  @override
+  String get shareTargetNoticePolicyIngest =>
+      'Everything is generated automatically: the client, carrier, product and coverages are detected, and payment and renewal reminders are created. You can review and correct before saving.';
+
+  @override
+  String get shareTargetNoticeGlobal =>
+      'It will be processed as a note in your general knowledge base.';
+
+  @override
+  String shareTargetNoticeClient(String name) {
+    return 'It will be processed as a note in $name\'s file.';
+  }
+
+  @override
+  String get shareTargetNoticePickClient =>
+      'Pick a client to save this content as a note in their file.';
+
+  @override
+  String shareTargetNoticePolicy(String policy) {
+    return 'It will be processed as a note on policy $policy.';
+  }
+
+  @override
+  String get shareTargetNoticePickPolicy =>
+      'Pick a policy to save this content as one of its notes.';
+
+  @override
+  String shareTargetNoticeReminder(String reminder) {
+    return 'It will be processed as a note linked to reminder $reminder.';
+  }
+
+  @override
+  String get shareTargetNoticePickReminder =>
+      'Pick a reminder to link this content to as a note.';
+
+  @override
+  String get shareTargetActionIngest => 'Upload resource';
+
+  @override
+  String get shareTargetActionPolicyIngest => 'Process policy';
+
+  @override
+  String get shareTargetSelectClient => 'Select client';
+
+  @override
+  String get shareTargetSelectPolicy => 'Select policy';
+
+  @override
+  String get shareTargetSelectReminder => 'Select reminder';
+
+  @override
+  String get shareTargetSearchReminderHint => 'Search reminder…';
+
+  @override
+  String get shareTargetPolicyNoNumber => 'No number';
+
+  @override
+  String get shareTargetCancel => 'Discard';
+
+  @override
+  String get feedMakeGeneral => 'Make general knowledge';
+
+  @override
+  String get feedMakeGeneralGlobalDesc =>
+      'The file will be available globally for AI';
+
+  @override
+  String get feedMakeGeneralSub =>
+      'Enable if you want the file to be global rather than context-exclusive';
+
+  @override
+  String get feedContextAttachReminder => 'Will be attached to this reminder';
+
+  @override
+  String get feedContextAttachPolicy => 'Will be attached to this policy';
+
+  @override
+  String get feedContextAttachClient => 'Will be attached to this client';
+
+  @override
+  String get policiesAskAbout => 'Ask about this policy';
+
+  @override
+  String get commonOpenFile => 'Open file';
+
+  @override
+  String get chatCardPolicyListTitle => 'Policies in your portfolio';
+
+  @override
+  String get chatCardPolicyCreated => 'Policy created';
+
+  @override
+  String get chatCardPolicyUpdated => 'Policy updated';
+
+  @override
+  String get chatCardFieldHolder => 'Policyholder';
+
+  @override
+  String get chatCardFieldInsured => 'Insured';
+
+  @override
+  String get chatCardRemindersLabel => 'Reminders';
+
+  @override
+  String get chatCardReminderFallback => 'Reminder';
+
+  @override
+  String get chatCardContactFallback => 'Contact';
+
+  @override
+  String get chatCardFieldPhone => 'Phone';
+
+  @override
+  String get chatCardFieldEmail => 'Email';
+
+  @override
+  String get chatCardFieldDate => 'Date';
+
+  @override
+  String get chatCardAttachmentFallback => 'Document';
+
+  @override
+  String get chatSuggestion1 => 'Who\'s due soon?';
+
+  @override
+  String get chatSuggestion2 => 'How much does Javier pay?';
+
+  @override
+  String get chatSuggestion3 => 'Remind me to call tomorrow';
+
+  @override
+  String get chatSuggestion4 => 'Payments this week?';
+
+  @override
+  String chatContextSuggestionContact(String name) {
+    return 'Ask me anything about **$name**.';
+  }
+
+  @override
+  String chatContextSuggestionPolicy(String carrier) {
+    return 'Ask me anything about this **$carrier** policy.';
+  }
+
+  @override
+  String chatContextSuggestionReminder(String title) {
+    return 'Ask me anything about this reminder: **$title**.';
+  }
+
+  @override
+  String chatContextSuggestionKnowledge(String fileName) {
+    return 'Ask me anything about **$fileName**.';
+  }
+
+  @override
+  String get chatContextSuggestionKnowledgeGeneric =>
+      'Ask me anything about this document you uploaded.';
+
+  @override
+  String get policiesSectionInsuranceDetails => 'Insurance details';
+
+  @override
+  String get policiesSectionParamsPayment => 'Parameters & payment';
+
+  @override
+  String get policiesSectionAmountsCoverage => 'Amounts & coverage';
+
+  @override
+  String get policiesSectionDatesValidity => 'Validity & payment dates';
+
+  @override
+  String get reminderTypeBirthday => 'Birthday';
+
+  @override
+  String get reminderSettingsTitle => 'Automatic alerts';
+
+  @override
+  String get reminderSettingsSubtitle => 'How far ahead we warn you';
+
+  @override
+  String get reminderSettingsIntro =>
+      'The app warns you about payments, renewals, anniversaries and birthdays on its own. Choose how early here.';
+
+  @override
+  String get reminderSettingsSameDay => 'On the day';
+
+  @override
+  String reminderSettingsDaysBefore(int days) {
+    return '$days days before';
+  }
+
+  @override
+  String get reminderSettingsOff => 'No alerts';
+
+  @override
+  String get reminderSettingsBranchExceptions => 'Exceptions by branch';
+
+  @override
+  String get reminderSettingsAddException => 'Add exception';
+
+  @override
+  String get reminderSettingsAllBranches => 'All branches';
+
+  @override
+  String get reminderSettingsPickDays => 'Advance notice';
+
+  @override
+  String get reminderSettingsPickBranch => 'Choose the branch';
+
+  @override
+  String get reminderSettingsNoBranches =>
+      'You don\'t have any branches in your catalog yet';
+
+  @override
+  String get policiesPaymentRule => 'Payment days';
+
+  @override
+  String policiesPaymentMonthly(int day) {
+    return 'Every $day of the month';
+  }
+
+  @override
+  String get policiesActivityTitle => 'Activity';
+
+  @override
+  String get policiesActivityUpcoming => 'Upcoming';
+
+  @override
+  String get policiesActivityHistory => 'History';
+
+  @override
+  String get policiesActivityEmpty => 'No reminders for this policy';
+
+  @override
+  String get reminderSettingsRemoveException => 'Remove exception';
+
+  @override
+  String get reminderSettingsDefault => 'All other branches';
+
+  @override
+  String get reminderSettingsHint =>
+      'Tap an advance notice to change it. Branch exceptions override the value above.';
 }

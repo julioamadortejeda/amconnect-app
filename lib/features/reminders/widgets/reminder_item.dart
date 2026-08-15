@@ -28,21 +28,21 @@ class ReminderItem extends ConsumerWidget {
     final r = reminder;
 
     final statusText = switch (r.statusCode) {
-      'CREATED'     => l10n.reminderStatusCreated,
+      'CREATED' => l10n.reminderStatusCreated,
       'IN_PROGRESS' => l10n.reminderStatusInProgress,
-      'PAUSED'      => l10n.reminderStatusPaused,
-      'DONE'        => l10n.reminderStatusDone,
-      'CANCELLED'   => l10n.reminderStatusCancelled,
-      _             => null,
+      'PAUSED' => l10n.reminderStatusPaused,
+      'DONE' => l10n.reminderStatusDone,
+      'CANCELLED' => l10n.reminderStatusCancelled,
+      _ => null,
     };
 
     final statusColor = switch (r.statusCode) {
-      'CREATED'     => cs.tertiary,
+      'CREATED' => cs.tertiary,
       'IN_PROGRESS' => am.amber,
-      'PAUSED'      => cs.tertiary,
-      'DONE'        => am.green,
-      'CANCELLED'   => cs.error,
-      _             => null,
+      'PAUSED' => cs.tertiary,
+      'DONE' => am.green,
+      'CANCELLED' => cs.error,
+      _ => null,
     };
 
     final (iconFg, iconBg, badgeBg, badgeFg) = switch (r.priority) {
@@ -78,105 +78,140 @@ class ReminderItem extends ConsumerWidget {
     final String mainSub = r.time != '—'
         ? (r.sub.isNotEmpty ? '${r.sub} · ${r.time}' : r.time)
         : r.sub;
+    final String? relationClient = r.contactName;
+    final String? relationPolicy = r.policyNumber;
+    final bool hasRelation = relationClient != null || relationPolicy != null;
 
-    final content = Opacity(
-      opacity: r.done ? 0.55 : 1.0,
-      child: AmPress(
-        onTap: () => context.push('/reminder/${r.id}', extra: r),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AmDimens.screenH, AmDimens.gapS, AmDimens.screenH, AmDimens.gapS),
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                    color: iconBg, borderRadius: BorderRadius.circular(11)),
-                child: Icon(reminderIcon(r.type), size: 18, color: iconFg),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      r.title,
-                      style: TextStyle(
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface,
-                        decoration:
-                            r.done ? TextDecoration.lineThrough : null,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          if (statusText != null) ...[
-                            TextSpan(
-                                text: statusText,
-                                style: TextStyle(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w600,
-                                )),
-                            if (hasSub)
-                              TextSpan(
-                                text: '  ·  ',
-                                style: TextStyle(color: cs.outlineVariant),
-                              ),
-                          ],
-                          TextSpan(text: mainSub),
-                        ],
-                      ),
-                      style: TextStyle(fontSize: 12.5, color: cs.tertiary),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
+    final content = AmPress(
+      onTap: () => context.push('/reminder/${r.id}', extra: r),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+            AmDimens.screenH, AmDimens.gapS, AmDimens.screenH, AmDimens.gapS),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                  color: iconBg, borderRadius: BorderRadius.circular(11)),
+              child: Icon(reminderIcon(r.type), size: 18, color: iconFg),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 9, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: badgeBg,
-                      borderRadius: BorderRadius.circular(8),
+                  Text(
+                    r.title,
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
                     ),
-                    child: Text(fmtSmartDate(r.dueDate, l10n),
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: badgeFg)),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  if (daysLeft != null && daysLeft != 0) ...[
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: badgeBg,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text('${daysLeft}d',
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: badgeFg)),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        if (statusText != null) ...[
+                          TextSpan(
+                              text: statusText,
+                              style: TextStyle(
+                                color: statusColor,
+                                fontWeight: FontWeight.w600,
+                              )),
+                          if (hasSub)
+                            TextSpan(
+                              text: '  ·  ',
+                              style: TextStyle(color: cs.outlineVariant),
+                            ),
+                        ],
+                        TextSpan(text: mainSub),
+                      ],
+                    ),
+                    style: TextStyle(fontSize: 12.5, color: cs.tertiary),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  if (hasRelation) ...[
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        if (relationClient != null) ...[
+                          Icon(Icons.person_outline,
+                              size: 11, color: cs.tertiary),
+                          const SizedBox(width: 3),
+                          Flexible(
+                            child: Text(
+                              relationClient,
+                              style:
+                                  TextStyle(fontSize: 11, color: cs.tertiary),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                        if (relationClient != null && relationPolicy != null)
+                          const SizedBox(width: 8),
+                        if (relationPolicy != null) ...[
+                          Icon(Icons.description_outlined,
+                              size: 11, color: cs.tertiary),
+                          const SizedBox(width: 3),
+                          Flexible(
+                            child: Text(
+                              relationPolicy,
+                              style:
+                                  TextStyle(fontSize: 11, color: cs.tertiary),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 10),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: badgeBg,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(fmtSmartDate(r.dueDate, l10n),
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: badgeFg)),
+                ),
+                if (daysLeft != null && daysLeft != 0) ...[
+                  const SizedBox(height: 4),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: badgeBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text('${daysLeft}d',
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: badgeFg)),
+                  ),
+                ],
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/models/agent_note.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../home/providers/home_provider.dart';
 
@@ -22,11 +26,13 @@ class RemindersState {
     RemindersViewMode? viewMode,
     DateTime? selectedDate,
     bool clearSelectedDate = false,
-  }) => RemindersState(
-    filter: filter ?? this.filter,
-    viewMode: viewMode ?? this.viewMode,
-    selectedDate: clearSelectedDate ? null : selectedDate ?? this.selectedDate,
-  );
+  }) =>
+      RemindersState(
+        filter: filter ?? this.filter,
+        viewMode: viewMode ?? this.viewMode,
+        selectedDate:
+            clearSelectedDate ? null : selectedDate ?? this.selectedDate,
+      );
 }
 
 class RemindersNotifier extends Notifier<RemindersState> {
@@ -41,10 +47,10 @@ class RemindersNotifier extends Notifier<RemindersState> {
   void setFilter(String filter) => state = state.copyWith(filter: filter);
 
   void toggleViewMode() => state = state.copyWith(
-    viewMode: state.viewMode == RemindersViewMode.list
-        ? RemindersViewMode.calendar
-        : RemindersViewMode.list,
-  );
+        viewMode: state.viewMode == RemindersViewMode.list
+            ? RemindersViewMode.calendar
+            : RemindersViewMode.list,
+      );
 
   void selectDate(DateTime date) => state = state.copyWith(selectedDate: date);
 }
@@ -58,6 +64,9 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
   final filter = ref.watch(remindersUiProvider).filter;
   if (filter == 'eliminados') {
     return reminders.where((r) => r.cancelled).toList();
+  }
+  if (filter == 'completados') {
+    return reminders.where((r) => r.done).toList();
   }
   final active = reminders.where((r) => r.isActive).toList();
   if (filter == 'todos') return active;
@@ -73,7 +82,26 @@ final selectedDayRemindersProvider = Provider<List<Reminder>>((ref) {
     if (!r.isActive) return false;
     final d = r.dueDate;
     if (d == null) return false;
-    return d.year == selected.year && d.month == selected.month && d.day == selected.day;
+    return d.year == selected.year &&
+        d.month == selected.month &&
+        d.day == selected.day;
+  }).toList();
+});
+
+/// Completados/cancelados del día seleccionado — apartado aparte en la vista
+/// calendario, para no perderlos al resolverse (el asesor quiere poder ver
+/// qué hizo tal día).
+final selectedDayHistoryRemindersProvider = Provider<List<Reminder>>((ref) {
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final selected = ref.watch(remindersUiProvider).selectedDate;
+  if (selected == null) return [];
+  return reminders.where((r) {
+    if (r.isActive) return false;
+    final d = r.dueDate;
+    if (d == null) return false;
+    return d.year == selected.year &&
+        d.month == selected.month &&
+        d.day == selected.day;
   }).toList();
 });
 
@@ -83,12 +111,116 @@ final reminderTypesProvider = FutureProvider<List<ReminderType>>((ref) {
   return ref.read(reminderRepositoryProvider).getTypes();
 });
 
-/// Mapa fecha → recordatorios para pintar puntos en el calendario.
+/// Estado del formulario de creación manual de recordatorios.
+class CreateReminderState {
+  const CreateReminderState({this.loading = false, this.error});
+
+  final bool loading;
+
+  /// errorCode o mensaje crudo del backend — se traduce con
+  /// `context.translateError` en la pantalla.
+  final String? error;
+
+  CreateReminderState copyWith({
+    bool? loading,
+    String? error,
+    bool clearError = false,
+  }) =>
+      CreateReminderState(
+        loading: loading ?? this.loading,
+        error: clearError ? null : (error ?? this.error),
+      );
+}
+
+class CreateReminderNotifier extends Notifier<CreateReminderState> {
+  @override
+  CreateReminderState build() => const CreateReminderState();
+
+  Future<Reminder?> submit({
+    required String typeId,
+    required String title,
+    String? description,
+    required DateTime dueDate,
+    String? contactId,
+    String? policyId,
+    String? status,
+  }) async {
+    state = state.copyWith(loading: true, clearError: true);
+    try {
+      final created = await ref.read(remindersProvider.notifier).create(
+            typeId: typeId,
+            title: title,
+            description: description,
+            dueDate: dueDate,
+            contactId: contactId,
+            policyId: policyId,
+            status: status,
+          );
+      state = state.copyWith(loading: false);
+      return created;
+    } on ApiException catch (e) {
+      state = CreateReminderState(error: e.errorCode ?? e.message);
+      return null;
+    }
+  }
+
+  void reset() => state = const CreateReminderState();
+}
+
+final createReminderProvider =
+    NotifierProvider<CreateReminderNotifier, CreateReminderState>(
+        CreateReminderNotifier.new);
+
+/// Notas ligadas a un recordatorio (creadas vía Share Target).
+final reminderNotesProvider =
+    FutureProvider.family<List<AgentNote>, String>((ref, reminderId) async {
+  return ref.read(noteRepositoryProvider).getByReminderId(reminderId);
+});
+
+// Watching this provider activates Realtime for notes of a reminder —
+// necesario porque la ingesta de archivo/texto con IA es asíncrona.
+final reminderNotesRealtimeProvider =
+    Provider.autoDispose.family<void, String>((ref, reminderId) {
+  final channel = Supabase.instance.client
+      .channel('notes:reminder:$reminderId')
+      .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'agent_notes',
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: 'reminder_id',
+          value: reminderId,
+        ),
+        callback: (_) => ref.invalidate(reminderNotesProvider(reminderId)),
+      )
+      .subscribe();
+  ref.onDispose(() => channel.unsubscribe());
+});
+
+/// Mapa fecha → recordatorios activos, para pintar los puntos de prioridad
+/// en el calendario.
 final remindersByDateProvider = Provider<Map<DateTime, List<Reminder>>>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final map = <DateTime, List<Reminder>>{};
   for (final r in reminders) {
     if (!r.isActive) continue;
+    final d = r.dueDate;
+    if (d == null) continue;
+    final key = DateTime(d.year, d.month, d.day);
+    (map[key] ??= []).add(r);
+  }
+  return map;
+});
+
+/// Mapa fecha → recordatorios completados/cancelados, para el punto de
+/// "carga ya resuelta" del calendario (ver [selectedDayHistoryRemindersProvider]).
+final remindersHistoryByDateProvider =
+    Provider<Map<DateTime, List<Reminder>>>((ref) {
+  final reminders = ref.watch(remindersProvider).asData?.value ?? [];
+  final map = <DateTime, List<Reminder>>{};
+  for (final r in reminders) {
+    if (r.isActive) continue;
     final d = r.dueDate;
     if (d == null) continue;
     final key = DateTime(d.year, d.month, d.day);

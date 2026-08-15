@@ -1,3 +1,5 @@
+import 'payment_schedule.dart';
+
 class Policy {
   const Policy({
     required this.id,
@@ -14,8 +16,10 @@ class Policy {
     this.status,
     this.currency,
     this.paymentFrequency,
+    this.paymentMethod,
     this.contactId,
     this.contactName,
+    this.paymentSchedule,
   });
 
   final String id;
@@ -32,8 +36,12 @@ class Policy {
   final PolicyCatalog? status;
   final PolicyCurrency? currency;
   final PolicyFrequency? paymentFrequency;
+  final PolicyCatalog? paymentMethod;
   final String? contactId;
   final String? contactName;
+
+  /// Regla de pago y siguiente fecha, ya resueltas por el backend.
+  final PaymentSchedule? paymentSchedule;
 
   String get productName => product?.name ?? '—';
   String get branchName  => product?.branchName ?? '—';
@@ -58,7 +66,9 @@ class Policy {
     final status  = json['status']  as Map<String, dynamic>?;
     final currency = json['currency'] as Map<String, dynamic>?;
     final freq    = json['paymentFrequency'] as Map<String, dynamic>?;
+    final method  = json['paymentMethod'] as Map<String, dynamic>?;
     final contact = json['contact'] as Map<String, dynamic>?;
+    final schedule = json['paymentSchedule'] as Map<String, dynamic>?;
 
     return Policy(
       id:              json['id'] as String,
@@ -75,8 +85,10 @@ class Policy {
       status:   status   != null ? PolicyCatalog.fromJson(status)   : null,
       currency: currency != null ? PolicyCurrency.fromJson(currency) : null,
       paymentFrequency: freq != null ? PolicyFrequency.fromJson(freq) : null,
+      paymentMethod: method != null ? PolicyCatalog.fromJson(method) : null,
       contactId: json['contactId'] as String? ?? contact?['id'] as String?,
       contactName: contact?['fullName'] as String? ?? contact?['full_name'] as String?,
+      paymentSchedule: schedule != null ? PaymentSchedule.fromJson(schedule) : null,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/reminder.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/utils/reminder_utils.dart';
@@ -64,9 +65,9 @@ class ReminderDetailHero extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surface,
         borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AmColors.shadowLow,
             blurRadius: 16,
           ),
         ],
@@ -138,6 +139,7 @@ class ReminderDetailHero extends StatelessWidget {
           editing
               ? TextField(
                   controller: titleCtrl,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -167,6 +169,7 @@ class ReminderDetailHero extends StatelessWidget {
                   controller: descCtrl,
                   minLines: 2,
                   maxLines: 5,
+                  textCapitalization: TextCapitalization.sentences,
                   style: TextStyle(fontSize: 14.5, color: cs.onSurface),
                   decoration: InputDecoration(
                     border: InputBorder.none,

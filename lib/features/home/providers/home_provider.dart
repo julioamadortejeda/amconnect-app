@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/repositories/reminder_repository.dart';
+import '../../../core/utils/reminder_utils.dart';
 import '../../../core/repositories/supabase_agent_repository.dart';
+import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_policy_repository.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
-import '../../clients/providers/clients_provider.dart';
 
 class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
-  late final ReminderRepository _repo;
+  late ReminderRepository _repo;
   RealtimeChannel? _channel;
 
   @override
@@ -65,7 +66,8 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     if (state.asData?.value.any((r) => r.id == id) == true) return;
     final reminder = await _repo.getById(id);
     if (reminder == null) return;
-    state = AsyncData([...state.requireValue, reminder]);
+    state = AsyncData([...state.requireValue, reminder]
+      ..sort(compareReminderDueDate));
   }
 
   Future<void> _onUpdate(Map<String, dynamic> row) async {
@@ -83,7 +85,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData([
       for (final r in state.requireValue)
         if (r.id == id) reminder else r,
-    ]);
+    ]..sort(compareReminderDueDate));
   }
 
   void _onDelete(Map<String, dynamic> row) {
@@ -99,7 +101,7 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData([
       for (final r in state.requireValue)
         if (r.id == id) updated else r,
-    ]);
+    ]..sort(compareReminderDueDate));
   }
 
   Future<void> reschedule(String id, DateTime dueDate) async {
@@ -129,6 +131,42 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
       for (final r in state.requireValue)
         if (r.id == id) updated else r,
     ]);
+  }
+
+  Future<void> updateRelations(String id,
+      {String? contactId, String? policyId}) async {
+    final updated =
+        await _repo.updateRelations(id, contactId: contactId, policyId: policyId);
+    if (updated == null) return;
+    state = AsyncData([
+      for (final r in state.requireValue)
+        if (r.id == id) updated else r,
+    ]);
+  }
+
+  Future<Reminder?> create({
+    required String typeId,
+    required String title,
+    String? description,
+    required DateTime dueDate,
+    String? contactId,
+    String? policyId,
+    String? status,
+  }) async {
+    final created = await _repo.create(
+      typeId: typeId,
+      title: title,
+      description: description,
+      dueDate: dueDate,
+      contactId: contactId,
+      policyId: policyId,
+      status: status,
+    );
+    if (created == null) return null;
+    if (state.asData?.value.any((r) => r.id == created.id) != true) {
+      state = AsyncData([...state.requireValue, created]);
+    }
+    return created;
   }
 
   Future<void> toggle(String id) async {
@@ -195,6 +233,51 @@ class PoliciesCountNotifier extends AsyncNotifier<int> {
   }
 }
 
+/// Conteo total de clientes del asesor — reactivo a cambios via Realtime.
+/// Necesario porque `clientsProvider` ahora es paginado (`ListPageInfo`):
+/// su `.length` ya no refleja el total real, solo lo cargado hasta el momento.
+class ContactsCountNotifier extends AsyncNotifier<int> {
+  RealtimeChannel? _channel;
+
+  @override
+  Future<int> build() async {
+    final repo = ref.read(contactRepositoryProvider);
+    final count = await repo.getCount();
+
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      _channel = Supabase.instance.client
+          .channel('contacts:count:$userId')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'contacts',
+            filter: PostgresChangeFilter(
+              type: PostgresChangeFilterType.eq,
+              column: 'agent_id',
+              value: userId,
+            ),
+            callback: (_) async {
+              final updated = await repo.getCount();
+              state = AsyncData(updated);
+            },
+          )
+          .subscribe((status, error) {
+        debugPrint('[RT:contacts:count] $status $error');
+      });
+
+      ref.onDispose(() {
+        _channel?.unsubscribe();
+      });
+    }
+
+    return count;
+  }
+}
+
+final contactsCountProvider =
+    AsyncNotifierProvider<ContactsCountNotifier, int>(ContactsCountNotifier.new);
+
 final policiesCountProvider = AsyncNotifierProvider<PoliciesCountNotifier, int>(
     PoliciesCountNotifier.new);
 
@@ -204,6 +287,7 @@ final homeReadyProvider = FutureProvider<bool>((ref) async {
     ref.watch(remindersProvider.future),
     ref.watch(agentNameProvider.future),
     ref.watch(policiesCountProvider.future),
+    ref.watch(contactsCountProvider.future),
     Future.delayed(const Duration(milliseconds: 150)),
   ]);
   return true;
@@ -234,9 +318,10 @@ final homeDashboardProvider = Provider<HomeDashboardData>((ref) {
   final reminders = ref.watch(remindersProvider).asData?.value ?? [];
   final agentName = ref.watch(agentNameProvider).asData?.value ?? '';
   final polizasCount = ref.watch(policiesCountProvider).asData?.value ?? 0;
-  final clientsCount = ref.watch(clientsProvider).asData?.value.length ?? 0;
+  final clientsCount = ref.watch(contactsCountProvider).asData?.value ?? 0;
 
-  final pending = reminders.where((r) => r.isActive).toList();
+  final pending = reminders.where((r) => r.isActive).toList()
+    ..sort(compareReminderDueDate);
   final urgentCount = pending.where((r) => r.isUrgent).length;
   final porRenovar = pending.where((r) => r.isRenewal).length;
   final followUps = (pending.where((r) => r.isFollowUp).toList())

@@ -16,6 +16,41 @@ const _months = [
   'dic'
 ];
 const _weekdays = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+const _monthsFull = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre'
+];
+const _weekdaysFull = [
+  'lunes',
+  'martes',
+  'miércoles',
+  'jueves',
+  'viernes',
+  'sábado',
+  'domingo'
+];
+
+String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
+// "Junio 2026" — encabezado de mes del calendario
+String fmtMonthYear(DateTime dt) =>
+    '${_cap(_monthsFull[dt.month - 1])} ${dt.year}';
+
+// "Junio" — nombre completo del mes, capitalizado
+String fmtMonthFull(DateTime dt) => _cap(_monthsFull[dt.month - 1]);
+
+// "Lunes" — nombre completo del día de la semana, capitalizado
+String fmtWeekdayFull(DateTime dt) => _cap(_weekdaysFull[dt.weekday - 1]);
 
 // ─── Currency ─────────────────────────────────────────────────────────────────
 
@@ -39,6 +74,10 @@ String fmtDate(DateTime? dt, {bool showYear = true}) {
   return showYear ? '$base ${dt.year}' : base;
 }
 
+/// Un día recurrente de la regla de pago: "10 may". Sin año a propósito — la
+/// regla se repite cada año, solo la ocurrencia concreta lleva año.
+String fmtMonthDay(int month, int day) => '$day ${_months[month - 1]}';
+
 // Wrapper para ISO strings
 String fmtDateFromIso(String? iso, {bool showYear = true}) {
   if (iso == null) return '—';
@@ -61,6 +100,17 @@ String fmtSmartDate(DateTime? dt, AppLocalizations l10n,
   return fmtDate(dt, showYear: showYear);
 }
 
+// "Hoy, 17:02" / "Mañana" / "13 jun 2026, 09:00" — día inteligente + hora.
+// Convierte a hora local del dispositivo; medianoche local = sin hora → solo día.
+String fmtSmartDateTime(DateTime? dt, AppLocalizations l10n,
+    {bool showYear = false}) {
+  if (dt == null) return '—';
+  final local = dt.toLocal();
+  final day = fmtSmartDate(local, l10n, showYear: showYear);
+  final time = fmtTime(local, fallback: '');
+  return time.isEmpty ? day : '$day, $time';
+}
+
 // "lun 13 jun 2026" — para timestamps de comentarios y pantallas de detalle
 String fmtDateWithWeekday(DateTime? dt) {
   if (dt == null) return '—';
@@ -71,6 +121,13 @@ String fmtDateWithWeekday(DateTime? dt) {
 String fmtTime(DateTime? dt, {String fallback = '—'}) {
   if (dt == null || (dt.hour == 0 && dt.minute == 0)) return fallback;
   return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+}
+
+// "mm:ss" — duración de una grabación en curso o terminada.
+String fmtElapsed(Duration d) {
+  final minutes = d.inMinutes.toString().padLeft(2, '0');
+  final seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
 }
 
 // ─── Names and Strings ────────────────────────────────────────────────────────

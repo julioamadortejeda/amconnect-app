@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/am_press.dart';
 
 class HomeFloatingBtn extends StatelessWidget {
@@ -22,14 +23,14 @@ class HomeFloatingBtn extends StatelessWidget {
         children: [
           Container(
             width: 44, height: 44,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
+                  color: AmColors.shadowMedium,
                   blurRadius: 18,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                 ),
               ],
             ),

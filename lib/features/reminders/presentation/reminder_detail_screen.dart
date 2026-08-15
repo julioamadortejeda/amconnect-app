@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_reschedule_dialog.dart';
+import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../../../core/widgets/am_top_bar.dart';
@@ -14,8 +16,13 @@ import '../widgets/reminder_comment_bubble.dart';
 import '../widgets/reminder_detail_hero.dart';
 import '../widgets/reminder_detail_info_section.dart';
 import '../widgets/reminder_detail_relations_section.dart';
+import '../widgets/reminder_notes_section.dart';
+import '../../feed/widgets/ingest_type_picker.dart';
 import '../widgets/reminder_type_selection_sheet.dart';
 import '../widgets/am_reminder_actions_sheet.dart';
+import '../widgets/reminder_ai_button.dart';
+import '../widgets/reminder_client_sheet.dart';
+import '../widgets/reminder_policy_sheet.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../../l10n/app_localizations.dart';
@@ -128,6 +135,49 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
     ));
   }
 
+  void _showClientSheet(BuildContext ctx, Reminder r, ColorScheme cs) {
+    showModalBottomSheet(
+      context: ctx,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderClientSheet(
+        selectedClientId: r.contactId,
+        onSelect: (c) => ref.read(remindersProvider.notifier).updateRelations(
+              r.id,
+              contactId: c?.id,
+              // Cliente distinto al dueño de la póliza actual — se limpia
+              // para no dejar la póliza de otro cliente colgada del recordatorio.
+              policyId: c?.id == r.contactId ? r.policyId : null,
+            ),
+      ),
+    );
+  }
+
+  void _showPolicySheet(BuildContext ctx, Reminder r, ColorScheme cs) {
+    final contactId = r.contactId;
+    if (contactId == null) return;
+    showModalBottomSheet(
+      context: ctx,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: cs.surface,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => ReminderPolicySheet(
+        contactId: contactId,
+        selectedPolicyId: r.policyId,
+        onSelect: (p) => ref.read(remindersProvider.notifier).updateRelations(
+              r.id,
+              contactId: r.contactId,
+              policyId: p?.id,
+            ),
+      ),
+    );
+  }
+
   void _showTypeSheet(BuildContext ctx, Reminder r, List<ReminderType> types,
       AppLocalizations l10n, ColorScheme cs) {
     showModalBottomSheet(
@@ -138,8 +188,10 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (sheetCtx) => ReminderTypeSelectionSheet(
-        reminder: r,
+        selectedTypeId: r.typeId,
         types: types,
+        onSelect: (t) =>
+            ref.read(remindersProvider.notifier).updateType(r.id, t.id),
       ),
     );
   }
@@ -170,9 +222,7 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: const AmLoader(),
       );
     }
     if (_loadError != null) {
@@ -232,13 +282,10 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                   ),
                 ),
                 child: _saving
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: cs.onPrimary,
-                        ),
+                    ? AmSpinner(
+                        size: 16,
+                        strokeWidth: 2,
+                        color: cs.onPrimary,
                       )
                     : Text(
                         l10n.remindersDetailSave,
@@ -281,6 +328,12 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: r.cancelled
+          ? null
+          : ReminderAiButton(
+              reminder: r,
+              notes: ref.watch(reminderNotesProvider(r.id)).asData?.value,
+            ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
@@ -341,23 +394,30 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             const SizedBox(height: AmDimens.gapM),
 
             // ── RELACIONES ────────────────────────────────────────
-            if (r.policyNumber != null || r.contactId != null) ...[
-              AmAnimateIn(
-                index: aniIdx++,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AmSectionLabel(label: l10n.remindersDetailRelations),
-                    const SizedBox(height: AmDimens.gapXS),
-                    ReminderDetailRelationsSection(
-                      reminder: r,
-                      onTapClient: () => context.push('/clients/${r.contactId}'),
-                    ),
-                  ],
-                ),
+            // Siempre visible (aunque no haya nada asignado) para que el
+            // asesor descubra que puede ligar el recordatorio a un cliente
+            // o póliza, igual que Type/Status.
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(label: l10n.remindersDetailRelations),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ReminderDetailRelationsSection(
+                    contactId: r.contactId,
+                    contactName: r.contactName,
+                    policyId: r.policyId,
+                    policyNumber: r.policyNumber,
+                    onTapClient:
+                        r.cancelled ? null : () => _showClientSheet(context, r, cs),
+                    onTapPolicy:
+                        r.cancelled ? null : () => _showPolicySheet(context, r, cs),
+                  ),
+                ],
               ),
-              const SizedBox(height: AmDimens.gapM),
-            ],
+            ),
+            const SizedBox(height: AmDimens.gapM),
 
             // ── COMENTARIOS ──────────────────────────────────────
             AmAnimateIn(
@@ -381,6 +441,47 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
                     )
                   else
                     ...r.comments.map((c) => ReminderCommentBubble(comment: c)),
+                ],
+              ),
+            ),
+            const SizedBox(height: AmDimens.gapM),
+
+            // ── ARCHIVOS ADJUNTOS ────────────────────────────────
+            AmAnimateIn(
+              index: aniIdx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(
+                    label: l10n.remindersDetailAttachments,
+                    trailing: r.cancelled
+                        ? null
+                        : GestureDetector(
+                            onTap: () => IngestTypePicker.show(
+                              context,
+                              reminderId: r.id,
+                              showPolicyExtraction: false,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.attach_file_outlined,
+                                    size: 14, color: cs.primary),
+                                const SizedBox(width: 4),
+                                Text(
+                                  l10n.policiesAttachFile,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: cs.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: AmDimens.gapXS),
+                  ReminderNotesSection(reminderId: r.id),
                 ],
               ),
             ),

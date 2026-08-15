@@ -12,12 +12,14 @@ class TextIngestSheet extends ConsumerStatefulWidget {
     required this.sourceType,
     this.contactId,
     this.policyId,
+    this.reminderId,
     this.makeGeneral,
   });
 
   final String sourceType; // 'text' | 'whatsapp'
   final String? contactId;
   final String? policyId;
+  final String? reminderId;
   final bool? makeGeneral;
 
   @override
@@ -47,6 +49,7 @@ class _TextIngestSheetState extends ConsumerState<TextIngestSheet> {
       widget.sourceType,
       contactId: widget.contactId,
       policyId: widget.policyId,
+      reminderId: widget.reminderId,
       makeGeneral: widget.makeGeneral,
     );
   }
@@ -121,6 +124,7 @@ class _TextIngestSheetState extends ConsumerState<TextIngestSheet> {
               minLines: 4,
               autofocus: true,
               textInputAction: TextInputAction.newline,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 hintText: l10n.feedTextInputHint,
                 hintStyle: TextStyle(color: cs.tertiary, fontSize: 14),

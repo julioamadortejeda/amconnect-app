@@ -25,12 +25,18 @@ class AmIconBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final (bg, fg, shadow) = switch (tone) {
-      AmIconBtnTone.soft    => (cs.surface, cs.onSurfaceVariant, true),
-      AmIconBtnTone.sunken  => (cs.secondaryContainer, cs.onSurfaceVariant, false),
-      AmIconBtnTone.accent  => (AmColors.accent, Colors.white, true),
-      AmIconBtnTone.ghost   => (Colors.transparent, cs.onSurfaceVariant, false),
-    };
+    // Sin acción = se ve sin acción. Antes un botón deshabilitado quedaba
+    // idéntico a uno vivo y el usuario lo tocaba esperando que respondiera —
+    // en el composer eso hacía parecer que la app se había trabado.
+    final disabled = onTap == null;
+    final (bg, fg, shadow) = disabled
+        ? (cs.secondaryContainer, cs.onSurfaceVariant.withValues(alpha: 0.38), false)
+        : switch (tone) {
+            AmIconBtnTone.soft    => (cs.surface, cs.onSurfaceVariant, true),
+            AmIconBtnTone.sunken  => (cs.secondaryContainer, cs.onSurfaceVariant, false),
+            AmIconBtnTone.accent  => (AmColors.accent, Colors.white, true),
+            AmIconBtnTone.ghost   => (Colors.transparent, cs.onSurfaceVariant, false),
+          };
 
     final btn = Container(
       width: dim,
@@ -39,7 +45,7 @@ class AmIconBtn extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(13),
         boxShadow: shadow
-            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.055), blurRadius: 22, offset: const Offset(0, 4))]
+            ? [const BoxShadow(color: AmColors.shadowSoft, blurRadius: 22, offset: Offset(0, 4))]
             : null,
       ),
       child: Stack(

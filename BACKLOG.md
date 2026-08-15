@@ -1,42 +1,24 @@
 # AMConnect App — Backlog
 
+> Sincronizado contra el código real 2026-07-23 — varios ítems marcados pendientes ya estaban resueltos y se movieron a "Completado". El backlog general y más completo del proyecto (auditado seguido) vive en `/Users/Development/Projects/JACATSoft/backlog.md` — usar ese como fuente principal; este archivo es específico de detalles a nivel app que no siempre están ahí.
+
 ## UX / Diseño
 
-- [ ] **Mejorar presentación de errores en ChatScreen**
-  El chat actualmente muestra el error técnico crudo como burbuja roja:
+- [x] **Mejorar presentación de errores en ChatScreen** — resuelto en general por `core/utils/api_error_mapper.dart` + `error_translator.dart` (mapean `errorCode` a mensajes amigables). Último hueco cerrado 2026-07-23: `assistant_provider.dart` (chat del Assistant) tenía su propia función local `mapApiError` duplicada y rota — hacía *substring match* de `'429'`/`'Quota'`/`'límite'` sobre el texto crudo del error, así que un `AiProviderError` (503, Gemini ocupado) cuyo mensaje interpola `"(429)"` literal se mostraba como "Has alcanzado el límite de uso de tu plan actual" en vez de "El asistente está ocupado, intenta de nuevo". Se eliminó la duplicada y ahora usa la versión compartida (mismo patrón que `chat_provider.dart`/`ingest_provider.dart`/`chat_tts_provider.dart`), que sí traduce `AI_PROVIDER_BUSY` correctamente.
+
+  Problema original: el chat mostraba el error técnico crudo como burbuja roja:
   `Error en classifyMessage: {"error":{"code":503,"message":"This model is currently experiencing high demand...","status":"UNAVAILABLE"}}`
-  
-  Lo que hay que hacer:
-  - En `chat_provider.dart` (o donde se atrapa el error), parsear el mensaje antes de exponer al estado. Si contiene JSON, extraer solo el `message` interno. Si es un error de red/timeout, mostrar un mensaje genérico.
-  - Mapear códigos conocidos: 503 → "El asistente está ocupado, intenta en un momento.", 401 → "Sesión expirada, vuelve a iniciar sesión.", etc.
-  - La burbuja de error en `chat_screen.dart` puede quedarse igual (roja con ícono), pero el texto debe ser amigable, sin JSON ni stack traces.
-  - Opcional: agregar botón "Reintentar" en la burbuja de error.
-
-## Backend / Conectividad
-
-- [ ] Conectar clientes con Supabase (tabla `contacts`)
-- [ ] Conectar recordatorios con Supabase (tabla `reminders`)
 
 ## Auth
 
-- [ ] Configurar Google/Apple providers en Supabase Dashboard + `supabase/config.toml`
-- [ ] Agregar `google-services.json` en `android/app/` para Google Sign In Android
-- [ ] Agregar capability Sign In with Apple en Xcode para Apple Sign In iOS
+- [ ] **Apple Sign In — falta la capability en Xcode** (encontrado 2026-07-23): el código ya llama `sign_in_with_apple` (`login_screen.dart`, `supabase_auth_repository.dart`, `auth_provider.dart`; paquete `sign_in_with_apple: ^8.1.0` en `pubspec.yaml`), pero `ios/Runner/Runner.entitlements` no tiene la key `com.apple.developer.applesignin` y `project.pbxproj` tampoco declara la capability "Sign In with Apple". Sin esto, el login con Apple falla en dispositivo real/TestFlight aunque el código Dart esté listo. Agregar la capability desde Xcode: target Runner → Signing & Capabilities → "+ Capability" → Sign In with Apple.
+- [ ] Confirmar que los providers de Google/Apple estén habilitados en el Supabase Dashboard de **producción** — mismo ítem pendiente en `backlog.md` raíz § Deploy a producción (línea "Google Sign-In en Dashboard").
 
 ## Features pendientes
 
-- [ ] Voz real en ChatScreen (actualmente solo texto)
-- [ ] Subida real de archivos en FeedScreen
-- [ ] Notificaciones push para recordatorios
-- [ ] **Optimizar consumo de tokens en Chat de Voz:** Revisar por qué el chat de voz consume una cantidad elevada de tokens en comparación con el de texto y optimizar la ventana de historial/prompts enviados.
+- [ ] **Optimizar consumo de tokens en Chat de Voz:** Revisar por qué el chat de voz consume una cantidad elevada de tokens en comparación con el de texto y optimizar la ventana de historial/prompts enviados. El chat de **texto** ya se optimizó 2026-07-23 (implicit caching + `thinking_level: minimal`, ver `backend/BACKLOG.md` §T1-T3, bajó de ~40s a ~4s por ronda) — la voz sigue sin revisar, mismo tipo de problema es candidato ahí también.
 - [ ] **Opción de conocimiento híbrido (Cliente + General):** Al subir/crear un documento de conocimiento asignado a un cliente específico, permitir marcar un toggle/checkbox para que también se indexe como conocimiento general del agente (accesible globalmente por la IA sin requerir el filtro de cliente).
-- [ ] **Compartir Archivos desde el Sistema (Share Extension / Send Intent):** Permitir que cuando se comparta un documento (PDF, imagen, etc.) desde WhatsApp u otras apps en el dispositivo, aparezca AmConnect como opción para enviarlo directamente a la base de conocimiento de la aplicación.
-
-## Limpieza de Mocks / Datos Simulados
-
-- [ ] **Eliminar datos simulados y mocks en el cliente**
-  - Conectar `CreateReminderScreen` al proveedor real de clientes (`clientsProvider`) para cargar los contactos reales de la base de datos.
-  - Eliminar por completo el archivo `mock_data.dart` y asegurar que no haya referencias a datos simulados en toda la aplicación.
+- [ ] **Compartir Archivos desde el Sistema (Share Extension / Send Intent)** — mismo ítem que en `backlog.md` raíz § App Flutter → Pulido. Hoy no hay ningún paquete de deep link/share intent en `pubspec.yaml` ni intent-filters de `VIEW`/`SEND` en Android/iOS.
 
 ## Ideas de Negocio y Crecimiento Futuro (AI & Monetización)
 
@@ -73,3 +55,10 @@
 - [x] Modo oscuro — `AzulProTheme.darkTheme` + `AmTheme` extension; todos los widgets usan `cs.*`/`context.am.*`
 - [x] Home screen — refactor completo, widgets en archivos propios, floating header al hacer scroll
 - [x] Shell — FAB micrófono central sin recorte, blur en tab bar
+- [x] Clientes conectados a Supabase (tabla `contacts`) — lista, búsqueda, detalle, Realtime
+- [x] Recordatorios conectados a Supabase (tabla `reminders`) — CRUD completo, Realtime
+- [x] Google Sign-In Android — `android/app/google-services.json` presente
+- [x] Voz real en ChatScreen — `VoiceOverlay` (walkie-talkie) + pantalla Live con Gemini Live API por WebSocket, audio PCM bidireccional
+- [x] Subida real de archivos en FeedScreen — PDF, audio, imagen, texto y WhatsApp, los 5 tipos pegan al backend real
+- [x] Notificaciones push para recordatorios — FCM v1 de punta a punta
+- [x] Mocks eliminados — `mock_data.dart` ya no existe en el repo, sin referencias a datos simulados en `lib/`

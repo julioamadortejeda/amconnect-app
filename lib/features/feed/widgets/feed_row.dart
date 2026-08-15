@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,7 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../chat/data/chat_context.dart';
+import '../../../core/models/ai_chat_context.dart';
 import '../data/feed_item.dart';
 
 /// Fila expandible de un documento/nota en las listas del Feed.
@@ -28,14 +29,15 @@ class _FeedRowState extends ConsumerState<FeedRow> {
   bool _expanded = false;
 
   static (IconData, Color) _typeStyle(String sourceType) => (
-    AmIcons.forSourceType(sourceType),
-    switch (sourceType) {
-      'pdf' || 'doc' || 'document' => AmColors.srcDoc,
-      'audio' || 'wave'            => AmColors.srcWave,
-      'image' || 'photo'           => AmColors.srcImage,
-      _                            => AmColors.srcWhatsApp,
-    },
-  );
+        AmIcons.forSourceType(sourceType),
+        switch (sourceType) {
+          'pdf' || 'doc' || 'document' => AmColors.srcDoc,
+          'audio' || 'wave' => AmColors.srcWave,
+          'image' || 'photo' => AmColors.srcImage,
+          'text' => AmColors.srcNote,
+          _ => AmColors.srcWhatsApp,
+        },
+      );
 
   Future<void> _openFile() async {
     final storagePath = widget.item.storagePath;
@@ -43,9 +45,8 @@ class _FeedRowState extends ConsumerState<FeedRow> {
 
     setState(() => _loadingFile = true);
     try {
-      final signedUrl = await ref
-          .read(storageRepositoryProvider)
-          .getSignedUrl(storagePath);
+      final signedUrl =
+          await ref.read(storageRepositoryProvider).getSignedUrl(storagePath);
       final uri = Uri.parse(signedUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -66,23 +67,39 @@ class _FeedRowState extends ConsumerState<FeedRow> {
     final (icon, color) = _typeStyle(widget.item.sourceType);
     final bg = Color.alphaBlend(color.withValues(alpha: 0.1), cs.surface);
 
-    final name = widget.item.fileName ??
-        widget.item.summary ??
-        (widget.item.content != null && widget.item.content!.length > 45
-            ? '${widget.item.content!.substring(0, 45).replaceAll('\n', ' ')}...'
-            : widget.item.content) ??
-        l10n.feedTypeDocument;
+    final hasSummary =
+        widget.item.summary != null && widget.item.summary!.isNotEmpty;
+    final hasContent =
+        widget.item.content != null && widget.item.content!.isNotEmpty;
+    final hasFileName =
+        widget.item.fileName != null && widget.item.fileName!.isNotEmpty;
+
+    // Preferir el summary generado por IA como título — de qué se trata el
+    // audio/documento — en vez del nombre de archivo crudo ("Nota de voz 5
+    // ago 2026.m4a"), que no ayuda a distinguir una nota de otra en la lista.
+    final name = hasSummary
+        ? widget.item.summary!
+        : hasContent
+            ? (widget.item.content!.length > 45
+                ? '${widget.item.content!.substring(0, 45).replaceAll('\n', ' ')}...'
+                : widget.item.content!)
+            : hasFileName
+                ? widget.item.fileName!
+                : l10n.feedTypeDocument;
+
+    // El título ya absorbió el summary — mostrar el nombre de archivo real
+    // aparte (solo al expandir) para que se pueda identificar el archivo.
+    final showFileNameSeparately = hasSummary && hasFileName;
 
     final date = fmtRelativeDay(DateTime.tryParse(widget.item.createdAt), l10n);
     final hasFile = widget.item.storagePath != null;
-    final hasSummary = widget.item.summary != null && widget.item.summary!.isNotEmpty;
-    final hasContent = widget.item.content != null && widget.item.content!.isNotEmpty;
 
     final typeLabel = switch (widget.item.sourceType) {
       'pdf' || 'doc' || 'document' => l10n.clientsNoteTypePdf,
-      'audio' || 'wave'            => l10n.clientsNoteTypeAudio,
-      'image' || 'photo'           => l10n.clientsNoteTypeImage,
-      'text' || _                  => l10n.clientsNoteTypeText,
+      'audio' || 'wave' => l10n.clientsNoteTypeAudio,
+      'image' || 'photo' => l10n.clientsNoteTypeImage,
+      'whatsapp' => l10n.clientsNoteTypeWhatsapp,
+      'text' || _ => l10n.clientsNoteTypeText,
     };
     final subtitleText = '$typeLabel · $date';
 
@@ -104,7 +121,8 @@ class _FeedRowState extends ConsumerState<FeedRow> {
                     padding: EdgeInsets.all(10),
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(AmColors.accent),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(AmColors.accent),
                     ),
                   ),
                 )
@@ -123,23 +141,24 @@ class _FeedRowState extends ConsumerState<FeedRow> {
                   height: 1.4,
                 ),
                 maxLines: _expanded ? null : 2,
-                overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                overflow:
+                    _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
               ),
               if (_expanded) ...[
-                if (hasSummary && widget.item.fileName != null) ...[
-                  const SizedBox(height: 8),
+                if (showFileNameSeparately) ...[
+                  const SizedBox(height: 6),
                   Text(
-                    widget.item.summary!,
+                    widget.item.fileName!,
                     style: TextStyle(
-                      fontSize: 13.5,
-                      color: cs.onSurfaceVariant,
-                      height: 1.45,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                      color: cs.tertiary,
                     ),
                   ),
                 ],
-                if (hasContent && (widget.item.fileName == null || _expanded)) ...[
+                if (hasContent) ...[
                   const SizedBox(height: 8),
-                  if (hasSummary && widget.item.fileName != null) ...[
+                  if (hasSummary) ...[
                     Container(height: 1, color: cs.outlineVariant),
                     const SizedBox(height: 8),
                   ],
@@ -197,7 +216,8 @@ class _FeedRowState extends ConsumerState<FeedRow> {
               color: AmColors.accent,
             ),
             onPressed: () {
-              context.push('/chat', extra: AiChatContext.fromKnowledgeNote(widget.item));
+              context.push('/chat',
+                  extra: AiChatContext.fromKnowledgeNote(widget.item));
             },
             constraints: const BoxConstraints(),
             padding: const EdgeInsets.all(6),
@@ -247,13 +267,10 @@ class _OpenFileButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
       ),
       child: loading
-          ? SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: cs.onSurfaceVariant,
-              ),
+          ? AmSpinner(
+              size: 12,
+              strokeWidth: 1.5,
+              color: cs.onSurfaceVariant,
             )
           : Row(
               mainAxisSize: MainAxisSize.min,

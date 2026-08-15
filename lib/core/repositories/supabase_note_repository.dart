@@ -29,18 +29,23 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<void> deleteNote(String noteId) async {
-    await _client.delete('notes/$noteId');
-  }
-
-  @override
-  Future<List<FeedItem>> getRecent({int limit = 20}) async {
-    final res = await _client.get('notes/recent?limit=$limit');
+  Future<List<AgentNote>> getByReminderId(String reminderId) async {
+    final res = await _client.get('reminders/$reminderId/notes');
     final wrapper = res['data'] as Map<String, dynamic>;
     final items = wrapper['data'] as List<dynamic>;
     return items
-        .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
+        .map((e) => AgentNote.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  @override
+  Future<void> createPolicyNote(String policyId, String content) async {
+    await _client.post('policies/$policyId/notes', body: {'content': content});
+  }
+
+  @override
+  Future<void> deleteNote(String noteId) async {
+    await _client.delete('notes/$noteId');
   }
 
   @override
@@ -51,7 +56,8 @@ class SupabaseNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<List<FeedItem>> searchNotes({int limit = 20, int offset = 0, String? query}) async {
+  Future<List<FeedItem>> searchNotes(
+      {int limit = 20, int offset = 0, String? query}) async {
     final buf = StringBuffer('notes/search?limit=$limit&offset=$offset');
     if (query != null && query.trim().isNotEmpty) {
       buf.write('&search=${Uri.encodeComponent(query)}');

@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'AMConnect Advisor';
+  String get appTitle => 'AMConnect';
 
   @override
   String get commonTerms =>
@@ -35,6 +35,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commonLoading => 'Cargando...';
+
+  @override
+  String get commonOpenSettings => 'Abrir Ajustes';
 
   @override
   String get homeEmptyPendientes => 'Sin recordatorios pendientes';
@@ -94,6 +97,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get emailLoginCreateAccount => 'Crear cuenta';
 
   @override
+  String get forgotPasswordTitle => 'Recupera tu acceso';
+
+  @override
+  String get forgotPasswordSubtitleEmail =>
+      'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordSubtitleReset =>
+      'Ingresa el código que te enviamos y tu nueva contraseña.';
+
+  @override
+  String forgotPasswordCodeSentTo(String email) {
+    return 'Enviamos un código a $email';
+  }
+
+  @override
+  String get forgotPasswordSendCodeBtn => 'Enviar código';
+
+  @override
+  String get forgotPasswordResetBtn => 'Restablecer contraseña';
+
+  @override
+  String get forgotPasswordBackToEmail => 'Usar otro correo';
+
+  @override
+  String get forgotPasswordSuccessTitle => 'Contraseña actualizada';
+
+  @override
+  String get forgotPasswordSuccessMsg =>
+      'Ya puedes iniciar sesión con tu nueva contraseña.';
+
+  @override
+  String get forgotPasswordSuccessBtn => 'Iniciar sesión';
+
+  @override
+  String get errRequestCodeFailed =>
+      'No pudimos enviar el código. Intenta de nuevo.';
+
+  @override
+  String get errInvalidCode => 'El código no es válido o ya expiró.';
+
+  @override
   String get registerTitle => 'Crear cuenta';
 
   @override
@@ -118,10 +163,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldConfirm => 'Confirmar contraseña';
 
   @override
+  String get fieldCode => 'Código de verificación';
+
+  @override
   String get fieldFullName => 'Nombre completo';
 
   @override
   String get fieldPhone => 'Teléfono';
+
+  @override
+  String get fieldOccupation => 'Ocupación';
+
+  @override
+  String get fieldAddress => 'Dirección';
+
+  @override
+  String get fieldBirthdate => 'Fecha de nacimiento';
+
+  @override
+  String get fieldRfc => 'RFC';
+
+  @override
+  String get fieldCurp => 'CURP';
+
+  @override
+  String get fieldNotes => 'Notas';
 
   @override
   String get accountProfileTitle => 'Perfil';
@@ -181,6 +247,27 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get accountSignOutMessage =>
       'Podrás volver a iniciar sesión cuando quieras.';
+
+  @override
+  String get accountAppearanceTitle => 'Apariencia';
+
+  @override
+  String get themeModeSystem => 'Automático';
+
+  @override
+  String get themeModeLight => 'Claro';
+
+  @override
+  String get themeModeDark => 'Oscuro';
+
+  @override
+  String get accountHelpTitle => 'Ayuda';
+
+  @override
+  String get accountHelp => 'Ayuda y soporte';
+
+  @override
+  String get accountNotificationsDisabled => 'Notificaciones desactivadas';
 
   @override
   String get errInvalidEmail => 'Ingresa un correo electrónico válido';
@@ -247,6 +334,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo subir el archivo. Intenta de nuevo.';
 
   @override
+  String get errSharedFileMissing =>
+      'El archivo compartido ya no está disponible. Compártelo de nuevo.';
+
+  @override
+  String get errSharedTextTooLarge =>
+      'El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.';
+
+  @override
+  String get errSpeechUnavailable =>
+      'El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.';
+
+  @override
   String errRefCode(String ref) {
     return 'Código de referencia: $ref';
   }
@@ -263,16 +362,60 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo obtener la ruta del archivo seleccionado.';
 
   @override
+  String get errFileOpenFailed =>
+      'No se pudo abrir el archivo. Intenta de nuevo.';
+
+  @override
   String get shellHome => 'Inicio';
 
   @override
   String get shellAgenda => 'Agenda';
 
   @override
-  String get shellClients => 'Clientes';
+  String get shellClients => 'Cartera';
 
   @override
   String get shellData => 'Datos';
+
+  @override
+  String get analyticsTitle => 'Estadísticas de Cartera';
+
+  @override
+  String get analyticsFunnelTitle => 'Embudo de Prospección';
+
+  @override
+  String get analyticsFunnelProspects => 'Prospectos';
+
+  @override
+  String get analyticsFunnelClients => 'Clientes con póliza';
+
+  @override
+  String get analyticsFunnelRate => 'Tasa de cierre';
+
+  @override
+  String get analyticsPolicyStatus => 'Estatus de Renovación';
+
+  @override
+  String get analyticsPolicyActive => 'Vigentes';
+
+  @override
+  String get analyticsPolicyExpired => 'Vencidas / Por Renovar';
+
+  @override
+  String get analyticsPolicyPending => 'En Trámite';
+
+  @override
+  String get analyticsBranchDist => 'Diversificación por Ramo';
+
+  @override
+  String get analyticsCarrierDist => 'Distribución por Aseguradora';
+
+  @override
+  String get homeNotificationsBannerTitle => 'Notificaciones desactivadas';
+
+  @override
+  String get homeNotificationsBannerSubtitle =>
+      'Actívalas para no perderte tus recordatorios';
 
   @override
   String get homeTitle => 'AMConnect';
@@ -469,6 +612,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsError => 'Error al cargar clientes';
 
   @override
+  String get clientsDeleteTitle => '¿Eliminar cliente?';
+
+  @override
+  String get clientsDeleteMessage =>
+      'Se eliminará este cliente y no aparecerá más en tu cartera. Esta acción no se puede deshacer.';
+
+  @override
+  String get clientsErrDelete =>
+      'No se pudo eliminar el cliente. Intenta de nuevo.';
+
+  @override
+  String get clientsErrAddNote =>
+      'No se pudo agregar la nota. Intenta de nuevo.';
+
+  @override
   String get clientsContactSection => 'Contacto';
 
   @override
@@ -503,6 +661,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsNewClient => 'Cliente';
 
   @override
+  String get clientsNewTitle => 'Nuevo cliente';
+
+  @override
+  String get clientsEditTitle => 'Editar cliente';
+
+  @override
+  String get clientsCreateBtn => 'Crear cliente';
+
+  @override
+  String get clientsCreated => 'Cliente creado';
+
+  @override
+  String get clientsUpdated => 'Cliente actualizado';
+
+  @override
+  String get clientsFieldNoBirthdate => 'Sin fecha';
+
+  @override
+  String get clientsFieldInvalidPhone =>
+      'Ingresa un teléfono válido (10 a 15 dígitos)';
+
+  @override
+  String get clientsSectionPersonal => 'Datos personales';
+
+  @override
+  String get clientsSectionFiscal => 'Fiscal';
+
+  @override
+  String get clientsFieldGeneralNotes => 'Notas generales';
+
+  @override
+  String get clientsAddNote => 'Agregar nota rápida';
+
+  @override
+  String get clientsAddNoteHint => 'Escribe una nota sobre este cliente…';
+
+  @override
   String get clientsNoteTypePdf => 'Documento PDF';
 
   @override
@@ -512,7 +707,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsNoteTypeImage => 'Imagen';
 
   @override
-  String get clientsNoteTypeText => 'WhatsApp';
+  String get clientsNoteTypeText => 'Nota';
+
+  @override
+  String get clientsNoteTypeWhatsapp => 'WhatsApp';
 
   @override
   String get clientsNoteOpenFile => 'Ver archivo';
@@ -531,6 +729,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientsActionAsk => 'Preguntar';
+
+  @override
+  String get clientsActionNoPhone =>
+      'Este cliente no tiene teléfono registrado';
+
+  @override
+  String get clientsActionLaunchError => 'No se pudo abrir la aplicación';
+
+  @override
+  String get clientsActionInvalidPhone =>
+      'El teléfono de este cliente no es válido';
 
   @override
   String clientsPoliciesTab(int count) {
@@ -584,6 +793,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get remindersAskAbout => 'Preguntar sobre esto';
+
+  @override
   String get remindersTitle => 'Agenda';
 
   @override
@@ -604,7 +816,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFilterCalls => 'Llamadas';
 
   @override
+  String get remindersFilterCompleted => 'Completados';
+
+  @override
   String get remindersFilterDeleted => 'Eliminados';
+
+  @override
+  String get remindersFilterSelectTitle => 'Filtrar por';
+
+  @override
+  String get remindersCalendarHistoryLabel => 'Historial';
+
+  @override
+  String get remindersGroupOverdue => 'Vencidos';
+
+  @override
+  String get remindersGroupThisWeek => 'Resto de la semana';
+
+  @override
+  String get remindersGroupLater => 'Más adelante';
 
   @override
   String get remindersDeletedWarning =>
@@ -647,6 +877,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersCreated => 'Recordatorio creado';
 
   @override
+  String get remindersSectionInfo => 'Información';
+
+  @override
+  String get remindersSectionDetails => 'Detalles';
+
+  @override
   String get remindersVoiceHint => 'DÍSELO CON TUS PALABRAS';
 
   @override
@@ -655,6 +891,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersFieldTitle => 'Título';
+
+  @override
+  String get remindersFieldDescription => 'Descripción';
 
   @override
   String get remindersFieldType => 'Tipo';
@@ -669,10 +908,38 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFieldTime => 'Hora';
 
   @override
+  String get remindersFieldDateTime => 'Fecha y hora';
+
+  @override
   String get remindersRepeatYearly => 'Repetir cada año';
 
   @override
   String get remindersCreateBtn => 'Crear recordatorio';
+
+  @override
+  String get remindersSelectClientTitle => 'Seleccionar cliente';
+
+  @override
+  String get remindersNoClientOption => 'Sin cliente';
+
+  @override
+  String get remindersSelectPolicyTitle => 'Seleccionar póliza';
+
+  @override
+  String get remindersNoPolicyOption => 'Sin póliza';
+
+  @override
+  String get remindersSelectStatusTitle => 'Seleccionar estado';
+
+  @override
+  String get remindersPolicyNeedsClient => 'Elige un cliente primero';
+
+  @override
+  String get remindersPickDateTitle => 'Fecha y hora del recordatorio';
+
+  @override
+  String get remindersPickDateMessage =>
+      'Elige cuándo quieres que te recuerde esto.';
 
   @override
   String get voiceListening => 'Escuchando…';
@@ -720,10 +987,85 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceChatPermissionDenied => 'Permiso de micrófono denegado';
 
   @override
+  String get voiceOpenSettingsHint => 'Toca para abrir Ajustes';
+
+  @override
   String get voiceChatSkillActive => 'Consultando datos…';
 
   @override
+  String get voiceChatThinking => 'Pensando…';
+
+  @override
+  String get voiceOutputTitle => 'Salida de audio';
+
+  @override
+  String get voiceOutputSpeaker => 'Altavoz del teléfono';
+
+  @override
+  String get voiceOutputBluetooth => 'Dispositivo Bluetooth';
+
+  @override
+  String get voiceOutputWired => 'Audífonos con cable';
+
+  @override
+  String get voiceOutputOther => 'Otro dispositivo';
+
+  @override
+  String get voiceOutputNone => 'No hay dispositivos de audio disponibles';
+
+  @override
+  String get voiceSkillSearchingContacts => 'Buscando cliente…';
+
+  @override
+  String get voiceSkillReviewingContacts => 'Revisando tus clientes…';
+
+  @override
+  String get voiceSkillSavingContact => 'Actualizando cliente…';
+
+  @override
+  String get voiceSkillSearchingNotes => 'Buscando en tus notas…';
+
+  @override
+  String get voiceSkillSavingNote => 'Guardando nota…';
+
+  @override
+  String get voiceSkillSearchingPolicies => 'Buscando póliza…';
+
+  @override
+  String get voiceSkillReviewingPolicies => 'Revisando tus pólizas…';
+
+  @override
+  String get voiceSkillSavingPolicy => 'Guardando póliza…';
+
+  @override
+  String get voiceSkillSearchingReminders => 'Buscando recordatorios…';
+
+  @override
+  String get voiceSkillSavingReminder => 'Actualizando recordatorio…';
+
+  @override
+  String get voiceSkillCatalog => 'Consultando catálogo…';
+
+  @override
+  String get voiceSkillSavingCatalog => 'Guardando en catálogo…';
+
+  @override
+  String get voiceSkillPendingTask => 'Anotando pendiente…';
+
+  @override
+  String get voiceSkillKnowledge => 'Buscando en tu base de conocimiento…';
+
+  @override
+  String get assistantVoiceActive => 'Voz activa';
+
+  @override
   String get chatTitle => 'Asistente';
+
+  @override
+  String get chatBackendFree => 'Free';
+
+  @override
+  String get chatBackendEnterprise => 'Enterprise';
 
   @override
   String get chatSubtitle => 'Conectado a tu base';
@@ -733,6 +1075,33 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chatInputHint => 'Pregúntale a tu asistente…';
+
+  @override
+  String get chatCardViewProfile => 'Ver Perfil';
+
+  @override
+  String get chatCardViewPolicy => 'Ver Póliza';
+
+  @override
+  String get chatCardGoToAgenda => 'Ir a Agenda';
+
+  @override
+  String get chatCardContactInfoTitle => 'Contacto';
+
+  @override
+  String get chatCardContactListTitle => 'Contactos coincidentes';
+
+  @override
+  String get chatCardReminderListTitle => 'Recordatorios y pendientes';
+
+  @override
+  String get chatCardPolicyInfoTitle => 'Póliza Encontrada';
+
+  @override
+  String get chatCardActionCall => 'Llamar';
+
+  @override
+  String get chatCardActionWhatsApp => 'WhatsApp';
 
   @override
   String get feedTitle => 'Base de conocimiento';
@@ -760,6 +1129,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedTypeAudioDesc => 'Transcribe y extrae datos';
+
+  @override
+  String get feedAudioSourceTitle => '¿Cómo quieres agregarlo?';
+
+  @override
+  String get feedAudioSourceFile => 'Elegir archivo';
+
+  @override
+  String get feedAudioSourceFileDesc => 'Sube un audio ya grabado';
+
+  @override
+  String get feedAudioSourceRecord => 'Grabar audio';
+
+  @override
+  String get feedAudioSourceRecordDesc => 'Graba una nota de voz ahora';
+
+  @override
+  String get feedRecorderTitle => 'Grabar nota de voz';
+
+  @override
+  String get feedRecorderTapToStart => 'Toca el botón para empezar a grabar';
+
+  @override
+  String get feedRecorderRecording => 'Grabando…';
+
+  @override
+  String get feedRecorderReady => 'Lista para enviar';
+
+  @override
+  String get feedRecorderPlaying => 'Reproduciendo…';
+
+  @override
+  String get feedRecorderPlay => 'Reproducir';
+
+  @override
+  String get feedRecorderPause => 'Pausar';
+
+  @override
+  String get feedRecorderDiscard => 'Descartar';
+
+  @override
+  String get feedRecorderAccept => 'Aceptar';
+
+  @override
+  String get feedRecorderPermissionDenied =>
+      'Necesitamos acceso al micrófono para grabar. Actívalo en los ajustes del dispositivo.';
+
+  @override
+  String get feedRecorderOpenSettings => 'Abrir ajustes';
 
   @override
   String get feedTypeText => 'Texto / notas';
@@ -811,7 +1229,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedStepProcessing => 'Procesando archivo con IA…';
 
   @override
-  String get feedViewModeIngest => 'Ingestar';
+  String get feedViewModeIngest => 'Cargar';
 
   @override
   String get feedViewModeKnowledge => 'Conocimiento';
@@ -845,6 +1263,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedSuccessTitle => 'Póliza creada';
+
+  @override
+  String get feedSuccessUpdateTitle => 'Póliza actualizada';
 
   @override
   String feedSuccessFieldsSaved(int count) {
@@ -905,6 +1326,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedPreviewConfirm => 'Confirmar';
+
+  @override
+  String get feedIngestConfirmCta => 'Sí, guardar';
+
+  @override
+  String get feedIngestCorrectCta => 'Corregir / Chatear';
+
+  @override
+  String get feedIngestCancelCta => 'Cancelar';
+
+  @override
+  String get feedIngestHolderLabel => 'Contratante';
+
+  @override
+  String get feedIngestCarrierLabel => 'Aseguradora';
+
+  @override
+  String get feedIngestBranchProductLabel => 'Ramo / Prod.';
+
+  @override
+  String get feedIngestPolicyNumberLabel => 'Nº Póliza';
+
+  @override
+  String get feedIngestPremiumLabel => 'Prima';
+
+  @override
+  String get feedIngestValidityLabel => 'Vigencia';
+
+  @override
+  String get feedContactMismatchTitle => '¿A quién asignamos esta póliza?';
+
+  @override
+  String feedContactMismatchBody(String detectedName, String screenName) {
+    return 'El documento indica que el titular es $detectedName, pero estás en la pantalla de $screenName.';
+  }
+
+  @override
+  String feedContactMismatchAssignCta(String screenName) {
+    return 'Sí, asignar a $screenName';
+  }
+
+  @override
+  String feedContactMismatchUseDetectedCta(String detectedName) {
+    return 'No, usar $detectedName';
+  }
+
+  @override
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName) {
+    return 'Esta póliza se asignará a $screenName. El documento identificaba a $detectedName como titular.';
+  }
 
   @override
   String get remindersActionDone => 'Finalizar';
@@ -989,12 +1461,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersDetailSave => 'Guardar';
 
   @override
-  String get remindersDetailNotes => 'Notas';
-
-  @override
-  String get remindersDetailNoNotes => 'Sin notas';
-
-  @override
   String get remindersDetailNoClient => 'Sin cliente asignado';
 
   @override
@@ -1046,6 +1512,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersDetailRelations => 'Relaciones';
 
   @override
+  String get remindersDetailAttachments => 'Archivos adjuntos';
+
+  @override
+  String get remindersDetailNoAttachments => 'Sin archivos adjuntos';
+
+  @override
   String get remindersDetailTomorrow => 'Mañana';
 
   @override
@@ -1057,4 +1529,497 @@ class AppLocalizationsEs extends AppLocalizations {
   String remindersDetailDaysOverdue(int count) {
     return '${count}d venc.';
   }
+
+  @override
+  String get policiesNewPolicyTitle => 'Nueva Póliza';
+
+  @override
+  String get policiesPolicyNumber => 'Número de póliza';
+
+  @override
+  String get policiesCarrier => 'Aseguradora';
+
+  @override
+  String get policiesBranch => 'Ramo';
+
+  @override
+  String get policiesProduct => 'Producto';
+
+  @override
+  String get policiesStatus => 'Estado';
+
+  @override
+  String get policiesCurrency => 'Moneda';
+
+  @override
+  String get policiesPaymentFrequency => 'Frecuencia de pago';
+
+  @override
+  String get policiesPaymentMethod => 'Método de pago';
+
+  @override
+  String get policiesSumInsured => 'Suma asegurada';
+
+  @override
+  String get policiesPremium => 'Prima';
+
+  @override
+  String get policiesDeductible => 'Deducible';
+
+  @override
+  String get policiesStartDate => 'Inicio de vigencia';
+
+  @override
+  String get policiesEndDate => 'Fin de vigencia';
+
+  @override
+  String get policiesRenewalDate => 'Fecha de renovación';
+
+  @override
+  String get policiesNextPaymentDate => 'Siguiente pago';
+
+  @override
+  String get policiesNotes => 'Notas';
+
+  @override
+  String get policiesSaveBtn => 'Guardar póliza';
+
+  @override
+  String get policiesSelectClient => 'Seleccionar cliente';
+
+  @override
+  String get policiesCreateCarrier => 'Crear nueva Aseguradora';
+
+  @override
+  String get policiesCreateBranch => 'Crear nuevo Ramo';
+
+  @override
+  String get policiesCreateProduct => 'Crear nuevo Producto';
+
+  @override
+  String get policiesCreatedSuccess => 'Póliza creada con éxito';
+
+  @override
+  String get policiesEditPolicyTitle => 'Editar Póliza';
+
+  @override
+  String get policiesSaveChangesBtn => 'Guardar cambios';
+
+  @override
+  String get policiesUpdatedSuccess => 'Póliza actualizada con éxito';
+
+  @override
+  String get policiesDetailTitle => 'Detalle de póliza';
+
+  @override
+  String get policiesDetailLoadError => 'No se pudo cargar la póliza.';
+
+  @override
+  String get policiesDetailCoverage => 'Cobertura y pago';
+
+  @override
+  String get policiesDetailDates => 'Fechas';
+
+  @override
+  String get policiesNotesSection => 'Notas';
+
+  @override
+  String get policiesEmptyNotes => 'Aún no hay notas para esta póliza.';
+
+  @override
+  String get policiesAddNoteHint => 'Escribe una nota...';
+
+  @override
+  String get policiesDeleteNoteTitle => 'Eliminar nota';
+
+  @override
+  String get policiesDeleteNoteMsg =>
+      '¿Deseas eliminar esta nota? Esta acción no se puede deshacer.';
+
+  @override
+  String get policiesDeleteTitle => '¿Eliminar póliza?';
+
+  @override
+  String get policiesDeleteMessage =>
+      'Se eliminará esta póliza y no aparecerá más en tu cartera. Esta acción no se puede deshacer.';
+
+  @override
+  String get policiesErrDelete =>
+      'No se pudo eliminar la póliza. Intenta de nuevo.';
+
+  @override
+  String get policiesErrDeleteNote =>
+      'No se pudo eliminar la nota. Intenta de nuevo.';
+
+  @override
+  String get policiesErrAddNote =>
+      'No se pudo agregar la nota. Intenta de nuevo.';
+
+  @override
+  String get policiesAttachFile => 'Adjuntar';
+
+  @override
+  String get catalogsTitle => 'Catálogos';
+
+  @override
+  String get catalogsTypeCarriers => 'Aseguradoras';
+
+  @override
+  String get catalogsTypeBranches => 'Ramos';
+
+  @override
+  String get catalogsTypeProducts => 'Productos';
+
+  @override
+  String get catalogsSearchHint => 'Buscar...';
+
+  @override
+  String get catalogsEmpty => 'No hay resultados';
+
+  @override
+  String get catalogsError => 'No se pudieron cargar los catálogos';
+
+  @override
+  String get catalogsFieldName => 'Nombre';
+
+  @override
+  String get catalogsFieldShortName => 'Nombre corto';
+
+  @override
+  String get catalogsFieldCode => 'Código';
+
+  @override
+  String get catalogsSelectCarrier => 'Seleccionar aseguradora';
+
+  @override
+  String get catalogsSelectBranch => 'Seleccionar ramo';
+
+  @override
+  String get catalogsNewCarrierTitle => 'Nueva aseguradora';
+
+  @override
+  String get catalogsEditCarrierTitle => 'Editar aseguradora';
+
+  @override
+  String get catalogsNewBranchTitle => 'Nuevo ramo';
+
+  @override
+  String get catalogsEditBranchTitle => 'Editar ramo';
+
+  @override
+  String get catalogsNewProductTitle => 'Nuevo producto';
+
+  @override
+  String get catalogsEditProductTitle => 'Editar producto';
+
+  @override
+  String get catalogsCreateBtn => 'Crear';
+
+  @override
+  String get catalogsCarrierCreated => 'Aseguradora creada';
+
+  @override
+  String get catalogsCarrierUpdated => 'Aseguradora actualizada';
+
+  @override
+  String get catalogsBranchCreated => 'Ramo creado';
+
+  @override
+  String get catalogsBranchUpdated => 'Ramo actualizado';
+
+  @override
+  String get catalogsProductCreated => 'Producto creado';
+
+  @override
+  String get catalogsProductUpdated => 'Producto actualizado';
+
+  @override
+  String get catalogsDeleteTitle => 'Eliminar elemento';
+
+  @override
+  String get catalogsDeleteMessage =>
+      '¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.';
+
+  @override
+  String get shareTargetTitle => 'Recurso compartido';
+
+  @override
+  String get shareTargetSubtitle =>
+      'Selecciona a dónde deseas asignar este contenido';
+
+  @override
+  String get shareTargetPreview => 'Vista previa';
+
+  @override
+  String get shareTargetEmpty => 'No se recibió contenido para procesar';
+
+  @override
+  String get shareTargetDestinationPolicyIngest => 'Alta de póliza';
+
+  @override
+  String get shareTargetDestinationPolicyIngestSub =>
+      'Lectura automática del documento';
+
+  @override
+  String get shareTargetPolicyIngestUnavailable =>
+      'Solo disponible para PDF o imágenes';
+
+  @override
+  String get shareTargetUnsupportedFile =>
+      'Este archivo no se puede procesar. Comparte un PDF, una imagen (JPG, PNG, WEBP, GIF), un audio (MP3, WAV, OGG, M4A, WEBM) o un chat exportado en texto (.txt) — las exportaciones con medios adjuntos (.zip) no son compatibles.';
+
+  @override
+  String get shareTargetDestinationGlobal =>
+      'Ingesta Global (Base de Conocimiento)';
+
+  @override
+  String get shareTargetDestinationClient => 'Cliente';
+
+  @override
+  String get shareTargetDestinationPolicy => 'Póliza';
+
+  @override
+  String get shareTargetDestinationReminder => 'Recordatorio';
+
+  @override
+  String get shareTargetNoticePolicyIngest =>
+      'Se generará todo en automático: se detecta el cliente, la aseguradora, el producto y las coberturas, y se crean los recordatorios de pago y renovación. Podrás revisar y corregir antes de guardar.';
+
+  @override
+  String get shareTargetNoticeGlobal =>
+      'Se procesará como nota en tu base de conocimiento general.';
+
+  @override
+  String shareTargetNoticeClient(String name) {
+    return 'Se procesará como nota en el expediente de $name.';
+  }
+
+  @override
+  String get shareTargetNoticePickClient =>
+      'Elige un cliente para guardar el contenido como nota en su expediente.';
+
+  @override
+  String shareTargetNoticePolicy(String policy) {
+    return 'Se procesará como nota de la póliza $policy.';
+  }
+
+  @override
+  String get shareTargetNoticePickPolicy =>
+      'Elige una póliza para guardar el contenido como nota suya.';
+
+  @override
+  String shareTargetNoticeReminder(String reminder) {
+    return 'Se procesará como nota ligada al recordatorio $reminder.';
+  }
+
+  @override
+  String get shareTargetNoticePickReminder =>
+      'Elige un recordatorio para ligarle el contenido como nota.';
+
+  @override
+  String get shareTargetActionIngest => 'Cargar recurso';
+
+  @override
+  String get shareTargetActionPolicyIngest => 'Procesar póliza';
+
+  @override
+  String get shareTargetSelectClient => 'Seleccionar cliente';
+
+  @override
+  String get shareTargetSelectPolicy => 'Seleccionar póliza';
+
+  @override
+  String get shareTargetSelectReminder => 'Seleccionar recordatorio';
+
+  @override
+  String get shareTargetSearchReminderHint => 'Buscar recordatorio…';
+
+  @override
+  String get shareTargetPolicyNoNumber => 'Sin número';
+
+  @override
+  String get shareTargetCancel => 'Descartar';
+
+  @override
+  String get feedMakeGeneral => 'Hacer conocimiento general';
+
+  @override
+  String get feedMakeGeneralGlobalDesc =>
+      'El archivo estará disponible de forma global para la IA';
+
+  @override
+  String get feedMakeGeneralSub =>
+      'Activa si deseas que el archivo sea global y no exclusivo de este contexto';
+
+  @override
+  String get feedContextAttachReminder => 'Se adjuntará a este recordatorio';
+
+  @override
+  String get feedContextAttachPolicy => 'Se adjuntará a esta póliza';
+
+  @override
+  String get feedContextAttachClient => 'Se adjuntará a este cliente';
+
+  @override
+  String get policiesAskAbout => 'Preguntar sobre esta póliza';
+
+  @override
+  String get commonOpenFile => 'Abrir archivo';
+
+  @override
+  String get chatCardPolicyListTitle => 'Pólizas en tu portafolio';
+
+  @override
+  String get chatCardPolicyCreated => 'Póliza creada';
+
+  @override
+  String get chatCardPolicyUpdated => 'Póliza actualizada';
+
+  @override
+  String get chatCardFieldHolder => 'Contratante';
+
+  @override
+  String get chatCardFieldInsured => 'Asegurado';
+
+  @override
+  String get chatCardRemindersLabel => 'Recordatorios';
+
+  @override
+  String get chatCardReminderFallback => 'Recordatorio';
+
+  @override
+  String get chatCardContactFallback => 'Contacto';
+
+  @override
+  String get chatCardFieldPhone => 'Teléfono';
+
+  @override
+  String get chatCardFieldEmail => 'Correo';
+
+  @override
+  String get chatCardFieldDate => 'Fecha';
+
+  @override
+  String get chatCardAttachmentFallback => 'Documento';
+
+  @override
+  String get chatSuggestion1 => '¿Quién vence pronto?';
+
+  @override
+  String get chatSuggestion2 => '¿Cuánto cobra Javier?';
+
+  @override
+  String get chatSuggestion3 => 'Recuérdame llamar mañana';
+
+  @override
+  String get chatSuggestion4 => '¿Pagos esta semana?';
+
+  @override
+  String chatContextSuggestionContact(String name) {
+    return 'Pregúntame lo que quieras sobre **$name**.';
+  }
+
+  @override
+  String chatContextSuggestionPolicy(String carrier) {
+    return 'Pregúntame lo que quieras sobre esta póliza de **$carrier**.';
+  }
+
+  @override
+  String chatContextSuggestionReminder(String title) {
+    return 'Pregúntame lo que quieras sobre este recordatorio: **$title**.';
+  }
+
+  @override
+  String chatContextSuggestionKnowledge(String fileName) {
+    return 'Pregúntame lo que quieras sobre **$fileName**.';
+  }
+
+  @override
+  String get chatContextSuggestionKnowledgeGeneric =>
+      'Pregúntame lo que quieras sobre este documento que subiste.';
+
+  @override
+  String get policiesSectionInsuranceDetails => 'Detalles de Seguro';
+
+  @override
+  String get policiesSectionParamsPayment => 'Parámetros y Pago';
+
+  @override
+  String get policiesSectionAmountsCoverage => 'Montos y Coberturas';
+
+  @override
+  String get policiesSectionDatesValidity => 'Fechas de Vigencia y Pago';
+
+  @override
+  String get reminderTypeBirthday => 'Cumpleaños';
+
+  @override
+  String get reminderSettingsTitle => 'Avisos automáticos';
+
+  @override
+  String get reminderSettingsSubtitle => 'Con cuánta anticipación te avisamos';
+
+  @override
+  String get reminderSettingsIntro =>
+      'La app te avisa sola de pagos, renovaciones, aniversarios y cumpleaños. Aquí eliges con cuánto tiempo.';
+
+  @override
+  String get reminderSettingsSameDay => 'El mismo día';
+
+  @override
+  String reminderSettingsDaysBefore(int days) {
+    return '$days días antes';
+  }
+
+  @override
+  String get reminderSettingsOff => 'Sin avisos';
+
+  @override
+  String get reminderSettingsBranchExceptions => 'Excepciones por ramo';
+
+  @override
+  String get reminderSettingsAddException => 'Agregar excepción';
+
+  @override
+  String get reminderSettingsAllBranches => 'Todos los ramos';
+
+  @override
+  String get reminderSettingsPickDays => 'Anticipación';
+
+  @override
+  String get reminderSettingsPickBranch => 'Elige el ramo';
+
+  @override
+  String get reminderSettingsNoBranches =>
+      'Todavía no tienes ramos en tu catálogo';
+
+  @override
+  String get policiesPaymentRule => 'Días de pago';
+
+  @override
+  String policiesPaymentMonthly(int day) {
+    return 'Cada día $day del mes';
+  }
+
+  @override
+  String get policiesActivityTitle => 'Actividad';
+
+  @override
+  String get policiesActivityUpcoming => 'Próximos';
+
+  @override
+  String get policiesActivityHistory => 'Historial';
+
+  @override
+  String get policiesActivityEmpty => 'Sin recordatorios para esta póliza';
+
+  @override
+  String get reminderSettingsRemoveException => 'Quitar excepción';
+
+  @override
+  String get reminderSettingsDefault => 'Todos los demás ramos';
+
+  @override
+  String get reminderSettingsHint =>
+      'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.';
 }

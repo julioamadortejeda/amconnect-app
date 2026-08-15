@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/models/contact.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_top_bar.dart';
@@ -10,34 +13,52 @@ import '../widgets/client_detail_body.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ClientDetailScreen extends ConsumerWidget {
-  const ClientDetailScreen({super.key, required this.clientId});
+  const ClientDetailScreen({
+    super.key,
+    required this.clientId,
+    this.fromChat = false,
+  });
 
   final String clientId;
+  final bool fromChat;
+
+  void _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    ColorScheme cs,
+  ) {
+    showDialog(
+      context: context,
+      builder: (_) => AmConfirmDialog(
+        title: l10n.clientsDeleteTitle,
+        message: l10n.clientsDeleteMessage,
+        confirmLabel: l10n.commonDelete,
+        cancelLabel: l10n.commonCancel,
+        icon: Icons.delete_outline_rounded,
+        iconBgColor: cs.errorContainer,
+        iconFgColor: cs.error,
+        onConfirm: () async {
+          try {
+            await ref.read(clientsProvider.notifier).delete(clientId);
+            if (context.mounted) context.pop();
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(l10n.clientsErrDelete),
+                behavior: SnackBarBehavior.floating,
+              ));
+            }
+          }
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-
-    final appBar = AmTopBar(
-      //title: l10n.clientsTitle,
-      showBack: true,
-      actions: [
-        AmPress(
-          onTap: () {},
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: cs.secondaryContainer,
-              borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
-            ),
-            child: Icon(Icons.more_horiz, size: 20, color: cs.onSurfaceVariant),
-          ),
-        ),
-        const SizedBox(width: AmDimens.screenH),
-      ],
-    );
 
     final cached = ref
         .watch(clientsProvider)
@@ -46,18 +67,56 @@ class ClientDetailScreen extends ConsumerWidget {
         .where((c) => c.id == clientId)
         .firstOrNull;
 
+    PreferredSizeWidget buildAppBar(Contact? contact) => AmTopBar(
+      //title: l10n.clientsTitle,
+      showBack: true,
+      actions: [
+        AmPress(
+          onTap: contact == null
+              ? null
+              : () => context.push('/create-client', extra: contact),
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: cs.secondaryContainer,
+              borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
+            ),
+            child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
+          ),
+        ),
+        const SizedBox(width: 10),
+        AmPress(
+          onTap: contact == null
+              ? null
+              : () => _confirmDelete(context, ref, l10n, cs),
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: cs.errorContainer,
+              borderRadius: BorderRadius.circular(AmDimens.cardRadius / 2),
+            ),
+            child: Icon(Icons.delete_outline_rounded, size: 18, color: cs.error),
+          ),
+        ),
+        const SizedBox(width: AmDimens.screenH),
+      ],
+    );
+
     if (cached != null) {
+      final appBar = buildAppBar(cached);
       return Scaffold(
         appBar: appBar,
-        bottomNavigationBar: ClientAiButton(contact: cached),
+        bottomNavigationBar: fromChat ? null : ClientAiButton(contact: cached),
         body: ClientDetailBody(contact: cached, clientId: clientId),
       );
     }
 
     final contactAsync = ref.watch(contactDetailProvider(clientId));
     return Scaffold(
-      appBar: appBar,
-      bottomNavigationBar: contactAsync.asData?.value != null
+      appBar: buildAppBar(contactAsync.asData?.value),
+      bottomNavigationBar: !fromChat && contactAsync.asData?.value != null
           ? ClientAiButton(contact: contactAsync.asData!.value)
           : null,
       body: contactAsync.when(

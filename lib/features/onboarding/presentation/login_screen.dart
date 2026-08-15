@@ -98,7 +98,7 @@ class LoginScreen extends ConsumerWidget {
                 child: Text(
                   l10n.commonTerms,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 12.5,
                       color: AmColors.authSubtitle,
                       height: 1.5),

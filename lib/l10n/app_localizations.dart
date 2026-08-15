@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In es, this message translates to:
-  /// **'AMConnect Advisor'**
+  /// **'AMConnect'**
   String get appTitle;
 
   /// No description provided for @commonTerms.
@@ -151,6 +151,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cargando...'**
   String get commonLoading;
+
+  /// No description provided for @commonOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Ajustes'**
+  String get commonOpenSettings;
 
   /// No description provided for @homeEmptyPendientes.
   ///
@@ -260,6 +266,78 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get emailLoginCreateAccount;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recupera tu acceso'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitleEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.'**
+  String get forgotPasswordSubtitleEmail;
+
+  /// No description provided for @forgotPasswordSubtitleReset.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el código que te enviamos y tu nueva contraseña.'**
+  String get forgotPasswordSubtitleReset;
+
+  /// No description provided for @forgotPasswordCodeSentTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos un código a {email}'**
+  String forgotPasswordCodeSentTo(String email);
+
+  /// No description provided for @forgotPasswordSendCodeBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar código'**
+  String get forgotPasswordSendCodeBtn;
+
+  /// No description provided for @forgotPasswordResetBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get forgotPasswordResetBtn;
+
+  /// No description provided for @forgotPasswordBackToEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar otro correo'**
+  String get forgotPasswordBackToEmail;
+
+  /// No description provided for @forgotPasswordSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña actualizada'**
+  String get forgotPasswordSuccessTitle;
+
+  /// No description provided for @forgotPasswordSuccessMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes iniciar sesión con tu nueva contraseña.'**
+  String get forgotPasswordSuccessMsg;
+
+  /// No description provided for @forgotPasswordSuccessBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get forgotPasswordSuccessBtn;
+
+  /// No description provided for @errRequestCodeFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código. Intenta de nuevo.'**
+  String get errRequestCodeFailed;
+
+  /// No description provided for @errInvalidCode.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o ya expiró.'**
+  String get errInvalidCode;
+
   /// No description provided for @registerTitle.
   ///
   /// In es, this message translates to:
@@ -308,6 +386,12 @@ abstract class AppLocalizations {
   /// **'Confirmar contraseña'**
   String get fieldConfirm;
 
+  /// No description provided for @fieldCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de verificación'**
+  String get fieldCode;
+
   /// No description provided for @fieldFullName.
   ///
   /// In es, this message translates to:
@@ -319,6 +403,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Teléfono'**
   String get fieldPhone;
+
+  /// No description provided for @fieldOccupation.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupación'**
+  String get fieldOccupation;
+
+  /// No description provided for @fieldAddress.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección'**
+  String get fieldAddress;
+
+  /// No description provided for @fieldBirthdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de nacimiento'**
+  String get fieldBirthdate;
+
+  /// No description provided for @fieldRfc.
+  ///
+  /// In es, this message translates to:
+  /// **'RFC'**
+  String get fieldRfc;
+
+  /// No description provided for @fieldCurp.
+  ///
+  /// In es, this message translates to:
+  /// **'CURP'**
+  String get fieldCurp;
+
+  /// No description provided for @fieldNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get fieldNotes;
 
   /// No description provided for @accountProfileTitle.
   ///
@@ -421,6 +541,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Podrás volver a iniciar sesión cuando quieras.'**
   String get accountSignOutMessage;
+
+  /// No description provided for @accountAppearanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get accountAppearanceTitle;
+
+  /// No description provided for @themeModeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Automático'**
+  String get themeModeSystem;
+
+  /// No description provided for @themeModeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeModeLight;
+
+  /// No description provided for @themeModeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeModeDark;
+
+  /// No description provided for @accountHelpTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda'**
+  String get accountHelpTitle;
+
+  /// No description provided for @accountHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda y soporte'**
+  String get accountHelp;
+
+  /// No description provided for @accountNotificationsDisabled.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones desactivadas'**
+  String get accountNotificationsDisabled;
 
   /// No description provided for @errInvalidEmail.
   ///
@@ -530,6 +692,24 @@ abstract class AppLocalizations {
   /// **'No se pudo subir el archivo. Intenta de nuevo.'**
   String get errUploadFailed;
 
+  /// No description provided for @errSharedFileMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo compartido ya no está disponible. Compártelo de nuevo.'**
+  String get errSharedFileMissing;
+
+  /// No description provided for @errSharedTextTooLarge.
+  ///
+  /// In es, this message translates to:
+  /// **'El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.'**
+  String get errSharedTextTooLarge;
+
+  /// No description provided for @errSpeechUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.'**
+  String get errSpeechUnavailable;
+
   /// No description provided for @errRefCode.
   ///
   /// In es, this message translates to:
@@ -554,6 +734,12 @@ abstract class AppLocalizations {
   /// **'No se pudo obtener la ruta del archivo seleccionado.'**
   String get errFilePathUnavailable;
 
+  /// No description provided for @errFileOpenFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el archivo. Intenta de nuevo.'**
+  String get errFileOpenFailed;
+
   /// No description provided for @shellHome.
   ///
   /// In es, this message translates to:
@@ -569,7 +755,7 @@ abstract class AppLocalizations {
   /// No description provided for @shellClients.
   ///
   /// In es, this message translates to:
-  /// **'Clientes'**
+  /// **'Cartera'**
   String get shellClients;
 
   /// No description provided for @shellData.
@@ -577,6 +763,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Datos'**
   String get shellData;
+
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas de Cartera'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsFunnelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Embudo de Prospección'**
+  String get analyticsFunnelTitle;
+
+  /// No description provided for @analyticsFunnelProspects.
+  ///
+  /// In es, this message translates to:
+  /// **'Prospectos'**
+  String get analyticsFunnelProspects;
+
+  /// No description provided for @analyticsFunnelClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Clientes con póliza'**
+  String get analyticsFunnelClients;
+
+  /// No description provided for @analyticsFunnelRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Tasa de cierre'**
+  String get analyticsFunnelRate;
+
+  /// No description provided for @analyticsPolicyStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estatus de Renovación'**
+  String get analyticsPolicyStatus;
+
+  /// No description provided for @analyticsPolicyActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigentes'**
+  String get analyticsPolicyActive;
+
+  /// No description provided for @analyticsPolicyExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencidas / Por Renovar'**
+  String get analyticsPolicyExpired;
+
+  /// No description provided for @analyticsPolicyPending.
+  ///
+  /// In es, this message translates to:
+  /// **'En Trámite'**
+  String get analyticsPolicyPending;
+
+  /// No description provided for @analyticsBranchDist.
+  ///
+  /// In es, this message translates to:
+  /// **'Diversificación por Ramo'**
+  String get analyticsBranchDist;
+
+  /// No description provided for @analyticsCarrierDist.
+  ///
+  /// In es, this message translates to:
+  /// **'Distribución por Aseguradora'**
+  String get analyticsCarrierDist;
+
+  /// No description provided for @homeNotificationsBannerTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones desactivadas'**
+  String get homeNotificationsBannerTitle;
+
+  /// No description provided for @homeNotificationsBannerSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actívalas para no perderte tus recordatorios'**
+  String get homeNotificationsBannerSubtitle;
 
   /// No description provided for @homeTitle.
   ///
@@ -944,6 +1208,30 @@ abstract class AppLocalizations {
   /// **'Error al cargar clientes'**
   String get clientsError;
 
+  /// No description provided for @clientsDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar cliente?'**
+  String get clientsDeleteTitle;
+
+  /// No description provided for @clientsDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminará este cliente y no aparecerá más en tu cartera. Esta acción no se puede deshacer.'**
+  String get clientsDeleteMessage;
+
+  /// No description provided for @clientsErrDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar el cliente. Intenta de nuevo.'**
+  String get clientsErrDelete;
+
+  /// No description provided for @clientsErrAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo agregar la nota. Intenta de nuevo.'**
+  String get clientsErrAddNote;
+
   /// No description provided for @clientsContactSection.
   ///
   /// In es, this message translates to:
@@ -1004,6 +1292,78 @@ abstract class AppLocalizations {
   /// **'Cliente'**
   String get clientsNewClient;
 
+  /// No description provided for @clientsNewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo cliente'**
+  String get clientsNewTitle;
+
+  /// No description provided for @clientsEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar cliente'**
+  String get clientsEditTitle;
+
+  /// No description provided for @clientsCreateBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cliente'**
+  String get clientsCreateBtn;
+
+  /// No description provided for @clientsCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente creado'**
+  String get clientsCreated;
+
+  /// No description provided for @clientsUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente actualizado'**
+  String get clientsUpdated;
+
+  /// No description provided for @clientsFieldNoBirthdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin fecha'**
+  String get clientsFieldNoBirthdate;
+
+  /// No description provided for @clientsFieldInvalidPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un teléfono válido (10 a 15 dígitos)'**
+  String get clientsFieldInvalidPhone;
+
+  /// No description provided for @clientsSectionPersonal.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos personales'**
+  String get clientsSectionPersonal;
+
+  /// No description provided for @clientsSectionFiscal.
+  ///
+  /// In es, this message translates to:
+  /// **'Fiscal'**
+  String get clientsSectionFiscal;
+
+  /// No description provided for @clientsFieldGeneralNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas generales'**
+  String get clientsFieldGeneralNotes;
+
+  /// No description provided for @clientsAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar nota rápida'**
+  String get clientsAddNote;
+
+  /// No description provided for @clientsAddNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una nota sobre este cliente…'**
+  String get clientsAddNoteHint;
+
   /// No description provided for @clientsNoteTypePdf.
   ///
   /// In es, this message translates to:
@@ -1025,8 +1385,14 @@ abstract class AppLocalizations {
   /// No description provided for @clientsNoteTypeText.
   ///
   /// In es, this message translates to:
-  /// **'WhatsApp'**
+  /// **'Nota'**
   String get clientsNoteTypeText;
+
+  /// No description provided for @clientsNoteTypeWhatsapp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get clientsNoteTypeWhatsapp;
 
   /// No description provided for @clientsNoteOpenFile.
   ///
@@ -1063,6 +1429,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Preguntar'**
   String get clientsActionAsk;
+
+  /// No description provided for @clientsActionNoPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Este cliente no tiene teléfono registrado'**
+  String get clientsActionNoPhone;
+
+  /// No description provided for @clientsActionLaunchError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir la aplicación'**
+  String get clientsActionLaunchError;
+
+  /// No description provided for @clientsActionInvalidPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'El teléfono de este cliente no es válido'**
+  String get clientsActionInvalidPhone;
 
   /// No description provided for @clientsPoliciesTab.
   ///
@@ -1148,6 +1532,12 @@ abstract class AppLocalizations {
   /// **'Preguntar sobre {name}'**
   String clientsAskAbout(String name);
 
+  /// No description provided for @remindersAskAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntar sobre esto'**
+  String get remindersAskAbout;
+
   /// No description provided for @remindersTitle.
   ///
   /// In es, this message translates to:
@@ -1184,11 +1574,47 @@ abstract class AppLocalizations {
   /// **'Llamadas'**
   String get remindersFilterCalls;
 
+  /// No description provided for @remindersFilterCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completados'**
+  String get remindersFilterCompleted;
+
   /// No description provided for @remindersFilterDeleted.
   ///
   /// In es, this message translates to:
   /// **'Eliminados'**
   String get remindersFilterDeleted;
+
+  /// No description provided for @remindersFilterSelectTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por'**
+  String get remindersFilterSelectTitle;
+
+  /// No description provided for @remindersCalendarHistoryLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get remindersCalendarHistoryLabel;
+
+  /// No description provided for @remindersGroupOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencidos'**
+  String get remindersGroupOverdue;
+
+  /// No description provided for @remindersGroupThisWeek.
+  ///
+  /// In es, this message translates to:
+  /// **'Resto de la semana'**
+  String get remindersGroupThisWeek;
+
+  /// No description provided for @remindersGroupLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Más adelante'**
+  String get remindersGroupLater;
 
   /// No description provided for @remindersDeletedWarning.
   ///
@@ -1268,6 +1694,18 @@ abstract class AppLocalizations {
   /// **'Recordatorio creado'**
   String get remindersCreated;
 
+  /// No description provided for @remindersSectionInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Información'**
+  String get remindersSectionInfo;
+
+  /// No description provided for @remindersSectionDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles'**
+  String get remindersSectionDetails;
+
   /// No description provided for @remindersVoiceHint.
   ///
   /// In es, this message translates to:
@@ -1285,6 +1723,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Título'**
   String get remindersFieldTitle;
+
+  /// No description provided for @remindersFieldDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get remindersFieldDescription;
 
   /// No description provided for @remindersFieldType.
   ///
@@ -1310,6 +1754,12 @@ abstract class AppLocalizations {
   /// **'Hora'**
   String get remindersFieldTime;
 
+  /// No description provided for @remindersFieldDateTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora'**
+  String get remindersFieldDateTime;
+
   /// No description provided for @remindersRepeatYearly.
   ///
   /// In es, this message translates to:
@@ -1321,6 +1771,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Crear recordatorio'**
   String get remindersCreateBtn;
+
+  /// No description provided for @remindersSelectClientTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get remindersSelectClientTitle;
+
+  /// No description provided for @remindersNoClientOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cliente'**
+  String get remindersNoClientOption;
+
+  /// No description provided for @remindersSelectPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar póliza'**
+  String get remindersSelectPolicyTitle;
+
+  /// No description provided for @remindersNoPolicyOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin póliza'**
+  String get remindersNoPolicyOption;
+
+  /// No description provided for @remindersSelectStatusTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar estado'**
+  String get remindersSelectStatusTitle;
+
+  /// No description provided for @remindersPolicyNeedsClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un cliente primero'**
+  String get remindersPolicyNeedsClient;
+
+  /// No description provided for @remindersPickDateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha y hora del recordatorio'**
+  String get remindersPickDateTitle;
+
+  /// No description provided for @remindersPickDateMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cuándo quieres que te recuerde esto.'**
+  String get remindersPickDateMessage;
 
   /// No description provided for @voiceListening.
   ///
@@ -1412,17 +1910,167 @@ abstract class AppLocalizations {
   /// **'Permiso de micrófono denegado'**
   String get voiceChatPermissionDenied;
 
+  /// No description provided for @voiceOpenSettingsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para abrir Ajustes'**
+  String get voiceOpenSettingsHint;
+
   /// No description provided for @voiceChatSkillActive.
   ///
   /// In es, this message translates to:
   /// **'Consultando datos…'**
   String get voiceChatSkillActive;
 
+  /// No description provided for @voiceChatThinking.
+  ///
+  /// In es, this message translates to:
+  /// **'Pensando…'**
+  String get voiceChatThinking;
+
+  /// No description provided for @voiceOutputTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Salida de audio'**
+  String get voiceOutputTitle;
+
+  /// No description provided for @voiceOutputSpeaker.
+  ///
+  /// In es, this message translates to:
+  /// **'Altavoz del teléfono'**
+  String get voiceOutputSpeaker;
+
+  /// No description provided for @voiceOutputBluetooth.
+  ///
+  /// In es, this message translates to:
+  /// **'Dispositivo Bluetooth'**
+  String get voiceOutputBluetooth;
+
+  /// No description provided for @voiceOutputWired.
+  ///
+  /// In es, this message translates to:
+  /// **'Audífonos con cable'**
+  String get voiceOutputWired;
+
+  /// No description provided for @voiceOutputOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro dispositivo'**
+  String get voiceOutputOther;
+
+  /// No description provided for @voiceOutputNone.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay dispositivos de audio disponibles'**
+  String get voiceOutputNone;
+
+  /// No description provided for @voiceSkillSearchingContacts.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando cliente…'**
+  String get voiceSkillSearchingContacts;
+
+  /// No description provided for @voiceSkillReviewingContacts.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando tus clientes…'**
+  String get voiceSkillReviewingContacts;
+
+  /// No description provided for @voiceSkillSavingContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando cliente…'**
+  String get voiceSkillSavingContact;
+
+  /// No description provided for @voiceSkillSearchingNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando en tus notas…'**
+  String get voiceSkillSearchingNotes;
+
+  /// No description provided for @voiceSkillSavingNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando nota…'**
+  String get voiceSkillSavingNote;
+
+  /// No description provided for @voiceSkillSearchingPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando póliza…'**
+  String get voiceSkillSearchingPolicies;
+
+  /// No description provided for @voiceSkillReviewingPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando tus pólizas…'**
+  String get voiceSkillReviewingPolicies;
+
+  /// No description provided for @voiceSkillSavingPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando póliza…'**
+  String get voiceSkillSavingPolicy;
+
+  /// No description provided for @voiceSkillSearchingReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando recordatorios…'**
+  String get voiceSkillSearchingReminders;
+
+  /// No description provided for @voiceSkillSavingReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando recordatorio…'**
+  String get voiceSkillSavingReminder;
+
+  /// No description provided for @voiceSkillCatalog.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultando catálogo…'**
+  String get voiceSkillCatalog;
+
+  /// No description provided for @voiceSkillSavingCatalog.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando en catálogo…'**
+  String get voiceSkillSavingCatalog;
+
+  /// No description provided for @voiceSkillPendingTask.
+  ///
+  /// In es, this message translates to:
+  /// **'Anotando pendiente…'**
+  String get voiceSkillPendingTask;
+
+  /// No description provided for @voiceSkillKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando en tu base de conocimiento…'**
+  String get voiceSkillKnowledge;
+
+  /// No description provided for @assistantVoiceActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Voz activa'**
+  String get assistantVoiceActive;
+
   /// No description provided for @chatTitle.
   ///
   /// In es, this message translates to:
   /// **'Asistente'**
   String get chatTitle;
+
+  /// No description provided for @chatBackendFree.
+  ///
+  /// In es, this message translates to:
+  /// **'Free'**
+  String get chatBackendFree;
+
+  /// No description provided for @chatBackendEnterprise.
+  ///
+  /// In es, this message translates to:
+  /// **'Enterprise'**
+  String get chatBackendEnterprise;
 
   /// No description provided for @chatSubtitle.
   ///
@@ -1441,6 +2089,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pregúntale a tu asistente…'**
   String get chatInputHint;
+
+  /// No description provided for @chatCardViewProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Perfil'**
+  String get chatCardViewProfile;
+
+  /// No description provided for @chatCardViewPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Póliza'**
+  String get chatCardViewPolicy;
+
+  /// No description provided for @chatCardGoToAgenda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Agenda'**
+  String get chatCardGoToAgenda;
+
+  /// No description provided for @chatCardContactInfoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get chatCardContactInfoTitle;
+
+  /// No description provided for @chatCardContactListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos coincidentes'**
+  String get chatCardContactListTitle;
+
+  /// No description provided for @chatCardReminderListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios y pendientes'**
+  String get chatCardReminderListTitle;
+
+  /// No description provided for @chatCardPolicyInfoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza Encontrada'**
+  String get chatCardPolicyInfoTitle;
+
+  /// No description provided for @chatCardActionCall.
+  ///
+  /// In es, this message translates to:
+  /// **'Llamar'**
+  String get chatCardActionCall;
+
+  /// No description provided for @chatCardActionWhatsApp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get chatCardActionWhatsApp;
 
   /// No description provided for @feedTitle.
   ///
@@ -1495,6 +2197,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Transcribe y extrae datos'**
   String get feedTypeAudioDesc;
+
+  /// No description provided for @feedAudioSourceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo quieres agregarlo?'**
+  String get feedAudioSourceTitle;
+
+  /// No description provided for @feedAudioSourceFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir archivo'**
+  String get feedAudioSourceFile;
+
+  /// No description provided for @feedAudioSourceFileDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Sube un audio ya grabado'**
+  String get feedAudioSourceFileDesc;
+
+  /// No description provided for @feedAudioSourceRecord.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabar audio'**
+  String get feedAudioSourceRecord;
+
+  /// No description provided for @feedAudioSourceRecordDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Graba una nota de voz ahora'**
+  String get feedAudioSourceRecordDesc;
+
+  /// No description provided for @feedRecorderTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabar nota de voz'**
+  String get feedRecorderTitle;
+
+  /// No description provided for @feedRecorderTapToStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el botón para empezar a grabar'**
+  String get feedRecorderTapToStart;
+
+  /// No description provided for @feedRecorderRecording.
+  ///
+  /// In es, this message translates to:
+  /// **'Grabando…'**
+  String get feedRecorderRecording;
+
+  /// No description provided for @feedRecorderReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista para enviar'**
+  String get feedRecorderReady;
+
+  /// No description provided for @feedRecorderPlaying.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproduciendo…'**
+  String get feedRecorderPlaying;
+
+  /// No description provided for @feedRecorderPlay.
+  ///
+  /// In es, this message translates to:
+  /// **'Reproducir'**
+  String get feedRecorderPlay;
+
+  /// No description provided for @feedRecorderPause.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar'**
+  String get feedRecorderPause;
+
+  /// No description provided for @feedRecorderDiscard.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get feedRecorderDiscard;
+
+  /// No description provided for @feedRecorderAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get feedRecorderAccept;
+
+  /// No description provided for @feedRecorderPermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos acceso al micrófono para grabar. Actívalo en los ajustes del dispositivo.'**
+  String get feedRecorderPermissionDenied;
+
+  /// No description provided for @feedRecorderOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get feedRecorderOpenSettings;
 
   /// No description provided for @feedTypeText.
   ///
@@ -1595,7 +2393,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedViewModeIngest.
   ///
   /// In es, this message translates to:
-  /// **'Ingestar'**
+  /// **'Cargar'**
   String get feedViewModeIngest;
 
   /// No description provided for @feedViewModeKnowledge.
@@ -1663,6 +2461,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Póliza creada'**
   String get feedSuccessTitle;
+
+  /// No description provided for @feedSuccessUpdateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada'**
+  String get feedSuccessUpdateTitle;
 
   /// No description provided for @feedSuccessFieldsSaved.
   ///
@@ -1771,6 +2575,91 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Confirmar'**
   String get feedPreviewConfirm;
+
+  /// No description provided for @feedIngestConfirmCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, guardar'**
+  String get feedIngestConfirmCta;
+
+  /// No description provided for @feedIngestCorrectCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Corregir / Chatear'**
+  String get feedIngestCorrectCta;
+
+  /// No description provided for @feedIngestCancelCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get feedIngestCancelCta;
+
+  /// No description provided for @feedIngestHolderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contratante'**
+  String get feedIngestHolderLabel;
+
+  /// No description provided for @feedIngestCarrierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora'**
+  String get feedIngestCarrierLabel;
+
+  /// No description provided for @feedIngestBranchProductLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo / Prod.'**
+  String get feedIngestBranchProductLabel;
+
+  /// No description provided for @feedIngestPolicyNumberLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nº Póliza'**
+  String get feedIngestPolicyNumberLabel;
+
+  /// No description provided for @feedIngestPremiumLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Prima'**
+  String get feedIngestPremiumLabel;
+
+  /// No description provided for @feedIngestValidityLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigencia'**
+  String get feedIngestValidityLabel;
+
+  /// No description provided for @feedContactMismatchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿A quién asignamos esta póliza?'**
+  String get feedContactMismatchTitle;
+
+  /// No description provided for @feedContactMismatchBody.
+  ///
+  /// In es, this message translates to:
+  /// **'El documento indica que el titular es {detectedName}, pero estás en la pantalla de {screenName}.'**
+  String feedContactMismatchBody(String detectedName, String screenName);
+
+  /// No description provided for @feedContactMismatchAssignCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, asignar a {screenName}'**
+  String feedContactMismatchAssignCta(String screenName);
+
+  /// No description provided for @feedContactMismatchUseDetectedCta.
+  ///
+  /// In es, this message translates to:
+  /// **'No, usar {detectedName}'**
+  String feedContactMismatchUseDetectedCta(String detectedName);
+
+  /// No description provided for @feedContactMismatchResolvedBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta póliza se asignará a {screenName}. El documento identificaba a {detectedName} como titular.'**
+  String feedContactMismatchResolvedBanner(
+      String screenName, String detectedName);
 
   /// No description provided for @remindersActionDone.
   ///
@@ -1928,18 +2817,6 @@ abstract class AppLocalizations {
   /// **'Guardar'**
   String get remindersDetailSave;
 
-  /// No description provided for @remindersDetailNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Notas'**
-  String get remindersDetailNotes;
-
-  /// No description provided for @remindersDetailNoNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin notas'**
-  String get remindersDetailNoNotes;
-
   /// No description provided for @remindersDetailNoClient.
   ///
   /// In es, this message translates to:
@@ -2042,6 +2919,18 @@ abstract class AppLocalizations {
   /// **'Relaciones'**
   String get remindersDetailRelations;
 
+  /// No description provided for @remindersDetailAttachments.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos adjuntos'**
+  String get remindersDetailAttachments;
+
+  /// No description provided for @remindersDetailNoAttachments.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin archivos adjuntos'**
+  String get remindersDetailNoAttachments;
+
   /// No description provided for @remindersDetailTomorrow.
   ///
   /// In es, this message translates to:
@@ -2059,6 +2948,912 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count}d venc.'**
   String remindersDetailDaysOverdue(int count);
+
+  /// No description provided for @policiesNewPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Póliza'**
+  String get policiesNewPolicyTitle;
+
+  /// No description provided for @policiesPolicyNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Número de póliza'**
+  String get policiesPolicyNumber;
+
+  /// No description provided for @policiesCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora'**
+  String get policiesCarrier;
+
+  /// No description provided for @policiesBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo'**
+  String get policiesBranch;
+
+  /// No description provided for @policiesProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get policiesProduct;
+
+  /// No description provided for @policiesStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get policiesStatus;
+
+  /// No description provided for @policiesCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get policiesCurrency;
+
+  /// No description provided for @policiesPaymentFrequency.
+  ///
+  /// In es, this message translates to:
+  /// **'Frecuencia de pago'**
+  String get policiesPaymentFrequency;
+
+  /// No description provided for @policiesPaymentMethod.
+  ///
+  /// In es, this message translates to:
+  /// **'Método de pago'**
+  String get policiesPaymentMethod;
+
+  /// No description provided for @policiesSumInsured.
+  ///
+  /// In es, this message translates to:
+  /// **'Suma asegurada'**
+  String get policiesSumInsured;
+
+  /// No description provided for @policiesPremium.
+  ///
+  /// In es, this message translates to:
+  /// **'Prima'**
+  String get policiesPremium;
+
+  /// No description provided for @policiesDeductible.
+  ///
+  /// In es, this message translates to:
+  /// **'Deducible'**
+  String get policiesDeductible;
+
+  /// No description provided for @policiesStartDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de vigencia'**
+  String get policiesStartDate;
+
+  /// No description provided for @policiesEndDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de vigencia'**
+  String get policiesEndDate;
+
+  /// No description provided for @policiesRenewalDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de renovación'**
+  String get policiesRenewalDate;
+
+  /// No description provided for @policiesNextPaymentDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente pago'**
+  String get policiesNextPaymentDate;
+
+  /// No description provided for @policiesNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get policiesNotes;
+
+  /// No description provided for @policiesSaveBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar póliza'**
+  String get policiesSaveBtn;
+
+  /// No description provided for @policiesSelectClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get policiesSelectClient;
+
+  /// No description provided for @policiesCreateCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nueva Aseguradora'**
+  String get policiesCreateCarrier;
+
+  /// No description provided for @policiesCreateBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo Ramo'**
+  String get policiesCreateBranch;
+
+  /// No description provided for @policiesCreateProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo Producto'**
+  String get policiesCreateProduct;
+
+  /// No description provided for @policiesCreatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza creada con éxito'**
+  String get policiesCreatedSuccess;
+
+  /// No description provided for @policiesEditPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Póliza'**
+  String get policiesEditPolicyTitle;
+
+  /// No description provided for @policiesSaveChangesBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get policiesSaveChangesBtn;
+
+  /// No description provided for @policiesUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada con éxito'**
+  String get policiesUpdatedSuccess;
+
+  /// No description provided for @policiesDetailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle de póliza'**
+  String get policiesDetailTitle;
+
+  /// No description provided for @policiesDetailLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la póliza.'**
+  String get policiesDetailLoadError;
+
+  /// No description provided for @policiesDetailCoverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobertura y pago'**
+  String get policiesDetailCoverage;
+
+  /// No description provided for @policiesDetailDates.
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas'**
+  String get policiesDetailDates;
+
+  /// No description provided for @policiesNotesSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get policiesNotesSection;
+
+  /// No description provided for @policiesEmptyNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay notas para esta póliza.'**
+  String get policiesEmptyNotes;
+
+  /// No description provided for @policiesAddNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una nota...'**
+  String get policiesAddNoteHint;
+
+  /// No description provided for @policiesDeleteNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar nota'**
+  String get policiesDeleteNoteTitle;
+
+  /// No description provided for @policiesDeleteNoteMsg.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Deseas eliminar esta nota? Esta acción no se puede deshacer.'**
+  String get policiesDeleteNoteMsg;
+
+  /// No description provided for @policiesDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar póliza?'**
+  String get policiesDeleteTitle;
+
+  /// No description provided for @policiesDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminará esta póliza y no aparecerá más en tu cartera. Esta acción no se puede deshacer.'**
+  String get policiesDeleteMessage;
+
+  /// No description provided for @policiesErrDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la póliza. Intenta de nuevo.'**
+  String get policiesErrDelete;
+
+  /// No description provided for @policiesErrDeleteNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la nota. Intenta de nuevo.'**
+  String get policiesErrDeleteNote;
+
+  /// No description provided for @policiesErrAddNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo agregar la nota. Intenta de nuevo.'**
+  String get policiesErrAddNote;
+
+  /// No description provided for @policiesAttachFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Adjuntar'**
+  String get policiesAttachFile;
+
+  /// No description provided for @catalogsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogos'**
+  String get catalogsTitle;
+
+  /// No description provided for @catalogsTypeCarriers.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradoras'**
+  String get catalogsTypeCarriers;
+
+  /// No description provided for @catalogsTypeBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramos'**
+  String get catalogsTypeBranches;
+
+  /// No description provided for @catalogsTypeProducts.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos'**
+  String get catalogsTypeProducts;
+
+  /// No description provided for @catalogsSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar...'**
+  String get catalogsSearchHint;
+
+  /// No description provided for @catalogsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay resultados'**
+  String get catalogsEmpty;
+
+  /// No description provided for @catalogsError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los catálogos'**
+  String get catalogsError;
+
+  /// No description provided for @catalogsFieldName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get catalogsFieldName;
+
+  /// No description provided for @catalogsFieldShortName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre corto'**
+  String get catalogsFieldShortName;
+
+  /// No description provided for @catalogsFieldCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get catalogsFieldCode;
+
+  /// No description provided for @catalogsSelectCarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar aseguradora'**
+  String get catalogsSelectCarrier;
+
+  /// No description provided for @catalogsSelectBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar ramo'**
+  String get catalogsSelectBranch;
+
+  /// No description provided for @catalogsNewCarrierTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva aseguradora'**
+  String get catalogsNewCarrierTitle;
+
+  /// No description provided for @catalogsEditCarrierTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar aseguradora'**
+  String get catalogsEditCarrierTitle;
+
+  /// No description provided for @catalogsNewBranchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo ramo'**
+  String get catalogsNewBranchTitle;
+
+  /// No description provided for @catalogsEditBranchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ramo'**
+  String get catalogsEditBranchTitle;
+
+  /// No description provided for @catalogsNewProductTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo producto'**
+  String get catalogsNewProductTitle;
+
+  /// No description provided for @catalogsEditProductTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar producto'**
+  String get catalogsEditProductTitle;
+
+  /// No description provided for @catalogsCreateBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear'**
+  String get catalogsCreateBtn;
+
+  /// No description provided for @catalogsCarrierCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora creada'**
+  String get catalogsCarrierCreated;
+
+  /// No description provided for @catalogsCarrierUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Aseguradora actualizada'**
+  String get catalogsCarrierUpdated;
+
+  /// No description provided for @catalogsBranchCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo creado'**
+  String get catalogsBranchCreated;
+
+  /// No description provided for @catalogsBranchUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Ramo actualizado'**
+  String get catalogsBranchUpdated;
+
+  /// No description provided for @catalogsProductCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto creado'**
+  String get catalogsProductCreated;
+
+  /// No description provided for @catalogsProductUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto actualizado'**
+  String get catalogsProductUpdated;
+
+  /// No description provided for @catalogsDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar elemento'**
+  String get catalogsDeleteTitle;
+
+  /// No description provided for @catalogsDeleteMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Seguro que deseas eliminarlo? Esta acción no se puede deshacer.'**
+  String get catalogsDeleteMessage;
+
+  /// No description provided for @shareTargetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recurso compartido'**
+  String get shareTargetTitle;
+
+  /// No description provided for @shareTargetSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona a dónde deseas asignar este contenido'**
+  String get shareTargetSubtitle;
+
+  /// No description provided for @shareTargetPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa'**
+  String get shareTargetPreview;
+
+  /// No description provided for @shareTargetEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No se recibió contenido para procesar'**
+  String get shareTargetEmpty;
+
+  /// No description provided for @shareTargetDestinationPolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Alta de póliza'**
+  String get shareTargetDestinationPolicyIngest;
+
+  /// No description provided for @shareTargetDestinationPolicyIngestSub.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura automática del documento'**
+  String get shareTargetDestinationPolicyIngestSub;
+
+  /// No description provided for @shareTargetPolicyIngestUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo disponible para PDF o imágenes'**
+  String get shareTargetPolicyIngestUnavailable;
+
+  /// No description provided for @shareTargetUnsupportedFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Este archivo no se puede procesar. Comparte un PDF, una imagen (JPG, PNG, WEBP, GIF), un audio (MP3, WAV, OGG, M4A, WEBM) o un chat exportado en texto (.txt) — las exportaciones con medios adjuntos (.zip) no son compatibles.'**
+  String get shareTargetUnsupportedFile;
+
+  /// No description provided for @shareTargetDestinationGlobal.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingesta Global (Base de Conocimiento)'**
+  String get shareTargetDestinationGlobal;
+
+  /// No description provided for @shareTargetDestinationClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get shareTargetDestinationClient;
+
+  /// No description provided for @shareTargetDestinationPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza'**
+  String get shareTargetDestinationPolicy;
+
+  /// No description provided for @shareTargetDestinationReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get shareTargetDestinationReminder;
+
+  /// No description provided for @shareTargetNoticePolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Se generará todo en automático: se detecta el cliente, la aseguradora, el producto y las coberturas, y se crean los recordatorios de pago y renovación. Podrás revisar y corregir antes de guardar.'**
+  String get shareTargetNoticePolicyIngest;
+
+  /// No description provided for @shareTargetNoticeGlobal.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota en tu base de conocimiento general.'**
+  String get shareTargetNoticeGlobal;
+
+  /// No description provided for @shareTargetNoticeClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota en el expediente de {name}.'**
+  String shareTargetNoticeClient(String name);
+
+  /// No description provided for @shareTargetNoticePickClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un cliente para guardar el contenido como nota en su expediente.'**
+  String get shareTargetNoticePickClient;
+
+  /// No description provided for @shareTargetNoticePolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota de la póliza {policy}.'**
+  String shareTargetNoticePolicy(String policy);
+
+  /// No description provided for @shareTargetNoticePickPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una póliza para guardar el contenido como nota suya.'**
+  String get shareTargetNoticePickPolicy;
+
+  /// No description provided for @shareTargetNoticeReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Se procesará como nota ligada al recordatorio {reminder}.'**
+  String shareTargetNoticeReminder(String reminder);
+
+  /// No description provided for @shareTargetNoticePickReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un recordatorio para ligarle el contenido como nota.'**
+  String get shareTargetNoticePickReminder;
+
+  /// No description provided for @shareTargetActionIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar recurso'**
+  String get shareTargetActionIngest;
+
+  /// No description provided for @shareTargetActionPolicyIngest.
+  ///
+  /// In es, this message translates to:
+  /// **'Procesar póliza'**
+  String get shareTargetActionPolicyIngest;
+
+  /// No description provided for @shareTargetSelectClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar cliente'**
+  String get shareTargetSelectClient;
+
+  /// No description provided for @shareTargetSelectPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar póliza'**
+  String get shareTargetSelectPolicy;
+
+  /// No description provided for @shareTargetSelectReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar recordatorio'**
+  String get shareTargetSelectReminder;
+
+  /// No description provided for @shareTargetSearchReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar recordatorio…'**
+  String get shareTargetSearchReminderHint;
+
+  /// No description provided for @shareTargetPolicyNoNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin número'**
+  String get shareTargetPolicyNoNumber;
+
+  /// No description provided for @shareTargetCancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get shareTargetCancel;
+
+  /// No description provided for @feedMakeGeneral.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacer conocimiento general'**
+  String get feedMakeGeneral;
+
+  /// No description provided for @feedMakeGeneralGlobalDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo estará disponible de forma global para la IA'**
+  String get feedMakeGeneralGlobalDesc;
+
+  /// No description provided for @feedMakeGeneralSub.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa si deseas que el archivo sea global y no exclusivo de este contexto'**
+  String get feedMakeGeneralSub;
+
+  /// No description provided for @feedContextAttachReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a este recordatorio'**
+  String get feedContextAttachReminder;
+
+  /// No description provided for @feedContextAttachPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a esta póliza'**
+  String get feedContextAttachPolicy;
+
+  /// No description provided for @feedContextAttachClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Se adjuntará a este cliente'**
+  String get feedContextAttachClient;
+
+  /// No description provided for @policiesAskAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntar sobre esta póliza'**
+  String get policiesAskAbout;
+
+  /// No description provided for @commonOpenFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir archivo'**
+  String get commonOpenFile;
+
+  /// No description provided for @chatCardPolicyListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pólizas en tu portafolio'**
+  String get chatCardPolicyListTitle;
+
+  /// No description provided for @chatCardPolicyCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza creada'**
+  String get chatCardPolicyCreated;
+
+  /// No description provided for @chatCardPolicyUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Póliza actualizada'**
+  String get chatCardPolicyUpdated;
+
+  /// No description provided for @chatCardFieldHolder.
+  ///
+  /// In es, this message translates to:
+  /// **'Contratante'**
+  String get chatCardFieldHolder;
+
+  /// No description provided for @chatCardFieldInsured.
+  ///
+  /// In es, this message translates to:
+  /// **'Asegurado'**
+  String get chatCardFieldInsured;
+
+  /// No description provided for @chatCardRemindersLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios'**
+  String get chatCardRemindersLabel;
+
+  /// No description provided for @chatCardReminderFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get chatCardReminderFallback;
+
+  /// No description provided for @chatCardContactFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get chatCardContactFallback;
+
+  /// No description provided for @chatCardFieldPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get chatCardFieldPhone;
+
+  /// No description provided for @chatCardFieldEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get chatCardFieldEmail;
+
+  /// No description provided for @chatCardFieldDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get chatCardFieldDate;
+
+  /// No description provided for @chatCardAttachmentFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento'**
+  String get chatCardAttachmentFallback;
+
+  /// No description provided for @chatSuggestion1.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quién vence pronto?'**
+  String get chatSuggestion1;
+
+  /// No description provided for @chatSuggestion2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto cobra Javier?'**
+  String get chatSuggestion2;
+
+  /// No description provided for @chatSuggestion3.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuérdame llamar mañana'**
+  String get chatSuggestion3;
+
+  /// No description provided for @chatSuggestion4.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Pagos esta semana?'**
+  String get chatSuggestion4;
+
+  /// No description provided for @chatContextSuggestionContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre **{name}**.'**
+  String chatContextSuggestionContact(String name);
+
+  /// No description provided for @chatContextSuggestionPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre esta póliza de **{carrier}**.'**
+  String chatContextSuggestionPolicy(String carrier);
+
+  /// No description provided for @chatContextSuggestionReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre este recordatorio: **{title}**.'**
+  String chatContextSuggestionReminder(String title);
+
+  /// No description provided for @chatContextSuggestionKnowledge.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre **{fileName}**.'**
+  String chatContextSuggestionKnowledge(String fileName);
+
+  /// No description provided for @chatContextSuggestionKnowledgeGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame lo que quieras sobre este documento que subiste.'**
+  String get chatContextSuggestionKnowledgeGeneric;
+
+  /// No description provided for @policiesSectionInsuranceDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles de Seguro'**
+  String get policiesSectionInsuranceDetails;
+
+  /// No description provided for @policiesSectionParamsPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Parámetros y Pago'**
+  String get policiesSectionParamsPayment;
+
+  /// No description provided for @policiesSectionAmountsCoverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos y Coberturas'**
+  String get policiesSectionAmountsCoverage;
+
+  /// No description provided for @policiesSectionDatesValidity.
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas de Vigencia y Pago'**
+  String get policiesSectionDatesValidity;
+
+  /// No description provided for @reminderTypeBirthday.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumpleaños'**
+  String get reminderTypeBirthday;
+
+  /// No description provided for @reminderSettingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos automáticos'**
+  String get reminderSettingsTitle;
+
+  /// No description provided for @reminderSettingsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con cuánta anticipación te avisamos'**
+  String get reminderSettingsSubtitle;
+
+  /// No description provided for @reminderSettingsIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'La app te avisa sola de pagos, renovaciones, aniversarios y cumpleaños. Aquí eliges con cuánto tiempo.'**
+  String get reminderSettingsIntro;
+
+  /// No description provided for @reminderSettingsSameDay.
+  ///
+  /// In es, this message translates to:
+  /// **'El mismo día'**
+  String get reminderSettingsSameDay;
+
+  /// No description provided for @reminderSettingsDaysBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días antes'**
+  String reminderSettingsDaysBefore(int days);
+
+  /// No description provided for @reminderSettingsOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avisos'**
+  String get reminderSettingsOff;
+
+  /// No description provided for @reminderSettingsBranchExceptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Excepciones por ramo'**
+  String get reminderSettingsBranchExceptions;
+
+  /// No description provided for @reminderSettingsAddException.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar excepción'**
+  String get reminderSettingsAddException;
+
+  /// No description provided for @reminderSettingsAllBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los ramos'**
+  String get reminderSettingsAllBranches;
+
+  /// No description provided for @reminderSettingsPickDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Anticipación'**
+  String get reminderSettingsPickDays;
+
+  /// No description provided for @reminderSettingsPickBranch.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el ramo'**
+  String get reminderSettingsPickBranch;
+
+  /// No description provided for @reminderSettingsNoBranches.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes ramos en tu catálogo'**
+  String get reminderSettingsNoBranches;
+
+  /// No description provided for @policiesPaymentRule.
+  ///
+  /// In es, this message translates to:
+  /// **'Días de pago'**
+  String get policiesPaymentRule;
+
+  /// No description provided for @policiesPaymentMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada día {day} del mes'**
+  String policiesPaymentMonthly(int day);
+
+  /// No description provided for @policiesActivityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad'**
+  String get policiesActivityTitle;
+
+  /// No description provided for @policiesActivityUpcoming.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos'**
+  String get policiesActivityUpcoming;
+
+  /// No description provided for @policiesActivityHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial'**
+  String get policiesActivityHistory;
+
+  /// No description provided for @policiesActivityEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin recordatorios para esta póliza'**
+  String get policiesActivityEmpty;
+
+  /// No description provided for @reminderSettingsRemoveException.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar excepción'**
+  String get reminderSettingsRemoveException;
+
+  /// No description provided for @reminderSettingsDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los demás ramos'**
+  String get reminderSettingsDefault;
+
+  /// No description provided for @reminderSettingsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.'**
+  String get reminderSettingsHint;
 }
 
 class _AppLocalizationsDelegate

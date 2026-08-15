@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../../core/providers/permission_provider.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -12,6 +14,7 @@ import '../widgets/home_header.dart';
 import '../widgets/home_pendientes_card.dart';
 import '../widgets/home_section_trailing.dart';
 import '../widgets/home_stats_row.dart';
+import '../widgets/notifications_permission_banner.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -22,7 +25,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
   final _scrollCtrl = ScrollController();
   bool _showFloating = false;
 
@@ -30,6 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _scrollCtrl.addListener(_onScroll);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void _onScroll() {
@@ -38,7 +42,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Al volver de Ajustes del sistema (p.ej. tras activar notificaciones),
+    // refresca el estado del permiso para que el banner desaparezca solo.
+    if (state == AppLifecycleState.resumed) {
+      ref.invalidate(notificationPermissionStatusProvider);
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollCtrl.dispose();
     super.dispose();
   }
@@ -51,6 +65,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (!ref.watch(homeReadyProvider).hasValue) return const AmLoader();
 
     final data = ref.watch(homeDashboardProvider);
+    final notifPermission = ref.watch(notificationPermissionStatusProvider).asData?.value;
+    final showNotifBanner = notifPermission != null &&
+        (notifPermission.isDenied || notifPermission.isPermanentlyDenied);
     int aniIdx = 0;
 
     return Scaffold(
@@ -63,6 +80,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   AmDimens.screenH, AmDimens.scrollBottomPad),
               children: [
                 const SizedBox(height: 8),
+                if (showNotifBanner) ...[
+                  AmAnimateIn(
+                    index: aniIdx++,
+                    child: NotificationsPermissionBanner(
+                      onTap: () => context.push('/account'),
+                    ),
+                  ),
+                  const SizedBox(height: AmDimens.gapM),
+                ],
                 AmAnimateIn(
                   index: aniIdx++,
                   child: HomeHeader(
@@ -138,7 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           label: data.clientsCount > 0
                               ? l10n.homeViewAllCount(data.clientsCount)
                               : l10n.homeViewAll,
-                          onTap: () => context.go('/clients'),
+                          onTap: () => context.go('/portfolio'),
                         ),
                       ),
                       const SizedBox(height: AmDimens.gapXS),
@@ -170,9 +196,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             width: 32, height: 32),
                       ),
                       HomeFloatingBtn(
-                        onTap: () => context.go('/reminders'),
-                        dot: data.urgentCount > 0,
-                        child: Icon(Icons.notifications_outlined,
+                        onTap: () => context.push('/analytics'),
+                        child: Icon(Icons.bar_chart_rounded,
                             size: 20, color: cs.onSurface),
                       ),
                     ],

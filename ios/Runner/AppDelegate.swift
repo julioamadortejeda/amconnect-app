@@ -28,14 +28,36 @@ import AVFoundation
     // ── MethodChannel: control (start, playPcm, stopPlayback, stop) ───────────
     let controlChannel = FlutterMethodChannel(name: "com.amconnect/audio",
                                               binaryMessenger: messenger)
+    
+    VoiceAudioManager.shared.onPlaybackFinished = {
+      DispatchQueue.main.async {
+        controlChannel.invokeMethod("playbackFinished", arguments: nil)
+      }
+    }
+
+    // Reenvía los logs nativos de audio a Dart — print() de Swift no aparece
+    // en la consola de `flutter run` cuando corre en dispositivo físico.
+    VoiceAudioManager.shared.onLog = { msg in
+      DispatchQueue.main.async {
+        controlChannel.invokeMethod("nativeLog", arguments: msg)
+      }
+    }
+
     controlChannel.setMethodCallHandler { (call, result) in
       switch call.method {
 
       case "startAudio":
         VoiceAudioManager.shared.startRequestingPermissionIfNeeded { error in
           if let error = error {
-            result(FlutterError(code: "AUDIO_START_ERROR",
-                                message: error.localizedDescription, details: nil))
+            let nsError = error as NSError
+            // code -1/-2 en el dominio "VoiceAudio" = permiso de mic denegado
+            // (ver AudioManager.swift) — se distingue para que Dart pueda
+            // mostrar "permiso denegado" en vez de un error genérico.
+            let isPermissionDenied = nsError.domain == "VoiceAudio"
+                && (nsError.code == -1 || nsError.code == -2)
+            result(FlutterError(
+                code: isPermissionDenied ? "MIC_PERMISSION_DENIED" : "AUDIO_START_ERROR",
+                message: error.localizedDescription, details: nil))
           } else {
             result(nil as Any?)
           }
@@ -57,6 +79,22 @@ import AVFoundation
 
       case "stopAudio":
         VoiceAudioManager.shared.stop()
+        result(nil as Any?)
+
+      case "getAudioDevices":
+        result(VoiceAudioManager.shared.getAudioDevices())
+
+      case "selectAudioDevice":
+        guard let args = call.arguments as? [String: Any],
+              let id = args["id"] as? String else {
+          result(FlutterError(code: "BAD_ARGS", message: "Expected {id: String}", details: nil))
+          return
+        }
+        VoiceAudioManager.shared.selectAudioDevice(id)
+        result(nil as Any?)
+
+      case "useBuiltInMic":
+        VoiceAudioManager.shared.useBuiltInMic()
         result(nil as Any?)
 
       default:

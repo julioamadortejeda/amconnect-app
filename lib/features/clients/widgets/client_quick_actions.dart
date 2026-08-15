@@ -1,15 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/config/features.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/phone_utils.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 
 class ClientQuickActions extends StatelessWidget {
-  const ClientQuickActions({super.key, required this.clientId});
+  const ClientQuickActions({super.key, required this.clientId, this.phone});
 
   final String clientId;
+  final String? phone;
+
+  void _showSnack(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 2),
+    ));
+  }
+
+  Future<void> _call(BuildContext context, AppLocalizations l10n) async {
+    if (phone == null || phone!.trim().isEmpty) {
+      _showSnack(context, l10n.clientsActionNoPhone);
+      return;
+    }
+    final uri = Uri(scheme: 'tel', path: phone!.trim());
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else if (context.mounted) {
+        _showSnack(context, l10n.clientsActionLaunchError);
+      }
+    } catch (_) {
+      if (context.mounted) _showSnack(context, l10n.clientsActionLaunchError);
+    }
+  }
+
+  Future<void> _message(BuildContext context, AppLocalizations l10n) async {
+    if (phone == null || phone!.trim().isEmpty) {
+      _showSnack(context, l10n.clientsActionNoPhone);
+      return;
+    }
+    final digits = whatsAppDigits(phone!);
+    if (digits == null) {
+      _showSnack(context, l10n.clientsActionInvalidPhone);
+      return;
+    }
+    final uri = Uri.parse('https://wa.me/$digits');
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else if (context.mounted) {
+        _showSnack(context, l10n.clientsActionLaunchError);
+      }
+    } catch (_) {
+      if (context.mounted) _showSnack(context, l10n.clientsActionLaunchError);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,27 +68,27 @@ class ClientQuickActions extends StatelessWidget {
     return Row(
       children: [
         _Action(
-          icon: Icons.phone_outlined,
+          icon: const Icon(Icons.phone_outlined),
           label: l10n.clientsActionCall,
-          onTap: () {},
+          onTap: () => _call(context, l10n),
         ),
         const SizedBox(width: 9),
         _Action(
-          icon: Icons.chat_bubble_outline,
+          icon: const FaIcon(FontAwesomeIcons.whatsapp),
           label: l10n.clientsActionMessage,
-          onTap: () {},
+          onTap: () => _message(context, l10n),
         ),
         if (kManualReminderCreationEnabled) ...[
           const SizedBox(width: 9),
           _Action(
-            icon: Icons.notifications_none_outlined,
+            icon: const Icon(Icons.notifications_none_outlined),
             label: l10n.clientsActionRemind,
             onTap: () => context.push('/create-reminder?cliente=$clientId'),
           ),
         ],
         const SizedBox(width: 9),
         _Action(
-          icon: Icons.upload_file_outlined,
+          icon: const Icon(Icons.upload_file_outlined),
           label: l10n.clientsActionUpload,
           onTap: () => IngestTypePicker.show(context, contactId: clientId),
         ),
@@ -53,7 +104,7 @@ class _Action extends StatefulWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final Widget icon;
   final String label;
   final VoidCallback onTap;
 
@@ -106,7 +157,10 @@ class _ActionState extends State<_Action> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: Icon(widget.icon, size: 16, color: cs.onPrimaryContainer),
+                    child: IconTheme(
+                      data: IconThemeData(size: 16, color: cs.onPrimaryContainer),
+                      child: widget.icon,
+                    ),
                   ),
                 ),
               ),

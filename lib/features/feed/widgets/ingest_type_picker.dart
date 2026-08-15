@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/am_icons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_card.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -12,17 +13,32 @@ import '../../../l10n/app_localizations.dart';
 import '../presentation/ingest_file_preview_sheet.dart';
 import '../presentation/text_ingest_sheet.dart';
 import '../providers/ingest_provider.dart';
+import 'audio_source_sheet.dart';
 
 class IngestTypePicker extends ConsumerStatefulWidget {
-  const IngestTypePicker({super.key, this.contactId, this.policyId});
+  const IngestTypePicker({
+    super.key,
+    this.contactId,
+    this.policyId,
+    this.reminderId,
+    this.showPolicyExtraction = true,
+  });
 
   final String? contactId;
   final String? policyId;
+  final String? reminderId;
+
+  /// Si es `false`, oculta las tiles de "PDF de póliza"/"Foto de póliza"
+  /// (extraer una póliza NUEVA) — úsalo al abrir el picker desde el detalle
+  /// de una póliza ya existente, donde esas opciones no aplican.
+  final bool showPolicyExtraction;
 
   static Future<void> show(
     BuildContext context, {
     String? contactId,
     String? policyId,
+    String? reminderId,
+    bool showPolicyExtraction = true,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -32,7 +48,12 @@ class IngestTypePicker extends ConsumerStatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => IngestTypePicker(contactId: contactId, policyId: policyId),
+      builder: (_) => IngestTypePicker(
+        contactId: contactId,
+        policyId: policyId,
+        reminderId: reminderId,
+        showPolicyExtraction: showPolicyExtraction,
+      ),
     );
   }
 
@@ -50,13 +71,16 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     try {
       await action().timeout(
         const Duration(seconds: 15),
-        onTimeout: () => throw TimeoutException('La selección tardó demasiado.'),
+        onTimeout: () => throw TimeoutException('file picker timeout'),
       );
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(e is TimeoutException ? (e.message ?? 'Timeout') : 'Error: $e'),
-          backgroundColor: Colors.redAccent,
+          content: Text(e is TimeoutException
+              ? l10n.errFilePickerTimeout
+              : l10n.errFilePickerOpen),
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ));
       }
@@ -79,6 +103,26 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         sourceType: sourceType,
         contactId: widget.contactId,
         policyId: widget.policyId,
+        reminderId: widget.reminderId,
+        makeGeneral: _makeGeneral,
+      ),
+    );
+  }
+
+  void _openAudioSource() {
+    Navigator.of(context).pop();
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => AudioSourceSheet(
+        contactId: widget.contactId,
+        policyId: widget.policyId,
+        reminderId: widget.reminderId,
         makeGeneral: _makeGeneral,
       ),
     );
@@ -100,8 +144,9 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         if (path == null) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!.errFilePathUnavailable),
-              backgroundColor: Colors.orange,
+              content:
+                  Text(AppLocalizations.of(context)!.errFilePathUnavailable),
+              backgroundColor: context.am.amber,
               behavior: SnackBarBehavior.floating,
             ));
           }
@@ -114,6 +159,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         final notifier = ref.read(ingestProvider.notifier);
         final contactId = widget.contactId;
         final policyId = widget.policyId;
+        final reminderId = widget.reminderId;
         final makeGeneral = _makeGeneral;
 
         if (mounted) Navigator.of(context).pop();
@@ -141,6 +187,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
                   fileName,
                   contactId: contactId,
                   policyId: policyId,
+                  reminderId: reminderId,
                   makeGeneral: makeGeneral,
                 );
               }
@@ -155,36 +202,34 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     final l10n = AppLocalizations.of(context)!;
 
     final types = [
-      _PickerType(
-        icon: AmIcons.pdf,
-        color: AmColors.srcDoc,
-        label: l10n.feedTypePolicyPdf,
-        sub: l10n.feedTypePolicyPdfDesc,
-        onTap: () => _pickFile(
-          type: FileType.custom,
-          extensions: ['pdf'],
-          isPolicy: true,
-          sourceType: 'pdf',
+      if (widget.showPolicyExtraction) ...[
+        _PickerType(
+          icon: AmIcons.pdf,
+          color: AmColors.srcDoc,
+          label: l10n.feedTypePolicyPdf,
+          sub: l10n.feedTypePolicyPdfDesc,
+          onTap: () => _pickFile(
+            type: FileType.custom,
+            extensions: ['pdf'],
+            isPolicy: true,
+            sourceType: 'pdf',
+          ),
         ),
-      ),
-      _PickerType(
-        icon: AmIcons.camera,
-        color: AmColors.srcImage,
-        label: l10n.feedTypePolicyPhoto,
-        sub: l10n.feedTypePolicyPhotoDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: true, sourceType: 'image'),
-      ),
+        _PickerType(
+          icon: AmIcons.camera,
+          color: AmColors.srcImage,
+          label: l10n.feedTypePolicyPhoto,
+          sub: l10n.feedTypePolicyPhotoDesc,
+          onTap: () => _pickFile(
+              type: FileType.image, isPolicy: true, sourceType: 'image'),
+        ),
+      ],
       _PickerType(
         icon: AmIcons.audio,
         color: AmColors.srcWave,
         label: l10n.feedTypeAudio,
         sub: l10n.feedTypeAudioDesc,
-        onTap: () => _pickFile(
-          type: FileType.custom,
-          extensions: const ['mp3', 'wav', 'm4a', 'aac'],
-          isPolicy: false,
-          sourceType: 'audio',
-        ),
+        onTap: _openAudioSource,
       ),
       _PickerType(
         icon: AmIcons.text,
@@ -198,7 +243,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
         color: AmColors.srcImage,
         label: l10n.feedTypeKnowledgeImage,
         sub: l10n.feedTypeKnowledgeImageDesc,
-        onTap: () => _pickFile(type: FileType.image, isPolicy: false, sourceType: 'image'),
+        onTap: () => _pickFile(
+            type: FileType.image, isPolicy: false, sourceType: 'image'),
       ),
       _PickerType(
         icon: AmIcons.document,
@@ -215,7 +261,8 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
     ];
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.fromLTRB(
             AmDimens.screenH, 14, AmDimens.screenH, 32),
@@ -235,20 +282,61 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
               ),
             ),
             AmSectionLabel(label: l10n.feedQuestion),
-            if (widget.contactId != null) ...[
+            if (widget.contactId != null ||
+                widget.policyId != null ||
+                widget.reminderId != null) ...[
               const SizedBox(height: AmDimens.gapS),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: cs.primaryContainer.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      widget.reminderId != null
+                          ? Icons.alarm
+                          : (widget.policyId != null
+                              ? Icons.description
+                              : Icons.person),
+                      size: 16,
+                      color: cs.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _makeGeneral
+                            ? l10n.feedMakeGeneralGlobalDesc
+                            : (widget.reminderId != null
+                                ? l10n.feedContextAttachReminder
+                                : (widget.policyId != null
+                                    ? l10n.feedContextAttachPolicy
+                                    : l10n.feedContextAttachClient)),
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
               SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: const Text(
-                  'Hacer conocimiento general',
-                  style: TextStyle(
+                title: Text(
+                  l10n.feedMakeGeneral,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                subtitle: const Text(
-                  'El archivo estará disponible de forma global para la IA',
-                  style: TextStyle(fontSize: 12),
+                subtitle: Text(
+                  l10n.feedMakeGeneralSub,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 value: _makeGeneral,
                 onChanged: (val) => setState(() => _makeGeneral = val),
@@ -329,6 +417,7 @@ class _PickerCard extends StatelessWidget {
 
     return AmCard(
       onTap: disabled ? null : t.onTap,
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -348,8 +437,7 @@ class _PickerCard extends StatelessWidget {
           const SizedBox(height: 3),
           Flexible(
             child: Text(t.sub,
-                style: TextStyle(
-                    fontSize: 11, color: cs.tertiary, height: 1.3),
+                style: TextStyle(fontSize: 11, color: cs.tertiary, height: 1.3),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
           ),

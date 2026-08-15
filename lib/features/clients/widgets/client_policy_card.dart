@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/agent_note.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_storage_repository.dart';
-import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_card.dart';
@@ -14,6 +15,7 @@ import '../../../core/widgets/am_confirm_dialog.dart';
 import '../../../core/widgets/am_ramo_icon.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
+import 'policy_status_chip.dart';
 
 class ClientPolicyCard extends ConsumerStatefulWidget {
   const ClientPolicyCard({super.key, required this.policy});
@@ -30,17 +32,21 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final policy = widget.policy;
-    final isActive = policy.statusCode == 'ACTIVE';
 
     final notesAsync = ref.watch(policyNotesProvider(policy.id));
     final notes = notesAsync.asData?.value ?? <AgentNote>[];
-    final activeNotes = notes.where((n) => !n.isObsolete).toList();
-    final obsoleteNotes = notes.where((n) => n.isObsolete).toList();
+    // Esta sección es "Files" — solo notas con un documento real adjunto.
+    // Las notas de texto puro (ej. nota manual del asesor, o la traza de
+    // reasignación de contacto) no tienen archivo que abrir; se muestran
+    // igual en la pestaña de Notas del detalle completo de la póliza.
+    final fileNotes = notes.where((n) => n.sourceType != 'text').toList();
+    final activeNotes = fileNotes.where((n) => !n.isObsolete).toList();
+    final obsoleteNotes = fileNotes.where((n) => n.isObsolete).toList();
 
     return AmCard(
+      onTap: () => context.push('/policy/${policy.id}', extra: policy),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -94,24 +100,9 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? am.green.withValues(alpha: 0.08)
-                      : cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  isActive ? l10n.clientsPolicyActive : policy.statusCode,
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                    color:
-                        isActive ? am.green : cs.tertiary,
-                  ),
-                ),
+              PolicyStatusChip(
+                statusCode: policy.statusCode,
+                rawName: policy.status?.name,
               ),
             ],
           ),
@@ -154,7 +145,7 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
             ),
           ),
           // ── Files section ─────────────────────────────────────────────────
-          if (notes.isNotEmpty) ...[
+          if (fileNotes.isNotEmpty) ...[
             const SizedBox(height: 14),
             Divider(color: cs.outlineVariant, height: 1),
             const SizedBox(height: 12),
@@ -238,7 +229,14 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
     try {
       await ref.read(noteRepositoryProvider).deleteNote(note.id);
       ref.invalidate(policyNotesProvider(widget.policy.id));
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l10n.policiesErrDeleteNote),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
   }
 
   String _carrierAndNumber(Policy p) {
@@ -353,13 +351,10 @@ class _PolicyFileRowState extends ConsumerState<_PolicyFileRow> {
                       BorderRadius.circular(AmDimens.cardRadius / 2),
                 ),
                 child: _loading
-                    ? SizedBox(
-                        width: 12,
-                        height: 12,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: cs.onSurfaceVariant,
-                        ),
+                    ? AmSpinner(
+                        size: 12,
+                        strokeWidth: 1.5,
+                        color: cs.onSurfaceVariant,
                       )
                     : Row(
                         mainAxisSize: MainAxisSize.min,
@@ -404,6 +399,12 @@ class _PolicyFileRowState extends ConsumerState<_PolicyFileRow> {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
     } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.l10n.errFileOpenFailed),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

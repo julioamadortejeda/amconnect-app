@@ -21,7 +21,8 @@ class AmRamoIcon extends StatelessWidget {
       _ => (const Color(0xFFB9791A), Icons.shield_outlined),
     };
 
-    final bg = Color.alphaBlend(color.withValues(alpha: 0.14), Colors.white);
+    final cs = Theme.of(context).colorScheme;
+    final bg = Color.alphaBlend(color.withValues(alpha: 0.14), cs.surface);
     return Container(
       width: size,
       height: size,

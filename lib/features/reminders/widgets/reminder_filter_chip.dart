@@ -32,7 +32,7 @@ class ReminderFilterChip extends StatelessWidget {
             BoxShadow(
               color: active
                   ? activeColor.withValues(alpha: 0.3)
-                  : Colors.black.withValues(alpha: 0.055),
+                  : AmColors.shadowSoft,
               blurRadius: active ? 12 : 8,
             ),
           ],

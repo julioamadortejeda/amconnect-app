@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/auth_provider.dart';
 
@@ -33,7 +34,8 @@ class LoginNotifier extends Notifier<LoginState> {
     try {
       await ref.read(authProvider.notifier).signInWithGoogle();
       state = state.copyWith(isLoading: false);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[Login] Google sign-in error: $e');
       state = state.copyWith(isLoading: false, error: LoginError.google);
     }
   }
@@ -43,7 +45,8 @@ class LoginNotifier extends Notifier<LoginState> {
     try {
       await ref.read(authProvider.notifier).signInWithApple();
       state = state.copyWith(isLoading: false);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[Login] Apple sign-in error: $e');
       state = state.copyWith(isLoading: false, error: LoginError.apple);
     }
   }

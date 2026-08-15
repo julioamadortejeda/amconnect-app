@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 import 'am_press.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/formatters.dart';
@@ -10,10 +11,17 @@ class AmRescheduleDialog extends StatefulWidget {
     super.key,
     required this.initialDateTime,
     required this.onConfirm,
+    this.title,
+    this.message,
   });
 
   final DateTime initialDateTime;
   final void Function(DateTime newDateTime) onConfirm;
+
+  /// Overrides opcionales para reusar el mismo picker fecha+hora en flujos
+  /// distintos de "reagendar" (ej. elegir la fecha al crear un recordatorio).
+  final String? title;
+  final String? message;
 
   @override
   State<AmRescheduleDialog> createState() => _AmRescheduleDialogState();
@@ -157,11 +165,11 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(AmDimens.cardRadius),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.16),
+                color: AmColors.shadowHeavy,
                 blurRadius: 32,
-                offset: const Offset(0, 12),
+                offset: Offset(0, 12),
               ),
             ],
           ),
@@ -186,7 +194,7 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
               const SizedBox(height: AmDimens.cardPad),
               // Title
               Text(
-                l10n.remindersRescheduleTitle,
+                widget.title ?? l10n.remindersRescheduleTitle,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -197,7 +205,7 @@ class _AmRescheduleDialogState extends State<AmRescheduleDialog> {
               ),
               const SizedBox(height: AmDimens.gapXS),
               Text(
-                l10n.remindersRescheduleMessage,
+                widget.message ?? l10n.remindersRescheduleMessage,
                 style: TextStyle(
                   fontSize: 13,
                   color: cs.tertiary,

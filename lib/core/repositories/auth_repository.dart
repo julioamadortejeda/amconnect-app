@@ -13,6 +13,16 @@ abstract class AuthRepository {
   /// Registro de nuevo usuario con email y contraseña.
   Future<void> signUp({required String email, required String password});
 
+  /// Envía un código de recuperación de 6 dígitos al correo del usuario.
+  Future<void> requestPasswordReset(String email);
+
+  /// Verifica el código de recuperación y establece la nueva contraseña.
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String token,
+    required String newPassword,
+  });
+
   /// Inicio de sesión con cuenta Google.
   Future<void> signInWithGoogle();
 

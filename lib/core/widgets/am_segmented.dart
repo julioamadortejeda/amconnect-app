@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';
 
 class AmSegmented extends StatefulWidget {
@@ -69,12 +68,13 @@ class _AmSegmentedState extends State<AmSegmented>
         labelColor: cs.onPrimaryContainer,
         unselectedLabelColor: cs.tertiary,
         indicator: BoxDecoration(
-          color: AmColors.cardLight,
+          color: cs.surface,
           borderRadius: BorderRadius.circular(AmDimens.cardRadius - 4),
           boxShadow: [
             BoxShadow(
-              color: AmColors.inkLight.withValues(alpha: 0.055),
-              blurRadius: 22,
+              color: cs.shadow.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),

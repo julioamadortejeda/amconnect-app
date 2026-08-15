@@ -76,7 +76,7 @@ lib/
 │   ├── repositories/         # Interfaces abstractas + implementaciones Supabase
 │   ├── network/              # ApiClient (HTTP al Edge Function)
 │   ├── router/router.dart    # GoRouter
-│   ├── shell/shell_screen.dart   # Bottom tab bar + FAB micrófono
+│   ├── shell/shell_screen.dart   # Bottom tab bar + FAB del asistente (logo → /chat)
 │   ├── theme/
 │   │   ├── app_colors.dart   # AmColors — tokens fijos
 │   │   ├── am_theme.dart     # AmTheme ThemeExtension + context.am
@@ -89,27 +89,40 @@ lib/
     ├── clients/              # lista, detalle, provider, widgets
     ├── reminders/            # agenda, detalle, crear, provider, widgets
     ├── chat/                 # chat IA, voice overlay, widgets
-    └── feed/                 # ingesta de documentos
+    ├── feed/                 # ingesta de documentos
+    └── share_target/         # contenido compartido desde otras apps
 ```
 
 ---
 
 ## Rutas (GoRouter)
 
+> Tabla actualizada 2026-08-04 contra `lib/core/router/router.dart` (la tabla previa estaba desactualizada: decía `/clients` en vez de `/portfolio` y omitía varias rutas).
+
 | Path | Pantalla | Tipo |
 |---|---|---|
-| `/` | SplashScreen | full |
-| `/login` | LoginScreen | full |
-| `/email-login` | EmailLoginScreen | full |
-| `/register` | RegisterScreen | full |
+| `/` | SplashScreen | full (fade) |
+| `/login` | LoginScreen | full (fade) |
+| `/email-login` | EmailLoginScreen | push |
+| `/register` | RegisterScreen | push |
+| `/forgot-password` | ForgotPasswordScreen | push |
 | `/home` | HomeScreen | shell tab |
 | `/reminders` | RemindersScreen | shell tab |
-| `/clients` | ClientsScreen | shell tab |
+| `/portfolio` | ClientsScreen | shell tab |
 | `/data` | FeedScreen | shell tab |
-| `/clients/:id` | ClientDetailScreen | push slide |
-| `/create-reminder` | CreateReminderScreen | push slide |
-| `/reminder/:id` | ReminderDetailScreen | push slide |
-| `/chat` | ChatScreen | push slide |
+| `/analytics` | AnalyticsScreen | push |
+| `/create-client` | CreateClientScreen | push |
+| `/create-policy` | CreatePolicyScreen | push |
+| `/policy/:id` | PolicyDetailScreen | push |
+| `/clients/:id` | ClientDetailScreen | push |
+| `/create-reminder` | CreateReminderScreen | push |
+| `/reminder/:id` | ReminderDetailScreen | push |
+| `/chat` | **AssistantScreen** — única feature de chat de la app | push |
+| `/account` | AccountScreen | push |
+| `/catalogs` | CatalogsScreen | push |
+| `/share-target` | ShareTargetScreen | push |
+
+**Nota (2026-08-04) — consolidación de chat:** hasta julio 2026 coexistían tres features de chat (`features/chat/`, `features/assistant/`, `features/chat_tts/`) con rutas `/chat`, `/voice-chat` y `/voice-chat-tts`. Las dos últimas eran código muerto (sin navegación real) y se eliminaron junto con sus pantallas/providers/widgets. `features/assistant/` (ruta `/chat`, `AssistantScreen`) es ahora la **única** feature de chat — sirve texto y voz, con o sin `AiChatContext` (contexto opcional de pantalla). Los activos compartidos que vivían dentro de `chat/` se movieron a `core/`: `AiChatContext` → `core/models/ai_chat_context.dart`, `buildChatCard` → `core/widgets/chat_cards.dart`.
 
 ---
 
@@ -416,6 +429,28 @@ return Stack(alignment: Alignment.center, children: [...]);
 - `initialContext: AiChatContext?` — si presente → `resetWithContext`.
 - El caller decide la navegación, no el overlay.
 
+## Composer del asistente — dictado vs. voz Live
+
+Dos formas distintas de hablarle, y NO son lo mismo:
+
+- **Dictado** (`core/services/speech_dictation_service.dart`): STT del sistema, on-device. El audio no sale del teléfono; solo el texto viaja después por `POST /ai/chat`. No cuesta tokens.
+- **Voz Live** (`core/services/gemini_voice_engine.dart`): WebSocket full-duplex con Gemini. Cobra el audio a ~25 tokens/seg y recobra el contexto en cada turno.
+
+Los dos se pelean el micrófono — **nunca activos a la vez**. El candado vive en `AssistantNotifier` (`startDictation` se rehúsa en modo voz; `startVoice` cancela el dictado), no en la UI.
+
+A la derecha del composer hay SIEMPRE dos botones, nunca cuatro:
+
+| Estado | izq | centro | gris | azul |
+|---|---|---|---|---|
+| Vacío | clip | campo | mic | onda (Live) |
+| Con texto | clip | campo | mic | enviar |
+| Dictando | clip | ondas | stop | enviar |
+
+- `stop` termina el dictado y deja el texto en el campo; el botón azul lo termina **y envía**.
+- Terminar por silencio (3 s) nunca envía solo — el STT falla con nombres propios y el asesor tiene que poder corregir.
+- El texto parcial no se pinta: parpadea y se corrige solo. La onda ya comunica que está oyendo.
+- Android necesita el `<queries>` de `android.speech.RecognitionService` en el manifest; sin él `initialize()` devuelve false en Android 11+.
+
 ## Animaciones de entrada — `AmAnimateIn` vs `AmStagger`
 
 `AmStagger` es una `Column` (sin scroll) — solo para listas cortas estáticas. Para contenido dentro de `ListView`, usar `AmAnimateIn(index: N, child: ...)` en cada sección. Nunca poner `AmStagger` dentro de un `ListView`.
@@ -493,6 +528,23 @@ assets/logo/
 - [x] Chat IA — integrado con Edge Function `amconnect-api`
 - [x] Ingesta de documentos (Feed)
 - [x] Voz real en VoiceOverlay (integrada con Gemini 3.1 Live API por WebSocket con audio PCM bidireccional y transcripciones visibles)
+- [x] Share target — recibir archivos/texto compartidos desde otras apps y asignarlos a alta de póliza, cliente, póliza, recordatorio o base de conocimiento
+
+## Share target (contenido compartido desde otras apps)
+
+`ShareHandlerListener` (montado en `ShellScreen`) escucha `flutter_sharing_intent` y hace push de `/share-target`. En esa pantalla se elige el destino y `ShareTargetNotifier.dispatch()` delega en `ingestProvider` — el mismo pipeline del Feed, así que `IngestFlowOverlay` muestra progreso, confirmación y errores.
+
+- **Alta de póliza** (`processPolicy`): solo PDF/imagen. Flujo automático — detección de cliente, catálogos y recordatorios.
+- **Cliente / Póliza / Recordatorio / Global**: `processKnowledgeFile` o `processKnowledgeText` → nota (`agent_notes`) ligada SOLO al destino elegido (`contactId`, `policyId` o `reminderId`); global no lleva ninguno.
+- **iOS**: la Share Extension (`ios/ShareExtension/`) debe redirigir a `SharingMedia-<bundle id>://dataUrl=SharingKey` — el plugin ignora cualquier otro scheme — y guardar el payload en el App Group con el shape exacto de su modelo `SharingFile` (`type` es el enum `text,url,image,video,file`). Las rutas van con prefijo `file://`.
+- Cerrar `/share-target` ANTES de despachar la ingesta: los sheets del overlay usan el mismo navigator que GoRouter.
+
+## Gemini Live API & Token Tracking Rules
+
+*   **Audio Token Conversion Rates**: Input/Output audio is converted to native tokens. Audio files and streams translate to approximately **32 tokens per second** (or **25 tokens per second** in active Live API WebSocket sessions).
+*   **Compounding Billing Model**: Gemini Live API operates on a WebSocket connection. Because of this, it bills per **turn** for **all tokens currently inside the active session context window**. This means that previous turns (both input and output audio) are re-processed and re-billed on every single new turn.
+*   **Transcription Surcharges**: When audio transcription is enabled (`inputAudioTranscription` or `outputAudioTranscription`), generated text tokens are billed at standard output text rates **in addition** to the native audio token costs.
+*   **Usage Metadata Timing & Delay**: In WebSocket streams, the final `usageMetadata` packet (containing final `completion_tokens` and total token count) can arrive in a separate, final server packet **after** the `turnComplete` event. To prevent loss of token counts, client applications must not immediately write or reset counters on `turnComplete`; a small delay (e.g. 400ms) or buffering should be used.
 
 ### Pendiente
 - [ ] Acciones rápidas de cliente (llamar, mensaje — placeholders)
@@ -505,4 +557,5 @@ assets/logo/
 
 - **Chat de Texto y Voz:** El chat de texto y los ajustes del chat de voz (con las correcciones del nuevo formato de audio `realtimeInput.audio` para evitar la desconexión del WebSocket en Gemini 3.1 Live API) están listos y validados.
 - **Optimización y Estabilización de UI en Voz:** Se optimizó `AmAurora` para suspender el pintado durante las transiciones de ruta (eliminando el lag al entrar/salir de la pantalla) y se fijó la altura de la barra inferior a 76px (junto con una onda de voz de 28px de altura máxima) para evitar desplazamientos verticales del orbe del micrófono al cambiar de estado (detalles en [walkthrough.md](file:///Users/julio/.gemini/antigravity/brain/a411ae05-c358-412b-93b2-578d9f685c96/walkthrough.md)).
+
 

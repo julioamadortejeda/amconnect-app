@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/ingest_provider.dart';
-import '../presentation/feed_screen.dart' show recentFeedProvider;
+import '../providers/knowledge_dashboard_provider.dart';
+import '../../clients/providers/clients_provider.dart';
+import '../../home/providers/home_provider.dart';
+import 'contact_mismatch_sheet.dart';
 import 'ingest_chat_sheet.dart';
 import 'knowledge_success_sheet.dart';
 import 'policy_success_sheet.dart';
@@ -26,7 +30,26 @@ class IngestFlowOverlay extends ConsumerStatefulWidget {
 class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
   void _handleClose() {
     ref.read(ingestProvider.notifier).reset();
-    ref.invalidate(recentFeedProvider);
+    // Las invalidaciones se difieren al siguiente frame: si corren en el
+    // mismo tick en que el sheet termina de cerrarse, pueden coincidir con
+    // el build de la pantalla que quedó debajo (ej. el tab de Clientes) y
+    // Riverpod intenta un setState() en pleno build → crash
+    // ("setState() or markNeedsBuild() called during build").
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.invalidate(knowledgeListProvider);
+      ref.invalidate(knowledgeStatsProvider);
+      ref.invalidate(clientsProvider);
+      ref.invalidate(policiesProvider);
+      ref.invalidate(policiesCountProvider);
+      // Familias por contacto/póliza (sin autoDispose, caché permanente): la
+      // ingesta cambia sus datos mientras ninguna pantalla las observa, así
+      // que su Realtime (autoDispose) no está activo para invalidarlas —
+      // invalidar la familia completa refresca todas las instancias cacheadas.
+      ref.invalidate(policyNotesProvider);
+      ref.invalidate(contactNotesProvider);
+      ref.invalidate(contactPoliciesProvider);
+    });
   }
 
   void _showKnowledgeSuccess(String message) {
@@ -57,10 +80,11 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
       builder: (_) => const _UnifiedIngestBottomSheet(),
     ).then((_) {
       final state = ref.read(ingestProvider);
-      if (state.phase == IngestPhase.knowledgeSuccess && state.knowledgeMessage != null) {
+      if (state.phase == IngestPhase.knowledgeSuccess &&
+          state.knowledgeMessage != null) {
         _showKnowledgeSuccess(state.knowledgeMessage!);
-      } else if (state.phase != IngestPhase.idle) {
-        ref.read(ingestProvider.notifier).reset();
+      } else {
+        _handleClose();
       }
     });
   }
@@ -68,7 +92,8 @@ class _IngestFlowOverlayState extends ConsumerState<IngestFlowOverlay> {
   @override
   Widget build(BuildContext context) {
     ref.listen<IngestState>(ingestProvider, (prev, next) {
-      if ((next.phase == IngestPhase.uploading || next.phase == IngestPhase.processing) &&
+      if ((next.phase == IngestPhase.uploading ||
+              next.phase == IngestPhase.processing) &&
           (prev == null || prev.phase == IngestPhase.idle)) {
         _showIngestBottomSheet();
       }
@@ -105,7 +130,10 @@ class _ProcessingOverlay extends StatelessWidget {
 
     final step1Status = switch (statusMessageKey) {
       'feedStepGettingUrl' => _StepStatus.active,
-      'feedStepUploading' || 'feedStepProcessing' || null => _StepStatus.completed,
+      'feedStepUploading' ||
+      'feedStepProcessing' ||
+      null =>
+        _StepStatus.completed,
       _ => _StepStatus.pending,
     };
 
@@ -123,7 +151,7 @@ class _ProcessingOverlay extends StatelessWidget {
     };
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -224,13 +252,10 @@ class _StepRow extends StatelessWidget {
             ),
           );
         case _StepStatus.active:
-          return const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(AmColors.accent),
-            ),
+          return const AmSpinner(
+            size: 20,
+            strokeWidth: 2,
+            color: AmColors.accent,
           );
         case _StepStatus.completed:
           return Container(
@@ -255,7 +280,8 @@ class _StepRow extends StatelessWidget {
       _StepStatus.completed => cs.onSurface.withValues(alpha: 0.6),
     };
 
-    final fontWeight = status == _StepStatus.active ? FontWeight.w600 : FontWeight.w500;
+    final fontWeight =
+        status == _StepStatus.active ? FontWeight.w600 : FontWeight.w500;
 
     return Row(
       children: [
@@ -282,14 +308,17 @@ class _UnifiedIngestBottomSheet extends ConsumerStatefulWidget {
   const _UnifiedIngestBottomSheet();
 
   @override
-  ConsumerState<_UnifiedIngestBottomSheet> createState() => _UnifiedIngestBottomSheetState();
+  ConsumerState<_UnifiedIngestBottomSheet> createState() =>
+      _UnifiedIngestBottomSheetState();
 }
 
-class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomSheet> {
+class _UnifiedIngestBottomSheetState
+    extends ConsumerState<_UnifiedIngestBottomSheet> {
   @override
   Widget build(BuildContext context) {
     ref.listen<IngestState>(ingestProvider, (prev, next) {
-      if (next.phase == IngestPhase.idle || next.phase == IngestPhase.knowledgeSuccess) {
+      if (next.phase == IngestPhase.idle ||
+          next.phase == IngestPhase.knowledgeSuccess) {
         Navigator.of(context).pop();
       }
     });
@@ -318,10 +347,15 @@ class _UnifiedIngestBottomSheetState extends ConsumerState<_UnifiedIngestBottomS
         );
       case IngestPhase.chatting:
         return IngestChatSheet(onClose: handleClose);
+      case IngestPhase.contactMismatch:
+        return ContactMismatchSheet(onClose: handleClose);
       case IngestPhase.success:
         return PolicySuccessSheet(onClose: handleClose);
       case IngestPhase.error:
-        return _UnifiedErrorSheet(error: context.translateError(state.error ?? 'Error de procesamiento'), onClose: handleClose);
+        return _UnifiedErrorSheet(
+            error:
+                context.translateError(state.error ?? 'Error de procesamiento'),
+            onClose: handleClose);
       default:
         return const SizedBox.shrink();
     }
@@ -339,7 +373,7 @@ class _UnifiedErrorSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(

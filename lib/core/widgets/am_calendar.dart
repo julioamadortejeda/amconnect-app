@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../theme/app_colors.dart';
+import '../utils/formatters.dart';
 import 'am_card.dart';
 import 'am_press.dart';
 import '../../l10n/app_localizations.dart';
@@ -80,12 +80,12 @@ class _CalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final label = DateFormat('MMMM yyyy', 'es').format(month);
+    final label = fmtMonthYear(month);
 
     return Row(
       children: [
         Text(
-          label[0].toUpperCase() + label.substring(1),
+          label,
           style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600, color: cs.onSurface),
         ),

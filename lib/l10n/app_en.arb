@@ -1,8 +1,6 @@
 {
   "@@locale": "en",
-
-  "appTitle": "AMConnect Advisor",
-
+  "appTitle": "AMConnect",
   "commonTerms": "By continuing, you accept the Terms and Privacy Policy.",
   "commonClose": "Close",
   "commonCancel": "Cancel",
@@ -11,10 +9,10 @@
   "commonSignOut": "Sign out",
   "commonYesterday": "Yesterday",
   "commonLoading": "Loading...",
+  "commonOpenSettings": "Open Settings",
   "homeEmptyPendientes": "No pending reminders",
   "homeEmptySeguimientos": "No active follow-ups",
   "homeEmptyClientes": "No clients registered yet",
-
   "loginWelcomeTitle": "Welcome to\nAMConnect",
   "loginWelcomeSubtitle": "Your intelligent assistant. Manage your clients, policies, and reminders — and ask it anything.",
   "loginContinueApple": "Continue with Apple",
@@ -23,26 +21,48 @@
   "loginGuest": "Explore as guest",
   "loginErrGoogle": "Couldn't sign in with Google.",
   "loginErrApple": "Couldn't sign in with Apple.",
-
   "emailLoginTitle": "Sign in",
   "emailLoginSubtitle": "Enter your email and password",
   "emailLoginForgot": "Forgot your password?",
   "emailLoginBtn": "Sign in",
   "emailLoginNoAccount": "Don't have an account? ",
   "emailLoginCreateAccount": "Create account",
-
+  "forgotPasswordTitle": "Recover your account",
+  "forgotPasswordSubtitleEmail": "Enter your email and we'll send you a code to reset your password.",
+  "forgotPasswordSubtitleReset": "Enter the code we sent you and your new password.",
+  "forgotPasswordCodeSentTo": "We sent a code to {email}",
+  "@forgotPasswordCodeSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "forgotPasswordSendCodeBtn": "Send code",
+  "forgotPasswordResetBtn": "Reset password",
+  "forgotPasswordBackToEmail": "Use a different email",
+  "forgotPasswordSuccessTitle": "Password updated",
+  "forgotPasswordSuccessMsg": "You can now sign in with your new password.",
+  "forgotPasswordSuccessBtn": "Sign in",
+  "errRequestCodeFailed": "We couldn't send the code. Please try again.",
+  "errInvalidCode": "The code is invalid or has expired.",
   "registerTitle": "Create account",
   "registerSubtitle": "Sign up to start using AMConnect",
   "registerBtn": "Create account",
   "registerHasAccount": "Already have an account? ",
   "registerSignIn": "Sign in",
-
   "fieldEmail": "Email address",
   "fieldPassword": "Password",
   "fieldConfirm": "Confirm password",
+  "fieldCode": "Verification code",
   "fieldFullName": "Full name",
   "fieldPhone": "Phone",
-
+  "fieldOccupation": "Occupation",
+  "fieldAddress": "Address",
+  "fieldBirthdate": "Birthdate",
+  "fieldRfc": "RFC",
+  "fieldCurp": "CURP",
+  "fieldNotes": "Notes",
   "accountProfileTitle": "Profile",
   "accountPlanTitle": "Your plan",
   "accountEdit": "Edit",
@@ -51,7 +71,11 @@
   "accountErrSave": "Couldn't save changes. Please try again.",
   "accountPlanPrice": "{price} MXN/month",
   "@accountPlanPrice": {
-    "placeholders": { "price": { "type": "String" } }
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "accountPlanStatusTrial": "Trial",
   "accountPlanStatusActive": "Active",
@@ -59,20 +83,34 @@
   "accountPlanStatusCancelled": "Cancelled",
   "accountTrialDaysLeft": "{count} days left in trial",
   "@accountTrialDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "accountUsageChatLabel": "Chat messages",
   "accountUsageIngestionsLabel": "Documents processed",
   "accountUsageFormat": "{used} of {limit}",
   "@accountUsageFormat": {
     "placeholders": {
-      "used": { "type": "int" },
-      "limit": { "type": "int" }
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
     }
   },
   "accountSignOutTitle": "Sign out?",
   "accountSignOutMessage": "You can sign back in anytime.",
-
+  "accountAppearanceTitle": "Appearance",
+  "themeModeSystem": "System",
+  "themeModeLight": "Light",
+  "themeModeDark": "Dark",
+  "accountHelpTitle": "Help",
+  "accountHelp": "Help & support",
+  "accountNotificationsDisabled": "Notifications disabled",
   "errInvalidEmail": "Enter a valid email address",
   "errEmptyCredentials": "Please fill in all fields",
   "errWrongCredentials": "Email or password is incorrect",
@@ -91,21 +129,38 @@
   "errAccessDenied": "You don't have permission to perform this action.",
   "errAiFailed": "The assistant had a problem processing your request. Please try again.",
   "errUploadFailed": "The file could not be uploaded. Please try again.",
+  "errSharedFileMissing": "The shared file is no longer available. Please share it again.",
+  "errSharedTextTooLarge": "The text is too long to process. Share a shorter chat or just the relevant messages.",
+  "errSpeechUnavailable": "Voice dictation is not available on this device. Type your message instead.",
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {
-      "ref": {"type": "String"}
+      "ref": {
+        "type": "String"
+      }
     }
   },
   "errFilePickerTimeout": "File selection took too long. Please try again.",
   "errFilePickerOpen": "Could not open the file picker.",
   "errFilePathUnavailable": "Could not get the path of the selected file.",
-
+  "errFileOpenFailed": "Couldn't open the file. Please try again.",
   "shellHome": "Home",
   "shellAgenda": "Agenda",
-  "shellClients": "Clients",
+  "shellClients": "Portfolio",
   "shellData": "Data",
-
+  "analyticsTitle": "Portfolio Analytics",
+  "analyticsFunnelTitle": "Sales Funnel",
+  "analyticsFunnelProspects": "Prospects",
+  "analyticsFunnelClients": "Clients with Policies",
+  "analyticsFunnelRate": "Close Rate",
+  "analyticsPolicyStatus": "Renewal Status",
+  "analyticsPolicyActive": "Active",
+  "analyticsPolicyExpired": "Expired / Overdue",
+  "analyticsPolicyPending": "In Underwriting",
+  "analyticsBranchDist": "Diversification by Line of Business",
+  "analyticsCarrierDist": "Distribution by Carrier",
+  "homeNotificationsBannerTitle": "Notifications disabled",
+  "homeNotificationsBannerSubtitle": "Turn them on so you don't miss your reminders",
   "homeTitle": "AMConnect",
   "homeGreeting": "Hello, {name}",
   "homeGreetingDefault": "Hello! Good day",
@@ -127,41 +182,36 @@
   "homeViewAllCount": "View all ({count})",
   "@homeViewAllCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "currencyMXN": "Mexican Peso",
   "currencyUSD": "US Dollar",
-
   "paymentMethodDirectDebit": "Direct Debit",
   "paymentMethodBankTransfer": "Bank Transfer",
   "paymentMethodCheck": "Check",
   "paymentMethodCash": "Cash",
   "paymentMethodCreditCard": "Credit Card",
-
   "paymentFrequencyMonthly": "Monthly",
   "paymentFrequencyQuarterly": "Quarterly",
   "paymentFrequencySemiannual": "Semiannual",
   "paymentFrequencyAnnual": "Annual",
-
   "participantRoleHolder": "Holder",
   "participantRoleInsured": "Insured",
   "participantRolePolicyholder": "Policyholder",
   "participantRoleDependent": "Dependent",
-
   "policyStatusActive": "Active",
   "policyStatusCancelled": "Cancelled",
   "policyStatusExpired": "Expired",
   "policyStatusPending": "Pending",
   "policyStatusSuspended": "Suspended",
-
   "reminderStatusCreated": "Created",
   "reminderStatusInProgress": "In Progress",
   "reminderStatusDone": "Done",
   "reminderStatusCancelled": "Cancelled",
   "reminderStatusPaused": "Paused",
-
   "reminderTypePayment": "Payment",
   "reminderTypeRenewal": "Renewal",
   "reminderTypeCancellation": "Cancellation",
@@ -170,7 +220,6 @@
   "reminderTypeAppointment": "Appointment",
   "reminderTypeAnniversary": "Policy Anniversary",
   "reminderTypeOther": "Other",
-
   "clientsTitle": "Clients",
   "clientsTotal": "{count} total",
   "clientsSearchHint": "Search client…",
@@ -181,6 +230,10 @@
   "clientsErrorPolicies": "Error loading policies",
   "clientsEmpty": "No registered clients",
   "clientsError": "Error loading clients",
+  "clientsDeleteTitle": "Delete client?",
+  "clientsDeleteMessage": "This client will be deleted and will no longer appear in your portfolio. This action cannot be undone.",
+  "clientsErrDelete": "Couldn't delete the client. Please try again.",
+  "clientsErrAddNote": "Couldn't add the note. Please try again.",
   "clientsContactSection": "Contact",
   "clientsNoPolicies": "No registered policies",
   "clientsNoNotes": "No notes",
@@ -190,23 +243,47 @@
   "clientsStatusUpToDate": "Up to date",
   "clientsAge": "{count} years old",
   "@clientsAge": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsMemberSince": "Client since {year}",
   "@clientsMemberSince": {
-    "placeholders": { "year": { "type": "int" } }
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
   },
   "clientsNewClient": "Client",
+  "clientsNewTitle": "New client",
+  "clientsEditTitle": "Edit client",
+  "clientsCreateBtn": "Create client",
+  "clientsCreated": "Client created",
+  "clientsUpdated": "Client updated",
+  "clientsFieldNoBirthdate": "No date set",
+  "clientsFieldInvalidPhone": "Enter a valid phone number (10 to 15 digits)",
+  "clientsSectionPersonal": "Personal info",
+  "clientsSectionFiscal": "Fiscal",
+  "clientsFieldGeneralNotes": "General notes",
+  "clientsAddNote": "Add quick note",
+  "clientsAddNoteHint": "Write a note about this client…",
   "clientsNoteTypePdf": "PDF document",
   "clientsNoteTypeAudio": "Voice note",
   "clientsNoteTypeImage": "Image",
-  "clientsNoteTypeText": "Chat message",
+  "clientsNoteTypeText": "Note",
+  "clientsNoteTypeWhatsapp": "WhatsApp",
   "clientsNoteOpenFile": "Open file",
   "clientsActionCall": "Call",
   "clientsActionMessage": "Message",
   "clientsActionRemind": "Remind",
   "clientsActionUpload": "Upload",
   "clientsActionAsk": "Ask",
+  "clientsActionNoPhone": "This client has no phone number on file",
+  "clientsActionLaunchError": "Couldn't open the app",
+  "clientsActionInvalidPhone": "This client's phone number isn't valid",
   "clientsPoliciesTab": "Policies · {count}",
   "clientsNotesTab": "Notes · {count}",
   "clientsPolicyActive": "Active",
@@ -219,19 +296,29 @@
   "clientsPolicyFileObsolete": "Obsolete",
   "clientsPolicyOldVersions": "Previous versions ({count})",
   "@clientsPolicyOldVersions": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "clientsPolicyDeleteNoteTitle": "Delete file",
   "clientsPolicyDeleteNoteMsg": "This version is no longer active. Do you want to delete it?",
   "clientsAskAbout": "Ask about {name}",
-
+  "remindersAskAbout": "Ask about this",
   "remindersTitle": "Agenda",
   "remindersPendingCount": "{count} pending",
   "remindersFilterAll": "All",
   "remindersFilterPayments": "Payments",
   "remindersFilterRenewals": "Renewals",
   "remindersFilterCalls": "Calls",
+  "remindersFilterCompleted": "Completed",
   "remindersFilterDeleted": "Deleted",
+  "remindersFilterSelectTitle": "Filter by",
+  "remindersCalendarHistoryLabel": "History",
+  "remindersGroupOverdue": "Overdue",
+  "remindersGroupThisWeek": "Rest of the week",
+  "remindersGroupLater": "Later",
   "remindersDeletedWarning": "Deleted reminders cannot be restored.",
   "remindersEmpty": "No reminders to show",
   "remindersError": "Error loading reminders",
@@ -245,16 +332,27 @@
   "calendarSat": "S",
   "remindersNewTitle": "New reminder",
   "remindersCreated": "Reminder created",
+  "remindersSectionInfo": "Information",
+  "remindersSectionDetails": "Details",
   "remindersVoiceHint": "SAY IT IN YOUR OWN WORDS",
   "remindersVoicePlaceholder": "remind me to call José tomorrow at 3",
   "remindersFieldTitle": "Title",
+  "remindersFieldDescription": "Description",
   "remindersFieldType": "Type",
   "remindersFieldClient": "Client",
   "remindersFieldDate": "Date",
   "remindersFieldTime": "Time",
+  "remindersFieldDateTime": "Date & time",
   "remindersRepeatYearly": "Repeat yearly",
   "remindersCreateBtn": "Create reminder",
-
+  "remindersSelectClientTitle": "Select client",
+  "remindersNoClientOption": "No client",
+  "remindersSelectPolicyTitle": "Select policy",
+  "remindersNoPolicyOption": "No policy",
+  "remindersSelectStatusTitle": "Select status",
+  "remindersPolicyNeedsClient": "Choose a client first",
+  "remindersPickDateTitle": "Reminder date & time",
+  "remindersPickDateMessage": "Choose when you want to be reminded.",
   "voiceListening": "Listening…",
   "voiceTapToClose": "Tap to close",
   "voiceInputHint": "Ask anything…",
@@ -270,13 +368,45 @@
   "voiceChatClosed": "Session ended",
   "voiceChatError": "Connection error",
   "voiceChatPermissionDenied": "Microphone permission denied",
+  "voiceOpenSettingsHint": "Tap to open Settings",
   "voiceChatSkillActive": "Looking up data…",
-
+  "voiceChatThinking": "Thinking…",
+  "voiceOutputTitle": "Audio output",
+  "voiceOutputSpeaker": "Phone speaker",
+  "voiceOutputBluetooth": "Bluetooth device",
+  "voiceOutputWired": "Wired headphones",
+  "voiceOutputOther": "Other device",
+  "voiceOutputNone": "No audio devices available",
+  "voiceSkillSearchingContacts": "Looking up client…",
+  "voiceSkillReviewingContacts": "Reviewing your clients…",
+  "voiceSkillSavingContact": "Updating client…",
+  "voiceSkillSearchingNotes": "Searching your notes…",
+  "voiceSkillSavingNote": "Saving note…",
+  "voiceSkillSearchingPolicies": "Looking up policy…",
+  "voiceSkillReviewingPolicies": "Reviewing your policies…",
+  "voiceSkillSavingPolicy": "Saving policy…",
+  "voiceSkillSearchingReminders": "Looking up reminders…",
+  "voiceSkillSavingReminder": "Updating reminder…",
+  "voiceSkillCatalog": "Checking catalog…",
+  "voiceSkillSavingCatalog": "Saving to catalog…",
+  "voiceSkillPendingTask": "Noting a pending item…",
+  "voiceSkillKnowledge": "Searching your knowledge base…",
+  "assistantVoiceActive": "Voice active",
   "chatTitle": "Assistant",
+  "chatBackendFree": "Free",
+  "chatBackendEnterprise": "Enterprise",
   "chatSubtitle": "Connected to your base",
   "chatNewConversation": "New conversation",
   "chatInputHint": "Ask your assistant…",
-
+  "chatCardViewProfile": "View Profile",
+  "chatCardViewPolicy": "View Policy",
+  "chatCardGoToAgenda": "Go to Agenda",
+  "chatCardContactInfoTitle": "Contact",
+  "chatCardContactListTitle": "Matching Contacts",
+  "chatCardReminderListTitle": "Reminders & Tasks",
+  "chatCardPolicyInfoTitle": "Policy Found",
+  "chatCardActionCall": "Call",
+  "chatCardActionWhatsApp": "WhatsApp",
   "feedTitle": "Knowledge base",
   "feedSubtitle": "Feed the app",
   "feedQuestion": "What do you want to add?",
@@ -286,6 +416,22 @@
   "feedTypePolicyPhotoDesc": "Take a photo with your camera",
   "feedTypeAudio": "Audio / voice note",
   "feedTypeAudioDesc": "Transcribes and extracts data",
+  "feedAudioSourceTitle": "How do you want to add it?",
+  "feedAudioSourceFile": "Choose file",
+  "feedAudioSourceFileDesc": "Upload an existing recording",
+  "feedAudioSourceRecord": "Record audio",
+  "feedAudioSourceRecordDesc": "Record a voice note now",
+  "feedRecorderTitle": "Record voice note",
+  "feedRecorderTapToStart": "Tap the button to start recording",
+  "feedRecorderRecording": "Recording…",
+  "feedRecorderReady": "Ready to send",
+  "feedRecorderPlaying": "Playing…",
+  "feedRecorderPlay": "Play",
+  "feedRecorderPause": "Pause",
+  "feedRecorderDiscard": "Discard",
+  "feedRecorderAccept": "Accept",
+  "feedRecorderPermissionDenied": "We need microphone access to record. Enable it in your device settings.",
+  "feedRecorderOpenSettings": "Open settings",
   "feedTypeText": "Text / notes",
   "feedTypeTextDesc": "Paste chats or written notes",
   "feedTypeWhatsapp": "Import WhatsApp chat",
@@ -313,27 +459,38 @@
   "feedSearchNoResults": "No notes or documents found.",
   "feedStatsTitle": "Knowledge Summary",
   "feedAllNotesTitle": "All Notes",
-
   "feedSuccessTitle": "Policy created",
+  "feedSuccessUpdateTitle": "Policy updated",
   "feedSuccessFieldsSaved": "{count} fields saved",
   "@feedSuccessFieldsSaved": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessNewOne": "1 new reminder",
   "feedSuccessNewMany": "{count} new reminders",
   "@feedSuccessNewMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessExistingOne": "1 already existed",
   "feedSuccessExistingMany": "{count} already existed",
   "@feedSuccessExistingMany": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "feedSuccessRemindersSection": "REMINDERS",
   "feedSuccessReminderNew": "New",
   "feedSuccessReminderExisting": "Already existed",
   "feedSuccessDone": "Done",
-
   "feedKnowledgeSuccessTitle": "Saved!",
   "feedKnowledgeDone": "Close",
   "feedTextInputTitle": "Add note or text",
@@ -343,7 +500,54 @@
   "feedConfirmPolicyTitle": "Confirm policy",
   "feedPreviewTitle": "Confirm file",
   "feedPreviewConfirm": "Confirm",
-
+  "feedIngestConfirmCta": "Yes, save",
+  "feedIngestCorrectCta": "Correct / Chat",
+  "feedIngestCancelCta": "Cancel",
+  "feedIngestHolderLabel": "Policyholder",
+  "feedIngestCarrierLabel": "Carrier",
+  "feedIngestBranchProductLabel": "Branch / Prod.",
+  "feedIngestPolicyNumberLabel": "Policy No.",
+  "feedIngestPremiumLabel": "Premium",
+  "feedIngestValidityLabel": "Validity",
+  "feedContactMismatchTitle": "Who should we assign this policy to?",
+  "feedContactMismatchBody": "The document shows {detectedName} as the policyholder, but you're on {screenName}'s screen.",
+  "@feedContactMismatchBody": {
+    "placeholders": {
+      "detectedName": {
+        "type": "String"
+      },
+      "screenName": {
+        "type": "String"
+      }
+    }
+  },
+  "feedContactMismatchAssignCta": "Yes, assign to {screenName}",
+  "@feedContactMismatchAssignCta": {
+    "placeholders": {
+      "screenName": {
+        "type": "String"
+      }
+    }
+  },
+  "feedContactMismatchUseDetectedCta": "No, use {detectedName}",
+  "@feedContactMismatchUseDetectedCta": {
+    "placeholders": {
+      "detectedName": {
+        "type": "String"
+      }
+    }
+  },
+  "feedContactMismatchResolvedBanner": "This policy will be assigned to {screenName}. The document identified {detectedName} as the policyholder.",
+  "@feedContactMismatchResolvedBanner": {
+    "placeholders": {
+      "screenName": {
+        "type": "String"
+      },
+      "detectedName": {
+        "type": "String"
+      }
+    }
+  },
   "remindersActionDone": "Mark done",
   "remindersActionInProgress": "In progress",
   "remindersActionReschedule": "Reschedule",
@@ -367,12 +571,9 @@
   "remindersCancelTitle": "Cancel Reminder",
   "remindersCancelHint": "Type the reason for cancellation...",
   "remindersCancelConfirmBtn": "Confirm",
-
   "remindersDetailTitle": "Reminder",
   "remindersDetailEdit": "Edit",
   "remindersDetailSave": "Save",
-  "remindersDetailNotes": "Notes",
-  "remindersDetailNoNotes": "No notes",
   "remindersDetailNoClient": "No client assigned",
   "remindersDetailSaved": "Changes saved",
   "remindersDetailStatus": "Status",
@@ -390,13 +591,238 @@
   "remindersDetailNoComments": "No comments",
   "remindersDetailNoDescription": "No description",
   "remindersDetailRelations": "Relations",
+  "remindersDetailAttachments": "Attached files",
+  "remindersDetailNoAttachments": "No attached files",
   "remindersDetailTomorrow": "Tomorrow",
   "remindersDetailDaysLeft": "{count}d",
   "@remindersDetailDaysLeft": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "remindersDetailDaysOverdue": "{count}d overdue",
   "@remindersDetailDaysOverdue": {
-    "placeholders": { "count": { "type": "int" } }
-  }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@_policyCreate": {},
+  "policiesNewPolicyTitle": "New Policy",
+  "policiesPolicyNumber": "Policy number",
+  "policiesCarrier": "Carrier",
+  "policiesBranch": "Branch",
+  "policiesProduct": "Product",
+  "policiesStatus": "Status",
+  "policiesCurrency": "Currency",
+  "policiesPaymentFrequency": "Payment frequency",
+  "policiesPaymentMethod": "Payment method",
+  "policiesSumInsured": "Sum insured",
+  "policiesPremium": "Premium",
+  "policiesDeductible": "Deductible",
+  "policiesStartDate": "Start date",
+  "policiesEndDate": "End date",
+  "policiesRenewalDate": "Renewal date",
+  "policiesNextPaymentDate": "Next payment",
+  "policiesNotes": "Notes",
+  "policiesSaveBtn": "Save policy",
+  "policiesSelectClient": "Select client",
+  "policiesCreateCarrier": "Create new Carrier",
+  "policiesCreateBranch": "Create new Branch",
+  "policiesCreateProduct": "Create new Product",
+  "policiesCreatedSuccess": "Policy created successfully",
+  "policiesEditPolicyTitle": "Edit Policy",
+  "policiesSaveChangesBtn": "Save changes",
+  "policiesUpdatedSuccess": "Policy updated successfully",
+  "policiesDetailTitle": "Policy detail",
+  "policiesDetailLoadError": "Couldn't load the policy.",
+  "policiesDetailCoverage": "Coverage and payment",
+  "policiesDetailDates": "Dates",
+  "policiesNotesSection": "Notes",
+  "policiesEmptyNotes": "No notes yet for this policy.",
+  "policiesAddNoteHint": "Write a note...",
+  "policiesDeleteNoteTitle": "Delete note",
+  "policiesDeleteNoteMsg": "Do you want to delete this note? This action cannot be undone.",
+  "policiesDeleteTitle": "Delete policy?",
+  "policiesDeleteMessage": "This policy will be deleted and will no longer appear in your portfolio. This action cannot be undone.",
+  "policiesErrDelete": "Couldn't delete the policy. Please try again.",
+  "policiesErrDeleteNote": "Couldn't delete the note. Please try again.",
+  "policiesErrAddNote": "Couldn't add the note. Please try again.",
+  "policiesAttachFile": "Attach",
+  "catalogsTitle": "Catalogs",
+  "catalogsTypeCarriers": "Carriers",
+  "catalogsTypeBranches": "Branches",
+  "catalogsTypeProducts": "Products",
+  "catalogsSearchHint": "Search...",
+  "catalogsEmpty": "No results",
+  "catalogsError": "Couldn't load catalogs",
+  "catalogsFieldName": "Name",
+  "catalogsFieldShortName": "Short name",
+  "catalogsFieldCode": "Code",
+  "catalogsSelectCarrier": "Select carrier",
+  "catalogsSelectBranch": "Select branch",
+  "catalogsNewCarrierTitle": "New carrier",
+  "catalogsEditCarrierTitle": "Edit carrier",
+  "catalogsNewBranchTitle": "New branch",
+  "catalogsEditBranchTitle": "Edit branch",
+  "catalogsNewProductTitle": "New product",
+  "catalogsEditProductTitle": "Edit product",
+  "catalogsCreateBtn": "Create",
+  "catalogsCarrierCreated": "Carrier created",
+  "catalogsCarrierUpdated": "Carrier updated",
+  "catalogsBranchCreated": "Branch created",
+  "catalogsBranchUpdated": "Branch updated",
+  "catalogsProductCreated": "Product created",
+  "catalogsProductUpdated": "Product updated",
+  "catalogsDeleteTitle": "Delete item",
+  "catalogsDeleteMessage": "Are you sure you want to delete it? This action cannot be undone.",
+  "shareTargetTitle": "Shared resource",
+  "shareTargetSubtitle": "Select where you want to assign this content",
+  "shareTargetPreview": "Preview",
+  "shareTargetEmpty": "No content was received to process",
+  "shareTargetDestinationPolicyIngest": "Policy intake",
+  "shareTargetDestinationPolicyIngestSub": "Automatic document reading",
+  "shareTargetPolicyIngestUnavailable": "Only available for PDFs or images",
+  "shareTargetUnsupportedFile": "This file can't be processed. Share a PDF, an image (JPG, PNG, WEBP, GIF), an audio file (MP3, WAV, OGG, M4A, WEBM), or a chat exported as text (.txt) — exports with attached media (.zip) aren't supported.",
+  "shareTargetDestinationGlobal": "Global Ingest (Knowledge Base)",
+  "shareTargetDestinationClient": "Client",
+  "shareTargetDestinationPolicy": "Policy",
+  "shareTargetDestinationReminder": "Reminder",
+  "shareTargetNoticePolicyIngest": "Everything is generated automatically: the client, carrier, product and coverages are detected, and payment and renewal reminders are created. You can review and correct before saving.",
+  "shareTargetNoticeGlobal": "It will be processed as a note in your general knowledge base.",
+  "shareTargetNoticeClient": "It will be processed as a note in {name}'s file.",
+  "@shareTargetNoticeClient": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTargetNoticePickClient": "Pick a client to save this content as a note in their file.",
+  "shareTargetNoticePolicy": "It will be processed as a note on policy {policy}.",
+  "@shareTargetNoticePolicy": {
+    "placeholders": {
+      "policy": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTargetNoticePickPolicy": "Pick a policy to save this content as one of its notes.",
+  "shareTargetNoticeReminder": "It will be processed as a note linked to reminder {reminder}.",
+  "@shareTargetNoticeReminder": {
+    "placeholders": {
+      "reminder": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTargetNoticePickReminder": "Pick a reminder to link this content to as a note.",
+  "shareTargetActionIngest": "Upload resource",
+  "shareTargetActionPolicyIngest": "Process policy",
+  "shareTargetSelectClient": "Select client",
+  "shareTargetSelectPolicy": "Select policy",
+  "shareTargetSelectReminder": "Select reminder",
+  "shareTargetSearchReminderHint": "Search reminder…",
+  "shareTargetPolicyNoNumber": "No number",
+  "shareTargetCancel": "Discard",
+  "feedMakeGeneral": "Make general knowledge",
+  "feedMakeGeneralGlobalDesc": "The file will be available globally for AI",
+  "feedMakeGeneralSub": "Enable if you want the file to be global rather than context-exclusive",
+  "feedContextAttachReminder": "Will be attached to this reminder",
+  "feedContextAttachPolicy": "Will be attached to this policy",
+  "feedContextAttachClient": "Will be attached to this client",
+  "policiesAskAbout": "Ask about this policy",
+  "commonOpenFile": "Open file",
+  "chatCardPolicyListTitle": "Policies in your portfolio",
+  "chatCardPolicyCreated": "Policy created",
+  "chatCardPolicyUpdated": "Policy updated",
+  "chatCardFieldHolder": "Policyholder",
+  "chatCardFieldInsured": "Insured",
+  "chatCardRemindersLabel": "Reminders",
+  "chatCardReminderFallback": "Reminder",
+  "chatCardContactFallback": "Contact",
+  "chatCardFieldPhone": "Phone",
+  "chatCardFieldEmail": "Email",
+  "chatCardFieldDate": "Date",
+  "chatCardAttachmentFallback": "Document",
+  "chatSuggestion1": "Who's due soon?",
+  "chatSuggestion2": "How much does Javier pay?",
+  "chatSuggestion3": "Remind me to call tomorrow",
+  "chatSuggestion4": "Payments this week?",
+  "chatContextSuggestionContact": "Ask me anything about **{name}**.",
+  "@chatContextSuggestionContact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatContextSuggestionPolicy": "Ask me anything about this **{carrier}** policy.",
+  "@chatContextSuggestionPolicy": {
+    "placeholders": {
+      "carrier": {
+        "type": "String"
+      }
+    }
+  },
+  "chatContextSuggestionReminder": "Ask me anything about this reminder: **{title}**.",
+  "@chatContextSuggestionReminder": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "chatContextSuggestionKnowledge": "Ask me anything about **{fileName}**.",
+  "@chatContextSuggestionKnowledge": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "chatContextSuggestionKnowledgeGeneric": "Ask me anything about this document you uploaded.",
+  "policiesSectionInsuranceDetails": "Insurance details",
+  "policiesSectionParamsPayment": "Parameters & payment",
+  "policiesSectionAmountsCoverage": "Amounts & coverage",
+  "policiesSectionDatesValidity": "Validity & payment dates",
+  "reminderTypeBirthday": "Birthday",
+  "reminderSettingsTitle": "Automatic alerts",
+  "reminderSettingsSubtitle": "How far ahead we warn you",
+  "reminderSettingsIntro": "The app warns you about payments, renewals, anniversaries and birthdays on its own. Choose how early here.",
+  "reminderSettingsSameDay": "On the day",
+  "reminderSettingsDaysBefore": "{days} days before",
+  "@reminderSettingsDaysBefore": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderSettingsOff": "No alerts",
+  "reminderSettingsBranchExceptions": "Exceptions by branch",
+  "reminderSettingsAddException": "Add exception",
+  "reminderSettingsAllBranches": "All branches",
+  "reminderSettingsPickDays": "Advance notice",
+  "reminderSettingsPickBranch": "Choose the branch",
+  "reminderSettingsNoBranches": "You don't have any branches in your catalog yet",
+  "policiesPaymentRule": "Payment days",
+  "policiesPaymentMonthly": "Every {day} of the month",
+  "@policiesPaymentMonthly": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "policiesActivityTitle": "Activity",
+  "policiesActivityUpcoming": "Upcoming",
+  "policiesActivityHistory": "History",
+  "policiesActivityEmpty": "No reminders for this policy",
+  "reminderSettingsRemoveException": "Remove exception",
+  "reminderSettingsDefault": "All other branches",
+  "reminderSettingsHint": "Tap an advance notice to change it. Branch exceptions override the value above."
 }

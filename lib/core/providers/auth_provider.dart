@@ -15,7 +15,7 @@ final authUserProvider = StreamProvider<User?>((ref) {
 /// Solo conoce [AuthRepository] — no sabe nada de Supabase, Google, Apple, etc.
 /// Los métodos lanzan excepción en error; la pantalla la captura vía ref.listen.
 class AuthNotifier extends Notifier<void> {
-  late final AuthRepository _repo;
+  late AuthRepository _repo;
 
   @override
   void build() {
@@ -27,6 +27,20 @@ class AuthNotifier extends Notifier<void> {
 
   Future<void> signUp({required String email, required String password}) =>
       _repo.signUp(email: email, password: password);
+
+  Future<void> requestPasswordReset(String email) =>
+      _repo.requestPasswordReset(email);
+
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) =>
+      _repo.confirmPasswordReset(
+        email: email,
+        token: token,
+        newPassword: newPassword,
+      );
 
   Future<void> signInWithGoogle() => _repo.signInWithGoogle();
 

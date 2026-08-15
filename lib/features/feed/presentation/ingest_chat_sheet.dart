@@ -1,78 +1,51 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_spinner.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/theme/am_theme.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/am_press.dart';
+import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../assistant/providers/assistant_provider.dart';
 import '../providers/ingest_provider.dart';
 
-class IngestChatSheet extends ConsumerStatefulWidget {
+class IngestChatSheet extends ConsumerWidget {
   const IngestChatSheet({super.key, required this.onClose});
   final VoidCallback onClose;
 
   @override
-  ConsumerState<IngestChatSheet> createState() => _IngestChatSheetState();
-}
-
-class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
-  final _ctrl = TextEditingController();
-  final _scrollCtrl = ScrollController();
-
-  void _send() {
-    final text = _ctrl.text.trim();
-    if (text.isEmpty) return;
-    _ctrl.clear();
-    ref.read(ingestProvider.notifier).sendMessage(text);
-    _scrollToBottom();
-  }
-
-  void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (_scrollCtrl.hasClients) {
-        _scrollCtrl.animateTo(
-          _scrollCtrl.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    _scrollCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(ingestProvider);
 
-    ref.listen(ingestProvider, (prev, next) {
-      if (next.messages.length != (prev?.messages.length ?? 0)) _scrollToBottom();
-    });
-
     final extraction = state.extraction ?? {};
     final policyNumber = extraction['policyNumber'] as String?;
     final carrierName = extraction['carrierName'] as String?;
-    final holderName = extraction['holderName'] as String?;
-    final premium = extraction['premium'];
+    // El banner de duplicado debe mostrar la explicación de la IA, no lo
+    // último en la lista — tras tocar "Sí, guardar" el último mensaje es el
+    // "Sí" del usuario, y sin esto el banner lo mostraría a él en su lugar.
+    final aiMessages = state.messages.where((m) => m.role == 'ai');
+    final lastAiText = aiMessages.isEmpty ? '' : aiMessages.last.text;
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.34),
+      color: AmColors.scrim,
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.82,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: cs.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.82),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: cs.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(AmDimens.cardRadius)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
               // Handle + header
               Padding(
                 padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
@@ -85,17 +58,23 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                         borderRadius: BorderRadius.circular(99),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AmDimens.gapM),
                     Row(
                       children: [
                         Container(
                           width: 36, height: 36,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF2AB5FF), Color(0xFF007AC0)]),
+                            color: AmColors.accent,
                             borderRadius: BorderRadius.circular(11),
                           ),
-                          child: const Icon(Icons.auto_awesome, color: Colors.white, size: 18),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/logo/logo.png',
+                              color: Colors.white,
+                              width: 18,
+                              height: 18,
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -103,111 +82,152 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(l10n.feedConfirmPolicyTitle,
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,
+                                  style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600,
                                       color: cs.onSurface)),
                               if (policyNumber != null || carrierName != null)
                                 Text(
                                   [if (carrierName != null) carrierName,
                                    if (policyNumber != null) '# $policyNumber'].join(' · '),
-                                  style: TextStyle(fontSize: 12.5, color: cs.tertiary),
+                                  style: TextStyle(fontSize: 12, color: cs.tertiary),
                                 ),
                             ],
                           ),
                         ),
                         IconButton(
                           icon: Icon(Icons.close, color: cs.tertiary, size: 20),
-                          onPressed: widget.onClose,
+                          onPressed: onClose,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
                       ],
                     ),
-                    // Extraction summary chips
-                    if (holderName != null || premium != null) ...[
-                      const SizedBox(height: 12),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            if (holderName != null) _Chip(label: holderName),
-                            if (premium != null) _Chip(label: 'Prima: \$$premium'),
-                          ],
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 10),
+                    const SizedBox(height: AmDimens.gapXS),
                     Divider(height: 1, color: cs.outlineVariant),
                   ],
                 ),
               ),
 
-              // Messages
-              Expanded(
-                child: ListView.separated(
-                  controller: _scrollCtrl,
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                  itemCount: state.messages.length + (state.isSending ? 1 : 0),
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (_, i) {
-                    if (i == state.messages.length) return const _TypingDots();
-                    final msg = state.messages[i];
-                    return _ChatBubble(role: msg.role, text: msg.text);
-                  },
+              // Main body area
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: AmDimens.gapM),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.isDuplicate && lastAiText.isNotEmpty) ...[
+                        _AttentionBanner(text: lastAiText),
+                        const SizedBox(height: AmDimens.gapM),
+                      ],
+                      if (state.contactMismatchResolvedToScreen == true && state.contactMismatch != null) ...[
+                        _AttentionBanner(
+                          text: l10n.feedContactMismatchResolvedBanner(
+                            state.contactMismatch!.screenContactName,
+                            state.contactMismatch!.detectedContactName,
+                          ),
+                        ),
+                        const SizedBox(height: AmDimens.gapM),
+                      ],
+                      _PolicySummaryCard(extraction: extraction, l10n: l10n),
+                      const SizedBox(height: AmDimens.gapL),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AmColors.accent,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: state.isSending
+                              ? null
+                              : () {
+                                  ref.read(ingestProvider.notifier).sendMessage('Sí');
+                                },
+                          child: state.isSending
+                              ? const AmSpinner(
+                                  size: 20,
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  l10n.feedIngestConfirmCta,
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: AmDimens.gapS),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: cs.onSurface,
+                                side: BorderSide(color: cs.outlineVariant),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 16),
+                              label: Text(l10n.feedIngestCorrectCta, style: const TextStyle(fontSize: 13)),
+                              onPressed: state.sessionId == null
+                                  ? null
+                                  : () {
+                                      final resumeArgs = AssistantResumeArgs(
+                                        sessionId: state.sessionId!,
+                                        messages: state.messages
+                                            .map((m) => AssistantMessage(role: m.role, text: m.text))
+                                            .toList(),
+                                      );
+                                      // Cerramos el sheet antes de navegar — mantenerlo
+                                      // vivo debajo del Assistant causaba crashes de
+                                      // Riverpod al pausar/reanudar providers al apilar
+                                      // rutas. La IA ya confirma la póliza en el propio
+                                      // chat, no hace falta el PolicySuccessSheet aquí.
+                                      ref.read(ingestProvider.notifier).closeForAssistantHandoff();
+                                      GoRouter.of(context).push('/chat', extra: resumeArgs);
+                                    },
+                            ),
+                          ),
+                          const SizedBox(width: AmDimens.gapS),
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: cs.error,
+                                side: BorderSide(color: cs.error.withValues(alpha: 0.3)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              onPressed: onClose,
+                              child: Text(l10n.feedIngestCancelCta, style: const TextStyle(fontSize: 13)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-              // Error
+              // Error notification
               if (state.error != null)
                 Container(
-                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                  margin: const EdgeInsets.fromLTRB(16, 0, 16, AmDimens.gapXS),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: cs.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(state.error!,
+                  child: Text(context.translateError(state.error!),
                       style: TextStyle(fontSize: 12.5, color: cs.error)),
                 ),
-
-              // Input
-              Container(
-                margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
-                decoration: BoxDecoration(
-                  color: cs.secondaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _ctrl,
-                        onSubmitted: (_) => _send(),
-                        enabled: !state.isSending,
-                        style: TextStyle(fontSize: 15, color: cs.onSurface),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          hintText: 'Confirma o corrige los datos…',
-                          hintStyle: TextStyle(color: cs.tertiary),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    AmPress(
-                      onTap: state.isSending ? () {} : _send,
-                      child: Container(
-                        width: 36, height: 36,
-                        decoration: BoxDecoration(
-                          color: AmColors.accent,
-                          borderRadius: BorderRadius.circular(11),
-                        ),
-                        child: const Icon(Icons.arrow_upward, size: 18, color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
+            ),
           ),
         ),
       ),
@@ -215,121 +235,135 @@ class _IngestChatSheetState extends ConsumerState<IngestChatSheet> {
   }
 }
 
-class _Chip extends StatelessWidget {
-  const _Chip({required this.label});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: cs.primaryContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(label,
-          style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500,
-              color: cs.onPrimaryContainer)),
-    );
-  }
-}
-
-class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.role, required this.text});
-  final String role;
+class _AttentionBanner extends StatelessWidget {
+  const _AttentionBanner({required this.text});
   final String text;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    if (role == 'user') {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: const BoxDecoration(
-            color: AmColors.accent,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16), topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16), bottomRight: Radius.circular(4),
+    final am = context.am;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: am.amberWash,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: am.amber.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.error_outline_rounded, size: 18, color: am.amber),
+          const SizedBox(width: 10),
+          Expanded(
+            child: MarkdownBody(
+              data: text,
+              shrinkWrap: true,
+              styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                p: TextStyle(fontSize: 13, color: cs.onSurface, height: 1.4),
+                strong: const TextStyle(fontWeight: FontWeight.bold),
+                listBullet: TextStyle(color: am.amber),
+              ),
             ),
           ),
-          child: Text(text,
-              style: const TextStyle(fontSize: 14.5, color: Colors.white, height: 1.45)),
-        ),
-      );
-    }
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: cs.secondaryContainer,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4), topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16),
-          ),
-        ),
-        child: Text(text,
-            style: TextStyle(fontSize: 14.5, color: cs.onSurface, height: 1.5)),
+        ],
       ),
     );
   }
 }
 
-class _TypingDots extends StatefulWidget {
-  const _TypingDots();
-  @override
-  State<_TypingDots> createState() => _TypingDotsState();
-}
+class _PolicySummaryCard extends StatelessWidget {
+  final Map<String, dynamic> extraction;
+  final AppLocalizations l10n;
 
-class _TypingDotsState extends State<_TypingDots> with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
-  }
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  const _PolicySummaryCard({required this.extraction, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: cs.secondaryContainer,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (i) {
-            final anim = CurvedAnimation(
-              parent: _ctrl,
-              curve: Interval(i * 0.15, i * 0.15 + 0.5, curve: Curves.easeInOut),
-            );
-            return AnimatedBuilder(
-              animation: anim,
-              builder: (_, __) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: 7, height: 7,
-                decoration: BoxDecoration(
-                  color: cs.tertiary.withValues(alpha: 0.4 + anim.value * 0.6),
-                  shape: BoxShape.circle,
-                ),
-                transform: Matrix4.translationValues(0, -anim.value * 4, 0),
-              ),
-            );
-          }),
-        ),
+    final policyNumber = extraction['policyNumber'] as String? ?? '—';
+    final carrierName = extraction['carrierName'] as String? ?? '—';
+    final branchName = extraction['branchName'] as String? ?? '—';
+    final productName = extraction['productName'] as String? ?? '—';
+    final holderName = extraction['holderName'] as String? ?? '—';
+    final premium = (extraction['premium'] as num?)?.toDouble();
+    final currency = extraction['currency'] as String? ?? 'MXN';
+    final startDate = extraction['startDate'] as String?;
+    final endDate = extraction['endDate'] as String?;
+
+    return Container(
+      padding: const EdgeInsets.all(AmDimens.cardPad),
+      decoration: BoxDecoration(
+        color: cs.secondaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(AmDimens.cardRadius),
+        border: Border.all(color: cs.outlineVariant),
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SummaryRow(label: l10n.feedIngestHolderLabel, value: holderName, isBold: true),
+          const SizedBox(height: AmDimens.gapS),
+          _SummaryRow(label: l10n.feedIngestCarrierLabel, value: carrierName),
+          const SizedBox(height: AmDimens.gapS),
+          _SummaryRow(label: l10n.feedIngestBranchProductLabel, value: '$branchName · $productName'),
+          const SizedBox(height: AmDimens.gapS),
+          _SummaryRow(label: l10n.feedIngestPolicyNumberLabel, value: policyNumber),
+          const SizedBox(height: AmDimens.gapS),
+          _SummaryRow(
+            label: l10n.feedIngestPremiumLabel,
+            value: premium != null ? '${fmtCurrency(premium)} $currency' : '—',
+          ),
+          const SizedBox(height: AmDimens.gapS),
+          _SummaryRow(
+            label: l10n.feedIngestValidityLabel,
+            value: '${fmtDateFromIso(startDate)} – ${fmtDateFromIso(endDate)}',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isBold;
+
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.isBold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 90,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              color: cs.tertiary,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+              color: cs.onSurface,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

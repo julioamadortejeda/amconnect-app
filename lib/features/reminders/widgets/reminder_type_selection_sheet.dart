@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/utils/reminder_utils.dart';
 import '../../../core/utils/catalog_l10n.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../home/providers/home_provider.dart';
 
-class ReminderTypeSelectionSheet extends ConsumerWidget {
+class ReminderTypeSelectionSheet extends StatelessWidget {
   const ReminderTypeSelectionSheet({
     super.key,
-    required this.reminder,
     required this.types,
+    required this.onSelect,
+    this.selectedTypeId,
   });
 
-  final Reminder reminder;
   final List<ReminderType> types;
+  final String? selectedTypeId;
+  final ValueChanged<ReminderType> onSelect;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final sl10n = AppLocalizations.of(context)!;
 
@@ -72,7 +71,7 @@ class ReminderTypeSelectionSheet extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: types.map((t) {
-                    final isCurrent = t.id == reminder.typeId;
+                    final isCurrent = t.id == selectedTypeId;
                     return ListTile(
                       leading: Icon(
                         reminderIcon(t.code),
@@ -95,10 +94,7 @@ class ReminderTypeSelectionSheet extends ConsumerWidget {
                           ? null
                           : () {
                               Navigator.pop(context);
-                              ref.read(remindersProvider.notifier).updateType(
-                                    reminder.id,
-                                    t.id,
-                                  );
+                              onSelect(t);
                             },
                     );
                   }).toList(),
@@ -106,7 +102,7 @@ class ReminderTypeSelectionSheet extends ConsumerWidget {
               ),
             ),
           ),
-          SafeArea(child: const SizedBox.shrink()),
+          const SafeArea(child: SizedBox.shrink()),
         ],
       ),
     );

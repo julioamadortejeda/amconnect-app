@@ -5,9 +5,9 @@ import '../../../core/utils/api_error_mapper.dart';
 import '../data/ingest_repository.dart';
 
 export 'package:amconnect/features/feed/data/ingest_repository.dart'
-    show IngestPolicyResponse, IngestKnowledgeResponse;
+    show IngestPolicyResponse, IngestKnowledgeResponse, ContactMismatchInfo;
 
-enum IngestPhase { idle, uploading, processing, chatting, success, knowledgeSuccess, error }
+enum IngestPhase { idle, uploading, processing, chatting, contactMismatch, success, knowledgeSuccess, error }
 
 class IngestMessage {
   final String role; // 'user' | 'ai'
@@ -99,6 +99,10 @@ class IngestState {
   final String? statusMessageKey;
   final String? contactId;
   final String? policyId;
+  final bool isDuplicate;
+  final bool isUpdate;
+  final ContactMismatchInfo? contactMismatch;
+  final bool? contactMismatchResolvedToScreen;
 
   const IngestState({
     this.phase = IngestPhase.idle,
@@ -113,6 +117,10 @@ class IngestState {
     this.statusMessageKey,
     this.contactId,
     this.policyId,
+    this.isDuplicate = false,
+    this.isUpdate = false,
+    this.contactMismatch,
+    this.contactMismatchResolvedToScreen,
   });
 
   IngestState copyWith({
@@ -128,6 +136,10 @@ class IngestState {
     String? statusMessageKey,
     String? contactId,
     String? policyId,
+    bool? isDuplicate,
+    bool? isUpdate,
+    ContactMismatchInfo? contactMismatch,
+    bool? contactMismatchResolvedToScreen,
   }) =>
       IngestState(
         phase: phase ?? this.phase,
@@ -142,6 +154,10 @@ class IngestState {
         statusMessageKey: statusMessageKey ?? this.statusMessageKey,
         contactId: contactId ?? this.contactId,
         policyId: policyId ?? this.policyId,
+        isDuplicate: isDuplicate ?? this.isDuplicate,
+        isUpdate: isUpdate ?? this.isUpdate,
+        contactMismatchResolvedToScreen: contactMismatchResolvedToScreen ?? this.contactMismatchResolvedToScreen,
+        contactMismatch: contactMismatch ?? this.contactMismatch,
       );
 }
 
@@ -181,14 +197,16 @@ class IngestNotifier extends Notifier<IngestState> {
         contactId: contactId,
       );
 
-      state = state.copyWith(
-        phase: IngestPhase.chatting,
-        sessionId: result.sessionId,
-        documentMetadataId: result.documentMetadataId,
-        extraction: result.extraction,
-        messages: [IngestMessage(role: 'ai', text: result.message)],
-        statusMessageKey: null,
-      );
+      if (result.contactMismatch != null) {
+        state = state.copyWith(
+          phase: IngestPhase.contactMismatch,
+          sessionId: result.sessionId,
+          statusMessageKey: null,
+          contactMismatch: result.contactMismatch,
+        );
+      } else {
+        _enterChatting(result);
+      }
     } catch (e) {
       state = state.copyWith(
         phase: IngestPhase.error,
@@ -196,6 +214,39 @@ class IngestNotifier extends Notifier<IngestState> {
         statusMessageKey: null,
       );
     }
+  }
+
+  /// El asesor resolvió la pregunta de a quién asignar la póliza (ver
+  /// `contactMismatch` en IngestState) — arranca el chat de confirmación
+  /// normal con la decisión ya persistida en la sesión.
+  Future<void> resolveContactMismatch(bool assignToScreenContact) async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+    state = state.copyWith(isSending: true, error: null);
+    try {
+      final result = await _repo.resolveContactMismatch(sessionId, assignToScreenContact);
+      state = state.copyWith(contactMismatchResolvedToScreen: assignToScreenContact);
+      _enterChatting(result);
+    } catch (e) {
+      state = state.copyWith(
+        phase: IngestPhase.error,
+        isSending: false,
+        error: mapApiError(e),
+      );
+    }
+  }
+
+  void _enterChatting(IngestPolicyResponse result) {
+    state = state.copyWith(
+      phase: IngestPhase.chatting,
+      sessionId: result.sessionId,
+      documentMetadataId: result.documentMetadataId,
+      extraction: result.extraction,
+      messages: [IngestMessage(role: 'ai', text: result.message ?? '')],
+      statusMessageKey: null,
+      isDuplicate: result.isDuplicate,
+      isSending: false,
+    );
   }
 
   Future<void> sendMessage(String text) async {
@@ -208,18 +259,15 @@ class IngestNotifier extends Notifier<IngestState> {
     try {
       final result = await _repo.chat(text, state.sessionId!);
       final metadata = result.metadata;
-      final isSuccess = metadata != null && metadata['type'] == 'policy_confirmed';
-
-      PolicyConfirmedData? confirmedPolicy;
-      if (isSuccess) {
-        confirmedPolicy = PolicyConfirmedData.fromMap(metadata);
-      }
+      final type = metadata?['type'];
+      final isSuccess = type == 'policy_confirmed' || type == 'policy_updated';
 
       state = state.copyWith(
         messages: [...state.messages, IngestMessage(role: 'ai', text: result.text)],
         isSending: false,
         phase: isSuccess ? IngestPhase.success : IngestPhase.chatting,
-        confirmedPolicy: confirmedPolicy,
+        confirmedPolicy: isSuccess ? PolicyConfirmedData.fromMap(metadata!) : null,
+        isUpdate: isSuccess && type == 'policy_updated',
       );
     } catch (e) {
       state = state.copyWith(
@@ -229,7 +277,17 @@ class IngestNotifier extends Notifier<IngestState> {
     }
   }
 
-  Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, bool? makeGeneral}) async {
+  /// Cierra el sheet de ingesta sin cancelar la sesión de IA — se usa cuando
+  /// el asesor pasa a corregir en el Assistant (ver AssistantResumeArgs),
+  /// que retoma la MISMA sesión. A diferencia de reset(), no llama a
+  /// cancelSession: la sesión sigue viva, solo cambia quién la muestra.
+  /// El phase vuelve a idle para que el overlay cierre el modal y quede
+  /// listo para la siguiente ingesta (ver IngestFlowOverlay).
+  void closeForAssistantHandoff() {
+    state = const IngestState();
+  }
+
+  Future<void> processKnowledgeFile(File file, String fileName, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral}) async {
     final mimeType = _mimeFromFileName(fileName);
     state = IngestState(
       phase: IngestPhase.uploading,
@@ -255,6 +313,7 @@ class IngestNotifier extends Notifier<IngestState> {
         mimeType: mimeType,
         contactId: contactId,
         policyId: policyId,
+        reminderId: reminderId,
         makeGeneral: makeGeneral,
       );
       state = state.copyWith(
@@ -289,7 +348,7 @@ class IngestNotifier extends Notifier<IngestState> {
     };
   }
 
-  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, bool? makeGeneral}) async {
+  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral}) async {
     state = IngestState(
       phase: IngestPhase.processing,
       statusMessageKey: 'feedStepProcessing',
@@ -302,6 +361,7 @@ class IngestNotifier extends Notifier<IngestState> {
         sourceType: sourceType,
         contactId: contactId,
         policyId: policyId,
+        reminderId: reminderId,
         makeGeneral: makeGeneral,
       );
       state = state.copyWith(
@@ -323,7 +383,9 @@ class IngestNotifier extends Notifier<IngestState> {
     if (sid != null) {
       try {
         await _repo.cancelSession(sid);
-      } catch (_) {}
+      } catch (_) {
+        // fire-and-forget: cancelación de cortesía en el backend, el estado local se resetea igual
+      }
     }
     state = const IngestState();
   }
