@@ -31,4 +31,23 @@ abstract final class AmDimens {
 
   /// Gap entre label de sección y su contenido
   static const gapXS = 11.0;
+
+  // ─── Pantallas de autenticación ──────────────────────────────────────────
+  // Login, registro, login por correo y recuperar contraseña. Tienen su propio
+  // padding porque se diseñaron con más aire que el resto de la app: NO usan
+  // screenH, y forzarlas a ese token cambiaría el diseño.
+
+  /// Padding horizontal del contenido de auth.
+  static const authPadH = 28.0;
+
+  /// Padding superior e inferior del contenido de auth.
+  static const authPadTop = 12.0;
+  static const authPadBottom = 14.0;
+
+  /// Medidas del teléfono con el que se diseñaron estas pantallas (iPhone 14/15).
+  /// El layout de auth escala contra ellas — ver `scale` / `vScale` en cada
+  /// pantalla. El login no las aplicaba y por eso sus textos se veían de otro
+  /// tamaño al navegar desde las demás.
+  static const authBaseWidth = 390.0;
+  static const authBaseHeight = 844.0;
 }

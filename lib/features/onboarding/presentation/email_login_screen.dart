@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimensions.dart';
 import '../providers/email_login_provider.dart';
 import '../widgets/auth_app_bar.dart';
 import '../widgets/auth_divider.dart';
@@ -63,8 +64,8 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
         });
 
     final size = MediaQuery.sizeOf(context);
-    final scale = (size.width / 390).clamp(0.80, 1.40);
-    final vScale = (size.height / 844).clamp(0.75, 1.40);
+    final scale = (size.width / AmDimens.authBaseWidth).clamp(0.80, 1.40);
+    final vScale = (size.height / AmDimens.authBaseHeight).clamp(0.75, 1.40);
 
     final isFormValid = _emailCtrl.text.trim().isNotEmpty &&
         _passCtrl.text.isNotEmpty &&
@@ -87,7 +88,8 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                   child: IntrinsicHeight(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(
-                          28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
+                          AmDimens.authPadH * scale, AmDimens.authPadTop * vScale,
+              AmDimens.authPadH * scale, AmDimens.authPadBottom * vScale),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -115,7 +117,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                                   style: TextStyle(
                                     fontSize: 38 * scale,
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.white,
+                                    color: AmColors.white,
                                     letterSpacing: -1.0,
                                     height: 1.05,
                                   ),
@@ -229,9 +231,9 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                               style: TextStyle(
                                 fontSize: 14 * scale,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: AmColors.white,
                                 decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
+                                decorationColor: AmColors.white,
                               ),
                             ),
                           ),

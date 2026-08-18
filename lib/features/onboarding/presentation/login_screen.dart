@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimensions.dart';
 import '../providers/login_provider.dart';
 import '../widgets/login_social_btn.dart';
 import '../widgets/login_email_btn.dart';
 import '../../../l10n/app_localizations.dart';
-
-const _kBg = Color(0xFF1278C5);
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -16,6 +15,8 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final size = MediaQuery.of(context).size;
+    final scale = (size.width / AmDimens.authBaseWidth).clamp(0.80, 1.40);
     final state = ref.watch(loginProvider);
     final notifier = ref.read(loginProvider.notifier);
 
@@ -37,10 +38,10 @@ class LoginScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: AmColors.authBg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
+          padding: EdgeInsets.symmetric(horizontal: AmDimens.authPadH * scale),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -57,26 +58,26 @@ class LoginScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               Text(
                 l10n.loginWelcomeTitle,
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                style: TextStyle(
+                  fontSize: 38 * scale,
+                  fontWeight: FontWeight.w800,
+                  color: AmColors.white,
                   letterSpacing: -0.5,
-                  height: 1.1,
+                  height: 1.05,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
                 l10n.loginWelcomeSubtitle,
-                style: const TextStyle(
-                    fontSize: 15, height: 1.55, color: AmColors.authSubtitle),
+                style: TextStyle(
+                    fontSize: 15 * scale, height: 1.55, color: AmColors.authSubtitle),
               ),
               const Spacer(),
               if (Platform.isIOS) ...[
                 LoginSocialBtn(
                   onTap: state.isLoading ? null : notifier.signInWithApple,
                   icon: const Icon(Icons.apple,
-                      size: 22, color: Color(0xFF1A1A1A)),
+                      size: 22, color: AmColors.inkLight),
                   label: l10n.loginContinueApple,
                 ),
                 const SizedBox(height: 10),
@@ -98,8 +99,8 @@ class LoginScreen extends ConsumerWidget {
                 child: Text(
                   l10n.commonTerms,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 12.5,
+                  style: TextStyle(
+                      fontSize: 12 * scale,
                       color: AmColors.authSubtitle,
                       height: 1.5),
                 ),

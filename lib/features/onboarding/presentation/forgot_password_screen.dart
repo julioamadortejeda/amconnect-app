@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimensions.dart';
 import '../providers/forgot_password_provider.dart';
 import '../widgets/auth_app_bar.dart';
 import '../widgets/forgot_password_email_step.dart';
@@ -55,8 +56,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final state = ref.watch(forgotPasswordProvider);
 
     final size = MediaQuery.sizeOf(context);
-    final scale = (size.width / 390).clamp(0.80, 1.40);
-    final vScale = (size.height / 844).clamp(0.75, 1.40);
+    final scale = (size.width / AmDimens.authBaseWidth).clamp(0.80, 1.40);
+    final vScale = (size.height / AmDimens.authBaseHeight).clamp(0.75, 1.40);
 
     return Scaffold(
       backgroundColor: AmColors.authBg,
@@ -73,7 +74,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 child: IntrinsicHeight(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
-                        28 * scale, 12 * vScale, 28 * scale, 14 * vScale),
+                        AmDimens.authPadH * scale, AmDimens.authPadTop * vScale,
+              AmDimens.authPadH * scale, AmDimens.authPadBottom * vScale),
                     child: state.done
                         ? ForgotPasswordSuccessView(l10n: l10n, scale: scale, vScale: vScale)
                         : Column(
@@ -99,7 +101,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                       style: TextStyle(
                                         fontSize: 34 * scale,
                                         fontWeight: FontWeight.w800,
-                                        color: Colors.white,
+                                        color: AmColors.white,
                                         letterSpacing: -1.0,
                                         height: 1.05,
                                       ),
