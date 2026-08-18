@@ -185,8 +185,8 @@ class _ProcessingOverlay extends StatelessWidget {
                         blurRadius: 20)
                   ],
                 ),
-                child: Image.asset('assets/logo/logo_t.png',
-                    width: 42, height: 42),
+                child: Image.asset('assets/logo/logo.png',
+                    width: 34, height: 34),
               ),
               Text(
                 l10n.feedProcessing,

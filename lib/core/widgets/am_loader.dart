@@ -40,9 +40,9 @@ class _AmLoaderState extends State<AmLoader> with SingleTickerProviderStateMixin
           ScaleTransition(
             scale: _pulseCtrl,
             child: Image.asset(
-              'assets/logo/logo_t.png',
-              width: 64,
-              height: 64,
+              'assets/logo/logo.png',
+              width: 52,
+              height: 52,
               color: cs.primary,
             ),
           ),

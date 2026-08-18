@@ -98,10 +98,10 @@ class _ShellAssistantButtonState extends ConsumerState<ShellAssistantButton>
         ),
         child: Center(
           child: Image.asset(
-            'assets/logo/logo_t.png',
+            'assets/logo/logo.png',
             color: AmColors.onAccent,
-            width: 28,
-            height: 28,
+            width: 23,
+            height: 23,
           ),
         ),
       ),

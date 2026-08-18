@@ -210,9 +210,9 @@ class _FeedRowState extends ConsumerState<FeedRow> {
           padding: const EdgeInsets.only(top: 2),
           child: IconButton(
             icon: Image.asset(
-              'assets/logo/logo_t.png',
-              width: 18,
-              height: 18,
+              'assets/logo/logo.png',
+              width: 15,
+              height: 15,
               color: AmColors.accent,
             ),
             onPressed: () {
