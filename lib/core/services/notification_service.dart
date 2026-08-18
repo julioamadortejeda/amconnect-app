@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/pending_route_provider.dart';
 import '../router/router.dart';
 import '../repositories/supabase_agent_repository.dart';
 
@@ -97,9 +97,11 @@ class NotificationService {
       if (initialMessage != null) {
         final reminderId = initialMessage.data['reminder_id'] ?? initialMessage.data['reminderId'];
         if (reminderId != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _ref.read(routerProvider).push('/reminder/$reminderId');
-          });
+          // Arranque en frío: NO se navega aquí. El splash sigue corriendo su
+          // precarga y al terminar hace `go('/home')`, que reemplaza la pila y
+          // se llevaría este detalle por delante. Se deja pendiente y el splash
+          // lo abre cuando ya terminó — ver `pendingRouteProvider`.
+          _ref.read(pendingRouteProvider.notifier).store('/reminder/$reminderId');
         }
       }
 

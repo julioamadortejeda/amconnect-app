@@ -47,7 +47,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           loc == '/register' ||
           loc == '/forgot-password';
       if (user == null && !onPublic) return '/login';
-      if (user != null && onPublic) return '/home';
+      // Al splash, no directo a /home: ahí vive la precarga de datos y catálogos.
+      // Entrando derecho al dashboard se veía vacío un instante y luego se
+      // llenaba, porque nadie había precargado nada.
+      if (user != null && onPublic) return '/';
       return null;
     },
     routes: [
@@ -224,7 +227,18 @@ final routerProvider = Provider<GoRouter>((ref) {
 // Notifier que hace refresh al router cuando cambia el estado de auth
 class _AuthNotifier extends ChangeNotifier {
   _AuthNotifier(Ref ref) {
-    ref.listen(authUserProvider, (_, __) => notifyListeners());
+    ref.listen(authUserProvider, (prev, next) {
+      // Al router solo le importa entrar o salir de sesión. `onAuthStateChange`
+      // además emite en cada `tokenRefreshed`, y notificar ahí hace que GoRouter
+      // reevalúe y descarte las rutas empujadas con `push`: se veía como que el
+      // detalle de un recordatorio se abría y rebotaba al dashboard.
+      //
+      // Se volvió visible cuando ApiClient empezó a refrescar el token justo
+      // antes de cada petición (ver `_ensureFreshSession`) — o sea, justo al
+      // abrir el detalle.
+      if (!next.hasValue) return; // en `loading` el user es null y no significa logout
+      if (prev?.value?.id != next.value?.id) notifyListeners();
+    });
   }
 }
 
