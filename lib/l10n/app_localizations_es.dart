@@ -2022,4 +2022,70 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get reminderSettingsHint =>
       'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.';
+
+  @override
+  String get commitmentsTitle => 'Se te va a pasar';
+
+  @override
+  String get commitmentsEmpty => 'Nada pendiente por ahora';
+
+  @override
+  String get commitmentsOverdue => 'Vencido';
+
+  @override
+  String get commitmentsNoDate => 'Sin fecha';
+
+  @override
+  String commitmentsAgeDays(int days) {
+    return 'hace $days días';
+  }
+
+  @override
+  String get commitmentsAgeToday => 'registrado hoy';
+
+  @override
+  String get commitmentsDoneAction => '¿Ya quedó?';
+
+  @override
+  String get commitmentsDoneTitle => 'Marcar como atendido';
+
+  @override
+  String commitmentsDoneMessage(String client) {
+    return '¿Ya resolviste esto con $client?';
+  }
+
+  @override
+  String get commitmentsDoneHint => '¿Qué pasó? (opcional)';
+
+  @override
+  String get commitmentsClosed => 'Listo, lo quité de tus pendientes';
+
+  @override
+  String get commitmentsViewAll => 'Ver todos';
+
+  @override
+  String get agendaTabReminders => 'Recordatorios';
+
+  @override
+  String get agendaTabCommitments => 'Compromisos';
+
+  @override
+  String commitmentsOpenCount(int count) {
+    return '$count abiertos';
+  }
+
+  @override
+  String get commitmentsError => 'No se pudieron cargar tus compromisos';
+
+  @override
+  String get commitmentsEmptyHint =>
+      'Nada pendiente por ahora.\nCuéntale al asistente lo que quedó con un cliente y aparecerá aquí.';
+
+  @override
+  String get commitmentsEmptyFix =>
+      'Si algo quedó en el lugar equivocado, dile “guárdalo como compromiso” o “recuérdamelo el lunes”.';
+
+  @override
+  String get errNoteTooLong =>
+      'La nota es muy larga. Si es un documento, súbelo como archivo para que se procese completo.';
 }

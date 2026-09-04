@@ -824,5 +824,46 @@
   "policiesActivityEmpty": "No reminders for this policy",
   "reminderSettingsRemoveException": "Remove exception",
   "reminderSettingsDefault": "All other branches",
-  "reminderSettingsHint": "Tap an advance notice to change it. Branch exceptions override the value above."
+  "reminderSettingsHint": "Tap an advance notice to change it. Branch exceptions override the value above.",
+  "@_commitments": {},
+  "commitmentsTitle": "You're about to miss this",
+  "commitmentsEmpty": "Nothing pending right now",
+  "commitmentsOverdue": "Overdue",
+  "commitmentsNoDate": "No date",
+  "commitmentsAgeDays": "{days} days ago",
+  "commitmentsAgeToday": "added today",
+  "commitmentsDoneAction": "Done?",
+  "commitmentsDoneTitle": "Mark as handled",
+  "commitmentsDoneMessage": "Did you already sort this out with {client}?",
+  "commitmentsDoneHint": "What happened? (optional)",
+  "commitmentsClosed": "Done, removed from your pending list",
+  "commitmentsViewAll": "See all",
+  "agendaTabReminders": "Reminders",
+  "agendaTabCommitments": "Commitments",
+  "commitmentsOpenCount": "{count} open",
+  "@commitmentsOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commitmentsError": "Couldn't load your commitments",
+  "commitmentsEmptyHint": "Nothing pending right now.\nTell the assistant what you agreed with a client and it will show up here.",
+  "commitmentsEmptyFix": "If something ended up in the wrong place, tell it “save it as a commitment” or “remind me on Monday”.",
+  "errNoteTooLong": "That note is too long. If it's a document, upload it as a file so it gets processed in full.",
+  "@commitmentsAgeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@commitmentsDoneMessage": {
+    "placeholders": {
+      "client": {
+        "type": "String"
+      }
+    }
+  }
 }

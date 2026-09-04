@@ -3854,6 +3854,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Toca una anticipación para cambiarla. Las excepciones por ramo pisan al valor de arriba.'**
   String get reminderSettingsHint;
+
+  /// No description provided for @commitmentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Se te va a pasar'**
+  String get commitmentsTitle;
+
+  /// No description provided for @commitmentsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada pendiente por ahora'**
+  String get commitmentsEmpty;
+
+  /// No description provided for @commitmentsOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencido'**
+  String get commitmentsOverdue;
+
+  /// No description provided for @commitmentsNoDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin fecha'**
+  String get commitmentsNoDate;
+
+  /// No description provided for @commitmentsAgeDays.
+  ///
+  /// In es, this message translates to:
+  /// **'hace {days} días'**
+  String commitmentsAgeDays(int days);
+
+  /// No description provided for @commitmentsAgeToday.
+  ///
+  /// In es, this message translates to:
+  /// **'registrado hoy'**
+  String get commitmentsAgeToday;
+
+  /// No description provided for @commitmentsDoneAction.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya quedó?'**
+  String get commitmentsDoneAction;
+
+  /// No description provided for @commitmentsDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar como atendido'**
+  String get commitmentsDoneTitle;
+
+  /// No description provided for @commitmentsDoneMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya resolviste esto con {client}?'**
+  String commitmentsDoneMessage(String client);
+
+  /// No description provided for @commitmentsDoneHint.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué pasó? (opcional)'**
+  String get commitmentsDoneHint;
+
+  /// No description provided for @commitmentsClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo, lo quité de tus pendientes'**
+  String get commitmentsClosed;
+
+  /// No description provided for @commitmentsViewAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos'**
+  String get commitmentsViewAll;
+
+  /// No description provided for @agendaTabReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios'**
+  String get agendaTabReminders;
+
+  /// No description provided for @agendaTabCommitments.
+  ///
+  /// In es, this message translates to:
+  /// **'Compromisos'**
+  String get agendaTabCommitments;
+
+  /// No description provided for @commitmentsOpenCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} abiertos'**
+  String commitmentsOpenCount(int count);
+
+  /// No description provided for @commitmentsError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar tus compromisos'**
+  String get commitmentsError;
+
+  /// No description provided for @commitmentsEmptyHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada pendiente por ahora.\nCuéntale al asistente lo que quedó con un cliente y aparecerá aquí.'**
+  String get commitmentsEmptyHint;
+
+  /// No description provided for @commitmentsEmptyFix.
+  ///
+  /// In es, this message translates to:
+  /// **'Si algo quedó en el lugar equivocado, dile “guárdalo como compromiso” o “recuérdamelo el lunes”.'**
+  String get commitmentsEmptyFix;
+
+  /// No description provided for @errNoteTooLong.
+  ///
+  /// In es, this message translates to:
+  /// **'La nota es muy larga. Si es un documento, súbelo como archivo para que se procese completo.'**
+  String get errNoteTooLong;
 }
 
 class _AppLocalizationsDelegate

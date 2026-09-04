@@ -78,6 +78,19 @@ String fmtDate(DateTime? dt, {bool showYear = true}) {
 /// regla se repite cada año, solo la ocurrencia concreta lleva año.
 String fmtMonthDay(int month, int day) => '$day ${_months[month - 1]}';
 
+/// Una ventana de días: "24–30 ago" dentro del mismo mes, "28 nov – 3 dic" si
+/// lo cruza.
+///
+/// Se muestra completa y no solo su final: el cliente dijo "búscame en
+/// diciembre", y enseñar "31 dic" le pondría al asesor una precisión que nadie
+/// prometió.
+String fmtDateRange(DateTime from, DateTime to) {
+  final sameMonth = from.year == to.year && from.month == to.month;
+  return sameMonth
+      ? '${from.day}–${fmtDate(to, showYear: false)}'
+      : '${fmtDate(from, showYear: false)} – ${fmtDate(to, showYear: false)}';
+}
+
 // Wrapper para ISO strings
 String fmtDateFromIso(String? iso, {bool showYear = true}) {
   if (iso == null) return '—';
@@ -166,4 +179,13 @@ String fmtRelativeDay(DateTime? dt, AppLocalizations l10n) {
   if (diff == 1) return l10n.commonYesterday;
   if (diff > 1 && diff < 7) return _weekdays[local.weekday - 1];
   return fmtDate(local, showYear: false);
+}
+
+/// Primera letra en mayúscula, sin tocar el resto.
+///
+/// Para texto que escribe la IA: devuelve etiquetas en minúscula ("buscar a
+/// María en diciembre") y en la UI se leen como si estuvieran a medio escribir.
+String capitalizeFirst(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
 }

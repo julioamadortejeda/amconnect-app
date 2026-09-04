@@ -6,11 +6,14 @@ import '../../../core/providers/permission_provider.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_section_label.dart';
+import '../../../core/providers/commitments_provider.dart';
+import '../../reminders/providers/reminders_provider.dart';
 import '../providers/home_provider.dart';
 import '../widgets/home_clientes_recientes.dart';
 import '../widgets/home_empty_section.dart';
 import '../widgets/home_floating_btn.dart';
 import '../widgets/home_header.dart';
+import '../../../core/widgets/am_commitments_card.dart';
 import '../widgets/home_pendientes_card.dart';
 import '../widgets/home_section_trailing.dart';
 import '../widgets/home_stats_row.dart';
@@ -65,6 +68,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     if (!ref.watch(homeReadyProvider).hasValue) return const AmLoader();
 
     final data = ref.watch(homeDashboardProvider);
+    // Sin `.when`: si los compromisos aún cargan o fallan, el dashboard se pinta
+    // igual sin la sección. No es dato crítico como para bloquear la pantalla.
+    final commitments = ref.watch(commitmentsProvider).asData?.value ?? const [];
     final notifPermission = ref.watch(notificationPermissionStatusProvider).asData?.value;
     final showNotifBanner = notifPermission != null &&
         (notifPermission.isDenied || notifPermission.isPermanentlyDenied);
@@ -104,6 +110,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                   ),
                 ),
                 const SizedBox(height: AmDimens.gapL),
+                // Va antes que todo lo demás a propósito: es lo único del
+                // dashboard que le dice al asesor qué está a punto de
+                // perderse. Si no hay nada pendiente, la sección no aparece —
+                // un "no tienes nada" en el primer lugar de la pantalla ocupa
+                // el espacio más caro para no decir nada.
+                if (commitments.isNotEmpty) ...[
+                  AmAnimateIn(
+                    index: aniIdx++,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AmSectionLabel(
+                          label: l10n.commitmentsTitle,
+                          trailing: commitments.length > 4
+                              ? HomeSectionTrailing(
+                                  label: l10n.homeViewAllCount(commitments.length),
+                                  // A la pestaña de compromisos, no a la de
+                                  // recordatorios: antes "ver los 5" llevaba a
+                                  // una pantalla donde no salía ninguno.
+                                  onTap: () {
+                                    ref
+                                        .read(agendaTabProvider.notifier)
+                                        .select(AgendaTab.commitments);
+                                    context.go('/reminders');
+                                  },
+                                )
+                              : null,
+                        ),
+                        const SizedBox(height: AmDimens.gapXS),
+                        AmCommitmentsCard(commitments: commitments),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AmDimens.gapL),
+                ],
                 AmAnimateIn(
                   index: aniIdx++,
                   child: Column(
@@ -115,7 +156,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                           label: data.pending.length > 4
                               ? l10n.homeViewAllCount(data.pending.length)
                               : l10n.homeViewAgenda,
-                          onTap: () => context.go('/reminders'),
+                          // Explícito: la pestaña se queda como el asesor la
+                          // dejó, y sin esto "ver agenda" podía abrir la de
+                          // compromisos.
+                          onTap: () {
+                            ref
+                                .read(agendaTabProvider.notifier)
+                                .select(AgendaTab.reminders);
+                            context.go('/reminders');
+                          },
                         ),
                       ),
                       const SizedBox(height: AmDimens.gapXS),
@@ -139,7 +188,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                             ? HomeSectionTrailing(
                                 label: l10n
                                     .homeViewAllCount(data.followUps.length),
-                                onTap: () => context.go('/reminders'),
+                                onTap: () {
+                                  ref
+                                      .read(agendaTabProvider.notifier)
+                                      .select(AgendaTab.reminders);
+                                  context.go('/reminders');
+                                },
                               )
                             : null,
                       ),

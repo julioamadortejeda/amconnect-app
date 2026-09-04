@@ -2011,4 +2011,70 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderSettingsHint =>
       'Tap an advance notice to change it. Branch exceptions override the value above.';
+
+  @override
+  String get commitmentsTitle => 'You\'re about to miss this';
+
+  @override
+  String get commitmentsEmpty => 'Nothing pending right now';
+
+  @override
+  String get commitmentsOverdue => 'Overdue';
+
+  @override
+  String get commitmentsNoDate => 'No date';
+
+  @override
+  String commitmentsAgeDays(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String get commitmentsAgeToday => 'added today';
+
+  @override
+  String get commitmentsDoneAction => 'Done?';
+
+  @override
+  String get commitmentsDoneTitle => 'Mark as handled';
+
+  @override
+  String commitmentsDoneMessage(String client) {
+    return 'Did you already sort this out with $client?';
+  }
+
+  @override
+  String get commitmentsDoneHint => 'What happened? (optional)';
+
+  @override
+  String get commitmentsClosed => 'Done, removed from your pending list';
+
+  @override
+  String get commitmentsViewAll => 'See all';
+
+  @override
+  String get agendaTabReminders => 'Reminders';
+
+  @override
+  String get agendaTabCommitments => 'Commitments';
+
+  @override
+  String commitmentsOpenCount(int count) {
+    return '$count open';
+  }
+
+  @override
+  String get commitmentsError => 'Couldn\'t load your commitments';
+
+  @override
+  String get commitmentsEmptyHint =>
+      'Nothing pending right now.\nTell the assistant what you agreed with a client and it will show up here.';
+
+  @override
+  String get commitmentsEmptyFix =>
+      'If something ended up in the wrong place, tell it “save it as a commitment” or “remind me on Monday”.';
+
+  @override
+  String get errNoteTooLong =>
+      'That note is too long. If it\'s a document, upload it as a file so it gets processed in full.';
 }

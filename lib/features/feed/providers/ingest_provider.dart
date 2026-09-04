@@ -348,7 +348,7 @@ class IngestNotifier extends Notifier<IngestState> {
     };
   }
 
-  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral}) async {
+  Future<void> processKnowledgeText(String content, String sourceType, {String? contactId, String? policyId, String? reminderId, bool? makeGeneral, bool isClientNote = false}) async {
     state = IngestState(
       phase: IngestPhase.processing,
       statusMessageKey: 'feedStepProcessing',
@@ -363,6 +363,9 @@ class IngestNotifier extends Notifier<IngestState> {
         policyId: policyId,
         reminderId: reminderId,
         makeGeneral: makeGeneral,
+        // Sin esto la nota rápida del cliente empezaría a descontar cuota de
+        // ingesta: el backend usa esta bandera para eximirla.
+        isClientNote: isClientNote,
       );
       state = state.copyWith(
         phase: IngestPhase.knowledgeSuccess,

@@ -600,6 +600,11 @@ class _ContactListCarousel extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final list = data['contacts'] as List? ?? [];
 
+    // Sin filas no hay tarjeta: el encabezado solo, flotando sobre nada, se lee
+    // como un error de la app. El backend ya no manda la metadata cuando la
+    // búsqueda viene vacía; esto cubre a cualquier otra skill que lo olvide.
+    if (list.isEmpty) return const SizedBox.shrink();
+
     return Container(
       padding: const EdgeInsets.all(AmDimens.cardPad),
       decoration: BoxDecoration(

@@ -37,6 +37,7 @@ extension ErrorTranslator on BuildContext {
       'UPLOAD_FAILED' => l10n.errUploadFailed,
       'SHARED_FILE_MISSING' => l10n.errSharedFileMissing,
       'SHARED_TEXT_TOO_LARGE' => l10n.errSharedTextTooLarge,
+      'NOTE_TOO_LONG' => l10n.errNoteTooLong,
       'INTERNAL_ERROR' || 'errUnknown' => l10n.errUnknown,
       'MIC_PERMISSION_DENIED' => l10n.voiceChatPermissionDenied,
       'SPEECH_UNAVAILABLE' => l10n.errSpeechUnavailable,

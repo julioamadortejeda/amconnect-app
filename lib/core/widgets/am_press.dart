@@ -32,11 +32,21 @@ class _AmPressState extends State<AmPress> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  /// Sin acción no hay respuesta táctil.
+  ///
+  /// El vibrado y el encogido vivían en `onTapDown`, que corre siempre — así
+  /// que una fila sin `onTap` (un compromiso sin cliente al que ir, por
+  /// ejemplo) vibraba y se encogía para luego no hacer nada. El mismo principio
+  /// que ya aplica `AmIconBtn` con su estado deshabilitado: lo que no responde
+  /// no debe sentirse igual que lo que sí.
+  bool get _hasAction => widget.onTap != null || widget.onLongPress != null;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (_) {
+        if (!_hasAction) return;
         HapticFeedback.lightImpact();
         _ctrl.forward();
       },

@@ -90,13 +90,13 @@ class ReminderItem extends ConsumerWidget {
         child: Row(
           children: [
             Container(
-              width: 38,
-              height: 38,
+              width: AmDimens.listIconDim,
+              height: AmDimens.listIconDim,
               decoration: BoxDecoration(
-                  color: iconBg, borderRadius: BorderRadius.circular(11)),
+                  color: iconBg, borderRadius: BorderRadius.circular(AmDimens.listIconRadius)),
               child: Icon(reminderIcon(r.type), size: 18, color: iconFg),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AmDimens.listIconGap),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -181,11 +181,13 @@ class ReminderItem extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AmDimens.listBadgePadH,
+                      vertical: AmDimens.listBadgePadV),
                   decoration: BoxDecoration(
                     color: badgeBg,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius:
+                        BorderRadius.circular(AmDimens.listBadgeRadius),
                   ),
                   child: Text(fmtSmartDate(r.dueDate, l10n),
                       style: TextStyle(
@@ -200,7 +202,8 @@ class ReminderItem extends ConsumerWidget {
                         const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                     decoration: BoxDecoration(
                       color: badgeBg,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius:
+                          BorderRadius.circular(AmDimens.listBadgeRadius),
                     ),
                     child: Text('${daysLeft}d',
                         style: TextStyle(

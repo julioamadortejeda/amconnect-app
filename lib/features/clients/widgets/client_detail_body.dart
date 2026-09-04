@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_section_label.dart';
+import '../../feed/providers/ingest_provider.dart';
+import '../../../core/providers/commitments_provider.dart';
+import '../../../core/widgets/am_commitments_card.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_note_row.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_segmented.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../core/models/agent_note.dart';
-import '../../feed/data/ingest_repository.dart';
 import '../providers/clients_provider.dart';
 import 'add_client_note_sheet.dart';
 import 'client_avatar_header.dart';
@@ -41,22 +43,18 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
   Future<void> _addNote() async {
     final content = await AddClientNoteSheet.show(context);
     if (content == null || content.isEmpty) return;
-    try {
-      await IngestRepository(ref.read(apiClientProvider)).ingestKnowledgeText(
-        content: content,
-        sourceType: 'text',
-        contactId: widget.clientId,
-        isClientNote: true,
-      );
-    } catch (_) {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l10n.clientsErrAddNote),
-          behavior: SnackBarBehavior.floating,
-        ));
-      }
-    }
+
+    // Pasa por ingestProvider en vez de llamar al repo directo para que
+    // IngestFlowOverlay (montado en el shell) muestre progreso y confirmación.
+    // Antes el sheet se cerraba y no pasaba nada visible durante segundos: la
+    // nota ya no se guarda al instante porque ahora la IA le extrae los
+    // compromisos.
+    await ref.read(ingestProvider.notifier).processKnowledgeText(
+          content,
+          'text',
+          contactId: widget.clientId,
+          isClientNote: true,
+        );
   }
 
   @override
@@ -64,6 +62,7 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final contact = widget.contact;
+    final commitments = ref.watch(contactCommitmentsProvider(widget.clientId));
 
     // Activate Realtime — auto-disposes when this widget leaves the tree
     ref.watch(contactPoliciesRealtimeProvider(widget.clientId));
@@ -99,6 +98,26 @@ class _ClientDetailBodyState extends ConsumerState<ClientDetailBody> {
             index: idx++,
             child: ClientQuickActions(clientId: widget.clientId, phone: contact.phone),
           ),
+          // Justo bajo las acciones rápidas: si el asesor abrió la ficha para
+          // llamarle, esto es lo que necesita saber ANTES de marcar.
+          if (commitments.isNotEmpty) ...[
+            const SizedBox(height: AmDimens.gapM),
+            AmAnimateIn(
+              index: idx++,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AmSectionLabel(label: l10n.commitmentsTitle),
+                  const SizedBox(height: AmDimens.gapXS),
+                  AmCommitmentsCard(
+                    commitments: commitments,
+                    showClient: false,
+                    showQuote: true,
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: AmDimens.gapM),
           AmAnimateIn(
             index: idx++,

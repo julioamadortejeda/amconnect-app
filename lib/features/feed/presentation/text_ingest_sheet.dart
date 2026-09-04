@@ -120,6 +120,10 @@ class _TextIngestSheetState extends ConsumerState<TextIngestSheet> {
             const SizedBox(height: AmDimens.gapM),
             TextField(
               controller: _ctrl,
+              // Mismo tope que el backend (NOTE_MAX_LENGTH). Aquí es para que el
+              // asesor lo vea al escribir en vez de perder el texto al enviar;
+              // la autoridad sigue siendo el backend.
+              maxLength: 2000,
               maxLines: 7,
               minLines: 4,
               autofocus: true,

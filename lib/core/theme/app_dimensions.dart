@@ -32,6 +32,33 @@ abstract final class AmDimens {
   /// Gap entre label de sección y su contenido
   static const gapXS = 11.0;
 
+  // ─── Filas de lista con icono ────────────────────────────────────────────
+  // Recordatorios y compromisos comparten la misma anatomía de fila. Estaban
+  // duplicados como números sueltos en los dos widgets; si se separan, las
+  // listas dejan de alinearse entre sí en el dashboard.
+
+  /// Lado del cuadro de icono al inicio de la fila.
+  static const listIconDim = 38.0;
+
+  /// Radio de ese cuadro.
+  static const listIconRadius = 11.0;
+
+  /// Separación entre el icono y el texto.
+  static const listIconGap = 12.0;
+
+  /// Pastilla de fecha al final de la fila. Recordatorios y compromisos la
+  /// comparten: son las dos listas del dashboard y si sus pastillas no miden
+  /// igual, las tarjetas se ven de dos apps distintas al hacer scroll.
+  static const listBadgeRadius = 8.0;
+  static const listBadgePadH = 9.0;
+  static const listBadgePadV = 4.0;
+
+  /// Área táctil mínima de un control dentro de una fila, y el diámetro visible
+  /// del círculo dentro de esa área. La diferencia es margen invisible: el
+  /// botón se ve discreto pero se deja atinar con el pulgar.
+  static const listActionHit = 48.0;
+  static const listActionDim = 34.0;
+
   // ─── Pantallas de autenticación ──────────────────────────────────────────
   // Login, registro, login por correo y recuperar contraseña. Tienen su propio
   // padding porque se diseñaron con más aire que el resto de la app: NO usan

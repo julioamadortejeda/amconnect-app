@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
+import '../../../core/widgets/am_sliding_tabs.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../../../core/widgets/am_stagger.dart';
 import '../../../core/models/contact.dart';
@@ -135,42 +135,10 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               index: 0,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: CupertinoSlidingSegmentedControl<int>(
-                    groupValue: _tabIdx,
-                    children: {
-                      0: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                        child: Text(
-                          clientsLabel,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: _tabIdx == 0 ? cs.onSurface : cs.tertiary,
-                          ),
-                        ),
-                      ),
-                      1: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                        child: Text(
-                          policiesLabel,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: _tabIdx == 1 ? cs.onSurface : cs.tertiary,
-                          ),
-                        ),
-                      ),
-                    },
-                    onValueChanged: (val) {
-                      if (val != null) {
-                        setState(() {
-                          _tabIdx = val;
-                        });
-                      }
-                    },
-                  ),
+                child: AmSlidingTabs(
+                  labels: [clientsLabel, policiesLabel],
+                  selected: _tabIdx,
+                  onSelect: (val) => setState(() => _tabIdx = val),
                 ),
               ),
             ),

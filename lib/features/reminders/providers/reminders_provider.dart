@@ -10,6 +10,24 @@ import '../../home/providers/home_provider.dart';
 
 enum RemindersViewMode { list, calendar }
 
+/// Las dos mitades de la Agenda: lo que tiene día y lo que no.
+enum AgendaTab { reminders, commitments }
+
+/// Qué mitad de la Agenda se está viendo.
+///
+/// Vive en un provider y no en el `State` de la pantalla para que el dashboard
+/// pueda abrir directo la pestaña de compromisos desde su "Ver todos" — con
+/// estado local haría falta pasarlo por la ruta.
+class AgendaTabNotifier extends Notifier<AgendaTab> {
+  @override
+  AgendaTab build() => AgendaTab.reminders;
+
+  void select(AgendaTab tab) => state = tab;
+}
+
+final agendaTabProvider =
+    NotifierProvider<AgendaTabNotifier, AgendaTab>(AgendaTabNotifier.new);
+
 class RemindersState {
   const RemindersState({
     this.filter = 'todos',
