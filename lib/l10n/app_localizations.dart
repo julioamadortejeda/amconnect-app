@@ -3968,6 +3968,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La nota es muy larga. Si es un documento, súbelo como archivo para que se procese completo.'**
   String get errNoteTooLong;
+
+  /// No description provided for @agendaSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar en la agenda…'**
+  String get agendaSearchHint;
+
+  /// No description provided for @agendaSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada coincide con esa búsqueda.'**
+  String get agendaSearchEmpty;
 }
 
 class _AppLocalizationsDelegate

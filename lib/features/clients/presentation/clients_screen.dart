@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_search_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -12,7 +13,7 @@ import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
 import '../providers/clients_provider.dart';
 import '../widgets/client_row.dart';
-import '../widgets/client_search_bar.dart';
+
 import '../widgets/client_policy_card.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -148,11 +149,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
                 child: _tabIdx == 0
-                    ? ClientSearchBar(
+                    ? AmSearchBar(
                         key: const ValueKey('search_clients'),
                         onChanged: (v) => ref.read(clientSearchProvider.notifier).set(v),
                       )
-                    : ClientSearchBar(
+                    : AmSearchBar(
                         key: const ValueKey('search_policies'),
                         onChanged: (v) => ref.read(policySearchProvider.notifier).set(v),
                         hintText: l10n.clientsSearchPolicyHint,

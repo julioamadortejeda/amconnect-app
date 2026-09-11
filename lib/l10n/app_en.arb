@@ -865,5 +865,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "agendaSearchHint": "Search your agenda…",
+  "agendaSearchEmpty": "Nothing matches that search."
 }

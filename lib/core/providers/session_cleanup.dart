@@ -37,6 +37,7 @@ void clearUserSessionCache(WidgetRef ref) {
   ref.invalidate(remindersUiProvider);
   ref.invalidate(reminderNotesProvider);
   ref.invalidate(reminderSettingsProvider);
+  ref.invalidate(agendaSearchProvider);
   ref.invalidate(policyRemindersProvider);
 
   // Compromisos — `commitmentsProvider` además mantiene un canal de Realtime

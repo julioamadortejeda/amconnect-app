@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/agent_note.dart';
+import '../../../core/repositories/commitment_repository.dart';
+import '../../../core/models/commitment.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/network/api_client.dart';
@@ -75,6 +78,55 @@ class RemindersNotifier extends Notifier<RemindersState> {
 
 final remindersUiProvider =
     NotifierProvider<RemindersNotifier, RemindersState>(RemindersNotifier.new);
+
+/// Texto de búsqueda de la agenda.
+///
+/// Con antirrebote porque la búsqueda la resuelve el servidor: sin él, escribir
+/// "banamex" son siete peticiones y las respuestas pueden llegar desordenadas,
+/// dejando en pantalla el resultado de "banam" después del de "banamex".
+class AgendaSearchNotifier extends Notifier<String> {
+  Timer? _debounce;
+
+  @override
+  String build() {
+    ref.onDispose(() => _debounce?.cancel());
+    return '';
+  }
+
+  void set(String texto) {
+    _debounce?.cancel();
+    final limpio = texto.trim();
+    // Borrar es inmediato: el asesor quiere su lista de vuelta ya, y volver al
+    // estado sin filtro no cuesta una petición.
+    if (limpio.isEmpty) {
+      state = '';
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 350), () => state = limpio);
+  }
+}
+
+final agendaSearchProvider =
+    NotifierProvider<AgendaSearchNotifier, String>(AgendaSearchNotifier.new);
+
+/// Resultados de la búsqueda en la pestaña de recordatorios.
+///
+/// `autoDispose` para que al salir de la agenda no se quede en memoria el
+/// resultado de una búsqueda vieja.
+final reminderSearchProvider =
+    FutureProvider.autoDispose<List<Reminder>>((ref) async {
+  final q = ref.watch(agendaSearchProvider);
+  if (q.isEmpty) return const [];
+  return ref.read(reminderRepositoryProvider).search(q);
+});
+
+/// Lo mismo para la pestaña de compromisos.
+final commitmentSearchProvider =
+    FutureProvider.autoDispose<List<Commitment>>((ref) async {
+  final q = ref.watch(agendaSearchProvider);
+  if (q.isEmpty) return const [];
+  return ref.read(commitmentRepositoryProvider).search(q);
+});
 
 /// Recordatorios filtrados para la vista lista.
 final filteredRemindersProvider = Provider<List<Reminder>>((ref) {

@@ -2088,4 +2088,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get errNoteTooLong =>
       'La nota es muy larga. Si es un documento, súbelo como archivo para que se procese completo.';
+
+  @override
+  String get agendaSearchHint => 'Buscar en la agenda…';
+
+  @override
+  String get agendaSearchEmpty => 'Nada coincide con esa búsqueda.';
 }

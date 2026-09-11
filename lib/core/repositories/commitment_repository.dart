@@ -6,6 +6,9 @@ abstract class CommitmentRepository {
   /// Compromisos abiertos. Sin filtros trae todos los pendientes del asesor.
   Future<List<Commitment>> getOpen({DateTime? from, DateTime? to, String? contactId});
 
+  /// Mismo criterio que en recordatorios: varias palabras sobre label y cita.
+  Future<List<Commitment>> search(String query);
+
   /// Marca uno como atendido. [dismissed] cuando dejó de aplicar en vez de
   /// haberse cumplido.
   Future<void> close(String id, {String? resolutionNote, bool dismissed = false});
@@ -28,6 +31,16 @@ class SupabaseCommitmentRepository implements CommitmentRepository {
     final query = params.isEmpty ? '' : '?${params.join('&')}';
 
     final res = await _client.get('commitments$query');
+    final items = res['data'] as List<dynamic>? ?? const [];
+    return items
+        .map((e) => Commitment.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<List<Commitment>> search(String query) async {
+    final res = await _client
+        .get('commitments?query=${Uri.encodeQueryComponent(query)}');
     final items = res['data'] as List<dynamic>? ?? const [];
     return items
         .map((e) => Commitment.fromJson(e as Map<String, dynamic>))

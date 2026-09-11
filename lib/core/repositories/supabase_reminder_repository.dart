@@ -18,6 +18,15 @@ class SupabaseReminderRepository implements ReminderRepository {
   }
 
   @override
+  Future<List<Reminder>> search(String query) async {
+    final res = await _client.get(
+        'reminders?query=${Uri.encodeQueryComponent(query)}&pageSize=50');
+    final wrapper = res['data'] as Map<String, dynamic>;
+    final items = wrapper['data'] as List<dynamic>;
+    return items.map((e) => Reminder.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  @override
   Future<List<Reminder>> getByPolicy(String policyId) async {
     final res = await _client.get('reminders?policyId=$policyId&pageSize=100');
     final wrapper = res['data'] as Map<String, dynamic>;

@@ -5,6 +5,11 @@ import '../models/reminder_type.dart';
 abstract class ReminderRepository {
   Future<List<Reminder>> getAll();
 
+  /// Busca por varias palabras en título y descripción — sin acentos, en
+  /// cualquier orden. El filtro lo resuelve Postgres, no el cliente: buscar
+  /// sobre lo ya cargado dejaría fuera lo que no se ha paginado.
+  Future<List<Reminder>> search(String query);
+
   /// Recordatorios de una póliza, incluidos los ya cerrados — es el historial
   /// que se muestra en su detalle.
   Future<List<Reminder>> getByPolicy(String policyId);

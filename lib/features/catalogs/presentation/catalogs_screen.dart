@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/am_search_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_top_bar.dart';
-import '../../clients/widgets/client_search_bar.dart';
+
 import '../providers/catalogs_provider.dart';
 import '../widgets/branch_form_sheet.dart';
 import '../widgets/carrier_form_sheet.dart';
@@ -62,7 +63,7 @@ class CatalogsScreen extends ConsumerWidget {
             const SizedBox(height: AmDimens.gapS),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
-              child: ClientSearchBar(
+              child: AmSearchBar(
                 key: ValueKey('search_${type.name}'),
                 hintText: l10n.catalogsSearchHint,
                 onChanged: (v) => ref.read(catalogSearchProvider.notifier).set(v),

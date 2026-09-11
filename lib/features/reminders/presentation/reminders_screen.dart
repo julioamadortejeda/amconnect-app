@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/features.dart';
+import '../widgets/agenda_search_results.dart';
+import '../../../core/widgets/am_search_bar.dart';
 import '../../../core/providers/commitments_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
@@ -16,11 +18,25 @@ import '../widgets/reminder_calendar_view.dart';
 import '../widgets/reminder_list_view.dart';
 import '../../../l10n/app_localizations.dart';
 
-class RemindersScreen extends ConsumerWidget {
+class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RemindersScreen> createState() => _RemindersScreenState();
+}
+
+class _RemindersScreenState extends ConsumerState<RemindersScreen> {
+  /// La agenda es dueña del texto para poder borrarlo al cambiar de pestaña.
+  final _busqueda = TextEditingController();
+
+  @override
+  void dispose() {
+    _busqueda.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final remindersAsync = ref.watch(remindersProvider);
@@ -29,6 +45,20 @@ class RemindersScreen extends ConsumerWidget {
     ref.watch(reminderTypesProvider); // pre-warm para evitar flash en filtros
 
     final onReminders = tab == AgendaTab.reminders;
+    final buscando = ref.watch(agendaSearchProvider).isNotEmpty;
+    // El giro de la barra, no un loader de pantalla: cambiar toda la lista por
+    // un indicador en cada pausa al teclear se siente peor que esperar.
+    final busqueda = onReminders
+        ? ref.watch(reminderSearchProvider)
+        : ref.watch(commitmentSearchProvider);
+    final cargandoBusqueda = buscando && busqueda.isLoading;
+    // Los resultados solo reemplazan la lista cuando YA hay algo que poner.
+    // Mientras llega la primera tanda se queda lo que el asesor está viendo y
+    // solo gira la barra: el logo de `AmLoader` es para un arranque en frío, y
+    // usarlo aquí vaciaba la pantalla por medio segundo con dos indicadores
+    // diciendo lo mismo.
+    final mostrarResultados =
+        buscando && (busqueda.hasValue || busqueda.hasError);
 
     final pendingCount =
         remindersAsync.asData?.value.where((r) => !r.done).length ?? 0;
@@ -114,14 +144,38 @@ class RemindersScreen extends ConsumerWidget {
               child: AmSlidingTabs(
                 labels: [l10n.agendaTabReminders, l10n.agendaTabCommitments],
                 selected: tab.index,
-                onSelect: (i) => ref
-                    .read(agendaTabProvider.notifier)
-                    .select(AgendaTab.values[i]),
+                onSelect: (i) {
+                  // Las dos pestañas son listas distintas. Arrastrar la
+                  // búsqueda deja al asesor en "nada coincide" sin haber
+                  // escrito ahí — buscar "pago" en recordatorios y caer en
+                  // compromisos vacíos parece que la app se rompió.
+                  _busqueda.clear();
+                  ref.read(agendaSearchProvider.notifier).set('');
+                  ref
+                      .read(agendaTabProvider.notifier)
+                      .select(AgendaTab.values[i]);
+                },
               ),
             ),
             const SizedBox(height: AmDimens.gapS),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+              child: AmSearchBar(
+                controller: _busqueda,
+                hintText: l10n.agendaSearchHint,
+                loading: cargandoBusqueda,
+                onChanged: (t) =>
+                    ref.read(agendaSearchProvider.notifier).set(t),
+              ),
+            ),
+            const SizedBox(height: AmDimens.gapS),
+            // Mientras hay texto, los resultados reemplazan a la lista: sus
+            // filtros por tipo y el calendario no aplican a una búsqueda que el
+            // asesor ya acotó con sus palabras.
             Expanded(
-              child: onReminders
+              child: mostrarResultados
+                  ? const AgendaSearchResults()
+                  : onReminders
                   ? remindersAsync.when(
                       loading: () => const AmLoader(),
                       error: (_, __) => Center(

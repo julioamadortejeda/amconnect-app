@@ -954,5 +954,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "agendaSearchHint": "Buscar en la agenda…",
+  "agendaSearchEmpty": "Nada coincide con esa búsqueda."
 }
