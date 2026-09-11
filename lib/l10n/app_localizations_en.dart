@@ -2083,4 +2083,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agendaSearchEmpty => 'Nothing matches that search.';
+
+  @override
+  String get commitmentsViewClient => 'View client';
 }

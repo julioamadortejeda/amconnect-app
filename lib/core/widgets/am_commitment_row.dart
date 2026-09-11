@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../models/commitment.dart';
 import '../providers/commitments_provider.dart';
 import '../theme/am_theme.dart';
 import '../theme/app_dimensions.dart';
 import '../utils/formatters.dart';
 import '../../l10n/app_localizations.dart';
+import 'am_commitment_sheet.dart';
 import 'am_confirm_dialog.dart';
 import 'am_press.dart';
 
@@ -125,13 +125,19 @@ class AmCommitmentRow extends ConsumerWidget {
 
     // Sin cliente ligado no hay a dónde ir, y dentro de la ficha iríamos a la
     // pantalla en la que ya estamos.
-    final clientId = commitment.contactId;
-    final canOpenClient = showClient && clientId != null;
 
     final secondary = showClient ? commitment.clientName : null;
 
+    // Tocar abre el detalle, no la ficha del cliente.
+    //
+    // Antes empujaba '/clients/:id', y ese viaje no se pierde: es un botón CON
+    // SU NOMBRE dentro de la hoja. Era un gesto invisible —nada decía que la
+    // fila fuera tocable— y el asesor reportó justo lo contrario de un atajo
+    // oculto: que no alcanzaba a leer lo que la fila recorta. Lo primero que
+    // intenta su dedo tiene que resolver eso.
     return AmPress(
-      onTap: canOpenClient ? () => context.push('/clients/$clientId') : null,
+      onTap: () => showCommitmentSheet(context, commitment,
+          showClient: showClient),
       child: Padding(
         // Vertical más corto que el gapS de otras listas porque el botón de 48
         // ya aporta la altura de la fila; con gapS encima quedaba un bloque.

@@ -2094,4 +2094,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get agendaSearchEmpty => 'Nada coincide con esa búsqueda.';
+
+  @override
+  String get commitmentsViewClient => 'Ver cliente';
 }

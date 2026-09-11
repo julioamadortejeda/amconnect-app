@@ -956,5 +956,6 @@
     }
   },
   "agendaSearchHint": "Buscar en la agenda…",
-  "agendaSearchEmpty": "Nada coincide con esa búsqueda."
+  "agendaSearchEmpty": "Nada coincide con esa búsqueda.",
+  "commitmentsViewClient": "Ver cliente"
 }

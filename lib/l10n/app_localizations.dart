@@ -3980,6 +3980,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Nada coincide con esa búsqueda.'**
   String get agendaSearchEmpty;
+
+  /// No description provided for @commitmentsViewClient.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver cliente'**
+  String get commitmentsViewClient;
 }
 
 class _AppLocalizationsDelegate

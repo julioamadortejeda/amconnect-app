@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/theme/am_theme.dart';
 import '../../../core/widgets/am_confirm_dialog.dart';
+import '../../../core/widgets/am_sheet.dart';
 import '../../../core/widgets/am_reschedule_dialog.dart';
 import '../../../core/widgets/am_cancel_dialog.dart';
 import '../../../l10n/app_localizations.dart';
@@ -61,70 +62,10 @@ class AmReminderActionsSheet extends ConsumerWidget {
       notifier.updateStatus(r.id, 'CREATED');
     }
 
-    Widget buildGridItem({
-      required IconData icon,
-      required Color color,
-      required String label,
-      String? subtitle,
-      required VoidCallback onTap,
-    }) {
-      return Expanded(
-        child: Card(
-          elevation: 0,
-          margin: EdgeInsets.zero,
-          color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, color: color, size: 26),
-                  const SizedBox(height: 6),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                        color: cs.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 2),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontSize: 9.5,
-                          color: cs.error,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
 
     // Dynamically build the action items list
     final items = <Widget>[
-      buildGridItem(
+      AmSheetTile(
         icon: CupertinoIcons.checkmark_circle,
         color: am.green,
         label: l10n.remindersActionDone,
@@ -145,7 +86,7 @@ class AmReminderActionsSheet extends ConsumerWidget {
           );
         },
       ),
-      buildGridItem(
+      AmSheetTile(
         icon: CupertinoIcons.clock,
         color: am.amber,
         label: l10n.remindersActionInProgress,
@@ -170,7 +111,7 @@ class AmReminderActionsSheet extends ConsumerWidget {
 
     if (showReschedule) {
       items.add(
-        buildGridItem(
+        AmSheetTile(
           icon: CupertinoIcons.calendar,
           color: cs.primary,
           label: l10n.remindersActionReschedule,
@@ -184,7 +125,7 @@ class AmReminderActionsSheet extends ConsumerWidget {
 
     if (r.statusCode != 'PAUSED') {
       items.add(
-        buildGridItem(
+        AmSheetTile(
           icon: CupertinoIcons.pause_circle,
           color: cs.tertiary,
           label: l10n.reminderStatusPaused,
@@ -197,7 +138,7 @@ class AmReminderActionsSheet extends ConsumerWidget {
     }
 
     items.add(
-      buildGridItem(
+      AmSheetTile(
         icon: CupertinoIcons.xmark_circle,
         color: cs.error,
         label: l10n.remindersActionCancel,
@@ -211,7 +152,7 @@ class AmReminderActionsSheet extends ConsumerWidget {
 
     if (r.statusCode != 'CREATED') {
       items.add(
-        buildGridItem(
+        AmSheetTile(
           icon: CupertinoIcons.arrow_counterclockwise,
           color: cs.secondary,
           label: l10n.reminderStatusCreated,
@@ -253,39 +194,12 @@ class AmReminderActionsSheet extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: cs.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
+            AmSheetHeader(
+              title: r.title,
+              subtitle: r.sub.isEmpty
+                  ? null
+                  : (r.time != '—' ? '${r.sub} · ${r.time}' : r.sub),
             ),
-            const SizedBox(height: 16),
-            Text(
-              r.title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: cs.onSurface,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (r.sub.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                r.time != '—' ? '${r.sub} · ${r.time}' : r.sub,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: cs.tertiary,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
             const SizedBox(height: 20),
             ...rows,
             const SizedBox(height: 8),

@@ -867,5 +867,6 @@
     }
   },
   "agendaSearchHint": "Search your agenda…",
-  "agendaSearchEmpty": "Nothing matches that search."
+  "agendaSearchEmpty": "Nothing matches that search.",
+  "commitmentsViewClient": "View client"
 }
