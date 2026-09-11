@@ -5,6 +5,8 @@ import '../../features/assistant/providers/assistant_provider.dart';
 import '../../features/clients/providers/catalog_provider.dart';
 import '../../features/clients/providers/clients_provider.dart';
 import '../../features/feed/providers/knowledge_dashboard_provider.dart';
+import '../../features/reminders/providers/reminder_settings_provider.dart';
+import 'commitments_provider.dart';
 import '../../features/home/providers/home_provider.dart';
 import '../../features/reminders/providers/reminders_provider.dart';
 
@@ -16,7 +18,12 @@ import '../../features/reminders/providers/reminders_provider.dart';
 /// para el siguiente usuario que inicie sesión en el mismo dispositivo.
 /// No hace falta listar providers derivados (`Provider<T>` que solo hacen
 /// `ref.watch` de otros ya invalidados aquí, ej. `homeDashboardProvider`,
-/// `filteredRemindersProvider`) — se recalculan solos.
+/// `filteredRemindersProvider`) ni los `autoDispose` — se recalculan solos.
+///
+/// **Sin excepción: todo `AsyncNotifier` que abra un canal de Realtime va aquí.**
+/// No es solo caché: el canal queda suscrito con el `agent_id` del asesor que
+/// se fue. Para cruzarlo rápido:
+/// `grep -rn "\.channel(" lib/` contra esta lista.
 void clearUserSessionCache(WidgetRef ref) {
   // Cuenta / perfil
   ref.invalidate(agentProfileProvider);
@@ -29,6 +36,14 @@ void clearUserSessionCache(WidgetRef ref) {
   ref.invalidate(remindersProvider);
   ref.invalidate(remindersUiProvider);
   ref.invalidate(reminderNotesProvider);
+  ref.invalidate(reminderSettingsProvider);
+  ref.invalidate(policyRemindersProvider);
+
+  // Compromisos — `commitmentsProvider` además mantiene un canal de Realtime
+  // abierto (`commitments:$userId`). Sin invalidarlo, el canal sobrevivía al
+  // logout filtrando por el agent_id del asesor ANTERIOR, y el siguiente que
+  // entrara en ese teléfono veía los compromisos del otro.
+  ref.invalidate(commitmentsProvider);
 
   // Clientes / pólizas
   ref.invalidate(clientsProvider);

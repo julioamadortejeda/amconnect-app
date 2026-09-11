@@ -217,7 +217,9 @@ final myProvider = NotifierProvider<MyNotifier, MyState>(MyNotifier.new);
 
 ### Realtime (Supabase)
 
-Tablas habilitadas: `contacts`, `policies`, `reminders`, `agent_notes` (todas con `REPLICA IDENTITY FULL` + publicación supabase_realtime). Para datos por pantalla (detalle) usar el patrón dos providers: `FutureProvider.family` (datos) + `Provider.autoDispose.family<void>` que llama `ref.invalidate` — `autoDispose` cierra el canal al salir de la pantalla.
+Tablas habilitadas: `contacts`, `policies`, `reminders`, `agent_notes`, `client_commitments`, `reminder_comments` (todas con `REPLICA IDENTITY FULL` + publicación supabase_realtime).
+
+**Tabla hija cuyos datos viajan dentro del padre** (caso `reminder_comments`): la fila del padre NO cambia al insertar un hijo, así que su canal no dispara. Hace falta un canal propio para la tabla hija —nunca mezclado en el del padre— cuyo callback re-consulte el padre por id y lo reemplace en la lista. Sin eso, la pantalla no se entera: el asesor le dicta una nota a la IA, no ve nada, la vuelve a dictar y quedan dos (2026-09-04). Para datos por pantalla (detalle) usar el patrón dos providers: `FutureProvider.family` (datos) + `Provider.autoDispose.family<void>` que llama `ref.invalidate` — `autoDispose` cierra el canal al salir de la pantalla.
 
 Para listas principales, el patrón en cada `AsyncNotifier`: El patrón en cada `AsyncNotifier`:
 

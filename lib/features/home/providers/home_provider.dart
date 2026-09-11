@@ -12,6 +12,7 @@ import '../../../core/repositories/supabase_reminder_repository.dart';
 class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
   late ReminderRepository _repo;
   RealtimeChannel? _channel;
+  RealtimeChannel? _commentsChannel;
 
   @override
   Future<List<Reminder>> build() async {
@@ -52,8 +53,31 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
         debugPrint('[RT:reminders] $status $error');
       });
 
+      // Canal aparte para los comentarios: son OTRA tabla, y mezclarlas en un
+      // mismo canal rompe la suscripción (regla del proyecto).
+      //
+      // Hace falta porque los comentarios viajan DENTRO del objeto reminder, y
+      // esa fila no cambia cuando se inserta uno: el canal de arriba no dispara.
+      // Sin esto, el asesor le dicta una nota a la IA, no ve nada aparecer, la
+      // vuelve a dictar, y quedan dos comentarios casi idénticos (2026-09-04).
+      _commentsChannel = Supabase.instance.client
+          .channel('reminder_comments:$userId')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'reminder_comments',
+            filter: filter,
+            callback: (p) => _onComment(
+              p.newRecord.isNotEmpty ? p.newRecord : p.oldRecord,
+            ),
+          )
+          .subscribe((status, error) {
+        debugPrint('[RT:reminder_comments] $status $error');
+      });
+
       ref.onDispose(() {
         _channel?.unsubscribe();
+        _commentsChannel?.unsubscribe();
       });
     }
 
@@ -85,6 +109,25 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     state = AsyncData([
       for (final r in state.requireValue)
         if (r.id == id) reminder else r,
+    ]..sort(compareReminderDueDate));
+  }
+
+  /// Un comentario cambió: se recarga el recordatorio al que pertenece.
+  ///
+  /// Se reemplaza solo si ya está en la lista. Un comentario sobre un
+  /// recordatorio que no se está mostrando —cerrado, o fuera del filtro
+  /// activo— no tiene por qué meterlo de vuelta.
+  Future<void> _onComment(Map<String, dynamic> row) async {
+    final reminderId = row['reminder_id'] as String?;
+    if (reminderId == null) return;
+    final actuales = state.asData?.value;
+    if (actuales == null || !actuales.any((r) => r.id == reminderId)) return;
+
+    final reminder = await _repo.getById(reminderId);
+    if (reminder == null) return;
+    state = AsyncData([
+      for (final r in actuales)
+        if (r.id == reminderId) reminder else r,
     ]..sort(compareReminderDueDate));
   }
 
