@@ -120,13 +120,13 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
   Future<void> _onComment(Map<String, dynamic> row) async {
     final reminderId = row['reminder_id'] as String?;
     if (reminderId == null) return;
-    final actuales = state.asData?.value;
-    if (actuales == null || !actuales.any((r) => r.id == reminderId)) return;
+    final current = state.asData?.value;
+    if (current == null || !current.any((r) => r.id == reminderId)) return;
 
     final reminder = await _repo.getById(reminderId);
     if (reminder == null) return;
     state = AsyncData([
-      for (final r in actuales)
+      for (final r in current)
         if (r.id == reminderId) reminder else r,
     ]..sort(compareReminderDueDate));
   }

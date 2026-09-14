@@ -17,6 +17,7 @@ import '../widgets/assistant_bubble.dart';
 import '../widgets/assistant_composer.dart';
 import '../widgets/assistant_header.dart';
 import '../widgets/assistant_voice_bar.dart';
+import '../widgets/assistant_voice_notice.dart';
 import '../widgets/voice_output_sheet.dart';
 
 List<String> _assistantSuggestions(AppLocalizations l10n) => [
@@ -294,7 +295,11 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
               padding: const EdgeInsets.fromLTRB(
                   AmDimens.screenH, 6, AmDimens.screenH, 0),
               child: isVoice
-                  ? AssistantVoiceBar(
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AssistantVoiceNotice(),
+                        AssistantVoiceBar(
                       status: state.voiceStatus,
                       activeSkill: state.activeSkill,
                       error: state.error,
@@ -302,6 +307,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                       onOutput: () => VoiceOutputSheet.show(context),
                       micLevel: ref.read(assistantProvider.notifier).micLevel,
                       modelLevel: ref.read(assistantProvider.notifier).modelLevel,
+                        ),
+                      ],
                     )
                   : AssistantComposer(
                       controller: _ctrl,

@@ -69,7 +69,7 @@ class _CommitmentSheet extends ConsumerWidget {
     final am = context.am;
     final l10n = AppLocalizations.of(context)!;
     final clientId = commitment.contactId;
-    final puedeAbrirCliente = showClient && clientId != null;
+    final canOpenClient = showClient && clientId != null;
 
     // Igual que en el sheet de recordatorios: el notifier se toma ANTES de
     // cualquier pop, para usarlo seguro dentro del diálogo.
@@ -77,13 +77,13 @@ class _CommitmentSheet extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
-    final colorUrgencia = switch (commitment.urgency) {
+    final urgencyColor = switch (commitment.urgency) {
       CommitmentUrgency.overdue => cs.error,
       CommitmentUrgency.soon => am.amber,
       CommitmentUrgency.later => cs.tertiary,
     };
 
-    void alCerrar() {
+    void onDone() {
       showDialog<void>(
         context: context,
         builder: (_) => AmConfirmDialog(
@@ -119,10 +119,10 @@ class _CommitmentSheet extends ConsumerWidget {
             AmSheetHeader(
               title: commitment.label,
               titleMaxLines: null,
-              subtitle: puedeAbrirCliente && commitment.clientName != null
+              subtitle: canOpenClient && commitment.clientName != null
                   ? '${commitment.clientName} · ${_timing(l10n)}'
                   : _timing(l10n),
-              subtitleColor: colorUrgencia,
+              subtitleColor: urgencyColor,
             ),
             if (commitment.quote.trim().isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -153,7 +153,7 @@ class _CommitmentSheet extends ConsumerWidget {
             const SizedBox(height: 20),
             Row(
               children: [
-                if (puedeAbrirCliente) ...[
+                if (canOpenClient) ...[
                   AmSheetTile(
                     icon: Icons.person_outline_rounded,
                     label: l10n.commitmentsViewClient,
@@ -168,7 +168,7 @@ class _CommitmentSheet extends ConsumerWidget {
                   icon: Icons.check_rounded,
                   color: am.green,
                   label: l10n.commitmentsDoneAction,
-                  onTap: alCerrar,
+                  onTap: onDone,
                 ),
               ],
             ),

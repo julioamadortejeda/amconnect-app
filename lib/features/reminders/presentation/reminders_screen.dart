@@ -27,11 +27,11 @@ class RemindersScreen extends ConsumerStatefulWidget {
 
 class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   /// La agenda es dueña del texto para poder borrarlo al cambiar de pestaña.
-  final _busqueda = TextEditingController();
+  final _searchController = TextEditingController();
 
   @override
   void dispose() {
-    _busqueda.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -45,20 +45,20 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     ref.watch(reminderTypesProvider); // pre-warm para evitar flash en filtros
 
     final onReminders = tab == AgendaTab.reminders;
-    final buscando = ref.watch(agendaSearchProvider).isNotEmpty;
+    final searching = ref.watch(agendaSearchProvider).isNotEmpty;
     // El giro de la barra, no un loader de pantalla: cambiar toda la lista por
     // un indicador en cada pausa al teclear se siente peor que esperar.
-    final busqueda = onReminders
+    final search = onReminders
         ? ref.watch(reminderSearchProvider)
         : ref.watch(commitmentSearchProvider);
-    final cargandoBusqueda = buscando && busqueda.isLoading;
+    final searchLoading = searching && search.isLoading;
     // Los resultados solo reemplazan la lista cuando YA hay algo que poner.
     // Mientras llega la primera tanda se queda lo que el asesor está viendo y
     // solo gira la barra: el logo de `AmLoader` es para un arranque en frío, y
     // usarlo aquí vaciaba la pantalla por medio segundo con dos indicadores
     // diciendo lo mismo.
-    final mostrarResultados =
-        buscando && (busqueda.hasValue || busqueda.hasError);
+    final showResults =
+        searching && (search.hasValue || search.hasError);
 
     final pendingCount =
         remindersAsync.asData?.value.where((r) => !r.done).length ?? 0;
@@ -149,7 +149,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                   // búsqueda deja al asesor en "nada coincide" sin haber
                   // escrito ahí — buscar "pago" en recordatorios y caer en
                   // compromisos vacíos parece que la app se rompió.
-                  _busqueda.clear();
+                  _searchController.clear();
                   ref.read(agendaSearchProvider.notifier).set('');
                   ref
                       .read(agendaTabProvider.notifier)
@@ -161,9 +161,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
               child: AmSearchBar(
-                controller: _busqueda,
+                controller: _searchController,
                 hintText: l10n.agendaSearchHint,
-                loading: cargandoBusqueda,
+                loading: searchLoading,
                 onChanged: (t) =>
                     ref.read(agendaSearchProvider.notifier).set(t),
               ),
@@ -173,7 +173,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
             // filtros por tipo y el calendario no aplican a una búsqueda que el
             // asesor ya acotó con sus palabras.
             Expanded(
-              child: mostrarResultados
+              child: showResults
                   ? const AgendaSearchResults()
                   : onReminders
                   ? remindersAsync.when(

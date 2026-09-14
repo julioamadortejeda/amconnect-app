@@ -957,5 +957,6 @@
   },
   "agendaSearchHint": "Buscar en la agenda…",
   "agendaSearchEmpty": "Nada coincide con esa búsqueda.",
-  "commitmentsViewClient": "Ver cliente"
+  "commitmentsViewClient": "Ver cliente",
+  "voiceExperimental": "La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre."
 }

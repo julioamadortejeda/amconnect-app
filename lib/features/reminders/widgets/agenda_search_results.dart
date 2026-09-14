@@ -23,9 +23,9 @@ class AgendaSearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final enRecordatorios = ref.watch(agendaTabProvider) == AgendaTab.reminders;
+    final onReminders = ref.watch(agendaTabProvider) == AgendaTab.reminders;
 
-    Widget vacio(String texto) => Center(
+    Widget emptyState(String texto) => Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
             child: Text(texto,
@@ -34,9 +34,9 @@ class AgendaSearchResults extends ConsumerWidget {
           ),
         );
 
-    Widget error() => vacio(l10n.remindersError);
+    Widget error() => emptyState(l10n.remindersError);
 
-    if (enRecordatorios) {
+    if (onReminders) {
       return ref.watch(reminderSearchProvider).when(
             // `skipLoadingOnReload` conserva lo encontrado mientras llega la
             // siguiente tanda: al agregar una letra la lista se afina en vez de
@@ -45,9 +45,9 @@ class AgendaSearchResults extends ConsumerWidget {
             skipLoadingOnReload: true,
             loading: () => const SizedBox.shrink(),
             error: (_, __) => error(),
-            data: (encontrados) => encontrados.isEmpty
-                ? vacio(l10n.agendaSearchEmpty)
-                : ReminderGroupedList(reminders: encontrados),
+            data: (found) => found.isEmpty
+                ? emptyState(l10n.agendaSearchEmpty)
+                : ReminderGroupedList(reminders: found),
           );
     }
 
@@ -55,8 +55,8 @@ class AgendaSearchResults extends ConsumerWidget {
           skipLoadingOnReload: true,
           loading: () => const SizedBox.shrink(),
           error: (_, __) => error(),
-          data: (encontrados) => encontrados.isEmpty
-              ? vacio(l10n.agendaSearchEmpty)
+          data: (found) => found.isEmpty
+              ? emptyState(l10n.agendaSearchEmpty)
               : ListView(
                   padding: const EdgeInsets.fromLTRB(AmDimens.screenH, 0,
                       AmDimens.screenH, AmDimens.scrollBottomPad),
@@ -64,7 +64,7 @@ class AgendaSearchResults extends ConsumerWidget {
                     AmAnimateIn(
                       index: 0,
                       child: AmCommitmentsCard(
-                        commitments: encontrados,
+                        commitments: found,
                         showQuote: true,
                         maxVisible: null,
                       ),

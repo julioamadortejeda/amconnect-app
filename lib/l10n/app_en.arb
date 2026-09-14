@@ -868,5 +868,6 @@
   },
   "agendaSearchHint": "Search your agenda…",
   "agendaSearchEmpty": "Nothing matches that search.",
-  "commitmentsViewClient": "View client"
+  "commitmentsViewClient": "View client",
+  "voiceExperimental": "Voice is experimental and makes more mistakes than the text chat. Check what it records."
 }

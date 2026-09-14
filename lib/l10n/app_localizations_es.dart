@@ -2097,4 +2097,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commitmentsViewClient => 'Ver cliente';
+
+  @override
+  String get voiceExperimental =>
+      'La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.';
 }

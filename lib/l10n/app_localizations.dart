@@ -3986,6 +3986,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver cliente'**
   String get commitmentsViewClient;
+
+  /// No description provided for @voiceExperimental.
+  ///
+  /// In es, this message translates to:
+  /// **'La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.'**
+  String get voiceExperimental;
 }
 
 class _AppLocalizationsDelegate
