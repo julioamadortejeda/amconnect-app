@@ -7,6 +7,7 @@ class Policy {
     this.sumInsured,
     this.premium,
     this.startDate,
+    this.seniorityDate,
     this.endDate,
     this.renewalDate,
     this.nextPaymentDate,
@@ -27,6 +28,13 @@ class Policy {
   final double? sumInsured;
   final double? premium;
   final String? startDate;
+
+  /// Antigüedad reconocida (GMM/Vida). NO se reinicia en la renovación, a
+  /// diferencia de `startDate`, y es la fecha que decide periodos de espera y
+  /// cobertura de preexistencias. El backend la extrae de la carátula y la
+  /// compara contra la guardada; sin este campo el asesor no podía verla ni
+  /// corregirla cuando el modelo la sacaba mal.
+  final String? seniorityDate;
   final String? endDate;
   final String? renewalDate;
   final String? nextPaymentDate;
@@ -76,6 +84,7 @@ class Policy {
       sumInsured:      (json['sumInsured'] as num?)?.toDouble(),
       premium:         (json['premium'] as num?)?.toDouble(),
       startDate:       json['startDate'] as String?,
+      seniorityDate:   json['seniorityDate'] as String?,
       endDate:         json['endDate'] as String?,
       renewalDate:     json['renewalDate'] as String?,
       nextPaymentDate: json['nextPaymentDate'] as String?,

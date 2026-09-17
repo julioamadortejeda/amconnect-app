@@ -37,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonLoading => 'Loading...';
 
   @override
+  String get commonSelectPlaceholder => 'Select...';
+
+  @override
   String get commonOpenSettings => 'Open Settings';
 
   @override
@@ -1559,6 +1562,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get policiesStartDate => 'Start date';
+
+  @override
+  String get policiesSeniorityDate => 'Recognized seniority';
 
   @override
   String get policiesEndDate => 'End date';

@@ -94,6 +94,8 @@ class AiChatContext {
         if (policy.premium != null) 'premium': policy.premium,
         if (policy.deductible != null) 'deductible': policy.deductible,
         if (policy.startDate != null) 'startDate': policy.startDate,
+        if (policy.seniorityDate != null)
+          'seniorityDate': policy.seniorityDate,
         if (policy.endDate != null) 'endDate': policy.endDate,
         if (policy.renewalDate != null) 'renewalDate': policy.renewalDate,
         if (policy.nextPaymentDate != null)

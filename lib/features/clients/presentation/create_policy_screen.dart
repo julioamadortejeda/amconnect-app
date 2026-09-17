@@ -8,10 +8,10 @@ import '../../../core/repositories/supabase_policy_repository.dart';
 import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/catalog_l10n.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_form_row.dart';
 import '../../../core/widgets/am_group_card.dart';
-import '../../../core/widgets/am_info_row.dart';
 import '../../../core/widgets/am_keyboard_dismiss.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -20,6 +20,7 @@ import '../../../core/widgets/am_top_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../clients/providers/clients_provider.dart';
 import '../providers/catalog_provider.dart';
+import '../widgets/policy_picker_row.dart';
 
 class CreatePolicyScreen extends ConsumerStatefulWidget {
   const CreatePolicyScreen({super.key, this.clientId, this.policy});
@@ -51,6 +52,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
   String? _paymentMethodId;
 
   DateTime? _startDate;
+  DateTime? _seniorityDate;
   DateTime? _endDate;
   DateTime? _renewalDate;
   DateTime? _nextPaymentDate;
@@ -77,6 +79,9 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
       _deductibleCtrl.text = policy.deductible ?? '';
       _notesCtrl.text = policy.notes ?? '';
       _startDate = policy.startDate != null ? DateTime.tryParse(policy.startDate!) : null;
+      _seniorityDate = policy.seniorityDate != null
+          ? DateTime.tryParse(policy.seniorityDate!)
+          : null;
       _endDate = policy.endDate != null ? DateTime.tryParse(policy.endDate!) : null;
       _renewalDate = policy.renewalDate != null ? DateTime.tryParse(policy.renewalDate!) : null;
       _nextPaymentDate = policy.nextPaymentDate != null ? DateTime.tryParse(policy.nextPaymentDate!) : null;
@@ -101,22 +106,34 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
   void _selectDate(BuildContext context, String field) async {
     DateTime initial = DateTime.now();
     if (field == 'start' && _startDate != null) initial = _startDate!;
+    if (field == 'seniority' && _seniorityDate != null) initial = _seniorityDate!;
     if (field == 'end' && _endDate != null) initial = _endDate!;
     if (field == 'renewal' && _renewalDate != null) initial = _renewalDate!;
     if (field == 'nextPayment' && _nextPaymentDate != null) {
       initial = _nextPaymentDate!;
     }
 
+    // El rango se ancla a HOY, no a la fecha ya capturada. Anclarlo a `initial`
+    // hacia que el mismo campo llegara mas o menos atras segun lo que ya
+    // tuviera guardado: una antiguedad de 2011 dejaba bajar hasta 1951, y la
+    // misma casilla vacia solo cinco anios — justo cuando hace falta. Con el
+    // tope viejo tampoco se podia capturar una poliza que arranco hace mas de
+    // cinco anios, ni una antiguedad reconocida, que suele ser de decadas.
+    //
+    // Es hasta donde deja desplazarse el selector, no una validacion: no hay
+    // razon para que una fecha sea alcanzable y otra no.
+    final today = DateTime.now();
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(initial.year - 5),
-      lastDate: DateTime(initial.year + 15),
+      firstDate: DateTime(today.year - 60),
+      lastDate: DateTime(today.year + 30),
     );
 
     if (picked != null) {
       setState(() {
         if (field == 'start') _startDate = picked;
+        if (field == 'seniority') _seniorityDate = picked;
         if (field == 'end') _endDate = picked;
         if (field == 'renewal') _renewalDate = picked;
         if (field == 'nextPayment') _nextPaymentDate = picked;
@@ -124,8 +141,10 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
     }
   }
 
-  String _formatDate(DateTime? dt) {
-    if (dt == null) return '—';
+  /// Fecha en ISO para el payload, y tambien lo que se muestra en la fila.
+  /// Devuelve null cuando no hay fecha: quien la pinta decide como se ve vacia.
+  String? _formatDate(DateTime? dt) {
+    if (dt == null) return null;
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
   }
 
@@ -195,6 +214,8 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
       if (_premiumCtrl.text.isNotEmpty)
         'premium': double.tryParse(_premiumCtrl.text),
       if (_startDate != null) 'startDate': _formatDate(_startDate),
+      if (_seniorityDate != null)
+        'seniorityDate': _formatDate(_seniorityDate),
       if (_endDate != null) 'endDate': _formatDate(_endDate),
       if (_renewalDate != null) 'renewalDate': _formatDate(_renewalDate),
       if (_nextPaymentDate != null)
@@ -361,22 +382,11 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   AmSectionLabel(label: l10n.policiesSelectClient),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.person_outline,
                       label: l10n.policiesSelectClient,
-                      trailing: Text(
-                        selectedClient?.fullName ?? l10n.policiesSelectClient,
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedClient != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedClient != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: widget.clientId == null && !_isEditing,
+                      value: selectedClient?.fullName,
+                      placeholder: l10n.policiesSelectClient,
                       onTap: widget.clientId == null && !_isEditing
                           ? () {
                               _showSelectSheet<Contact>(
@@ -405,22 +415,11 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       icon: Icons.description_outlined,
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.business_outlined,
                       label: l10n.policiesCarrier,
-                      trailing: Text(
-                        selectedCarrier?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedCarrier != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedCarrier != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedCarrier?.name,
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<Carrier>(
                           title: l10n.policiesCarrier,
@@ -443,22 +442,11 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       },
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.category_outlined,
                       label: l10n.policiesBranch,
-                      trailing: Text(
-                        selectedBranch?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedBranch != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedBranch != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedBranch?.name,
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<Branch>(
                           title: l10n.policiesBranch,
@@ -481,24 +469,12 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       },
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.local_offer_outlined,
                       label: l10n.policiesProduct,
-                      trailing: Text(
-                        selectedProduct?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedProduct != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: isCatalogSelectionActive
-                              ? (selectedProduct != null
-                                  ? cs.onSurface
-                                  : cs.tertiary)
-                              : cs.tertiary.withValues(alpha: 0.5),
-                        ),
-                      ),
-                      chevron: isCatalogSelectionActive,
+                      value: selectedProduct?.name,
+                      placeholder: l10n.commonSelectPlaceholder,
+                      enabled: isCatalogSelectionActive,
                       onTap: isCatalogSelectionActive
                           ? () {
                               _showSelectSheet<Product>(
@@ -528,29 +504,22 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   AmSectionLabel(label: l10n.policiesSectionParamsPayment),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.info_outline,
                       label: l10n.policiesStatus,
-                      trailing: Text(
-                        selectedStatus?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedStatus != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedStatus != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedStatus == null
+                          ? null
+                          : l10n.policyStatus(selectedStatus.name.toUpperCase()),
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PolicyStatus>(
                           title: l10n.policiesStatus,
                           items: statuses,
-                          itemLabel: (s) => s.name,
-                          itemFilter: (s, q) =>
-                              s.name.toLowerCase().contains(q.toLowerCase()),
+                          itemLabel: (s) => l10n.policyStatus(s.name.toUpperCase()),
+                          itemFilter: (s, q) => l10n
+                              .policyStatus(s.name.toUpperCase())
+                              .toLowerCase()
+                              .contains(q.toLowerCase()),
                           itemId: (s) => s.id,
                           selectedItem: selectedStatus,
                           onSelect: (s) => setState(() => _statusId = s?.id),
@@ -558,31 +527,21 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       },
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.monetization_on_outlined,
                       label: l10n.policiesCurrency,
-                      trailing: Text(
-                        selectedCurrency != null
-                            ? '${selectedCurrency.code} - ${selectedCurrency.name}'
-                            : 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedCurrency != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedCurrency != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedCurrency == null
+                          ? null
+                          : '${selectedCurrency.code} · ${l10n.currency(selectedCurrency.code)}',
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<Currency>(
                           title: l10n.policiesCurrency,
                           items: currencies,
-                          itemLabel: (c) => '${c.code} - ${c.name}',
+                          itemLabel: (c) =>
+                              '${c.code} · ${l10n.currency(c.code)}',
                           itemFilter: (c, q) =>
-                              c.name.toLowerCase().contains(q.toLowerCase()) ||
+                              l10n.currency(c.code).toLowerCase().contains(q.toLowerCase()) ||
                               c.code.toLowerCase().contains(q.toLowerCase()),
                           itemId: (c) => c.id,
                           selectedItem: selectedCurrency,
@@ -591,29 +550,22 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       },
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.update_outlined,
                       label: l10n.policiesPaymentFrequency,
-                      trailing: Text(
-                        selectedFrequency?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedFrequency != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedFrequency != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedFrequency == null
+                          ? null
+                          : l10n.paymentFrequency(selectedFrequency.name.toUpperCase()),
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PaymentFrequency>(
                           title: l10n.policiesPaymentFrequency,
                           items: frequencies,
-                          itemLabel: (f) => f.name,
-                          itemFilter: (f, q) =>
-                              f.name.toLowerCase().contains(q.toLowerCase()),
+                          itemLabel: (f) => l10n.paymentFrequency(f.name.toUpperCase()),
+                          itemFilter: (f, q) => l10n
+                              .paymentFrequency(f.name.toUpperCase())
+                              .toLowerCase()
+                              .contains(q.toLowerCase()),
                           itemId: (f) => f.id,
                           selectedItem: selectedFrequency,
                           onSelect: (f) =>
@@ -622,29 +574,22 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       },
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.payment_outlined,
                       label: l10n.policiesPaymentMethod,
-                      trailing: Text(
-                        selectedMethod?.name ?? 'Seleccionar...',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: selectedMethod != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: selectedMethod != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: selectedMethod == null
+                          ? null
+                          : l10n.paymentMethod(selectedMethod.name.toUpperCase()),
+                      placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PaymentMethod>(
                           title: l10n.policiesPaymentMethod,
                           items: methods,
-                          itemLabel: (m) => m.name,
-                          itemFilter: (m, q) =>
-                              m.name.toLowerCase().contains(q.toLowerCase()),
+                          itemLabel: (m) => l10n.paymentMethod(m.name.toUpperCase()),
+                          itemFilter: (m, q) => l10n
+                              .paymentMethod(m.name.toUpperCase())
+                              .toLowerCase()
+                              .contains(q.toLowerCase()),
                           itemId: (m) => m.id,
                           selectedItem: selectedMethod,
                           onSelect: (m) =>
@@ -697,75 +642,38 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                   AmSectionLabel(label: l10n.policiesSectionDatesValidity),
                   const SizedBox(height: AmDimens.gapXS),
                   AmGroupCard(children: [
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.calendar_today_outlined,
                       label: l10n.policiesStartDate,
-                      trailing: Text(
-                        _formatDate(_startDate),
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: _startDate != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color:
-                              _startDate != null ? cs.onSurface : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: _formatDate(_startDate),
                       onTap: () => _selectDate(context, 'start'),
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
+                      icon: Icons.history_outlined,
+                      label: l10n.policiesSeniorityDate,
+                      value: _formatDate(_seniorityDate),
+                      onTap: () => _selectDate(context, 'seniority'),
+                    ),
+                    const AmFormDivider(),
+                    PolicyPickerRow(
                       icon: Icons.event_busy_outlined,
                       label: l10n.policiesEndDate,
-                      trailing: Text(
-                        _formatDate(_endDate),
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: _endDate != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: _endDate != null ? cs.onSurface : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: _formatDate(_endDate),
                       onTap: () => _selectDate(context, 'end'),
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.autorenew_outlined,
                       label: l10n.policiesRenewalDate,
-                      trailing: Text(
-                        _formatDate(_renewalDate),
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: _renewalDate != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color:
-                              _renewalDate != null ? cs.onSurface : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: _formatDate(_renewalDate),
                       onTap: () => _selectDate(context, 'renewal'),
                     ),
                     const AmFormDivider(),
-                    AmInfoRow(
+                    PolicyPickerRow(
                       icon: Icons.next_plan_outlined,
                       label: l10n.policiesNextPaymentDate,
-                      trailing: Text(
-                        _formatDate(_nextPaymentDate),
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: _nextPaymentDate != null
-                              ? FontWeight.w500
-                              : FontWeight.w400,
-                          color: _nextPaymentDate != null
-                              ? cs.onSurface
-                              : cs.tertiary,
-                        ),
-                      ),
-                      chevron: true,
+                      value: _formatDate(_nextPaymentDate),
                       onTap: () => _selectDate(context, 'nextPayment'),
                     ),
                   ]),
@@ -803,10 +711,13 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                     ),
                     child: Center(
                       child: _loading
-                          ? const AmSpinner(
+                          // onPrimary y no Colors.white: el boton pinta
+                          // cs.primary de fondo, y en tema oscuro ese par deja
+                          // de ser blanco sobre azul.
+                          ? AmSpinner(
                               size: 20,
                               strokeWidth: 2,
-                              color: Colors.white,
+                              color: cs.onPrimary,
                             )
                           : Text(
                               _isEditing ? l10n.policiesSaveChangesBtn : l10n.policiesSaveBtn,

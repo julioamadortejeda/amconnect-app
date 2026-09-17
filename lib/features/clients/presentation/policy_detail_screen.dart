@@ -347,6 +347,15 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                 trailing: Text(fmtDateFromIso(policy.startDate)),
               ),
               const AmFormDivider(),
+              // Va pegada al inicio de vigencia a proposito: son las dos que se
+              // confunden en la caratula, y verlas juntas es lo que permite
+              // cachar que el modelo puso una en lugar de la otra.
+              AmInfoRow(
+                icon: Icons.history_outlined,
+                label: l10n.policiesSeniorityDate,
+                trailing: Text(fmtDateFromIso(policy.seniorityDate)),
+              ),
+              const AmFormDivider(),
               AmInfoRow(
                 icon: Icons.event_busy_outlined,
                 label: l10n.policiesEndDate,

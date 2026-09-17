@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Cargando...'**
   String get commonLoading;
 
+  /// No description provided for @commonSelectPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar...'**
+  String get commonSelectPlaceholder;
+
   /// No description provided for @commonOpenSettings.
   ///
   /// In es, this message translates to:
@@ -3026,6 +3032,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicio de vigencia'**
   String get policiesStartDate;
+
+  /// No description provided for @policiesSeniorityDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Antigüedad reconocida'**
+  String get policiesSeniorityDate;
 
   /// No description provided for @policiesEndDate.
   ///
