@@ -74,12 +74,18 @@ class ReminderItem extends ConsumerWidget {
             .inDays
         : null;
 
-    final bool hasSub = (r.time != '—' || r.sub.isNotEmpty);
-    final String mainSub = r.time != '—'
-        ? (r.sub.isNotEmpty ? '${r.sub} · ${r.time}' : r.time)
-        : r.sub;
     final String? relationClient = r.contactName;
-    final String? relationPolicy = r.policyNumber;
+    // El número de póliza solo identifica cuando no hay cliente: con cliente,
+    // el título ya dice producto + cliente (D-023) y el número queda en el
+    // detalle. Sin esto los automáticos repetían el número en dos líneas.
+    final String? relationPolicy = relationClient == null ? r.policyNumber : null;
+    // `sub` cae al nombre del cliente cuando no hay descripción; si la línea
+    // de relación ya lo muestra, no se repite.
+    final String sub = relationClient != null && r.sub == relationClient ? '' : r.sub;
+    final bool hasSub = (r.time != '—' || sub.isNotEmpty);
+    final String mainSub = r.time != '—'
+        ? (sub.isNotEmpty ? '$sub · ${r.time}' : r.time)
+        : sub;
     final bool hasRelation = relationClient != null || relationPolicy != null;
 
     final content = AmPress(
