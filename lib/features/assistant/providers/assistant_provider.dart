@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/network/api_envelope.dart';
 import '../../../core/providers/ai_backend_provider.dart';
 import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/services/gemini_voice_engine.dart';
@@ -320,15 +321,15 @@ class AssistantNotifier extends Notifier<AssistantState> {
       String timezone, String? resumeSessionId) async {
     final api = ref.read(apiClientProvider);
     final ctx = state.activeContext ?? state.pendingContext;
-    final initData = await api.post('ai/voice/init', body: {
+    final initData = unwrapData(await api.post('ai/voice/init', body: {
       'timezone': timezone,
       if (resumeSessionId != null) 'sessionId': resumeSessionId,
       if (ctx != null) 'context': ctx.toJson(),
-    });
-    final tokenData = await api.post('ai/voice/token', body: {
+    }));
+    final tokenData = unwrapData(await api.post('ai/voice/token', body: {
       'systemInstruction': initData['systemInstruction'],
       'tools': initData['tools'] ?? [],
-    });
+    }));
     return (initData, tokenData);
   }
 }

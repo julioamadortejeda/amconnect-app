@@ -66,12 +66,11 @@ class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
   Future<KnowledgeListState> build() async {
     final query = ref.watch(knowledgeSearchQueryProvider);
     final repo = ref.read(noteRepositoryProvider);
-    final items = await repo.searchNotes(
-      limit: _pageSize,
-      offset: 0,
+    final first = await repo.searchNotes(
+      pageSize: _pageSize,
       query: query.trim().isEmpty ? null : query,
     );
-    return KnowledgeListState(items: items, hasMore: items.length == _pageSize);
+    return KnowledgeListState(items: first.items, hasMore: first.hasMore);
   }
 
   Future<void> loadMore() async {
@@ -84,15 +83,16 @@ class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
     final repo = ref.read(noteRepositoryProvider);
 
     try {
-      final newItems = await repo.searchNotes(
-        limit: _pageSize,
-        offset: current.items.length,
+      // Con hasMore la lista tiene siempre páginas completas.
+      final next = await repo.searchNotes(
+        page: current.items.length ~/ _pageSize + 1,
+        pageSize: _pageSize,
         query: query.trim().isEmpty ? null : query,
       );
       state = AsyncData(
         current.copyWith(
-          items: [...current.items, ...newItems],
-          hasMore: newItems.length == _pageSize,
+          items: [...current.items, ...next.items],
+          hasMore: next.hasMore,
           isLoadingMore: false,
         ),
       );
@@ -108,15 +108,14 @@ class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
     ref.invalidate(knowledgeStatsProvider);
     final query = ref.read(knowledgeSearchQueryProvider);
     try {
-      final items = await ref
+      final first = await ref
           .read(noteRepositoryProvider)
           .searchNotes(
-            limit: _pageSize,
-            offset: 0,
+            pageSize: _pageSize,
             query: query.trim().isEmpty ? null : query,
           );
       state = AsyncData(
-        KnowledgeListState(items: items, hasMore: items.length == _pageSize),
+        KnowledgeListState(items: first.items, hasMore: first.hasMore),
       );
       return null;
     } catch (e) {
