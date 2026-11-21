@@ -204,6 +204,17 @@ class AssistantNotifier extends Notifier<AssistantState> {
       ref.read(aiBackendProvider.notifier).set(tokenData['aiBackend'] as String?);
       state = state.copyWith(sessionId: sessionId);
 
+      // Sin fallback de modelo: el backend decide el modelo de la sesión y si no
+      // lo manda es un error del contrato, no algo que la app deba adivinar.
+      final modelName = tokenData['model'] as String?;
+      if (modelName == null || modelName.isEmpty) {
+        throw const ApiException(
+          statusCode: 500,
+          message: 'Voice token response is missing "model"',
+          errorCode: 'INTERNAL_ERROR',
+        );
+      }
+
       await _engine.connect(
         sessionId: sessionId,
         timezone: timezone,
@@ -213,7 +224,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
         url: tokenData['url'] as String,
         token: tokenData['token'] as String,
         headersMap: tokenData['headers'] as Map<String, dynamic>?,
-        modelName: tokenData['model'] as String? ?? 'models/gemini-2.0-flash-exp',
+        modelName: modelName,
       );
       // El paso a `listening` llega con EngineListening cuando Gemini confirma
       // el setup (ahí mismo se abre el mic).

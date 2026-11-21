@@ -63,7 +63,7 @@ class GeminiLiveService {
     required String dynamicContext,
     required List<dynamic> tools,
     Map<String, dynamic>? headersMap,
-    String modelName = 'models/gemini-2.0-flash-exp',
+    required String modelName,
     required String logTag,
   }) async {
     await close();

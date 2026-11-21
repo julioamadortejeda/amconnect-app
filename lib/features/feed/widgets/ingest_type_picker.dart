@@ -164,7 +164,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
 
         if (mounted) Navigator.of(context).pop();
 
-        showModalBottomSheet(
+        unawaited(showModalBottomSheet(
           context: context,
           useRootNavigator: true,
           isScrollControlled: true,
@@ -193,7 +193,7 @@ class _IngestTypePickerState extends ConsumerState<IngestTypePicker> {
               }
             },
           ),
-        );
+        ));
       });
 
   @override

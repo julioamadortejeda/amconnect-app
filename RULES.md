@@ -28,7 +28,7 @@ Si una regla entra en conflicto con una instrucción puntual, pregunta antes de 
   - reutilizable entre features → `core/widgets/am_<nombre>.dart`
   - específico del feature → `features/<feature>/widgets/<nombre>.dart`
 - Un archivo por widget. Clases auxiliares privadas solo como detalle de implementación dentro de archivos de widget.
-- Usar los widgets Am existentes antes de crear nuevos: `AmTopBar`, `AmCard`, `AmPress`, `AmBadge`, `AmAvatar`, `AmIconBtn`, `AmSegmented`, `AmSectionLabel`, `AmLoader`, `AmTextField`, `AmConfirmDialog`... (`AmBackBar` es legacy — no usar en pantallas nuevas).
+- Usar los widgets Am existentes antes de crear nuevos: `AmTopBar`, `AmCard`, `AmPress`, `AmBadge`, `AmAvatar`, `AmIconBtn`, `AmSegmented`, `AmSectionLabel`, `AmLoader`, `AmTextField`, `AmConfirmDialog`....
 - `AmLoader()` en lugar de `CircularProgressIndicator`.
 - Widgets que animan su tamaño interno: envolver en `SizedBox` de tamaño fijo para no mover el layout externo.
 - `AmStagger` solo para listas cortas sin scroll; dentro de `ListView` usar `AmAnimateIn(index: N)`.

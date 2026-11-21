@@ -73,7 +73,7 @@ class NativeAudioService {
       await _audioControl.invokeMethod<void>('startAudio');
       debugPrint('[NativeAudioService] Native mic stream started.');
 
-      _audioSub?.cancel();
+      unawaited(_audioSub?.cancel());
       _audioSub = _audioInput.receiveBroadcastStream().listen((dynamic data) {
         if (data is Uint8List) {
           _audioChunkController.add(data);

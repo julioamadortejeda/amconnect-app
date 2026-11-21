@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -90,11 +91,15 @@ class MyApp extends ConsumerWidget {
         clearUserSessionCache(ref);
       }
 
-      if (nextUser != null) {
+      // Solo al cambiar de usuario (login / arranque con sesión). Este listener
+      // también se dispara cada hora cuando Supabase renueva el access token
+      // (mismo usuario, objeto nuevo): re-registrar el FCM token ahí era una
+      // petición inútil. Los cambios del token FCM los cubre `onTokenRefresh`.
+      if (nextUser != null && prevUser?.id != nextUser.id) {
         final notificationService = ref.read(notificationServiceProvider);
-        notificationService.init().then((_) {
-          notificationService.requestPermissionsAndRegister();
-        });
+        unawaited(notificationService.init().then((_) {
+          return notificationService.requestPermissionsAndRegister();
+        }));
       }
     });
 

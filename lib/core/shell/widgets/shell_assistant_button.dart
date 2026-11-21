@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,12 +73,12 @@ class _ShellAssistantButtonState extends ConsumerState<ShellAssistantButton>
     );
 
     Overlay.of(context).insert(_ripple!);
-    _ctrl.forward(from: 0);
+    unawaited(_ctrl.forward(from: 0));
 
     // Show overlay partway through the ripple so they overlap briefly
     await Future.delayed(const Duration(milliseconds: 260));
     if (mounted) {
-      GoRouter.of(context).push('/chat');
+      unawaited(GoRouter.of(context).push('/chat'));
     }
 
     await Future.delayed(const Duration(milliseconds: 280));

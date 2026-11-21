@@ -114,7 +114,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         final notifier = ref.read(ingestProvider.notifier);
 
         if (!mounted) return;
-        showModalBottomSheet(
+        unawaited(showModalBottomSheet(
           context: context,
           useRootNavigator: true,
           isScrollControlled: true,
@@ -136,7 +136,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               }
             },
           ),
-        );
+        ));
       });
 
   Future<void> _pickPolicyPdf() => _pickAndPreview(

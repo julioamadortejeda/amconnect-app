@@ -138,7 +138,6 @@ lib/
 | `AmSegmented` | `options`, `selected`, `onSelect` | Tabs estilo iOS |
 | `AmSectionLabel` | `label`, `trailing` | Label en uppercase |
 | `AmTopBar` | `title`, `subtitle`, `actions`, `showBack`, `onBack` | AppBar estándar — usar en toda pantalla nueva |
-| `AmBackBar` | `title`, `trailing`, `onBack` | Blur+glass — legacy, no usar en nuevas pantallas |
 | `AmLoader` | — | Indicador de carga estándar (reemplaza CircularProgressIndicator) |
 | `AmCalendar` | `visibleMonth`, `selectedDate`, `events`, callbacks | Calendario mensual con dots de eventos |
 | `AmAurora` | `delay` | Fondo animado para VoiceOverlay |
@@ -283,7 +282,7 @@ return Scaffold(
 );
 ```
 
-- Usar `AmTopBar` para todas las pantallas nuevas. `AmBackBar` es legacy.
+- Usar `AmTopBar` para todas las pantallas nuevas.
 - El último elemento de `actions` siempre es `SizedBox(width: AmDimens.screenH)` para el margen derecho.
 - `body` siempre con `SafeArea(top: false)`.
 
