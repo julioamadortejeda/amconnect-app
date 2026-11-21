@@ -29,6 +29,7 @@ extension ErrorTranslator on BuildContext {
       'RESOURCE_NOT_FOUND' || 'errNotFound' => l10n.errNotFound,
       'CONNECTION_FAILED' || 'errNetwork' => l10n.errNetwork,
       'QUOTA_EXCEEDED' => l10n.errQuotaExceeded,
+      'RATE_LIMITED' => l10n.errRateLimited,
       'SUBSCRIPTION_REQUIRED' => l10n.errSubscriptionRequired,
       'VALIDATION_FAILED' => l10n.errValidationFailed,
       'RESOURCE_CONFLICT' => l10n.errConflict,

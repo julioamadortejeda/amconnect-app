@@ -29,6 +29,13 @@ void main() {
       );
     });
 
+    test('429 con RATE_LIMITED conserva su código (no cae a QUOTA_EXCEEDED)', () {
+      expect(
+        mapApiError(const ApiException(statusCode: 429, message: 'x', errorCode: 'RATE_LIMITED')),
+        'RATE_LIMITED',
+      );
+    });
+
     test('sin código: se infiere por status', () {
       expect(mapApiError(const ApiException(statusCode: 401, message: 'x')), 'SESSION_EXPIRED');
       expect(mapApiError(const ApiException(statusCode: 404, message: 'x')), 'RESOURCE_NOT_FOUND');

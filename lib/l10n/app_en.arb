@@ -122,6 +122,7 @@
   "errUnknown": "An unexpected error occurred. Please try again.",
   "errNetwork": "Connection error. Please check your internet and try again.",
   "errQuotaExceeded": "You've reached your plan limit for this month. Upgrade your plan to continue.",
+  "errRateLimited": "You're going a bit fast. Wait a moment and try again.",
   "errSubscriptionRequired": "Your subscription has expired. Activate a plan to continue.",
   "errValidationFailed": "The submitted data is invalid. Please review it and try again.",
   "errConflict": "A record with that data already exists.",

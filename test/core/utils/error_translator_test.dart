@@ -30,6 +30,12 @@ void main() {
     });
   }
 
+  testWidgets('RATE_LIMITED (límite por minuto) no se confunde con la cuota mensual', (tester) async {
+    final ctx = await _pump(tester, const Locale('es'));
+    expect(ctx.translateError('RATE_LIMITED'), 'Vas muy rápido, espera un momento e intenta de nuevo.');
+    expect(ctx.translateError('RATE_LIMITED'), isNot(ctx.translateError('QUOTA_EXCEEDED')));
+  });
+
   testWidgets('texto desconocido se muestra tal cual', (tester) async {
     final ctx = await _pump(tester, const Locale('es'));
     expect(ctx.translateError('El comentario es obligatorio'), 'El comentario es obligatorio');

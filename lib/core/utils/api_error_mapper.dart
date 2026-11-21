@@ -15,6 +15,7 @@ const kTranslatedErrorKeys = <String>{
   'RESOURCE_NOT_FOUND', 'errNotFound',
   'CONNECTION_FAILED', 'errNetwork',
   'QUOTA_EXCEEDED',
+  'RATE_LIMITED',
   'SUBSCRIPTION_REQUIRED',
   'VALIDATION_FAILED',
   'RESOURCE_CONFLICT',
