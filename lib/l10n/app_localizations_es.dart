@@ -107,10 +107,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.';
 
   @override
-  String get forgotPasswordSubtitleReset =>
-      'Ingresa el código que te enviamos y tu nueva contraseña.';
-
-  @override
   String forgotPasswordCodeSentTo(String email) {
     return 'Enviamos un código a $email';
   }
@@ -188,9 +184,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fieldCurp => 'CURP';
-
-  @override
-  String get fieldNotes => 'Notas';
 
   @override
   String get accountProfileTitle => 'Perfil';
@@ -432,40 +425,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeGreetingDefault => '¡Hola! Buen día';
 
   @override
-  String get homeImmediateAttention => 'Atención inmediata';
-
-  @override
-  String get homePortfolio => 'Tu cartera';
-
-  @override
-  String get homeNeedAttention => 'Necesitan atención';
-
-  @override
-  String get homeAiHint => 'Pregúntale sobre tus clientes';
-
-  @override
-  String homeUrgentCount(int count) {
-    return '$count urgente(s)';
-  }
-
-  @override
-  String homeUrgentToday(int count) {
-    return '$count urgente(s) · hoy';
-  }
-
-  @override
-  String homeAttentionDesc(int count) {
-    return '$count póliza(s) necesitan tu atención';
-  }
-
-  @override
   String get homePolicies => 'Pólizas';
 
   @override
   String get homeToRenew => 'Por renovar';
-
-  @override
-  String get homeClients => 'Clientes';
 
   @override
   String get homePendientes => 'Pendientes';
@@ -626,10 +589,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo eliminar el cliente. Intenta de nuevo.';
 
   @override
-  String get clientsErrAddNote =>
-      'No se pudo agregar la nota. Intenta de nuevo.';
-
-  @override
   String get clientsContactSection => 'Contacto';
 
   @override
@@ -692,9 +651,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsSectionFiscal => 'Fiscal';
 
   @override
-  String get clientsFieldGeneralNotes => 'Notas generales';
-
-  @override
   String get clientsAddNote => 'Agregar nota rápida';
 
   @override
@@ -731,9 +687,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientsActionUpload => 'Subir';
 
   @override
-  String get clientsActionAsk => 'Preguntar';
-
-  @override
   String get clientsActionNoPhone =>
       'Este cliente no tiene teléfono registrado';
 
@@ -753,9 +706,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String clientsNotesTab(int count) {
     return 'Notas · $count';
   }
-
-  @override
-  String get clientsPolicyActive => 'Vigente';
 
   @override
   String get clientsPolicySumInsured => 'Suma asegurada';
@@ -808,15 +758,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersFilterAll => 'Todos';
-
-  @override
-  String get remindersFilterPayments => 'Pagos';
-
-  @override
-  String get remindersFilterRenewals => 'Renovaciones';
-
-  @override
-  String get remindersFilterCalls => 'Llamadas';
 
   @override
   String get remindersFilterCompleted => 'Completados';
@@ -886,13 +827,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersSectionDetails => 'Detalles';
 
   @override
-  String get remindersVoiceHint => 'DÍSELO CON TUS PALABRAS';
-
-  @override
-  String get remindersVoicePlaceholder =>
-      'recuérdame llamar a José mañana a las 3';
-
-  @override
   String get remindersFieldTitle => 'Título';
 
   @override
@@ -905,16 +839,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersFieldClient => 'Cliente';
 
   @override
-  String get remindersFieldDate => 'Fecha';
-
-  @override
-  String get remindersFieldTime => 'Hora';
-
-  @override
   String get remindersFieldDateTime => 'Fecha y hora';
-
-  @override
-  String get remindersRepeatYearly => 'Repetir cada año';
 
   @override
   String get remindersCreateBtn => 'Crear recordatorio';
@@ -945,43 +870,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Elige cuándo quieres que te recuerde esto.';
 
   @override
-  String get voiceListening => 'Escuchando…';
-
-  @override
-  String get voiceTapToClose => 'Toca para cerrar';
-
-  @override
-  String get voiceInputHint => 'Pregunta…';
-
-  @override
-  String get voiceSend => 'Enviar';
-
-  @override
-  String get voiceTapToSend => 'Toca para enviar';
-
-  @override
-  String get voiceTapToStart => 'Toca para hablar';
-
-  @override
-  String get voiceNotAvailable => 'Voz no disponible';
-
-  @override
   String get voiceChatConnecting => 'Conectando…';
-
-  @override
-  String get voiceChatSessionReady => 'Preparando sesión…';
 
   @override
   String get voiceChatListening => 'Escuchando…';
 
   @override
   String get voiceChatModelSpeaking => 'Respondiendo…';
-
-  @override
-  String get voiceChatEnd => 'Terminar sesión';
-
-  @override
-  String get voiceChatClosed => 'Sesión terminada';
 
   @override
   String get voiceChatError => 'Error de conexión';
@@ -994,9 +889,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get voiceChatSkillActive => 'Consultando datos…';
-
-  @override
-  String get voiceChatThinking => 'Pensando…';
 
   @override
   String get voiceOutputTitle => 'Salida de audio';
@@ -1074,9 +966,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chatSubtitle => 'Conectado a tu base';
 
   @override
-  String get chatNewConversation => 'Nueva conversación';
-
-  @override
   String get chatInputHint => 'Pregúntale a tu asistente…';
 
   @override
@@ -1089,9 +978,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chatCardGoToAgenda => 'Ir a Agenda';
 
   @override
-  String get chatCardContactInfoTitle => 'Contacto';
-
-  @override
   String get chatCardContactListTitle => 'Contactos coincidentes';
 
   @override
@@ -1101,16 +987,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chatCardPolicyInfoTitle => 'Póliza Encontrada';
 
   @override
-  String get chatCardActionCall => 'Llamar';
-
-  @override
-  String get chatCardActionWhatsApp => 'WhatsApp';
-
-  @override
   String get feedTitle => 'Base de conocimiento';
-
-  @override
-  String get feedSubtitle => 'Alimentar la app';
 
   @override
   String get feedQuestion => '¿Qué quieres agregar?';
@@ -1210,17 +1087,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedRecentlyUploaded => 'Subido recientemente';
 
   @override
-  String get feedUploading => 'Subiendo archivo…';
-
-  @override
   String get feedProcessing => 'Procesando con IA…';
-
-  @override
-  String get feedUploadingDesc => 'Enviando el PDF a Supabase Storage';
-
-  @override
-  String get feedProcessingDesc =>
-      'La IA está extrayendo los datos de la póliza';
 
   @override
   String get feedStepGettingUrl => 'Obteniendo enlace de subida…';
@@ -1394,15 +1261,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersActionCancel => 'Cancelar';
 
   @override
-  String get remindersActionCancelTitle => 'Cancelar recordatorio';
-
-  @override
-  String get remindersActionCancelHint => '¿Por qué se cancela?';
-
-  @override
-  String get remindersActionCancelBtn => 'Confirmar cancelación';
-
-  @override
   String get remindersActionCommentRequired =>
       'El comentario es obligatorio para cancelar';
 
@@ -1464,28 +1322,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersDetailSave => 'Guardar';
 
   @override
-  String get remindersDetailNoClient => 'Sin cliente asignado';
-
-  @override
   String get remindersDetailSaved => 'Cambios guardados';
 
   @override
   String get remindersDetailStatus => 'Estado';
 
   @override
-  String get remindersDetailDatetime => 'Fecha y hora';
-
-  @override
-  String get remindersDetailActions => 'Acciones';
-
-  @override
   String get reminderPriorityUrgent => 'Urgente';
 
   @override
   String get reminderPriorityWarning => 'Pronto';
-
-  @override
-  String get reminderPriorityNormal => 'Normal';
 
   @override
   String get remindersDetailDueDate => 'Fecha límite';
@@ -1498,9 +1344,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remindersDetailSelectType => 'Tipo de recordatorio';
-
-  @override
-  String get remindersDetailSelectStatus => 'Estado del recordatorio';
 
   @override
   String get remindersDetailComments => 'Comentarios';
@@ -1692,9 +1535,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get catalogsFieldShortName => 'Nombre corto';
 
   @override
-  String get catalogsFieldCode => 'Código';
-
-  @override
   String get catalogsSelectCarrier => 'Seleccionar aseguradora';
 
   @override
@@ -1720,24 +1560,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get catalogsCreateBtn => 'Crear';
-
-  @override
-  String get catalogsCarrierCreated => 'Aseguradora creada';
-
-  @override
-  String get catalogsCarrierUpdated => 'Aseguradora actualizada';
-
-  @override
-  String get catalogsBranchCreated => 'Ramo creado';
-
-  @override
-  String get catalogsBranchUpdated => 'Ramo actualizado';
-
-  @override
-  String get catalogsProductCreated => 'Producto creado';
-
-  @override
-  String get catalogsProductUpdated => 'Producto actualizado';
 
   @override
   String get catalogsDeleteTitle => 'Eliminar elemento';
@@ -1870,9 +1692,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get policiesAskAbout => 'Preguntar sobre esta póliza';
 
   @override
-  String get commonOpenFile => 'Abrir archivo';
-
-  @override
   String get chatCardPolicyListTitle => 'Pólizas en tu portafolio';
 
   @override
@@ -1981,13 +1800,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reminderSettingsOff => 'Sin avisos';
 
   @override
-  String get reminderSettingsBranchExceptions => 'Excepciones por ramo';
-
-  @override
   String get reminderSettingsAddException => 'Agregar excepción';
-
-  @override
-  String get reminderSettingsAllBranches => 'Todos los ramos';
 
   @override
   String get reminderSettingsPickDays => 'Anticipación';
@@ -2033,12 +1846,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commitmentsTitle => 'Se te va a pasar';
 
   @override
-  String get commitmentsEmpty => 'Nada pendiente por ahora';
-
-  @override
-  String get commitmentsOverdue => 'Vencido';
-
-  @override
   String get commitmentsNoDate => 'Sin fecha';
 
   @override
@@ -2061,13 +1868,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get commitmentsDoneHint => '¿Qué pasó? (opcional)';
-
-  @override
   String get commitmentsClosed => 'Listo, lo quité de tus pendientes';
-
-  @override
-  String get commitmentsViewAll => 'Ver todos';
 
   @override
   String get agendaTabReminders => 'Recordatorios';

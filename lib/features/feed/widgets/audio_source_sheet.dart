@@ -76,7 +76,7 @@ class _AudioSourceSheetState extends ConsumerState<AudioSourceSheet> {
 
       if (mounted) Navigator.of(context).pop();
 
-      showModalBottomSheet(
+      unawaited(showModalBottomSheet(
         context: context,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -99,7 +99,7 @@ class _AudioSourceSheetState extends ConsumerState<AudioSourceSheet> {
             makeGeneral: makeGeneral,
           ),
         ),
-      );
+      ));
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;

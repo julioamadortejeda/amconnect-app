@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -66,7 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // entrando con la animación de push.
     final pending = ref.read(pendingRouteProvider.notifier).take();
     if (pending != null) {
-      ref.read(routerProvider).push(pending);
+      unawaited(ref.read(routerProvider).push(pending));
     }
   }
 

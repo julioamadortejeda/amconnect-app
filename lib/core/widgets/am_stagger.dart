@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/app_animations.dart';
 
@@ -61,7 +62,7 @@ class _AmStaggerState extends State<AmStagger> with TickerProviderStateMixin {
 
     for (int i = 0; i < _controllers.length; i++) {
       if (!mounted) return;
-      _controllers[i].forward();
+      unawaited(_controllers[i].forward());
       await Future.delayed(widget.staggerDelay);
     }
   }
@@ -160,7 +161,7 @@ class _AmAnimateInState extends State<AmAnimateIn> with SingleTickerProviderStat
       _controller.value = 1.0;
       return;
     }
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   @override

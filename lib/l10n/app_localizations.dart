@@ -284,12 +284,6 @@ abstract class AppLocalizations {
   /// **'Ingresa tu correo y te mandamos un código para restablecer tu contraseña.'**
   String get forgotPasswordSubtitleEmail;
 
-  /// No description provided for @forgotPasswordSubtitleReset.
-  ///
-  /// In es, this message translates to:
-  /// **'Ingresa el código que te enviamos y tu nueva contraseña.'**
-  String get forgotPasswordSubtitleReset;
-
   /// No description provided for @forgotPasswordCodeSentTo.
   ///
   /// In es, this message translates to:
@@ -439,12 +433,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'CURP'**
   String get fieldCurp;
-
-  /// No description provided for @fieldNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Notas'**
-  String get fieldNotes;
 
   /// No description provided for @accountProfileTitle.
   ///
@@ -866,48 +854,6 @@ abstract class AppLocalizations {
   /// **'¡Hola! Buen día'**
   String get homeGreetingDefault;
 
-  /// No description provided for @homeImmediateAttention.
-  ///
-  /// In es, this message translates to:
-  /// **'Atención inmediata'**
-  String get homeImmediateAttention;
-
-  /// No description provided for @homePortfolio.
-  ///
-  /// In es, this message translates to:
-  /// **'Tu cartera'**
-  String get homePortfolio;
-
-  /// No description provided for @homeNeedAttention.
-  ///
-  /// In es, this message translates to:
-  /// **'Necesitan atención'**
-  String get homeNeedAttention;
-
-  /// No description provided for @homeAiHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Pregúntale sobre tus clientes'**
-  String get homeAiHint;
-
-  /// No description provided for @homeUrgentCount.
-  ///
-  /// In es, this message translates to:
-  /// **'{count} urgente(s)'**
-  String homeUrgentCount(int count);
-
-  /// No description provided for @homeUrgentToday.
-  ///
-  /// In es, this message translates to:
-  /// **'{count} urgente(s) · hoy'**
-  String homeUrgentToday(int count);
-
-  /// No description provided for @homeAttentionDesc.
-  ///
-  /// In es, this message translates to:
-  /// **'{count} póliza(s) necesitan tu atención'**
-  String homeAttentionDesc(int count);
-
   /// No description provided for @homePolicies.
   ///
   /// In es, this message translates to:
@@ -919,12 +865,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Por renovar'**
   String get homeToRenew;
-
-  /// No description provided for @homeClients.
-  ///
-  /// In es, this message translates to:
-  /// **'Clientes'**
-  String get homeClients;
 
   /// No description provided for @homePendientes.
   ///
@@ -1232,12 +1172,6 @@ abstract class AppLocalizations {
   /// **'No se pudo eliminar el cliente. Intenta de nuevo.'**
   String get clientsErrDelete;
 
-  /// No description provided for @clientsErrAddNote.
-  ///
-  /// In es, this message translates to:
-  /// **'No se pudo agregar la nota. Intenta de nuevo.'**
-  String get clientsErrAddNote;
-
   /// No description provided for @clientsContactSection.
   ///
   /// In es, this message translates to:
@@ -1352,12 +1286,6 @@ abstract class AppLocalizations {
   /// **'Fiscal'**
   String get clientsSectionFiscal;
 
-  /// No description provided for @clientsFieldGeneralNotes.
-  ///
-  /// In es, this message translates to:
-  /// **'Notas generales'**
-  String get clientsFieldGeneralNotes;
-
   /// No description provided for @clientsAddNote.
   ///
   /// In es, this message translates to:
@@ -1430,12 +1358,6 @@ abstract class AppLocalizations {
   /// **'Subir'**
   String get clientsActionUpload;
 
-  /// No description provided for @clientsActionAsk.
-  ///
-  /// In es, this message translates to:
-  /// **'Preguntar'**
-  String get clientsActionAsk;
-
   /// No description provided for @clientsActionNoPhone.
   ///
   /// In es, this message translates to:
@@ -1465,12 +1387,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Notas · {count}'**
   String clientsNotesTab(int count);
-
-  /// No description provided for @clientsPolicyActive.
-  ///
-  /// In es, this message translates to:
-  /// **'Vigente'**
-  String get clientsPolicyActive;
 
   /// No description provided for @clientsPolicySumInsured.
   ///
@@ -1561,24 +1477,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Todos'**
   String get remindersFilterAll;
-
-  /// No description provided for @remindersFilterPayments.
-  ///
-  /// In es, this message translates to:
-  /// **'Pagos'**
-  String get remindersFilterPayments;
-
-  /// No description provided for @remindersFilterRenewals.
-  ///
-  /// In es, this message translates to:
-  /// **'Renovaciones'**
-  String get remindersFilterRenewals;
-
-  /// No description provided for @remindersFilterCalls.
-  ///
-  /// In es, this message translates to:
-  /// **'Llamadas'**
-  String get remindersFilterCalls;
 
   /// No description provided for @remindersFilterCompleted.
   ///
@@ -1712,18 +1610,6 @@ abstract class AppLocalizations {
   /// **'Detalles'**
   String get remindersSectionDetails;
 
-  /// No description provided for @remindersVoiceHint.
-  ///
-  /// In es, this message translates to:
-  /// **'DÍSELO CON TUS PALABRAS'**
-  String get remindersVoiceHint;
-
-  /// No description provided for @remindersVoicePlaceholder.
-  ///
-  /// In es, this message translates to:
-  /// **'recuérdame llamar a José mañana a las 3'**
-  String get remindersVoicePlaceholder;
-
   /// No description provided for @remindersFieldTitle.
   ///
   /// In es, this message translates to:
@@ -1748,29 +1634,11 @@ abstract class AppLocalizations {
   /// **'Cliente'**
   String get remindersFieldClient;
 
-  /// No description provided for @remindersFieldDate.
-  ///
-  /// In es, this message translates to:
-  /// **'Fecha'**
-  String get remindersFieldDate;
-
-  /// No description provided for @remindersFieldTime.
-  ///
-  /// In es, this message translates to:
-  /// **'Hora'**
-  String get remindersFieldTime;
-
   /// No description provided for @remindersFieldDateTime.
   ///
   /// In es, this message translates to:
   /// **'Fecha y hora'**
   String get remindersFieldDateTime;
-
-  /// No description provided for @remindersRepeatYearly.
-  ///
-  /// In es, this message translates to:
-  /// **'Repetir cada año'**
-  String get remindersRepeatYearly;
 
   /// No description provided for @remindersCreateBtn.
   ///
@@ -1826,59 +1694,11 @@ abstract class AppLocalizations {
   /// **'Elige cuándo quieres que te recuerde esto.'**
   String get remindersPickDateMessage;
 
-  /// No description provided for @voiceListening.
-  ///
-  /// In es, this message translates to:
-  /// **'Escuchando…'**
-  String get voiceListening;
-
-  /// No description provided for @voiceTapToClose.
-  ///
-  /// In es, this message translates to:
-  /// **'Toca para cerrar'**
-  String get voiceTapToClose;
-
-  /// No description provided for @voiceInputHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Pregunta…'**
-  String get voiceInputHint;
-
-  /// No description provided for @voiceSend.
-  ///
-  /// In es, this message translates to:
-  /// **'Enviar'**
-  String get voiceSend;
-
-  /// No description provided for @voiceTapToSend.
-  ///
-  /// In es, this message translates to:
-  /// **'Toca para enviar'**
-  String get voiceTapToSend;
-
-  /// No description provided for @voiceTapToStart.
-  ///
-  /// In es, this message translates to:
-  /// **'Toca para hablar'**
-  String get voiceTapToStart;
-
-  /// No description provided for @voiceNotAvailable.
-  ///
-  /// In es, this message translates to:
-  /// **'Voz no disponible'**
-  String get voiceNotAvailable;
-
   /// No description provided for @voiceChatConnecting.
   ///
   /// In es, this message translates to:
   /// **'Conectando…'**
   String get voiceChatConnecting;
-
-  /// No description provided for @voiceChatSessionReady.
-  ///
-  /// In es, this message translates to:
-  /// **'Preparando sesión…'**
-  String get voiceChatSessionReady;
 
   /// No description provided for @voiceChatListening.
   ///
@@ -1891,18 +1711,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Respondiendo…'**
   String get voiceChatModelSpeaking;
-
-  /// No description provided for @voiceChatEnd.
-  ///
-  /// In es, this message translates to:
-  /// **'Terminar sesión'**
-  String get voiceChatEnd;
-
-  /// No description provided for @voiceChatClosed.
-  ///
-  /// In es, this message translates to:
-  /// **'Sesión terminada'**
-  String get voiceChatClosed;
 
   /// No description provided for @voiceChatError.
   ///
@@ -1927,12 +1735,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Consultando datos…'**
   String get voiceChatSkillActive;
-
-  /// No description provided for @voiceChatThinking.
-  ///
-  /// In es, this message translates to:
-  /// **'Pensando…'**
-  String get voiceChatThinking;
 
   /// No description provided for @voiceOutputTitle.
   ///
@@ -2084,12 +1886,6 @@ abstract class AppLocalizations {
   /// **'Conectado a tu base'**
   String get chatSubtitle;
 
-  /// No description provided for @chatNewConversation.
-  ///
-  /// In es, this message translates to:
-  /// **'Nueva conversación'**
-  String get chatNewConversation;
-
   /// No description provided for @chatInputHint.
   ///
   /// In es, this message translates to:
@@ -2114,12 +1910,6 @@ abstract class AppLocalizations {
   /// **'Ir a Agenda'**
   String get chatCardGoToAgenda;
 
-  /// No description provided for @chatCardContactInfoTitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Contacto'**
-  String get chatCardContactInfoTitle;
-
   /// No description provided for @chatCardContactListTitle.
   ///
   /// In es, this message translates to:
@@ -2138,29 +1928,11 @@ abstract class AppLocalizations {
   /// **'Póliza Encontrada'**
   String get chatCardPolicyInfoTitle;
 
-  /// No description provided for @chatCardActionCall.
-  ///
-  /// In es, this message translates to:
-  /// **'Llamar'**
-  String get chatCardActionCall;
-
-  /// No description provided for @chatCardActionWhatsApp.
-  ///
-  /// In es, this message translates to:
-  /// **'WhatsApp'**
-  String get chatCardActionWhatsApp;
-
   /// No description provided for @feedTitle.
   ///
   /// In es, this message translates to:
   /// **'Base de conocimiento'**
   String get feedTitle;
-
-  /// No description provided for @feedSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Alimentar la app'**
-  String get feedSubtitle;
 
   /// No description provided for @feedQuestion.
   ///
@@ -2354,29 +2126,11 @@ abstract class AppLocalizations {
   /// **'Subido recientemente'**
   String get feedRecentlyUploaded;
 
-  /// No description provided for @feedUploading.
-  ///
-  /// In es, this message translates to:
-  /// **'Subiendo archivo…'**
-  String get feedUploading;
-
   /// No description provided for @feedProcessing.
   ///
   /// In es, this message translates to:
   /// **'Procesando con IA…'**
   String get feedProcessing;
-
-  /// No description provided for @feedUploadingDesc.
-  ///
-  /// In es, this message translates to:
-  /// **'Enviando el PDF a Supabase Storage'**
-  String get feedUploadingDesc;
-
-  /// No description provided for @feedProcessingDesc.
-  ///
-  /// In es, this message translates to:
-  /// **'La IA está extrayendo los datos de la póliza'**
-  String get feedProcessingDesc;
 
   /// No description provided for @feedStepGettingUrl.
   ///
@@ -2691,24 +2445,6 @@ abstract class AppLocalizations {
   /// **'Cancelar'**
   String get remindersActionCancel;
 
-  /// No description provided for @remindersActionCancelTitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Cancelar recordatorio'**
-  String get remindersActionCancelTitle;
-
-  /// No description provided for @remindersActionCancelHint.
-  ///
-  /// In es, this message translates to:
-  /// **'¿Por qué se cancela?'**
-  String get remindersActionCancelHint;
-
-  /// No description provided for @remindersActionCancelBtn.
-  ///
-  /// In es, this message translates to:
-  /// **'Confirmar cancelación'**
-  String get remindersActionCancelBtn;
-
   /// No description provided for @remindersActionCommentRequired.
   ///
   /// In es, this message translates to:
@@ -2823,12 +2559,6 @@ abstract class AppLocalizations {
   /// **'Guardar'**
   String get remindersDetailSave;
 
-  /// No description provided for @remindersDetailNoClient.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin cliente asignado'**
-  String get remindersDetailNoClient;
-
   /// No description provided for @remindersDetailSaved.
   ///
   /// In es, this message translates to:
@@ -2841,18 +2571,6 @@ abstract class AppLocalizations {
   /// **'Estado'**
   String get remindersDetailStatus;
 
-  /// No description provided for @remindersDetailDatetime.
-  ///
-  /// In es, this message translates to:
-  /// **'Fecha y hora'**
-  String get remindersDetailDatetime;
-
-  /// No description provided for @remindersDetailActions.
-  ///
-  /// In es, this message translates to:
-  /// **'Acciones'**
-  String get remindersDetailActions;
-
   /// No description provided for @reminderPriorityUrgent.
   ///
   /// In es, this message translates to:
@@ -2864,12 +2582,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pronto'**
   String get reminderPriorityWarning;
-
-  /// No description provided for @reminderPriorityNormal.
-  ///
-  /// In es, this message translates to:
-  /// **'Normal'**
-  String get reminderPriorityNormal;
 
   /// No description provided for @remindersDetailDueDate.
   ///
@@ -2894,12 +2606,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tipo de recordatorio'**
   String get remindersDetailSelectType;
-
-  /// No description provided for @remindersDetailSelectStatus.
-  ///
-  /// In es, this message translates to:
-  /// **'Estado del recordatorio'**
-  String get remindersDetailSelectStatus;
 
   /// No description provided for @remindersDetailComments.
   ///
@@ -3261,12 +2967,6 @@ abstract class AppLocalizations {
   /// **'Nombre corto'**
   String get catalogsFieldShortName;
 
-  /// No description provided for @catalogsFieldCode.
-  ///
-  /// In es, this message translates to:
-  /// **'Código'**
-  String get catalogsFieldCode;
-
   /// No description provided for @catalogsSelectCarrier.
   ///
   /// In es, this message translates to:
@@ -3320,42 +3020,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Crear'**
   String get catalogsCreateBtn;
-
-  /// No description provided for @catalogsCarrierCreated.
-  ///
-  /// In es, this message translates to:
-  /// **'Aseguradora creada'**
-  String get catalogsCarrierCreated;
-
-  /// No description provided for @catalogsCarrierUpdated.
-  ///
-  /// In es, this message translates to:
-  /// **'Aseguradora actualizada'**
-  String get catalogsCarrierUpdated;
-
-  /// No description provided for @catalogsBranchCreated.
-  ///
-  /// In es, this message translates to:
-  /// **'Ramo creado'**
-  String get catalogsBranchCreated;
-
-  /// No description provided for @catalogsBranchUpdated.
-  ///
-  /// In es, this message translates to:
-  /// **'Ramo actualizado'**
-  String get catalogsBranchUpdated;
-
-  /// No description provided for @catalogsProductCreated.
-  ///
-  /// In es, this message translates to:
-  /// **'Producto creado'**
-  String get catalogsProductCreated;
-
-  /// No description provided for @catalogsProductUpdated.
-  ///
-  /// In es, this message translates to:
-  /// **'Producto actualizado'**
-  String get catalogsProductUpdated;
 
   /// No description provided for @catalogsDeleteTitle.
   ///
@@ -3579,12 +3243,6 @@ abstract class AppLocalizations {
   /// **'Preguntar sobre esta póliza'**
   String get policiesAskAbout;
 
-  /// No description provided for @commonOpenFile.
-  ///
-  /// In es, this message translates to:
-  /// **'Abrir archivo'**
-  String get commonOpenFile;
-
   /// No description provided for @chatCardPolicyListTitle.
   ///
   /// In es, this message translates to:
@@ -3777,23 +3435,11 @@ abstract class AppLocalizations {
   /// **'Sin avisos'**
   String get reminderSettingsOff;
 
-  /// No description provided for @reminderSettingsBranchExceptions.
-  ///
-  /// In es, this message translates to:
-  /// **'Excepciones por ramo'**
-  String get reminderSettingsBranchExceptions;
-
   /// No description provided for @reminderSettingsAddException.
   ///
   /// In es, this message translates to:
   /// **'Agregar excepción'**
   String get reminderSettingsAddException;
-
-  /// No description provided for @reminderSettingsAllBranches.
-  ///
-  /// In es, this message translates to:
-  /// **'Todos los ramos'**
-  String get reminderSettingsAllBranches;
 
   /// No description provided for @reminderSettingsPickDays.
   ///
@@ -3873,18 +3519,6 @@ abstract class AppLocalizations {
   /// **'Se te va a pasar'**
   String get commitmentsTitle;
 
-  /// No description provided for @commitmentsEmpty.
-  ///
-  /// In es, this message translates to:
-  /// **'Nada pendiente por ahora'**
-  String get commitmentsEmpty;
-
-  /// No description provided for @commitmentsOverdue.
-  ///
-  /// In es, this message translates to:
-  /// **'Vencido'**
-  String get commitmentsOverdue;
-
   /// No description provided for @commitmentsNoDate.
   ///
   /// In es, this message translates to:
@@ -3921,23 +3555,11 @@ abstract class AppLocalizations {
   /// **'¿Ya resolviste esto con {client}?'**
   String commitmentsDoneMessage(String client);
 
-  /// No description provided for @commitmentsDoneHint.
-  ///
-  /// In es, this message translates to:
-  /// **'¿Qué pasó? (opcional)'**
-  String get commitmentsDoneHint;
-
   /// No description provided for @commitmentsClosed.
   ///
   /// In es, this message translates to:
   /// **'Listo, lo quité de tus pendientes'**
   String get commitmentsClosed;
-
-  /// No description provided for @commitmentsViewAll.
-  ///
-  /// In es, this message translates to:
-  /// **'Ver todos'**
-  String get commitmentsViewAll;
 
   /// No description provided for @agendaTabReminders.
   ///
