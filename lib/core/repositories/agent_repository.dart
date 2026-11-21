@@ -5,7 +5,8 @@ abstract class AgentRepository {
   Future<AgentProfile> getMe();
   Future<AgentProfile> updateMe({String? fullName, String? phone});
   Future<void> updateLocale(String locale);
-  Future<PrivacyConsent> acceptPrivacy(String version);
+  Future<PrivacyConsent> acceptPrivacy(String version,
+      {required bool acceptedNotice, required bool acceptedSensitive});
   Future<void> registerDeviceToken({required String token, required String platform});
   Future<void> deregisterDeviceToken({required String token});
 }

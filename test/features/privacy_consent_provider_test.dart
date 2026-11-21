@@ -12,6 +12,8 @@ class _FakeRepo implements AgentRepository {
   final ApiException? acceptError;
   final locales = <String>[];
   String? acceptedVersion;
+  bool? sentNotice;
+  bool? sentSensitive;
 
   static const _pending = PrivacyConsent(currentVersion: 'v1', url: 'u', required: true);
 
@@ -20,9 +22,12 @@ class _FakeRepo implements AgentRepository {
       id: '1', fullName: 'Ana', email: 'a@x.com', plan: 'trial', isActive: true, privacy: _pending);
 
   @override
-  Future<PrivacyConsent> acceptPrivacy(String version) async {
+  Future<PrivacyConsent> acceptPrivacy(String version,
+      {required bool acceptedNotice, required bool acceptedSensitive}) async {
     if (acceptError != null) throw acceptError!;
     acceptedVersion = version;
+    sentNotice = acceptedNotice;
+    sentSensitive = acceptedSensitive;
     return const PrivacyConsent(currentVersion: 'v1', acceptedVersion: 'v1', url: 'u');
   }
 
@@ -49,6 +54,8 @@ void main() {
     n.setSensitiveChecked(true);
     expect(await n.accept(), isTrue);
     expect(repo.acceptedVersion, 'v1');
+    expect(repo.sentNotice, isTrue);
+    expect(repo.sentSensitive, isTrue);
     expect(c.read(agentProfileProvider).value!.mustAcceptPrivacy, isFalse);
   });
 

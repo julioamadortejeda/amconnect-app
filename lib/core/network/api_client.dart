@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
 import '../utils/device_timezone.dart';
@@ -66,14 +67,30 @@ class ApiClient {
     await _ensureFreshSession();
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
     final locale = Platform.localeName; // e.g. "es_MX"
+    final appVersion = await _appVersion();
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
       'x-timezone': DeviceTimezone.name, // IANA real, e.g. "America/Mexico_City"
       'x-timezone-offset': DeviceTimezone.offset,
       'Accept-Language': locale,
+      // Versión y plataforma: el backend las guarda como evidencia del consentimiento.
+      if (appVersion != null) 'x-app-version': appVersion,
+      'x-platform': Platform.isIOS ? 'ios' : 'android',
     };
   }
+
+  static Future<String?>? _appVersionFuture;
+
+  /// "1.4.0+23". Se lee una vez; si falla devuelve null (el header se omite).
+  static Future<String?> _appVersion() => _appVersionFuture ??= () async {
+        try {
+          final info = await PackageInfo.fromPlatform();
+          return '${info.version}+${info.buildNumber}';
+        } catch (_) {
+          return null;
+        }
+      }();
 
   /// Renueva el access token si ya venció o está por vencer.
   ///

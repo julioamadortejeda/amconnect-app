@@ -45,7 +45,8 @@ class PrivacyConsentNotifier extends Notifier<PrivacyConsentState> {
     if (!state.canAccept) return false;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await ref.read(agentProfileProvider.notifier).acceptPrivacy();
+      await ref.read(agentProfileProvider.notifier).acceptPrivacy(
+          acceptedNotice: state.checked, acceptedSensitive: state.sensitiveChecked);
       state = state.copyWith(submitting: false);
       return true;
     } on ApiException catch (e) {

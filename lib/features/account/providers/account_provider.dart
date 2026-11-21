@@ -50,10 +50,11 @@ class AgentProfileNotifier extends AsyncNotifier<AgentProfile> {
 
   /// Registra la aceptación de la versión vigente del Aviso de Privacidad.
   /// Lanza `ApiException` si el backend rechaza (ej. versión ya no vigente).
-  Future<void> acceptPrivacy() async {
+  Future<void> acceptPrivacy({required bool acceptedNotice, required bool acceptedSensitive}) async {
     final current = state.value;
     if (current == null) return;
-    final privacy = await _repo.acceptPrivacy(current.privacy.currentVersion);
+    final privacy = await _repo.acceptPrivacy(current.privacy.currentVersion,
+        acceptedNotice: acceptedNotice, acceptedSensitive: acceptedSensitive);
     state = AsyncData(current.copyWith(privacy: privacy));
   }
 

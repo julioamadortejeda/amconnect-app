@@ -35,8 +35,13 @@ class SupabaseAgentRepository implements AgentRepository {
   }
 
   @override
-  Future<PrivacyConsent> acceptPrivacy(String version) async {
-    final res = await _client.post('agents/me/privacy-consent', body: {'version': version});
+  Future<PrivacyConsent> acceptPrivacy(String version,
+      {required bool acceptedNotice, required bool acceptedSensitive}) async {
+    final res = await _client.post('agents/me/privacy-consent', body: {
+      'version': version,
+      'acceptedNotice': acceptedNotice,
+      'acceptedSensitive': acceptedSensitive,
+    });
     return PrivacyConsent.fromJson(res['data']);
   }
 
