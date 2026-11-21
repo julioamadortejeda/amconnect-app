@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/api_error_mapper.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_error_retry.dart';
 import '../../../core/widgets/am_loader.dart';
+import '../../../core/widgets/am_refresh.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_sliding_tabs.dart';
 import '../../../core/widgets/am_top_bar.dart';
@@ -135,7 +139,9 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             AmAnimateIn(
               index: 0,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AmDimens.screenH,
+                ),
                 child: AmSlidingTabs(
                   labels: [clientsLabel, policiesLabel],
                   selected: _tabIdx,
@@ -147,15 +153,19 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             AmAnimateIn(
               index: 1,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AmDimens.screenH),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AmDimens.screenH,
+                ),
                 child: _tabIdx == 0
                     ? AmSearchBar(
                         key: const ValueKey('search_clients'),
-                        onChanged: (v) => ref.read(clientSearchProvider.notifier).set(v),
+                        onChanged: (v) =>
+                            ref.read(clientSearchProvider.notifier).set(v),
                       )
                     : AmSearchBar(
                         key: const ValueKey('search_policies'),
-                        onChanged: (v) => ref.read(policySearchProvider.notifier).set(v),
+                        onChanged: (v) =>
+                            ref.read(policySearchProvider.notifier).set(v),
                         hintText: l10n.clientsSearchPolicyHint,
                       ),
               ),
@@ -195,43 +205,46 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
       key: const ValueKey('clients_view'),
       child: contactsAsync.when(
         loading: () => const AmLoader(),
-      error: (_, __) => Center(
-        child: Text(
-          l10n.clientsError,
-          style: TextStyle(color: cs.tertiary),
+        error: (e, _) => AmErrorRetry(
+          message: l10n.clientsError,
+          detail: context.translateError(mapApiError(e)),
+          onRetry: () => ref.invalidate(clientsProvider),
         ),
-      ),
-      data: (_) => list.isEmpty
-          ? Center(
-              child: Text(
-                l10n.clientsEmpty,
-                style: TextStyle(color: cs.tertiary),
+        data: (_) => list.isEmpty
+            ? Center(
+                child: Text(
+                  l10n.clientsEmpty,
+                  style: TextStyle(color: cs.tertiary),
+                ),
+              )
+            : AmRefresh(
+                onRefresh: ref.read(clientsProvider.notifier).refresh,
+                child: ListView.separated(
+                  key: const PageStorageKey('clients_list'),
+                  controller: _clientsScrollCtrl,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AmDimens.screenH,
+                    0,
+                    AmDimens.screenH,
+                    AmDimens.scrollBottomPad,
+                  ),
+                  itemCount: list.length + (isLoadingMore ? 1 : 0),
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (_, i) {
+                    if (i >= list.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
+                        child: Center(child: AmLoader()),
+                      );
+                    }
+                    return AmAnimateIn(
+                      index: i + 1,
+                      child: ClientRow(contact: list[i]),
+                    );
+                  },
+                ),
               ),
-            )
-          : ListView.separated(
-              key: const PageStorageKey('clients_list'),
-              controller: _clientsScrollCtrl,
-              padding: const EdgeInsets.fromLTRB(
-                AmDimens.screenH,
-                0,
-                AmDimens.screenH,
-                AmDimens.scrollBottomPad,
-              ),
-              itemCount: list.length + (isLoadingMore ? 1 : 0),
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (_, i) {
-                if (i >= list.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
-                    child: Center(child: AmLoader()),
-                  );
-                }
-                return AmAnimateIn(
-                  index: i + 1,
-                  child: ClientRow(contact: list[i]),
-                );
-              },
-            ),
       ),
     );
   }
@@ -250,43 +263,46 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
       key: const ValueKey('policies_view'),
       child: policiesAsync.when(
         loading: () => const AmLoader(),
-      error: (_, __) => Center(
-        child: Text(
-          l10n.clientsErrorPolicies,
-          style: TextStyle(color: cs.tertiary),
+        error: (e, _) => AmErrorRetry(
+          message: l10n.clientsErrorPolicies,
+          detail: context.translateError(mapApiError(e)),
+          onRetry: () => ref.invalidate(policiesProvider),
         ),
-      ),
-      data: (_) => list.isEmpty
-          ? Center(
-              child: Text(
-                l10n.clientsEmptyPolicies,
-                style: TextStyle(color: cs.tertiary),
+        data: (_) => list.isEmpty
+            ? Center(
+                child: Text(
+                  l10n.clientsEmptyPolicies,
+                  style: TextStyle(color: cs.tertiary),
+                ),
+              )
+            : AmRefresh(
+                onRefresh: ref.read(policiesProvider.notifier).refresh,
+                child: ListView.separated(
+                  key: const PageStorageKey('policies_list'),
+                  controller: _policiesScrollCtrl,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AmDimens.screenH,
+                    0,
+                    AmDimens.screenH,
+                    AmDimens.scrollBottomPad,
+                  ),
+                  itemCount: list.length + (isLoadingMore ? 1 : 0),
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (_, i) {
+                    if (i >= list.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
+                        child: Center(child: AmLoader()),
+                      );
+                    }
+                    return AmAnimateIn(
+                      index: i + 1,
+                      child: ClientPolicyCard(policy: list[i]),
+                    );
+                  },
+                ),
               ),
-            )
-          : ListView.separated(
-              key: const PageStorageKey('policies_list'),
-              controller: _policiesScrollCtrl,
-              padding: const EdgeInsets.fromLTRB(
-                AmDimens.screenH,
-                0,
-                AmDimens.screenH,
-                AmDimens.scrollBottomPad,
-              ),
-              itemCount: list.length + (isLoadingMore ? 1 : 0),
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (_, i) {
-                if (i >= list.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AmDimens.gapM),
-                    child: Center(child: AmLoader()),
-                  );
-                }
-                return AmAnimateIn(
-                  index: i + 1,
-                  child: ClientPolicyCard(policy: list[i]),
-                );
-              },
-            ),
       ),
     );
   }

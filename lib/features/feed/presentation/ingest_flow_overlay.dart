@@ -354,7 +354,7 @@ class _UnifiedIngestBottomSheetState
       case IngestPhase.error:
         return _UnifiedErrorSheet(
             error:
-                context.translateError(state.error ?? 'Error de procesamiento'),
+                context.translateError(state.error ?? 'errUnknown'),
             onClose: handleClose);
       default:
         return const SizedBox.shrink();
@@ -398,7 +398,7 @@ class _UnifiedErrorSheet extends StatelessWidget {
               Icon(Icons.error_outline, color: cs.error, size: 48),
               const SizedBox(height: 16),
               Text(
-                'Error de procesamiento',
+                AppLocalizations.of(context)!.feedErrorTitle,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/catalog.dart';
 import '../../../core/models/reminder_setting.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/utils/error_translator.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_select_sheet.dart';
@@ -46,9 +46,7 @@ class ReminderSettingsScreen extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.all(AmDimens.screenH),
               child: Text(
-                context.translateError(
-                  error is ApiException ? (error.errorCode ?? error.message) : error.toString(),
-                ),
+                context.translateError(mapApiError(error)),
                 style: TextStyle(color: cs.tertiary),
                 textAlign: TextAlign.center,
               ),

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/providers/permission_provider.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/api_error_mapper.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_error_retry.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../../../core/providers/commitments_provider.dart';
@@ -65,7 +68,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     final cs = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
-    if (!ref.watch(homeReadyProvider).hasValue) return const AmLoader();
+    final homeReady = ref.watch(homeReadyProvider);
+    if (!homeReady.hasValue) {
+      // Sin red al abrir: estado de error con reintento, nunca un loader sin
+      // salida. Mientras reintenta (`isLoading` con el error previo) vuelve
+      // el loader para que el toque tenga respuesta visible.
+      if (homeReady.hasError && !homeReady.isLoading) {
+        return Scaffold(
+          body: SafeArea(
+            child: AmErrorRetry(
+              message: l10n.homeLoadError,
+              detail: context.translateError(mapApiError(homeReady.error!)),
+              onRetry: ref.read(homeReloadProvider),
+            ),
+          ),
+        );
+      }
+      return const AmLoader();
+    }
 
     final data = ref.watch(homeDashboardProvider);
     // Sin `.when`: si los compromisos aún cargan o fallan, el dashboard se pinta

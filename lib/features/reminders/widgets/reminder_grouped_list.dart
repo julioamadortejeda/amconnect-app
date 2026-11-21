@@ -45,6 +45,9 @@ class ReminderGroupedList extends StatelessWidget {
     var aniIdx = 0;
 
     return SingleChildScrollView(
+      // Siempre scrollable para que el pull-to-refresh de la agenda funcione
+      // aunque haya pocos recordatorios.
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
           AmDimens.screenH, 0, AmDimens.screenH, AmDimens.scrollBottomPad),
       child: Column(

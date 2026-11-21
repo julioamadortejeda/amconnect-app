@@ -36,8 +36,12 @@ class ShellScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bottom = MediaQuery.of(context).padding.bottom;
     final activeIndex = navigationShell.currentIndex;
+    // La barra se oculta solo mientras el dashboard carga por primera vez.
+    // Con error se muestra: sin ella el asesor quedaba atrapado en Inicio
+    // sin poder ir a ningún otro tab.
+    final homeReady = ref.watch(homeReadyProvider);
     final barVisible =
-        activeIndex != 0 || ref.watch(homeReadyProvider).hasValue;
+        activeIndex != 0 || homeReady.hasValue || homeReady.hasError;
 
     return ShareHandlerListener(
       child: Scaffold(

@@ -7,6 +7,7 @@ import '../../../core/models/commitment.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../../../core/repositories/supabase_reminder_repository.dart';
 import '../../home/providers/home_provider.dart';
@@ -229,7 +230,7 @@ class CreateReminderNotifier extends Notifier<CreateReminderState> {
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
-      state = CreateReminderState(error: e.errorCode ?? e.message);
+      state = CreateReminderState(error: mapApiError(e));
       return null;
     }
   }

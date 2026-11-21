@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
 import '../data/feed_item.dart';
+import '../../../core/utils/api_error_mapper.dart';
 
 enum FeedViewMode { ingest, knowledge }
 
@@ -14,7 +15,9 @@ class FeedViewModeNotifier extends Notifier<FeedViewMode> {
 }
 
 final feedViewModeProvider =
-    NotifierProvider<FeedViewModeNotifier, FeedViewMode>(FeedViewModeNotifier.new);
+    NotifierProvider<FeedViewModeNotifier, FeedViewMode>(
+      FeedViewModeNotifier.new,
+    );
 
 final knowledgeStatsProvider = FutureProvider<Map<String, int>>((ref) async {
   return ref.read(noteRepositoryProvider).getNotesSummary();
@@ -49,12 +52,11 @@ class KnowledgeListState {
     List<FeedItem>? items,
     bool? hasMore,
     bool? isLoadingMore,
-  }) =>
-      KnowledgeListState(
-        items: items ?? this.items,
-        hasMore: hasMore ?? this.hasMore,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      );
+  }) => KnowledgeListState(
+    items: items ?? this.items,
+    hasMore: hasMore ?? this.hasMore,
+    isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+  );
 }
 
 class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
@@ -69,10 +71,7 @@ class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
       offset: 0,
       query: query.trim().isEmpty ? null : query,
     );
-    return KnowledgeListState(
-      items: items,
-      hasMore: items.length == _pageSize,
-    );
+    return KnowledgeListState(items: items, hasMore: items.length == _pageSize);
   }
 
   Future<void> loadMore() async {
@@ -90,18 +89,43 @@ class KnowledgeListNotifier extends AsyncNotifier<KnowledgeListState> {
         offset: current.items.length,
         query: query.trim().isEmpty ? null : query,
       );
-      state = AsyncData(current.copyWith(
-        items: [...current.items, ...newItems],
-        hasMore: newItems.length == _pageSize,
-        isLoadingMore: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          items: [...current.items, ...newItems],
+          hasMore: newItems.length == _pageSize,
+          isLoadingMore: false,
+        ),
+      );
     } catch (_) {
       state = AsyncData(current.copyWith(isLoadingMore: false));
+    }
+  }
+
+  /// Pull-to-refresh: vuelve a la primera página sin pasar por
+  /// `AsyncLoading`. Refresca también los contadores de arriba.
+  /// Devuelve la clave de error (para `translateError`) o null.
+  Future<String?> refresh() async {
+    ref.invalidate(knowledgeStatsProvider);
+    final query = ref.read(knowledgeSearchQueryProvider);
+    try {
+      final items = await ref
+          .read(noteRepositoryProvider)
+          .searchNotes(
+            limit: _pageSize,
+            offset: 0,
+            query: query.trim().isEmpty ? null : query,
+          );
+      state = AsyncData(
+        KnowledgeListState(items: items, hasMore: items.length == _pageSize),
+      );
+      return null;
+    } catch (e) {
+      return mapApiError(e);
     }
   }
 }
 
 final knowledgeListProvider =
     AsyncNotifierProvider<KnowledgeListNotifier, KnowledgeListState>(
-  KnowledgeListNotifier.new,
-);
+      KnowledgeListNotifier.new,
+    );

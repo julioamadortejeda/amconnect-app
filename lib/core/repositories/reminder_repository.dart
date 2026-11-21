@@ -3,6 +3,7 @@ import '../models/reminder_setting.dart';
 import '../models/reminder_type.dart';
 
 abstract class ReminderRepository {
+  /// Todos los recordatorios del asesor (recorre todas las páginas).
   Future<List<Reminder>> getAll();
 
   /// Busca por varias palabras en título y descripción — sin acentos, en
@@ -41,7 +42,9 @@ abstract class ReminderRepository {
     String? policyId,
     String? status,
   });
-  Future<void> setDone(String id, bool isDone);
+  /// Marca el recordatorio como hecho (estado DONE). Lanza `ApiException`
+  /// si el backend no lo guardó. Devuelve el recordatorio actualizado.
+  Future<Reminder?> markDone(String id);
   Future<List<ReminderType>> getTypes();
   Future<Reminder?> updateStatus(String id, String statusCode, {String? comment});
   Future<Reminder?> reschedule(String id, DateTime dueDate);

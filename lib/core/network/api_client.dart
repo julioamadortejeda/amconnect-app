@@ -1,13 +1,59 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
 import '../utils/device_timezone.dart';
 
+/// Código que la app genera cuando la petición no llegó al backend o no
+/// regresó (sin red, DNS, TLS, timeout). Lo traduce `error_translator.dart`.
+const kConnectionFailedCode = 'CONNECTION_FAILED';
+
 class ApiClient {
-  String get _base => Env.apiBaseUrl;
+  /// [client], [baseUrl] y [headersBuilder] existen para las pruebas: en la app
+  /// se usan los defaults (cliente con timeout de conexión, `Env.apiBaseUrl` y
+  /// headers con la sesión de Supabase).
+  ApiClient({
+    http.Client? client,
+    String? baseUrl,
+    @visibleForTesting Future<Map<String, String>> Function()? headersBuilder,
+    this.requestTimeout = const Duration(seconds: 30),
+    this.aiRequestTimeout = const Duration(seconds: 150),
+    this.uploadTimeout = const Duration(seconds: 120),
+  })  : _client = client ?? _defaultClient(),
+        _baseOverride = baseUrl,
+        _headersBuilder = headersBuilder;
+
+  final http.Client _client;
+  final String? _baseOverride;
+  final Future<Map<String, String>> Function()? _headersBuilder;
+
+  /// Tope para recibir la respuesta completa de una petición normal (CRUD).
+  final Duration requestTimeout;
+
+  /// Tope para `ai/*`: chat e ingesta llaman al modelo y tardan decenas de
+  /// segundos. 150 s es el límite de una Edge Function de Supabase; esperar
+  /// más no sirve porque el gateway ya habrá cortado.
+  final Duration aiRequestTimeout;
+
+  /// Tope para subir un archivo a una URL firmada de Storage.
+  final Duration uploadTimeout;
+
+  /// Tope para abrir el socket. Sin esto, con red mala `HttpClient` espera lo
+  /// que diga el sistema operativo (minutos).
+  static const connectTimeout = Duration(seconds: 10);
+
+  static http.Client _defaultClient() =>
+      IOClient(HttpClient()..connectionTimeout = connectTimeout);
+
+  String get _base => _baseOverride ?? Env.apiBaseUrl;
+
+  Duration _timeoutFor(String path) =>
+      path.startsWith('ai/') ? aiRequestTimeout : requestTimeout;
 
   /// Margen con el que se considera "por expirar" un access token. El refresh
   /// tarda un round-trip y la petición sale después: sin margen, un token que
@@ -15,6 +61,8 @@ class ApiClient {
   static const _refreshMargin = Duration(seconds: 60);
 
   Future<Map<String, String>> _buildHeaders() async {
+    final override = _headersBuilder;
+    if (override != null) return override();
     await _ensureFreshSession();
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
     final locale = Platform.localeName; // e.g. "es_MX"
@@ -71,37 +119,98 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> get(String path) async {
-    final res = await http.get(Uri.parse('$_base/$path'), headers: await _buildHeaders());
+    final res = await _send(
+      path,
+      (uri, headers) => _client.get(uri, headers: headers),
+    );
     return _handle(res);
   }
 
   Future<Map<String, dynamic>> post(String path, {Map<String, dynamic>? body}) async {
-    final res = await http.post(
-      Uri.parse('$_base/$path'),
-      headers: await _buildHeaders(),
-      body: body != null ? jsonEncode(body) : null,
+    final res = await _send(
+      path,
+      (uri, headers) => _client.post(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      ),
     );
     return _handle(res);
   }
 
   Future<Map<String, dynamic>> patch(String path, {Map<String, dynamic>? body}) async {
-    final res = await http.patch(
-      Uri.parse('$_base/$path'),
-      headers: await _buildHeaders(),
-      body: body != null ? jsonEncode(body) : null,
+    final res = await _send(
+      path,
+      (uri, headers) => _client.patch(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      ),
     );
     return _handle(res);
   }
 
   Future<void> delete(String path, {Map<String, dynamic>? body}) async {
-    final res = await http.delete(
-      Uri.parse('$_base/$path'),
-      headers: await _buildHeaders(),
-      body: body != null ? jsonEncode(body) : null,
+    final res = await _send(
+      path,
+      (uri, headers) => _client.delete(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      ),
     );
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw _toApiException(res);
     }
+  }
+
+  /// Arma la petición y la ejecuta con timeout. Todo fallo de transporte sale
+  /// como `ApiException(CONNECTION_FAILED)`: los providers solo atrapan
+  /// `ApiException`, y cualquier otra excepción dejaba el botón girando y
+  /// llegaba a Crashlytics como fatal.
+  Future<http.Response> _send(
+    String path,
+    Future<http.Response> Function(Uri uri, Map<String, String> headers) request,
+  ) async {
+    final uri = Uri.parse('$_base/$path');
+    final headers = await _buildHeaders();
+    return guardTransport(() => request(uri, headers), _timeoutFor(path));
+  }
+
+  /// Ejecuta [request] con [timeout] y convierte los errores de red en
+  /// `ApiException(CONNECTION_FAILED)`. Las `ApiException` pasan intactas.
+  @visibleForTesting
+  static Future<T> guardTransport<T>(
+    Future<T> Function() request,
+    Duration timeout,
+  ) async {
+    try {
+      return await request().timeout(timeout);
+    } on ApiException {
+      rethrow;
+    } on TimeoutException catch (e) {
+      throw _connectionFailed(e);
+    } on SocketException catch (e) {
+      throw _connectionFailed(e);
+    } on HandshakeException catch (e) {
+      throw _connectionFailed(e);
+    } on TlsException catch (e) {
+      throw _connectionFailed(e);
+    } on HttpException catch (e) {
+      throw _connectionFailed(e);
+    } on http.ClientException catch (e) {
+      throw _connectionFailed(e);
+    }
+  }
+
+  static ApiException _connectionFailed(Object cause) {
+    // Solo el tipo: el mensaje del sistema puede traer la URL completa.
+    debugPrint('[ApiClient] transporte falló: ${cause.runtimeType}');
+    return const ApiException(
+      statusCode: 0,
+      message: kConnectionFailedCode,
+      errorCode: kConnectionFailedCode,
+    );
   }
 
   /// PUT sin Authorization — para URLs firmadas de Supabase Storage.
@@ -123,10 +232,13 @@ class ApiClient {
     }
 
     final bytes = await file.readAsBytes();
-    final res = await http.put(
-      Uri.parse(targetUrl),
-      headers: {'Content-Type': mimeType},
-      body: bytes,
+    final res = await guardTransport(
+      () => _client.put(
+        Uri.parse(targetUrl),
+        headers: {'Content-Type': mimeType},
+        body: bytes,
+      ),
+      uploadTimeout,
     );
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw ApiException(
@@ -139,7 +251,14 @@ class ApiClient {
 
   Map<String, dynamic> _handle(http.Response res) {
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      final body = jsonDecode(res.body);
+      final Object? body;
+      try {
+        body = jsonDecode(res.body);
+      } on FormatException {
+        // Un 2xx que no es JSON (proxy, portal cautivo de un wifi público).
+        // Sin esto el FormatException escapaba de los `on ApiException`.
+        throw ApiException(statusCode: res.statusCode, message: 'errUnknown');
+      }
       return body is Map<String, dynamic> ? body : {'data': body};
     }
     throw _toApiException(res);
@@ -156,13 +275,15 @@ class ApiClient {
     } catch (_) {
       return ApiException(
         statusCode: res.statusCode,
-        message: 'CONNECTION_FAILED',
-        errorCode: 'CONNECTION_FAILED',
+        message: kConnectionFailedCode,
+        errorCode: kConnectionFailedCode,
       );
     }
+    // Sin `error` en el cuerpo se guarda una clave que la UI sabe traducir,
+    // nunca un texto fijo en español.
     return ApiException(
       statusCode: res.statusCode,
-      message: (body is Map ? body['error']?.toString() : null) ?? 'Error desconocido',
+      message: (body is Map ? body['error']?.toString() : null) ?? 'errUnknown',
       errorCode: body is Map ? body['errorCode']?.toString() : null,
       errorId: body is Map ? body['errorId']?.toString() : null,
     );

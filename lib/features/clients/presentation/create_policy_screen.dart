@@ -21,6 +21,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../clients/providers/clients_provider.dart';
 import '../providers/catalog_provider.dart';
 import '../widgets/policy_picker_row.dart';
+import '../../../core/utils/catalog_code.dart';
 
 class CreatePolicyScreen extends ConsumerStatefulWidget {
   const CreatePolicyScreen({super.key, this.clientId, this.policy});
@@ -509,15 +510,15 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       label: l10n.policiesStatus,
                       value: selectedStatus == null
                           ? null
-                          : l10n.policyStatus(selectedStatus.name.toUpperCase()),
+                          : l10n.policyStatus(catalogCode(selectedStatus.code, selectedStatus.name)),
                       placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PolicyStatus>(
                           title: l10n.policiesStatus,
                           items: statuses,
-                          itemLabel: (s) => l10n.policyStatus(s.name.toUpperCase()),
+                          itemLabel: (s) => l10n.policyStatus(catalogCode(s.code, s.name)),
                           itemFilter: (s, q) => l10n
-                              .policyStatus(s.name.toUpperCase())
+                              .policyStatus(catalogCode(s.code, s.name))
                               .toLowerCase()
                               .contains(q.toLowerCase()),
                           itemId: (s) => s.id,
@@ -555,15 +556,15 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       label: l10n.policiesPaymentFrequency,
                       value: selectedFrequency == null
                           ? null
-                          : l10n.paymentFrequency(selectedFrequency.name.toUpperCase()),
+                          : l10n.paymentFrequency(catalogCode(selectedFrequency.code, selectedFrequency.name)),
                       placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PaymentFrequency>(
                           title: l10n.policiesPaymentFrequency,
                           items: frequencies,
-                          itemLabel: (f) => l10n.paymentFrequency(f.name.toUpperCase()),
+                          itemLabel: (f) => l10n.paymentFrequency(catalogCode(f.code, f.name)),
                           itemFilter: (f, q) => l10n
-                              .paymentFrequency(f.name.toUpperCase())
+                              .paymentFrequency(catalogCode(f.code, f.name))
                               .toLowerCase()
                               .contains(q.toLowerCase()),
                           itemId: (f) => f.id,
@@ -579,15 +580,15 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
                       label: l10n.policiesPaymentMethod,
                       value: selectedMethod == null
                           ? null
-                          : l10n.paymentMethod(selectedMethod.name.toUpperCase()),
+                          : l10n.paymentMethod(catalogCode(selectedMethod.code, selectedMethod.name)),
                       placeholder: l10n.commonSelectPlaceholder,
                       onTap: () {
                         _showSelectSheet<PaymentMethod>(
                           title: l10n.policiesPaymentMethod,
                           items: methods,
-                          itemLabel: (m) => l10n.paymentMethod(m.name.toUpperCase()),
+                          itemLabel: (m) => l10n.paymentMethod(catalogCode(m.code, m.name)),
                           itemFilter: (m, q) => l10n
-                              .paymentMethod(m.name.toUpperCase())
+                              .paymentMethod(catalogCode(m.code, m.name))
                               .toLowerCase()
                               .contains(q.toLowerCase()),
                           itemId: (m) => m.id,

@@ -21,12 +21,14 @@ class PolicyStatusChip extends StatelessWidget {
 
     final code = statusCode.toUpperCase().trim();
 
+    // Solo los códigos actuales de `policy_statuses`. Los alias en español
+    // (VIGENTE, EN_TRAMITE…) desaparecieron de la BD en la migración 012.
     final (label, color) = switch (code) {
-      'ACTIVE' || 'VIGENTE' => (l10n.policyStatus('ACTIVE'), am.green),
-      'PENDING' || 'EN_TRAMITE' || 'EN TRAMITE' => (l10n.policyStatus('PENDING'), am.amber),
-      'CANCELLED' || 'CANCELADA' => (l10n.policyStatus('CANCELLED'), cs.error),
-      'EXPIRED' || 'VENCIDA' => (l10n.policyStatus('EXPIRED'), cs.error),
-      'SUSPENDED' || 'SUSPENDIDA' => (l10n.policyStatus('SUSPENDED'), cs.tertiary),
+      'ACTIVE' => (l10n.policyStatus('ACTIVE'), am.green),
+      'PENDING' => (l10n.policyStatus('PENDING'), am.amber),
+      'CANCELLED' => (l10n.policyStatus('CANCELLED'), cs.error),
+      'EXPIRED' => (l10n.policyStatus('EXPIRED'), cs.error),
+      'SUSPENDED' => (l10n.policyStatus('SUSPENDED'), cs.tertiary),
       _ => (rawName ?? (code.isNotEmpty ? l10n.policyStatus(code) : '—'), cs.tertiary),
     };
 

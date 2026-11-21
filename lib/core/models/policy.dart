@@ -1,3 +1,4 @@
+import '../utils/catalog_code.dart';
 import 'payment_schedule.dart';
 
 class Policy {
@@ -54,9 +55,20 @@ class Policy {
   String get productName => product?.name ?? '—';
   String get branchName  => product?.branchName ?? '—';
   String get carrierName => product?.carrierName ?? '—';
-  String get statusCode  => status?.name.toUpperCase() ?? '';
+  String get statusCode  =>
+      status == null ? '' : catalogCode(status!.code, status!.name);
   String get currencyCode => currency?.code ?? 'MXN';
   String get frequencyLabel => paymentFrequency?.name ?? '';
+
+  /// Código para `l10n.paymentFrequency(...)`; vacío si no hay frecuencia.
+  String get frequencyCode => paymentFrequency == null
+      ? ''
+      : catalogCode(paymentFrequency!.code, paymentFrequency!.name);
+
+  /// Código para `l10n.paymentMethod(...)`; vacío si no hay método.
+  String get paymentMethodCode => paymentMethod == null
+      ? ''
+      : catalogCode(paymentMethod!.code, paymentMethod!.name);
 
   bool matchesQuery(String q) {
     if (q.isEmpty) return true;
@@ -128,11 +140,18 @@ class PolicyProduct {
 }
 
 class PolicyCatalog {
-  const PolicyCatalog({required this.id, required this.name});
+  const PolicyCatalog({required this.id, required this.name, this.code});
   final String id;
   final String name;
-  factory PolicyCatalog.fromJson(Map<String, dynamic> json) =>
-      PolicyCatalog(id: json['id'] as String, name: json['name'] as String);
+
+  /// Código estable (`ACTIVE`, `DIRECT_DEBIT`…). Nulo con el backend anterior,
+  /// que no lo mandaba; para traducir usar `catalogCode(code, name)`.
+  final String? code;
+  factory PolicyCatalog.fromJson(Map<String, dynamic> json) => PolicyCatalog(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        code: json['code'] as String?,
+      );
 }
 
 class PolicyCurrency {
@@ -148,14 +167,18 @@ class PolicyCurrency {
 }
 
 class PolicyFrequency {
-  const PolicyFrequency({required this.id, required this.name, required this.months});
+  const PolicyFrequency({required this.id, required this.name, required this.months, this.code});
   final String id;
   final String name;
   final int months;
+
+  /// Igual que `PolicyCatalog.code`: nulo con el backend anterior.
+  final String? code;
   factory PolicyFrequency.fromJson(Map<String, dynamic> json) => PolicyFrequency(
         id:     json['id']     as String,
         name:   json['name']   as String,
         months: json['months'] as int? ?? 12,
+        code:   json['code']   as String?,
       );
 }
 

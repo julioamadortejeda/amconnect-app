@@ -5,10 +5,37 @@ import '../network/api_client.dart';
 /// Solo lo conocen este archivo y `error_translator.dart`.
 const kErrRefSeparator = '#ref=';
 
+/// Claves que `context.translateError` sabe localizar. Debe coincidir con el
+/// `switch` de `error_translator.dart` (lo verifica
+/// `test/core/utils/error_translator_test.dart`). Un código nuevo del backend
+/// se agrega aquí, en el `switch` y en ambos ARB.
+const kTranslatedErrorKeys = <String>{
+  'AI_PROVIDER_BUSY', 'errModelBusy',
+  'SESSION_EXPIRED', 'errSessionExpired',
+  'RESOURCE_NOT_FOUND', 'errNotFound',
+  'CONNECTION_FAILED', 'errNetwork',
+  'QUOTA_EXCEEDED',
+  'SUBSCRIPTION_REQUIRED',
+  'VALIDATION_FAILED',
+  'RESOURCE_CONFLICT',
+  'ACCESS_DENIED',
+  'AI_ERROR', 'AI_INVOCATION_FAILED',
+  'UPLOAD_FAILED',
+  'SHARED_FILE_MISSING',
+  'SHARED_TEXT_TOO_LARGE',
+  'NOTE_TOO_LONG',
+  'INTERNAL_ERROR', 'errUnknown',
+  'MIC_PERMISSION_DENIED',
+  'SPEECH_UNAVAILABLE',
+};
+
 /// Convierte cualquier error capturado en un provider a la string que se
 /// guarda en el estado y que la UI traduce con `context.translateError(...)`.
 ///
-/// - `ApiException` con `errorCode` → devuelve el código (la UI lo localiza).
+/// - `ApiException` con `errorCode` conocido → devuelve el código (la UI lo
+///   localiza).
+/// - `ApiException` con `errorCode` que la app no conoce → devuelve el `error`
+///   del backend tal cual (contrato: nunca mostrar el código crudo).
 /// - `ApiException` sin código → intenta inferirlo por status o devuelve el
 ///   mensaje del backend tal cual (fallback del contrato).
 /// - Cualquier otro error → clave genérica (nunca `e.toString()` al usuario).
@@ -28,7 +55,14 @@ String mapApiError(Object e) {
 }
 
 String _keyFor(ApiException e) {
-  if (e.errorCode != null) return e.errorCode!;
+  final code = e.errorCode;
+  if (code != null && code.isNotEmpty) {
+    if (kTranslatedErrorKeys.contains(code)) return code;
+    // Código nuevo que esta versión de la app no traduce: el mensaje del
+    // backend dice algo útil; el código no le dice nada al asesor.
+    final msg = e.message.trim();
+    return msg.isNotEmpty ? msg : 'errUnknown';
+  }
 
   if (e.statusCode == 503 || e.message.contains('unavailable') || e.message.contains('high demand')) {
     return 'AI_PROVIDER_BUSY';

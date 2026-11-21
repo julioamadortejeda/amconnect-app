@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/widgets/am_refresh.dart';
+import '../../home/providers/home_provider.dart';
 import '../providers/reminders_provider.dart';
 import 'deleted_reminders_view.dart';
 import 'reminder_filter_selector.dart';
@@ -61,13 +63,18 @@ class ReminderListView extends ConsumerWidget {
                     style: TextStyle(fontSize: 14, color: cs.tertiary),
                   ),
                 )
-              : (ui.filter == 'eliminados' || ui.filter == 'completados')
-                  ? const SingleChildScrollView(
-                      padding: EdgeInsets.only(
-                          bottom: AmDimens.scrollBottomPad),
-                      child: DeletedRemindersView(),
-                    )
-                  : ReminderGroupedList(reminders: reminders),
+              : AmRefresh(
+                  onRefresh: ref.read(remindersProvider.notifier).refresh,
+                  child: (ui.filter == 'eliminados' ||
+                          ui.filter == 'completados')
+                      ? const SingleChildScrollView(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.only(
+                              bottom: AmDimens.scrollBottomPad),
+                          child: DeletedRemindersView(),
+                        )
+                      : ReminderGroupedList(reminders: reminders),
+                ),
         ),
         const SizedBox(height: 16),
       ],

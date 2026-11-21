@@ -4004,6 +4004,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.'**
   String get voiceExperimental;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get commonRetry;
+
+  /// No description provided for @feedErrorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo procesar'**
+  String get feedErrorTitle;
+
+  /// No description provided for @homeLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu inicio.'**
+  String get homeLoadError;
 }
 
 class _AppLocalizationsDelegate

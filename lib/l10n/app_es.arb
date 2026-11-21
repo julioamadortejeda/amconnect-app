@@ -960,5 +960,8 @@
   "agendaSearchHint": "Buscar en la agenda…",
   "agendaSearchEmpty": "Nada coincide con esa búsqueda.",
   "commitmentsViewClient": "Ver cliente",
-  "voiceExperimental": "La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre."
+  "voiceExperimental": "La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.",
+  "commonRetry": "Reintentar",
+  "feedErrorTitle": "No se pudo procesar",
+  "homeLoadError": "No pudimos cargar tu inicio."
 }

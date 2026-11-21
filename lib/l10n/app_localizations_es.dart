@@ -2107,4 +2107,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get voiceExperimental =>
       'La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.';
+
+  @override
+  String get commonRetry => 'Reintentar';
+
+  @override
+  String get feedErrorTitle => 'No se pudo procesar';
+
+  @override
+  String get homeLoadError => 'No pudimos cargar tu inicio.';
 }

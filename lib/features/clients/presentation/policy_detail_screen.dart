@@ -313,7 +313,11 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
               AmInfoRow(
                 icon: Icons.wallet_outlined,
                 label: l10n.policiesPremium,
-                trailing: Text(fmtPremium(policy.premium, policy.frequencyLabel)),
+                trailing: Text(fmtPremium(
+                    policy.premium,
+                    policy.frequencyCode.isEmpty
+                        ? ''
+                        : l10n.paymentFrequency(policy.frequencyCode))),
               ),
               const AmFormDivider(),
               AmInfoRow(
@@ -332,7 +336,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
                 icon: Icons.payment_outlined,
                 label: l10n.policiesPaymentMethod,
                 trailing: Text(policy.paymentMethod != null
-                    ? l10n.paymentMethod(policy.paymentMethod!.name.toUpperCase())
+                    ? l10n.paymentMethod(policy.paymentMethodCode)
                     : '—'),
               ),
             ]),

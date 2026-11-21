@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/repositories/reminder_repository.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/utils/reminder_utils.dart';
 import '../../../core/repositories/supabase_agent_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
@@ -212,18 +213,34 @@ class RemindersNotifier extends AsyncNotifier<List<Reminder>> {
     return created;
   }
 
-  Future<void> toggle(String id) async {
-    final list = state.asData?.value;
-    final current = list?.firstWhere(
-      (r) => r.id == id,
-      orElse: () => throw StateError('Reminder not found'),
-    );
-    if (current == null) return;
+  /// Marca un recordatorio como hecho (tarjeta de lista del chat).
+  ///
+  /// Sin update optimista: si el backend falla, la excepción sube al que
+  /// llama para que revierta su UI, y la lista no queda mintiendo. El
+  /// recordatorio puede no estar cargado en la lista (viene del chat), por
+  /// eso no se exige encontrarlo.
+  Future<void> markDone(String id) async {
+    final updated = await _repo.markDone(id);
+    final current = state.asData?.value;
+    if (updated == null || current == null) return;
+    if (!current.any((r) => r.id == id)) return;
     state = AsyncData([
-      for (final r in state.requireValue)
-        if (r.id == id) r.copyWith(done: !r.done) else r,
-    ]);
-    await _repo.setDone(id, !current.done);
+      for (final r in current)
+        if (r.id == id) updated else r,
+    ]..sort(compareReminderDueDate));
+  }
+
+  /// Pull-to-refresh: vuelve a pedir la lista completa sin pasar por
+  /// `AsyncLoading`, así lo que el asesor ve se queda en pantalla si falla.
+  /// Devuelve la clave de error (para `translateError`) o null si salió bien.
+  Future<String?> refresh() async {
+    try {
+      final fresh = await _repo.getAll();
+      state = AsyncData(fresh);
+      return null;
+    } catch (e) {
+      return mapApiError(e);
+    }
   }
 }
 
@@ -334,6 +351,20 @@ final homeReadyProvider = FutureProvider<bool>((ref) async {
     Future.delayed(const Duration(milliseconds: 150)),
   ]);
   return true;
+});
+
+/// Reintenta la carga del dashboard tras un error (sin red al abrir la app).
+/// Invalida las fuentes de `homeReadyProvider`, no solo el agregado: si solo
+/// se invalidara `homeReadyProvider`, volvería a esperar los mismos futures
+/// ya fallidos.
+final homeReloadProvider = Provider<void Function()>((ref) {
+  return () {
+    ref.invalidate(remindersProvider);
+    ref.invalidate(agentNameProvider);
+    ref.invalidate(policiesCountProvider);
+    ref.invalidate(contactsCountProvider);
+    ref.invalidate(homeReadyProvider);
+  };
 });
 
 class HomeDashboardData {

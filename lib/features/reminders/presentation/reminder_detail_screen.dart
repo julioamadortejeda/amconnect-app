@@ -6,6 +6,9 @@ import '../../../core/models/reminder.dart';
 import '../../../core/models/reminder_type.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/widgets/am_reschedule_dialog.dart';
+import '../../../core/utils/api_error_mapper.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_error_retry.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
@@ -73,10 +76,13 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
     try {
       final repo = ref.read(reminderRepositoryProvider);
       final r = await repo.getById(widget.reminderId!);
+      // Se llega aquí desde un push: si el asesor sale antes de que responda,
+      // el setState tronaba con "called after dispose".
+      if (!mounted) return;
       if (r == null) {
         setState(() {
           _loading = false;
-          _loadError = 'Recordatorio no encontrado.';
+          _loadError = 'RESOURCE_NOT_FOUND';
         });
         return;
       }
@@ -87,9 +93,11 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loading = false;
-        _loadError = 'Error al cargar recordatorio: $e';
+        // Clave de error, nunca la excepción: se traduce al pintar.
+        _loadError = mapApiError(e);
       });
     }
   }
@@ -236,16 +244,21 @@ class _ReminderDetailScreenState extends ConsumerState<ReminderDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Text(
-              _loadError!,
-              style: TextStyle(color: cs.error, fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+        body: _loadError == 'RESOURCE_NOT_FOUND'
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    context.translateError(_loadError),
+                    style: TextStyle(color: cs.error, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            : AmErrorRetry(
+                message: context.translateError(_loadError),
+                onRetry: _loadReminder,
+              ),
       );
     }
 

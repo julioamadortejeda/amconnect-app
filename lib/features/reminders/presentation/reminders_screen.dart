@@ -7,6 +7,9 @@ import '../../../core/widgets/am_search_bar.dart';
 import '../../../core/providers/commitments_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/api_error_mapper.dart';
+import '../../../core/utils/error_translator.dart';
+import '../../../core/widgets/am_error_retry.dart';
 import '../../../core/widgets/am_loader.dart';
 import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_sliding_tabs.dart';
@@ -178,9 +181,10 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                   : onReminders
                   ? remindersAsync.when(
                       loading: () => const AmLoader(),
-                      error: (_, __) => Center(
-                        child: Text(l10n.remindersError,
-                            style: TextStyle(color: cs.tertiary)),
+                      error: (e, _) => AmErrorRetry(
+                        message: l10n.remindersError,
+                        detail: context.translateError(mapApiError(e)),
+                        onRetry: () => ref.invalidate(remindersProvider),
                       ),
                       data: (_) => ui.viewMode == RemindersViewMode.list
                           ? const ReminderListView()

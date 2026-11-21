@@ -16,6 +16,7 @@ import '../../../core/widgets/am_ramo_icon.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/clients_provider.dart';
 import 'policy_status_chip.dart';
+import '../../../core/utils/catalog_l10n.dart';
 
 class ClientPolicyCard extends ConsumerStatefulWidget {
   const ClientPolicyCard({super.key, required this.policy});
@@ -124,7 +125,11 @@ class _ClientPolicyCardState extends ConsumerState<ClientPolicyCard> {
                     ),
                     _DataCell(
                       label: l10n.clientsPolicyPremium,
-                      value: fmtPremium(policy.premium, policy.frequencyLabel),
+                      value: fmtPremium(
+                        policy.premium,
+                        policy.frequencyCode.isEmpty
+                            ? ''
+                            : l10n.paymentFrequency(policy.frequencyCode)),
                     ),
                   ],
                 ),

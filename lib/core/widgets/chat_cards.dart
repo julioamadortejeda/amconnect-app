@@ -11,6 +11,8 @@ import '../theme/app_dimensions.dart';
 import 'am_press.dart';
 import 'am_badge.dart';
 import 'am_section_label.dart';
+import '../utils/api_error_mapper.dart';
+import '../utils/error_translator.dart';
 import '../utils/formatters.dart';
 import '../../l10n/app_localizations.dart';
 import '../../features/home/providers/home_provider.dart';
@@ -718,6 +720,24 @@ class _ReminderListCard extends ConsumerStatefulWidget {
 class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
   final Set<String> _completedIds = {};
 
+  /// Marca como hecho y revierte la palomita si el backend no lo guardó —
+  /// antes la tarjeta quedaba palomeada aunque nada se hubiera guardado.
+  Future<void> _markDone(String id) async {
+    final notifier = ref.read(remindersProvider.notifier);
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    setState(() => _completedIds.add(id));
+    try {
+      await notifier.markDone(id);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _completedIds.remove(id));
+      messenger?.showSnackBar(SnackBar(
+        content: Text(context.translateError(mapApiError(e))),
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -772,12 +792,7 @@ class _ReminderListCardState extends ConsumerState<_ReminderListCard> {
                 children: [
                   AmPress(
                     onTap: () {
-                      if (id.isNotEmpty && !isDone) {
-                        setState(() {
-                          _completedIds.add(id);
-                        });
-                        ref.read(remindersProvider.notifier).toggle(id);
-                      }
+                      if (id.isNotEmpty && !isDone) _markDone(id);
                     },
                     child: Icon(
                       isDone ? Icons.check_box_outlined : Icons.check_box_outline_blank,

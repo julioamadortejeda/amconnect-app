@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/catalog.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../clients/providers/catalog_provider.dart';
 
 enum CatalogType { carriers, branches, products }
@@ -64,7 +65,7 @@ class CreateCarrierNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -78,7 +79,7 @@ class CreateCarrierNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return updated;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -90,7 +91,7 @@ class CreateCarrierNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return true;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return false;
     }
   }
@@ -114,7 +115,7 @@ class CreateBranchNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -128,7 +129,7 @@ class CreateBranchNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return updated;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -140,7 +141,7 @@ class CreateBranchNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return true;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return false;
     }
   }
@@ -168,7 +169,7 @@ class CreateProductNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -190,7 +191,7 @@ class CreateProductNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return updated;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return null;
     }
   }
@@ -202,7 +203,7 @@ class CreateProductNotifier extends Notifier<CatalogFormState> {
       state = state.copyWith(loading: false);
       return true;
     } on ApiException catch (e) {
-      state = CatalogFormState(error: e.errorCode ?? e.message);
+      state = CatalogFormState(error: mapApiError(e));
       return false;
     }
   }

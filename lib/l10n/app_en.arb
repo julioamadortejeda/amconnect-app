@@ -871,5 +871,8 @@
   "agendaSearchHint": "Search your agenda…",
   "agendaSearchEmpty": "Nothing matches that search.",
   "commitmentsViewClient": "View client",
-  "voiceExperimental": "Voice is experimental and makes more mistakes than the text chat. Check what it records."
+  "voiceExperimental": "Voice is experimental and makes more mistakes than the text chat. Check what it records.",
+  "commonRetry": "Retry",
+  "feedErrorTitle": "Couldn't process it",
+  "homeLoadError": "We couldn't load your home screen."
 }

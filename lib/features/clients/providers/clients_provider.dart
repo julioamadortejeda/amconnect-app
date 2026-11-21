@@ -7,6 +7,7 @@ import '../../../core/models/contact.dart';
 import '../../../core/models/policy.dart';
 import '../../../core/models/reminder.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/api_error_mapper.dart';
 import '../../../core/repositories/contact_repository.dart';
 import '../../../core/repositories/supabase_contact_repository.dart';
 import '../../../core/repositories/supabase_note_repository.dart';
@@ -133,10 +134,24 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
     return result.items;
   }
 
+  /// Petición de página en vuelo. `loadMore` concurrentes la comparten en vez
+  /// de regresar al instante: `loadAll` esperaba un `loadMore` que no hacía
+  /// nada, el `while` giraba solo con microtasks y congelaba la UI.
+  Future<bool>? _loadMoreInFlight;
+
   /// Carga la siguiente página y la añade a la lista ya cargada.
-  Future<void> loadMore() async {
+  /// Devuelve `false` si la petición falló (sin red, timeout…).
+  Future<bool> loadMore() {
+    final inFlight = _loadMoreInFlight;
+    if (inFlight != null) return inFlight;
+    if (!ref.read(clientsPageInfoProvider).hasMore) return Future.value(true);
+    final future = _fetchNextPage().whenComplete(() => _loadMoreInFlight = null);
+    _loadMoreInFlight = future;
+    return future;
+  }
+
+  Future<bool> _fetchNextPage() async {
     final pageState = ref.read(clientsPageInfoProvider);
-    if (pageState.isLoadingMore || !pageState.hasMore) return;
     ref.read(clientsPageInfoProvider.notifier).set(
           pageState.copyWith(isLoadingMore: true),
         );
@@ -150,18 +165,47 @@ class ClientsNotifier extends AsyncNotifier<List<Contact>> {
       ref.read(clientsPageInfoProvider.notifier).set(
             ListPageInfo(page: nextPage, hasMore: result.hasMore),
           );
+      return true;
     } catch (_) {
+      // Falla de página: se deja `hasMore` como estaba para que el scroll
+      // pueda reintentar; quien itera (`loadAll`) se detiene con el `false`.
       ref.read(clientsPageInfoProvider.notifier).set(
             pageState.copyWith(isLoadingMore: false),
           );
+      return false;
     }
   }
 
   /// Carga todas las páginas restantes de una sola vez — usado cuando hay
   /// una búsqueda activa (ver `build`).
+  ///
+  /// Se detiene al primer fallo (sin red no martilla al backend) y si una
+  /// vuelta no avanzó de página (defensa contra un bucle sin progreso).
   Future<void> loadAll() async {
     while (ref.read(clientsPageInfoProvider).hasMore) {
-      await loadMore();
+      final before = ref.read(clientsPageInfoProvider).page;
+      final ok = await loadMore();
+      if (!ok) return;
+      final after = ref.read(clientsPageInfoProvider);
+      if (after.hasMore && after.page == before) return;
+    }
+  }
+
+  /// Pull-to-refresh: vuelve a la página 1 sin pasar por `AsyncLoading`.
+  /// Devuelve la clave de error (para `translateError`) o null si salió bien.
+  Future<String?> refresh() async {
+    try {
+      final result = await _repo.getAll(page: 1);
+      state = AsyncData(result.items);
+      ref.read(clientsPageInfoProvider.notifier).set(
+            ListPageInfo(page: 1, hasMore: result.hasMore),
+          );
+      // Con búsqueda activa el filtro es client-side: hay que volver a bajar
+      // el resto, igual que al empezar a buscar.
+      if (ref.read(clientSearchProvider).isNotEmpty) unawaited(loadAll());
+      return null;
+    } catch (e) {
+      return mapApiError(e);
     }
   }
 
@@ -312,7 +356,7 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
       state = state.copyWith(loading: false);
       return created;
     } on ApiException catch (e) {
-      state = CreateClientState(error: e.errorCode ?? e.message);
+      state = CreateClientState(error: mapApiError(e));
       return null;
     }
   }
@@ -344,7 +388,7 @@ class CreateClientNotifier extends Notifier<CreateClientState> {
       state = state.copyWith(loading: false);
       return updated;
     } on ApiException catch (e) {
-      state = CreateClientState(error: e.errorCode ?? e.message);
+      state = CreateClientState(error: mapApiError(e));
       return null;
     }
   }
@@ -414,10 +458,24 @@ class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
     return result.items;
   }
 
+  /// Petición de página en vuelo. `loadMore` concurrentes la comparten en vez
+  /// de regresar al instante: `loadAll` esperaba un `loadMore` que no hacía
+  /// nada, el `while` giraba solo con microtasks y congelaba la UI.
+  Future<bool>? _loadMoreInFlight;
+
   /// Carga la siguiente página y la añade a la lista ya cargada.
-  Future<void> loadMore() async {
+  /// Devuelve `false` si la petición falló (sin red, timeout…).
+  Future<bool> loadMore() {
+    final inFlight = _loadMoreInFlight;
+    if (inFlight != null) return inFlight;
+    if (!ref.read(policiesPageInfoProvider).hasMore) return Future.value(true);
+    final future = _fetchNextPage().whenComplete(() => _loadMoreInFlight = null);
+    _loadMoreInFlight = future;
+    return future;
+  }
+
+  Future<bool> _fetchNextPage() async {
     final pageState = ref.read(policiesPageInfoProvider);
-    if (pageState.isLoadingMore || !pageState.hasMore) return;
     ref.read(policiesPageInfoProvider.notifier).set(
           pageState.copyWith(isLoadingMore: true),
         );
@@ -431,18 +489,47 @@ class PoliciesNotifier extends AsyncNotifier<List<Policy>> {
       ref.read(policiesPageInfoProvider.notifier).set(
             ListPageInfo(page: nextPage, hasMore: result.hasMore),
           );
+      return true;
     } catch (_) {
+      // Falla de página: se deja `hasMore` como estaba para que el scroll
+      // pueda reintentar; quien itera (`loadAll`) se detiene con el `false`.
       ref.read(policiesPageInfoProvider.notifier).set(
             pageState.copyWith(isLoadingMore: false),
           );
+      return false;
     }
   }
 
   /// Carga todas las páginas restantes de una sola vez — usado cuando hay
   /// una búsqueda activa (ver `build`).
+  ///
+  /// Se detiene al primer fallo (sin red no martilla al backend) y si una
+  /// vuelta no avanzó de página (defensa contra un bucle sin progreso).
   Future<void> loadAll() async {
     while (ref.read(policiesPageInfoProvider).hasMore) {
-      await loadMore();
+      final before = ref.read(policiesPageInfoProvider).page;
+      final ok = await loadMore();
+      if (!ok) return;
+      final after = ref.read(policiesPageInfoProvider);
+      if (after.hasMore && after.page == before) return;
+    }
+  }
+
+  /// Pull-to-refresh: vuelve a la página 1 sin pasar por `AsyncLoading`.
+  /// Devuelve la clave de error (para `translateError`) o null si salió bien.
+  Future<String?> refresh() async {
+    try {
+      final result = await _repo.getAll(page: 1);
+      state = AsyncData(result.items);
+      ref.read(policiesPageInfoProvider.notifier).set(
+            ListPageInfo(page: 1, hasMore: result.hasMore),
+          );
+      // Con búsqueda activa el filtro es client-side: hay que volver a bajar
+      // el resto, igual que al empezar a buscar.
+      if (ref.read(policySearchProvider).isNotEmpty) unawaited(loadAll());
+      return null;
+    } catch (e) {
+      return mapApiError(e);
     }
   }
 
