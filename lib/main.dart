@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/providers/auth_provider.dart';
+import 'core/providers/locale_provider.dart';
 import 'core/services/notification_service.dart';
 import 'core/config/env.dart';
 import 'core/utils/device_timezone.dart';
@@ -105,12 +106,14 @@ class MyApp extends ConsumerWidget {
 
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AzulProTheme.lightTheme,
       darkTheme: AzulProTheme.darkTheme,
       themeMode: themeMode,
+      locale: locale,
       routerConfig: router,
       scrollBehavior: const _BouncingScrollBehavior(),
       localizationsDelegates: const [

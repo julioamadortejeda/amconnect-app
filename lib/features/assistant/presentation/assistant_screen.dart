@@ -13,6 +13,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/chat_cards.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
 import '../providers/assistant_provider.dart';
+import '../providers/assistant_session_policy.dart';
 import '../widgets/assistant_bubble.dart';
 import '../widgets/assistant_composer.dart';
 import '../widgets/assistant_header.dart';
@@ -69,8 +70,14 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     } else if (widget.resumeArgs != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
+          if (shouldStartFreshAssistantSession()) _notifier.reset();
           _notifier.resumeIngestSession(widget.resumeArgs!.sessionId, widget.resumeArgs!.messages);
         }
+      });
+    } else if (shouldStartFreshAssistantSession()) {
+      // Apertura sin contexto: en release no se hereda la conversación anterior.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _notifier.reset();
       });
     }
   }

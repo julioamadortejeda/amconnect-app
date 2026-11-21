@@ -811,5 +811,15 @@
   "voiceExperimental": "Voice is experimental and makes more mistakes than the text chat. Check what it records.",
   "commonRetry": "Retry",
   "feedErrorTitle": "Couldn't process it",
-  "homeLoadError": "We couldn't load your home screen."
+  "homeLoadError": "We couldn't load your home screen.",
+  "privacyConsentTitle": "Privacy Notice",
+  "privacyConsentBody": "Summary: we use your data and your clients' data to run AmConnect, and some of it goes to providers that help us deliver the service. Read the full notice and tick both boxes to continue.",
+  "privacyConsentReadLink": "Read the full notice",
+  "privacyConsentCheckbox": "I accept the Privacy Notice and the data transfers described.",
+  "privacyConsentAccept": "Accept and continue",
+  "accountPrivacyNotice": "Privacy notice",
+  "accountLanguageTitle": "Language",
+  "languageSpanish": "Español",
+  "languageEnglish": "English",
+  "privacyConsentSensitiveCheckbox": "I give my express consent to the processing of sensitive data (such as health information) that I upload."
 }

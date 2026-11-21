@@ -14,6 +14,7 @@ import '../../../core/widgets/am_press.dart';
 import '../../../core/widgets/am_section_label.dart';
 import '../../../core/widgets/am_top_bar.dart';
 import '../providers/account_provider.dart';
+import '../widgets/account_language_selector.dart';
 import '../widgets/account_plan_card.dart';
 import '../widgets/account_profile_hero.dart';
 import '../widgets/account_theme_selector.dart';
@@ -95,6 +96,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } catch (_) {
       if (mounted) _showSnack(l10n.clientsActionLaunchError);
     }
+  }
+
+  Future<void> _openPrivacyNotice(AppLocalizations l10n, String url) async {
+    final uri = Uri.tryParse(url);
+    try {
+      if (uri != null && await launchUrl(uri, mode: LaunchMode.externalApplication)) return;
+    } catch (_) {}
+    if (mounted) _showSnack(l10n.clientsActionLaunchError);
   }
 
   void _showSnack(String message) {
@@ -215,6 +224,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       const SizedBox(height: AmDimens.gapXS),
                       const AccountThemeSelector(),
                       const SizedBox(height: AmDimens.gapL),
+                      AmSectionLabel(label: l10n.accountLanguageTitle),
+                      const SizedBox(height: AmDimens.gapXS),
+                      const AccountLanguageSelector(),
+                      const SizedBox(height: AmDimens.gapL),
                       AmSectionLabel(label: l10n.accountHelpTitle),
                       const SizedBox(height: AmDimens.gapXS),
                       AmGroupCard(children: [
@@ -225,6 +238,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           chevron: true,
                           onTap: () => _openSupportEmail(l10n, profile.email),
                         ),
+                        if (profile.privacy.url.isNotEmpty)
+                          AmInfoRow(
+                            icon: Icons.privacy_tip_outlined,
+                            label: l10n.accountPrivacyNotice,
+                            trailing: const SizedBox.shrink(),
+                            chevron: true,
+                            onTap: () => _openPrivacyNotice(l10n, profile.privacy.url),
+                          ),
                         if (showNotifRow)
                           AmInfoRow(
                             icon: Icons.notifications_off_outlined,

@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/agent_profile.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/providers/locale_provider.dart';
 import '../../../core/models/subscription_info.dart';
 import '../../../core/repositories/agent_repository.dart';
 import '../../../core/repositories/supabase_agent_repository.dart';
@@ -15,7 +18,44 @@ class AgentProfileNotifier extends AsyncNotifier<AgentProfile> {
   @override
   Future<AgentProfile> build() async {
     _repo = ref.read(agentRepositoryProvider);
-    return _repo.getMe();
+    final me = await _repo.getMe();
+    // D-024: el backend necesita el idioma del asesor (push, correos). Si nunca
+    // se guardó, se sube el que la app está usando. Sin await: no retrasa la
+    // carga del perfil ni lo rompe si falla.
+    if (me.locale == null) unawaited(_pushLocale(_currentLanguage()));
+    return me;
+  }
+
+  String _currentLanguage() => resolveLanguageCode(
+        ref.read(localeProvider),
+        PlatformDispatcher.instance.locale,
+      );
+
+  Future<void> _pushLocale(String code) async {
+    try {
+      await _repo.updateLocale(code);
+    } on ApiException {
+      // Fire-and-forget: se reintenta en la próxima carga mientras siga null.
+    }
+  }
+
+  /// Cambia el idioma de la app y lo guarda en el backend. El cambio local
+  /// es inmediato; si el PATCH falla la app queda en el idioma elegido.
+  Future<void> setLanguage(String code) async {
+    await ref.read(localeProvider.notifier).setLanguage(code);
+    await _pushLocale(code);
+    final current = state.value;
+    if (current != null) state = AsyncData(current.copyWith(locale: code));
+  }
+
+  /// Registra la aceptación de la versión vigente del Aviso de Privacidad.
+  /// Lanza `ApiException` si el backend rechaza (ej. versión ya no vigente).
+  Future<void> acceptPrivacy({required bool acceptedNotice, required bool acceptedSensitive}) async {
+    final current = state.value;
+    if (current == null) return;
+    final privacy = await _repo.acceptPrivacy(current.privacy.currentVersion,
+        acceptedNotice: acceptedNotice, acceptedSensitive: acceptedSensitive);
+    state = AsyncData(current.copyWith(privacy: privacy));
   }
 
   Future<void> updateProfile({String? fullName, String? phone}) async {
