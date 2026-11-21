@@ -650,6 +650,12 @@ abstract class AppLocalizations {
   /// **'Alcanzaste el límite de tu plan este mes. Actualiza tu plan para continuar.'**
   String get errQuotaExceeded;
 
+  /// No description provided for @errRateLimited.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas muy rápido, espera un momento e intenta de nuevo.'**
+  String get errRateLimited;
+
   /// No description provided for @errSubscriptionRequired.
   ///
   /// In es, this message translates to:

@@ -138,6 +138,7 @@
   "errUnknown": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
   "errNetwork": "Error de conexión. Revisa tu internet y vuelve a intentarlo.",
   "errQuotaExceeded": "Alcanzaste el límite de tu plan este mes. Actualiza tu plan para continuar.",
+  "errRateLimited": "Vas muy rápido, espera un momento e intenta de nuevo.",
   "errSubscriptionRequired": "Tu suscripción ha vencido. Activa un plan para continuar.",
   "errValidationFailed": "Los datos enviados no son válidos. Revisa la información e intenta de nuevo.",
   "errConflict": "Ya existe un registro con esos datos.",

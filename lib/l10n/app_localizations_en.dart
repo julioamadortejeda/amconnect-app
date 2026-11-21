@@ -304,6 +304,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'You\'ve reached your plan limit for this month. Upgrade your plan to continue.';
 
   @override
+  String get errRateLimited =>
+      'You\'re going a bit fast. Wait a moment and try again.';
+
+  @override
   String get errSubscriptionRequired =>
       'Your subscription has expired. Activate a plan to continue.';
 
