@@ -131,6 +131,11 @@
   "errSharedFileMissing": "The shared file is no longer available. Please share it again.",
   "errSharedTextTooLarge": "The text is too long to process. Share a shorter chat or just the relevant messages.",
   "errSpeechUnavailable": "Voice dictation is not available on this device. Type your message instead.",
+  "errPromoInvalid": "That promo code doesn't exist or is no longer active. Check that it's spelled correctly.",
+  "errPromoExpired": "That promo code has expired.",
+  "errPromoExhausted": "That promo code has reached its maximum number of uses.",
+  "errPromoAlreadyUsed": "You've already used a promo code on your account; only one can be applied.",
+  "errPromoNotApplicable": "Your subscription is already active, so the promo code doesn't apply.",
   "errRefCode": "Reference code: {ref}",
   "@errRefCode": {
     "placeholders": {

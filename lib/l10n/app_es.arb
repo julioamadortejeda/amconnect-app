@@ -147,6 +147,11 @@
   "errSharedFileMissing": "El archivo compartido ya no está disponible. Compártelo de nuevo.",
   "errSharedTextTooLarge": "El texto es demasiado largo para procesarlo. Comparte un chat más corto o solo los mensajes relevantes.",
   "errSpeechUnavailable": "El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.",
+  "errPromoInvalid": "Ese código promocional no existe o ya no está activo. Revisa que esté bien escrito.",
+  "errPromoExpired": "Ese código promocional ya venció.",
+  "errPromoExhausted": "Ese código promocional ya se usó el máximo de veces permitido.",
+  "errPromoAlreadyUsed": "Ya usaste un código promocional en tu cuenta; solo se puede aplicar uno.",
+  "errPromoNotApplicable": "Tu suscripción ya está activa, así que el código promocional no aplica.",
   "errRefCode": "Código de referencia: {ref}",
   "@errRefCode": {
     "placeholders": {

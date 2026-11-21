@@ -339,6 +339,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Voice dictation is not available on this device. Type your message instead.';
 
   @override
+  String get errPromoInvalid =>
+      'That promo code doesn\'t exist or is no longer active. Check that it\'s spelled correctly.';
+
+  @override
+  String get errPromoExpired => 'That promo code has expired.';
+
+  @override
+  String get errPromoExhausted =>
+      'That promo code has reached its maximum number of uses.';
+
+  @override
+  String get errPromoAlreadyUsed =>
+      'You\'ve already used a promo code on your account; only one can be applied.';
+
+  @override
+  String get errPromoNotApplicable =>
+      'Your subscription is already active, so the promo code doesn\'t apply.';
+
+  @override
   String errRefCode(String ref) {
     return 'Reference code: $ref';
   }
@@ -1237,7 +1256,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String feedContactMismatchResolvedBanner(
-      String screenName, String detectedName) {
+    String screenName,
+    String detectedName,
+  ) {
     return 'This policy will be assigned to $screenName. The document identified $detectedName as the policyholder.';
   }
 
