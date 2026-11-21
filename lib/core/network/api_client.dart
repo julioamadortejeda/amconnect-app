@@ -8,6 +8,7 @@ import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
+import '../providers/locale_provider.dart';
 import '../utils/device_timezone.dart';
 
 /// Código que la app genera cuando la petición no llegó al backend o no
@@ -22,16 +23,22 @@ class ApiClient {
     http.Client? client,
     String? baseUrl,
     @visibleForTesting Future<Map<String, String>> Function()? headersBuilder,
+    String Function()? languageCode,
     this.requestTimeout = const Duration(seconds: 30),
     this.aiRequestTimeout = const Duration(seconds: 150),
     this.uploadTimeout = const Duration(seconds: 120),
   })  : _client = client ?? _defaultClient(),
         _baseOverride = baseUrl,
-        _headersBuilder = headersBuilder;
+        _headersBuilder = headersBuilder,
+        _languageCode = languageCode;
 
   final http.Client _client;
   final String? _baseOverride;
   final Future<Map<String, String>> Function()? _headersBuilder;
+
+  /// Idioma de la APP (es|en), el que eligió el asesor en Cuenta, no el del
+  /// teléfono. Es el único lugar que arma `Accept-Language` (D-024).
+  final String Function()? _languageCode;
 
   /// Tope para recibir la respuesta completa de una petición normal (CRUD).
   final Duration requestTimeout;
@@ -66,7 +73,8 @@ class ApiClient {
     if (override != null) return override();
     await _ensureFreshSession();
     final token = Supabase.instance.client.auth.currentSession?.accessToken;
-    final locale = Platform.localeName; // e.g. "es_MX"
+    final locale = _languageCode?.call() ??
+        resolveLanguageCode(null, PlatformDispatcher.instance.locale);
     final appVersion = await _appVersion();
     return {
       'Content-Type': 'application/json',
@@ -327,4 +335,13 @@ class ApiException implements Exception {
   String toString() => 'ApiException($statusCode): $message (Code: $errorCode, Ref: $errorId)';
 }
 
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
+final apiClientProvider = Provider<ApiClient>(
+  (ref) => ApiClient(
+    // read, no watch: el idioma se consulta en cada petición y cambiarlo no
+    // debe recrear el cliente.
+    languageCode: () => resolveLanguageCode(
+      ref.read(localeProvider),
+      PlatformDispatcher.instance.locale,
+    ),
+  ),
+);

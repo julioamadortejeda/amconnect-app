@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/models/agent_profile.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/models/subscription_info.dart';
 import '../../../core/repositories/agent_repository.dart';
@@ -18,7 +19,17 @@ class AgentProfileNotifier extends AsyncNotifier<AgentProfile> {
   @override
   Future<AgentProfile> build() async {
     _repo = ref.read(agentRepositoryProvider);
-    final me = await _repo.getMe();
+    final AgentProfile me;
+    try {
+      me = await _repo.getMe();
+    } on ApiException catch (e) {
+      // Sesión inválida (ej. token de otro backend): sacar al usuario a login
+      // en vez de dejar la app atascada en un error.
+      if (e.statusCode == 401) {
+        unawaited(ref.read(authProvider.notifier).signOut());
+      }
+      rethrow;
+    }
     // D-024: el backend necesita el idioma del asesor (push, correos). Si nunca
     // se guardó, se sube el que la app está usando. Sin await: no retrasa la
     // carga del perfil ni lo rompe si falla.
