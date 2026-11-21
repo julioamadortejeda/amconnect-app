@@ -27,6 +27,11 @@ const kTranslatedErrorKeys = <String>{
   'INTERNAL_ERROR', 'errUnknown',
   'MIC_PERMISSION_DENIED',
   'SPEECH_UNAVAILABLE',
+  'PROMO_INVALID',
+  'PROMO_EXPIRED',
+  'PROMO_EXHAUSTED',
+  'PROMO_ALREADY_USED',
+  'PROMO_NOT_APPLICABLE',
 };
 
 /// Convierte cualquier error capturado en un provider a la string que se

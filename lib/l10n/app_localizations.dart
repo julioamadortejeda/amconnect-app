@@ -63,7 +63,7 @@ import 'app_localizations_es.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,16 +86,16 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es')
+    Locale('es'),
   ];
 
   /// No description provided for @appTitle.
@@ -703,6 +703,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.'**
   String get errSpeechUnavailable;
+
+  /// No description provided for @errPromoInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese código promocional no existe o ya no está activo. Revisa que esté bien escrito.'**
+  String get errPromoInvalid;
+
+  /// No description provided for @errPromoExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese código promocional ya venció.'**
+  String get errPromoExpired;
+
+  /// No description provided for @errPromoExhausted.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese código promocional ya se usó el máximo de veces permitido.'**
+  String get errPromoExhausted;
+
+  /// No description provided for @errPromoAlreadyUsed.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya usaste un código promocional en tu cuenta; solo se puede aplicar uno.'**
+  String get errPromoAlreadyUsed;
+
+  /// No description provided for @errPromoNotApplicable.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu suscripción ya está activa, así que el código promocional no aplica.'**
+  String get errPromoNotApplicable;
 
   /// No description provided for @errRefCode.
   ///
@@ -2419,7 +2449,9 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Esta póliza se asignará a {screenName}. El documento identificaba a {detectedName} como titular.'**
   String feedContactMismatchResolvedBanner(
-      String screenName, String detectedName);
+    String screenName,
+    String detectedName,
+  );
 
   /// No description provided for @remindersActionDone.
   ///
@@ -3733,8 +3765,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

@@ -342,6 +342,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'El dictado por voz no está disponible en este dispositivo. Escribe tu mensaje.';
 
   @override
+  String get errPromoInvalid =>
+      'Ese código promocional no existe o ya no está activo. Revisa que esté bien escrito.';
+
+  @override
+  String get errPromoExpired => 'Ese código promocional ya venció.';
+
+  @override
+  String get errPromoExhausted =>
+      'Ese código promocional ya se usó el máximo de veces permitido.';
+
+  @override
+  String get errPromoAlreadyUsed =>
+      'Ya usaste un código promocional en tu cuenta; solo se puede aplicar uno.';
+
+  @override
+  String get errPromoNotApplicable =>
+      'Tu suscripción ya está activa, así que el código promocional no aplica.';
+
+  @override
   String errRefCode(String ref) {
     return 'Código de referencia: $ref';
   }
@@ -1244,7 +1263,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String feedContactMismatchResolvedBanner(
-      String screenName, String detectedName) {
+    String screenName,
+    String detectedName,
+  ) {
     return 'Esta póliza se asignará a $screenName. El documento identificaba a $detectedName como titular.';
   }
 

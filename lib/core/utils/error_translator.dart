@@ -41,6 +41,11 @@ extension ErrorTranslator on BuildContext {
       'INTERNAL_ERROR' || 'errUnknown' => l10n.errUnknown,
       'MIC_PERMISSION_DENIED' => l10n.voiceChatPermissionDenied,
       'SPEECH_UNAVAILABLE' => l10n.errSpeechUnavailable,
+      'PROMO_INVALID' => l10n.errPromoInvalid,
+      'PROMO_EXPIRED' => l10n.errPromoExpired,
+      'PROMO_EXHAUSTED' => l10n.errPromoExhausted,
+      'PROMO_ALREADY_USED' => l10n.errPromoAlreadyUsed,
+      'PROMO_NOT_APPLICABLE' => l10n.errPromoNotApplicable,
       _ => key,
     };
 
