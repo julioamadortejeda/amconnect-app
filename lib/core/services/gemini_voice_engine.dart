@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import '../network/api_client.dart';
+import '../network/api_envelope.dart';
 import 'gemini_live_service.dart';
 import 'gemini_usage_tracker.dart';
 import 'native_audio_service.dart';
@@ -477,12 +478,12 @@ class GeminiVoiceEngine {
 
   Future<dynamic> _executeToolInSupabase(String name, Map<String, dynamic> args) async {
     try {
-      return await _api.post('ai/voice/execute-tool', body: {
+      return unwrapData(await _api.post('ai/voice/execute-tool', body: {
         'sessionId': _sessionId,
         'timezone': _timezone,
         'toolName': name,
         'args': args,
-      });
+      }));
     } catch (e) {
       debugPrint('[$_logTag] executeTool error: $e');
       return {'error': e.toString()};

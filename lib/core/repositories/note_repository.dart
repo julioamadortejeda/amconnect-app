@@ -8,6 +8,6 @@ abstract class NoteRepository {
   Future<void> createPolicyNote(String policyId, String content);
   Future<void> deleteNote(String noteId);
   Future<Map<String, int>> getNotesSummary();
-  Future<List<FeedItem>> searchNotes(
-      {int limit = 20, int offset = 0, String? query});
+  Future<({List<FeedItem> items, bool hasMore})> searchNotes(
+      {int page = 1, int pageSize = 20, String? query});
 }

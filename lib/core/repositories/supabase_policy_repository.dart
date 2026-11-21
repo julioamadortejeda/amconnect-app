@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/policy.dart';
 import '../network/api_client.dart';
+import '../network/api_envelope.dart';
 import 'policy_repository.dart';
 
 class SupabasePolicyRepository implements PolicyRepository {
@@ -10,17 +11,19 @@ class SupabasePolicyRepository implements PolicyRepository {
   @override
   Future<int> getCount() async {
     final res = await _client.get('policies?pageSize=1');
-    final wrapper = res['data'] as Map<String, dynamic>;
-    return wrapper['total'] as int? ?? (wrapper['data'] as List?)?.length ?? 0;
+    final page = PageResponse.fromEnvelope(res, Policy.fromJson);
+    return page.total ?? page.items.length;
   }
 
   @override
-  Future<List<Policy>> getByContactId(String contactId) async {
-    final res = await _client.get('contacts/$contactId/policies');
-    final items = res['data'] as List<dynamic>;
-    return items
-        .map((e) => Policy.fromJson(e as Map<String, dynamic>))
-        .toList();
+  Future<List<Policy>> getByContactId(String contactId) {
+    // La ficha del cliente muestra todas sus pólizas: se recorren las páginas.
+    return fetchAllPages(
+      fetch: (page, size) =>
+          _client.get('contacts/$contactId/policies?page=$page&pageSize=$size'),
+      parse: Policy.fromJson,
+      idOf: (p) => p.id,
+    );
   }
 
   @override
@@ -29,12 +32,8 @@ class SupabasePolicyRepository implements PolicyRepository {
     int pageSize = 30,
   }) async {
     final res = await _client.get('policies?page=$page&pageSize=$pageSize');
-    final wrapper = res['data'] as Map<String, dynamic>;
-    final items = wrapper['data'] as List<dynamic>;
-    return (
-      items: items.map((e) => Policy.fromJson(e as Map<String, dynamic>)).toList(),
-      hasMore: wrapper['hasMore'] as bool? ?? false,
-    );
+    final result = PageResponse.fromEnvelope(res, Policy.fromJson);
+    return (items: result.items, hasMore: result.hasMore);
   }
 
   @override

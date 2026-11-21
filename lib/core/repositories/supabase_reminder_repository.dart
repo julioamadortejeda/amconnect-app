@@ -3,56 +3,36 @@ import '../models/reminder.dart';
 import '../models/reminder_setting.dart';
 import '../models/reminder_type.dart';
 import '../network/api_client.dart';
+import '../network/api_envelope.dart';
 import 'reminder_repository.dart';
 
 class SupabaseReminderRepository implements ReminderRepository {
   SupabaseReminderRepository(this._client);
   final ApiClient _client;
 
-  /// Tamaño de página máximo que acepta el backend (`shared/pagination.ts`).
-  static const _pageSize = 100;
-
-  /// Freno de seguridad: 50 páginas = 5,000 recordatorios. Si el backend
-  /// respondiera `hasMore: true` para siempre, no queremos un bucle sin fin.
-  static const _maxPages = 50;
-
   @override
   Future<List<Reminder>> getAll() => _getAllPages('reminders');
 
-  /// Recorre todas las páginas de un listado de recordatorios.
+  /// Todas las páginas de un listado de recordatorios.
   ///
-  /// Antes se pedía una sola página de 100. El backend ordena por
-  /// `created_at desc`, así que con más de 100 la Agenda perdía en silencio
-  /// los más viejos — justo los PAYMENT/RENEWAL que genera el cron. El
-  /// calendario y los conteos del dashboard necesitan la lista completa, por
-  /// eso se itera aquí en vez de paginar por scroll.
-  Future<List<Reminder>> _getAllPages(String basePath) async {
+  /// El backend ordena por `created_at desc`, así que una sola página perdía en
+  /// silencio los más viejos — justo los PAYMENT/RENEWAL que genera el cron. El
+  /// calendario y los conteos del dashboard necesitan la lista completa.
+  Future<List<Reminder>> _getAllPages(String basePath) {
     final sep = basePath.contains('?') ? '&' : '?';
-    final all = <Reminder>[];
-    final seen = <String>{};
-    for (var page = 1; page <= _maxPages; page++) {
-      final res = await _client.get('$basePath${sep}page=$page&pageSize=$_pageSize');
-      final wrapper = res['data'] as Map<String, dynamic>;
-      final items = wrapper['data'] as List<dynamic>;
-      for (final e in items) {
-        final r = Reminder.fromJson(e as Map<String, dynamic>);
-        // Un recordatorio creado entre página y página recorre el orden y
-        // repetiría uno ya leído.
-        if (seen.add(r.id)) all.add(r);
-      }
-      final hasMore = wrapper['hasMore'] as bool? ?? false;
-      if (!hasMore || items.isEmpty) break;
-    }
-    return all;
+    return fetchAllPages(
+      fetch: (page, size) =>
+          _client.get('$basePath${sep}page=$page&pageSize=$size'),
+      parse: Reminder.fromJson,
+      idOf: (r) => r.id,
+    );
   }
 
   @override
   Future<List<Reminder>> search(String query) async {
     final res = await _client.get(
         'reminders?query=${Uri.encodeQueryComponent(query)}&pageSize=50');
-    final wrapper = res['data'] as Map<String, dynamic>;
-    final items = wrapper['data'] as List<dynamic>;
-    return items.map((e) => Reminder.fromJson(e as Map<String, dynamic>)).toList();
+    return PageResponse.fromEnvelope(res, Reminder.fromJson).items;
   }
 
   @override
