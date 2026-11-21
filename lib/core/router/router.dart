@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../shell/shell_screen.dart';
 import '../providers/auth_provider.dart';
+import '../../features/account/providers/account_provider.dart' show agentProfileProvider;
+import '../../features/privacy/presentation/privacy_consent_screen.dart';
 import '../theme/app_animations.dart';
 import '../../features/onboarding/presentation/splash_screen.dart';
 import '../../features/onboarding/presentation/login_screen.dart';
@@ -51,12 +53,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Entrando derecho al dashboard se veía vacío un instante y luego se
       // llenaba, porque nadie había precargado nada.
       if (user != null && onPublic) return '/';
+      // Compuerta del Aviso de Privacidad: mientras el backend lo exija no se
+      // sale de esa pantalla. Si el perfil aún no cargó (o el backend es viejo
+      // y no manda `privacy`) no se bloquea nada.
+      final mustAccept = ref.read(agentProfileProvider).asData?.value.mustAcceptPrivacy ?? false;
+      if (user != null && mustAccept && loc != '/privacy-consent') return '/privacy-consent';
       return null;
     },
     routes: [
       GoRoute(
         path: '/',
         pageBuilder: (_, state) => amTransitionPage(child: const SplashScreen(), state: state, type: 'fade'),
+      ),
+      GoRoute(
+        path: '/privacy-consent',
+        pageBuilder: (_, state) =>
+            amTransitionPage(child: const PrivacyConsentScreen(), state: state, type: 'fade'),
       ),
       GoRoute(
         path: '/login',
@@ -238,6 +250,13 @@ class _AuthNotifier extends ChangeNotifier {
       // abrir el detalle.
       if (!next.hasValue) return; // en `loading` el user es null y no significa logout
       if (prev?.value?.id != next.value?.id) notifyListeners();
+    });
+    // El perfil termina de cargar (o el consentimiento cambia) después del
+    // splash: el router debe reevaluar la compuerta de privacidad.
+    ref.listen(agentProfileProvider, (prev, next) {
+      final was = prev?.asData?.value.mustAcceptPrivacy ?? false;
+      final now = next.asData?.value.mustAcceptPrivacy ?? false;
+      if (was != now) notifyListeners();
     });
   }
 }

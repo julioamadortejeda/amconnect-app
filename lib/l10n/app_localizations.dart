@@ -4022,6 +4022,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos cargar tu inicio.'**
   String get homeLoadError;
+
+  /// No description provided for @privacyConsentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aviso de Privacidad'**
+  String get privacyConsentTitle;
+
+  /// No description provided for @privacyConsentBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen: usamos tus datos y los de tus clientes para operar AmConnect, y algunos pasan a proveedores que nos ayudan a prestar el servicio. Lee el aviso completo y confirma las dos casillas para continuar.'**
+  String get privacyConsentBody;
+
+  /// No description provided for @privacyConsentReadLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer el aviso completo'**
+  String get privacyConsentReadLink;
+
+  /// No description provided for @privacyConsentCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'Acepto el Aviso de Privacidad y las transferencias de datos descritas.'**
+  String get privacyConsentCheckbox;
+
+  /// No description provided for @privacyConsentAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar y continuar'**
+  String get privacyConsentAccept;
+
+  /// No description provided for @accountPrivacyNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Aviso de privacidad'**
+  String get accountPrivacyNotice;
+
+  /// No description provided for @accountLanguageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get accountLanguageTitle;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In es, this message translates to:
+  /// **'Español'**
+  String get languageSpanish;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In es, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @privacyConsentSensitiveCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'Doy mi consentimiento expreso para tratar datos sensibles (como información de salud) que yo cargue.'**
+  String get privacyConsentSensitiveCheckbox;
 }
 
 class _AppLocalizationsDelegate

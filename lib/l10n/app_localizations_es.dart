@@ -2116,4 +2116,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeLoadError => 'No pudimos cargar tu inicio.';
+
+  @override
+  String get privacyConsentTitle => 'Aviso de Privacidad';
+
+  @override
+  String get privacyConsentBody =>
+      'Resumen: usamos tus datos y los de tus clientes para operar AmConnect, y algunos pasan a proveedores que nos ayudan a prestar el servicio. Lee el aviso completo y confirma las dos casillas para continuar.';
+
+  @override
+  String get privacyConsentReadLink => 'Leer el aviso completo';
+
+  @override
+  String get privacyConsentCheckbox =>
+      'Acepto el Aviso de Privacidad y las transferencias de datos descritas.';
+
+  @override
+  String get privacyConsentAccept => 'Aceptar y continuar';
+
+  @override
+  String get accountPrivacyNotice => 'Aviso de privacidad';
+
+  @override
+  String get accountLanguageTitle => 'Idioma';
+
+  @override
+  String get languageSpanish => 'Español';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get privacyConsentSensitiveCheckbox =>
+      'Doy mi consentimiento expreso para tratar datos sensibles (como información de salud) que yo cargue.';
 }

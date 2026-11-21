@@ -963,5 +963,15 @@
   "voiceExperimental": "La voz es experimental y se equivoca más que el chat de texto. Revisa lo que registre.",
   "commonRetry": "Reintentar",
   "feedErrorTitle": "No se pudo procesar",
-  "homeLoadError": "No pudimos cargar tu inicio."
+  "homeLoadError": "No pudimos cargar tu inicio.",
+  "privacyConsentTitle": "Aviso de Privacidad",
+  "privacyConsentBody": "Resumen: usamos tus datos y los de tus clientes para operar AmConnect, y algunos pasan a proveedores que nos ayudan a prestar el servicio. Lee el aviso completo y confirma las dos casillas para continuar.",
+  "privacyConsentReadLink": "Leer el aviso completo",
+  "privacyConsentCheckbox": "Acepto el Aviso de Privacidad y las transferencias de datos descritas.",
+  "privacyConsentAccept": "Aceptar y continuar",
+  "accountPrivacyNotice": "Aviso de privacidad",
+  "accountLanguageTitle": "Idioma",
+  "languageSpanish": "Español",
+  "languageEnglish": "English",
+  "privacyConsentSensitiveCheckbox": "Doy mi consentimiento expreso para tratar datos sensibles (como información de salud) que yo cargue."
 }

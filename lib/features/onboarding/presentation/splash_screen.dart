@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show User;
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/pending_route_provider.dart';
 import '../../../core/router/router.dart';
+import '../../account/providers/account_provider.dart';
 import '../../clients/providers/catalog_provider.dart';
 import '../../home/providers/home_provider.dart';
 
@@ -49,6 +50,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         minDelay,
         ref.read(homeReadyProvider.future),
         ref.read(branchesProvider.future),
+        ref.read(agentProfileProvider.future),
       ]).timeout(const Duration(seconds: 4));
     } catch (_) {
       // Timeout o error de red: dejamos que HomeScreen gestione su ciclo normal

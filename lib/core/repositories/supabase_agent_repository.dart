@@ -30,6 +30,17 @@ class SupabaseAgentRepository implements AgentRepository {
   }
 
   @override
+  Future<void> updateLocale(String locale) async {
+    await _client.patch('agents/me', body: {'locale': locale});
+  }
+
+  @override
+  Future<PrivacyConsent> acceptPrivacy(String version) async {
+    final res = await _client.post('agents/me/privacy-consent', body: {'version': version});
+    return PrivacyConsent.fromJson(res['data']);
+  }
+
+  @override
   Future<void> registerDeviceToken({required String token, required String platform}) async {
     await _client.post('agents/device-tokens', body: {
       'token': token,
