@@ -15,6 +15,7 @@ import '../../feed/widgets/ingest_type_picker.dart';
 import '../providers/assistant_provider.dart';
 import '../providers/assistant_session_policy.dart';
 import '../widgets/assistant_bubble.dart';
+import '../widgets/assistant_status_line.dart';
 import '../widgets/assistant_composer.dart';
 import '../widgets/assistant_header.dart';
 import '../widgets/assistant_voice_bar.dart';
@@ -125,6 +126,8 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     // Mismo motivo que arriba: soltar el micrófono si quedó dictando.
     final notifier = _notifier;
     Future(() => notifier.cancelDictation());
+    // Turno de texto a medias: cerrar el SSE y cancelar la sesión en el backend.
+    Future(() => notifier.cancelTurn());
     _ctrl.dispose();
     _scrollCtrl.dispose();
     super.dispose();
@@ -180,7 +183,15 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
         if (card != null) trailingItems.add(card);
       }
     } else if (state.isLoading) {
-      trailingItems.add(const AssistantTypingBubble());
+      // Streaming: el texto crece en una burbuja y, si hay una herramienta
+      // corriendo, su etiqueta va debajo; sin etiqueta, el pulso de siempre.
+      if (state.streamingText.isNotEmpty) {
+        trailingItems.add(AssistantBubble(role: 'ai', text: state.streamingText));
+      }
+      final toolLabel = state.toolLabel;
+      trailingItems.add(toolLabel != null
+          ? AssistantStatusLine(label: toolLabel)
+          : const AssistantTypingBubble());
     }
 
     return PopScope(

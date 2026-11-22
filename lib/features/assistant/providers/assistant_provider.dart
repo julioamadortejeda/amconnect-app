@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/config/features.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_envelope.dart';
 import '../../../core/providers/ai_backend_provider.dart';
@@ -20,6 +21,11 @@ const String _kLogTag = 'Assistant/Voice';
 final assistantProvider =
     NotifierProvider<AssistantNotifier, AssistantState>(AssistantNotifier.new);
 
+/// Repositorio del asistente; se sobreescribe en pruebas.
+final assistantRepositoryProvider = Provider<AssistantRepository>(
+  (ref) => AssistantRepository(ref.read(apiClientProvider)),
+);
+
 // ── Notifier ──────────────────────────────────────────────────────────────────
 
 /// El chat de texto vive aquí; la sesión de voz se delega a [GeminiVoiceEngine]
@@ -32,9 +38,19 @@ class AssistantNotifier extends Notifier<AssistantState> {
   StreamSubscription<VoiceEngineEvent>? _engineSubscription;
   StreamSubscription<DictationEvent>? _dictationSubscription;
 
+  /// Turno de texto en curso por SSE (null si no hay). Cancelarlo cierra la
+  /// conexión.
+  StreamSubscription<AssistantStreamEvent>? _turnSubscription;
+
+  /// Se incrementa por turno; los eventos de un turno viejo se ignoran.
+  int _turnId = 0;
+
+  /// Completa cuando el turno SSE termina o se cancela (sendText lo espera).
+  Completer<void>? _turnDone;
+
   @override
   AssistantState build() {
-    _repo = AssistantRepository(ref.read(apiClientProvider));
+    _repo = ref.read(assistantRepositoryProvider);
     _engine = GeminiVoiceEngine(
       audioService: ref.read(nativeAudioServiceProvider),
       api: ref.read(apiClientProvider),
@@ -44,6 +60,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
     _engineSubscription = _engine.events.listen(_onEngineEvent);
     _dictationSubscription = _dictation.events.listen(_onDictationEvent);
     ref.onDispose(() {
+      _turnSubscription?.cancel();
       _engineSubscription?.cancel();
       _dictationSubscription?.cancel();
       // El servicio de dictado lo dispone su propio provider; aquí solo hay
@@ -57,6 +74,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
   // ── Reset & Navigation API ───────────────────────────────────────────────
 
   void reset() {
+    cancelTurn();
     stopVoice();
     _dictation.cancel();
     state = const AssistantState();
@@ -66,6 +84,7 @@ class AssistantNotifier extends Notifier<AssistantState> {
   // ya hubiera invitado a preguntar sobre este contexto — nunca se manda al
   // backend (sendMessage no envía el historial local), es puramente visual.
   void resetWithContext(AiChatContext context, {String? suggestionText}) {
+    cancelTurn();
     stopVoice();
     state = AssistantState(
       pendingContext: context,
@@ -115,20 +134,148 @@ class AssistantNotifier extends Notifier<AssistantState> {
       clearContext: isFirstMessage,
     );
 
+    if (kAssistantStreamingEnabled) {
+      await _sendTextStreaming(trimmed, context);
+    } else {
+      await _sendTextJson(trimmed, context);
+    }
+  }
+
+  /// Camino JSON (`POST /ai/chat`): flag apagado o fallback del stream.
+  Future<void> _sendTextJson(String text, AiChatContext? context) async {
+    final turn = ++_turnId;
     try {
-      final result = await _repo.sendMessage(trimmed, sessionId: state.sessionId, context: context);
-      ref.read(aiBackendProvider.notifier).set(result.aiBackend);
-      state = state.copyWith(
-        messages: [
-          ...state.messages,
-          AssistantMessage(role: 'ai', text: result.text, metadata: result.metadata),
-        ],
-        sessionId: result.sessionId,
-        isLoading: false,
-      );
+      final result = await _repo.sendMessage(text, sessionId: state.sessionId, context: context);
+      if (turn != _turnId) return;
+      _commitResult(result);
     } catch (e) {
+      if (turn != _turnId) return;
       state = state.copyWith(isLoading: false, error: mapApiError(e));
     }
+  }
+
+  void _commitResult(AssistantChatResult result) {
+    ref.read(aiBackendProvider.notifier).set(result.aiBackend);
+    state = state.copyWith(
+      messages: [
+        ...state.messages,
+        AssistantMessage(role: 'ai', text: result.text, metadata: result.metadata),
+      ],
+      sessionId: result.sessionId,
+      isLoading: false,
+      streamingText: '',
+      clearToolLabel: true,
+    );
+  }
+
+  /// Camino SSE (`POST /ai/chat/stream`). Termina cuando el stream cierra.
+  ///
+  /// Fallback al JSON SOLO si falla la conexión y todavía no llegó ningún
+  /// evento: ahí el backend no empezó el turno. Si el stream se cae a la
+  /// mitad se muestra el error de conexión y NO se reenvía (el turno puede
+  /// seguir corriendo en el servidor y se duplicarían efectos como crear
+  /// recordatorios). Los errores de negocio (402/404/409/422/429 o el evento
+  /// `error`) se muestran igual que en el JSON.
+  Future<void> _sendTextStreaming(String text, AiChatContext? context) async {
+    final turn = ++_turnId;
+    final completer = _turnDone = Completer<void>();
+    var gotEvent = false;
+    var finished = false;
+
+    void finish() {
+      finished = true;
+      _turnSubscription = null;
+      if (!completer.isCompleted) completer.complete();
+    }
+
+    void fail(Object e) {
+      state = state.copyWith(
+        isLoading: false,
+        streamingText: '',
+        clearToolLabel: true,
+        error: mapApiError(e),
+      );
+      finish();
+    }
+
+    _turnSubscription = _repo
+        .sendMessageStream(text, sessionId: state.sessionId, context: context)
+        .listen(
+      (event) {
+        if (turn != _turnId) return;
+        gotEvent = true;
+        switch (event) {
+          case AssistantStreamStatus(:final sessionId):
+            if (sessionId != null) state = state.copyWith(sessionId: sessionId);
+          case AssistantStreamTool(:final label, :final started):
+            if (started) {
+              state = state.copyWith(toolLabel: label);
+            } else if (state.toolLabel == label) {
+              state = state.copyWith(clearToolLabel: true);
+            }
+          case AssistantStreamDelta(:final text):
+            state = state.copyWith(streamingText: state.streamingText + text);
+          case AssistantStreamDone(:final result):
+            // Autoritativo: reemplaza lo acumulado y procesa metadata igual
+            // que el JSON.
+            _commitResult(result);
+            finished = true;
+          case AssistantStreamError(:final error):
+            fail(error);
+          case AssistantStreamCancelled():
+            state = state.copyWith(
+                isLoading: false, streamingText: '', clearToolLabel: true);
+            finished = true;
+        }
+      },
+      onError: (Object e) async {
+        if (turn != _turnId) return finish();
+        if (!gotEvent &&
+            e is ApiException &&
+            e.errorCode == kConnectionFailedCode) {
+          // El completer sigue abierto: sendText espera al JSON también.
+          await _sendTextJson(text, context);
+          finish();
+          return;
+        }
+        fail(e);
+      },
+      onDone: () {
+        if (turn == _turnId && !finished) {
+          // El stream cerró sin done/error/cancelled: no hay respuesta.
+          fail(const ApiException(
+            statusCode: 0,
+            message: kConnectionFailedCode,
+            errorCode: kConnectionFailedCode,
+          ));
+          return;
+        }
+        finish();
+      },
+      cancelOnError: true,
+    );
+    await completer.future;
+  }
+
+  /// Aborta el turno de texto en curso (el asesor salió de la pantalla, o
+  /// reinició la conversación): cierra la conexión SSE y le avisa al backend
+  /// con `POST /ai/sessions/:id/cancel` para que deje de gastar modelo.
+  /// Sin turno en curso no hace nada.
+  void cancelTurn() {
+    final sub = _turnSubscription;
+    if (sub == null && !state.isLoading) return;
+    _turnId++; // invalida los eventos que lleguen después
+    _turnSubscription = null;
+    sub?.cancel();
+    final done = _turnDone;
+    if (done != null && !done.isCompleted) done.complete();
+    final sid = state.sessionId;
+    if (sid != null) {
+      // fire-and-forget: si falla (sin red) el backend igual notará la
+      // conexión cerrada; no hay nada útil que mostrar al asesor.
+      unawaited(_repo.cancelSession(sid).catchError((_) {}));
+    }
+    state = state.copyWith(isLoading: false, streamingText: '', clearToolLabel: true);
   }
 
   // ── Dictado (STT del sistema → campo de texto) ─────────────────────────────
