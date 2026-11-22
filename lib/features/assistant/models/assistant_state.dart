@@ -20,6 +20,14 @@ class AssistantState {
   final List<AssistantMessage> messages;
   final String? sessionId;
   final bool isLoading;
+
+  /// Texto del turno de texto que va llegando por streaming (`delta`), antes de
+  /// que `done` lo fije como mensaje. Vacío si no hay stream en curso.
+  final String streamingText;
+
+  /// Etiqueta humana (ya en es/en, viene del backend) de la herramienta que
+  /// está corriendo en el turno de texto; null si no hay ninguna.
+  final String? toolLabel;
   final String? error;
   final AiChatContext? pendingContext;
   final AiChatContext? activeContext;
@@ -47,6 +55,8 @@ class AssistantState {
     this.messages = const [],
     this.sessionId,
     this.isLoading = false,
+    this.streamingText = '',
+    this.toolLabel,
     this.error,
     this.pendingContext,
     this.activeContext,
@@ -65,6 +75,9 @@ class AssistantState {
     List<AssistantMessage>? messages,
     String? sessionId,
     bool? isLoading,
+    String? streamingText,
+    String? toolLabel,
+    bool clearToolLabel = false,
     String? error,
     bool clearError = false,
     AiChatContext? pendingContext,
@@ -87,6 +100,8 @@ class AssistantState {
       messages: messages ?? this.messages,
       sessionId: sessionId ?? this.sessionId,
       isLoading: isLoading ?? this.isLoading,
+      streamingText: streamingText ?? this.streamingText,
+      toolLabel: clearToolLabel ? null : (toolLabel ?? this.toolLabel),
       error: clearError ? null : (error ?? this.error),
       pendingContext: clearContext ? null : (pendingContext ?? this.pendingContext),
       activeContext: clearContext ? null : (activeContext ?? this.activeContext),

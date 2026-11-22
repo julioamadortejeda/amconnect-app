@@ -163,6 +163,50 @@ class ApiClient {
     return _handle(res);
   }
 
+  /// POST que devuelve el cuerpo como stream de bytes (SSE). Mismos headers,
+  /// auth y traducción de errores que [post]:
+  ///
+  /// - fallo de transporte al conectar → `ApiException(CONNECTION_FAILED)`;
+  /// - status no 2xx → se lee el JSON de error y se lanza `ApiException`;
+  /// - 2xx → stream de bytes. Cancelar su suscripción cierra la conexión.
+  ///   Si pasa [idleTimeout] sin recibir bytes, el stream falla con
+  ///   `CONNECTION_FAILED` (el backend manda heartbeats, así que silencio
+  ///   largo = conexión muerta).
+  Future<Stream<List<int>>> postStream(
+    String path, {
+    Map<String, dynamic>? body,
+    Duration? idleTimeout,
+  }) async {
+    final uri = Uri.parse('$_base/$path');
+    final headers = await _buildHeaders();
+    headers['Accept'] = 'text/event-stream';
+    final request = http.Request('POST', uri)..headers.addAll(headers);
+    if (body != null) request.body = jsonEncode(body);
+
+    // El timeout cubre solo hasta recibir los headers de la respuesta.
+    final streamed = await guardTransport(
+      () => _client.send(request),
+      _timeoutFor(path),
+    );
+    if (streamed.statusCode < 200 || streamed.statusCode >= 300) {
+      final res = await guardTransport(
+        () => http.Response.fromStream(streamed),
+        _timeoutFor(path),
+      );
+      throw _toApiException(res);
+    }
+    final idle = idleTimeout ?? aiRequestTimeout;
+    return streamed.stream.timeout(
+      idle,
+      onTimeout: (sink) {
+        sink.addError(_connectionFailed(TimeoutException('sse idle')));
+        sink.close();
+      },
+    ).handleError((Object e) {
+      throw e is ApiException ? e : _connectionFailed(e);
+    }, test: (e) => e is! ApiException);
+  }
+
   Future<Map<String, dynamic>> patch(String path, {Map<String, dynamic>? body}) async {
     final res = await _send(
       path,

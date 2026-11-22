@@ -10,3 +10,9 @@ const kShowAiBackendBadge = true;
 /// Alternativa a crear recordatorios vía chat/voz de IA — pantalla real,
 /// conectada a POST /reminders.
 const kManualReminderCreationEnabled = true;
+
+/// Chat de texto del asistente por streaming (`POST /ai/chat/stream`, SSE):
+/// muestra "buscando cliente…" y el texto mientras llega. En `false` se usa
+/// solo el endpoint JSON `POST /ai/chat` (comportamiento anterior). Si el
+/// stream no logra conectar, la app cae sola al JSON aunque esté en `true`.
+const kAssistantStreamingEnabled = true;
