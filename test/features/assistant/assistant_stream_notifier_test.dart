@@ -85,11 +85,12 @@ void main() {
 
     c.add(const AssistantStreamTool(label: 'Buscando cliente', started: false, ok: true));
     await _pump();
-    expect(st().toolLabel, isNull);
+    expect(st().toolLabel, 'Buscando cliente'); // persiste tras finished
 
     c.add(const AssistantStreamDelta('Hola '));
     c.add(const AssistantStreamDelta('Ana'));
     await _pump();
+    expect(st().toolLabel, isNull); // el texto limpia la etiqueta
     expect(st().streamingText, 'Hola Ana');
     expect(st().messages, hasLength(1)); // aún no se fija como mensaje
 
@@ -192,6 +193,47 @@ void main() {
     await fut;
     expect(st().error, 'CONNECTION_FAILED');
     expect(st().isLoading, isFalse);
+  });
+
+  test('la etiqueta persiste tras finished y la reemplaza el siguiente started', () async {
+    final fut = notifier.sendText('hola');
+    await _pump();
+    final c = repo.controller!;
+    expect(st().toolLabel, isNull); // antes de la primera herramienta: "Pensando"
+    expect(st().isLoading, isTrue);
+    c.add(const AssistantStreamTool(label: 'A', started: true));
+    c.add(const AssistantStreamTool(label: 'A', started: false, ok: true));
+    await _pump();
+    expect(st().toolLabel, 'A');
+    c.add(const AssistantStreamTool(label: 'B', started: true));
+    await _pump();
+    expect(st().toolLabel, 'B');
+    c.add(const AssistantStreamDone(
+        (text: 'ok', sessionId: 's1', metadata: null, aiBackend: null)));
+    await c.close();
+    await fut;
+    expect(st().toolLabel, isNull);
+  });
+
+  test('error y cancelled limpian la etiqueta', () async {
+    var fut = notifier.sendText('hola');
+    await _pump();
+    var c = repo.controller!;
+    c.add(const AssistantStreamTool(label: 'A', started: true));
+    c.add(const AssistantStreamCancelled(sessionId: 's1'));
+    await c.close();
+    await fut;
+    expect(st().toolLabel, isNull);
+
+    fut = notifier.sendText('otra');
+    await _pump();
+    c = repo.controller!;
+    c.add(const AssistantStreamTool(label: 'A', started: true));
+    c.add(const AssistantStreamError(_conn));
+    await c.close();
+    await fut;
+    expect(st().toolLabel, isNull);
+    expect(st().error, isNotNull);
   });
 
   test('evento cancelled termina en silencio', () async {

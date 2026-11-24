@@ -370,6 +370,7 @@
   "chatBackendFree": "Free",
   "chatBackendEnterprise": "Enterprise",
   "chatSubtitle": "Connected to your base",
+  "chatThinking": "Thinking…",
   "chatInputHint": "Ask your assistant…",
   "chatCardViewProfile": "View Profile",
   "chatCardViewPolicy": "View Policy",

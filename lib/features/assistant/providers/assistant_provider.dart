@@ -210,11 +210,12 @@ class AssistantNotifier extends Notifier<AssistantState> {
           case AssistantStreamTool(:final label, :final started):
             if (started) {
               state = state.copyWith(toolLabel: label);
-            } else if (state.toolLabel == label) {
-              state = state.copyWith(clearToolLabel: true);
             }
+            // finished: NO se limpia; la etiqueta queda hasta el siguiente
+            // `started` (la herramienta dura ms, el modelo segundos).
           case AssistantStreamDelta(:final text):
-            state = state.copyWith(streamingText: state.streamingText + text);
+            state = state.copyWith(
+                streamingText: state.streamingText + text, clearToolLabel: true);
           case AssistantStreamDone(:final result):
             // Autoritativo: reemplaza lo acumulado y procesa metadata igual
             // que el JSON.
