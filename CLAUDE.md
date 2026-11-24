@@ -62,7 +62,7 @@ Text(l10n.algoClave)
 
 1. Agregar en `lib/l10n/app_es.arb` (con `@key` si tiene parámetros).
 2. Agregar traducción en `lib/l10n/app_en.arb`.
-3. Ejecutar `flutter gen-l10n`.
+3. Ejecutar `flutter gen-l10n`. **Nunca** pasar `dart format` por `lib/l10n/*.dart`: se guarda tal como lo genera Flutter. Si se formatea, `flutter run` lo regenera con otro formato y los 3 archivos aparecen modificados en cada corrida (pasó en 2026-11).
 4. Usar `l10n.nuevaClave` en el widget.
 
 ---

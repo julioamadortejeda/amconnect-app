@@ -1303,9 +1303,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String feedContactMismatchResolvedBanner(
-    String screenName,
-    String detectedName,
-  ) {
+      String screenName, String detectedName) {
     return 'Esta póliza se asignará a $screenName. El documento identificaba a $detectedName como titular.';
   }
 

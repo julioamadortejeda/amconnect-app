@@ -1296,9 +1296,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String feedContactMismatchResolvedBanner(
-    String screenName,
-    String detectedName,
-  ) {
+      String screenName, String detectedName) {
     return 'This policy will be assigned to $screenName. The document identified $detectedName as the policyholder.';
   }
 
