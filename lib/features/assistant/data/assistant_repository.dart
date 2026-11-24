@@ -32,9 +32,12 @@ class AssistantStreamStatus extends AssistantStreamEvent {
   final String? sessionId;
 }
 
-/// Una herramienta empezó o terminó. [label] ya viene humano en es/en.
+/// Una herramienta empezó o terminó. [name] es el nombre técnico (la app lo
+/// traduce a su idioma); [label] viene del backend y solo es el respaldo cuando
+/// [name] no llega (backends viejos).
 class AssistantStreamTool extends AssistantStreamEvent {
-  const AssistantStreamTool({required this.label, required this.started, this.ok});
+  const AssistantStreamTool({this.name, this.label = '', required this.started, this.ok});
+  final String? name;
   final String label;
   final bool started;
   final bool? ok;
@@ -120,8 +123,11 @@ class AssistantRepository {
         );
       case 'tool':
         final label = decoded['label']?.toString() ?? '';
-        if (label.isEmpty) return null;
+        final name = decoded['name']?.toString();
+        final hasName = name != null && name.isNotEmpty;
+        if (label.isEmpty && !hasName) return null;
         return AssistantStreamTool(
+          name: hasName ? name : null,
           label: label,
           started: decoded['state'] == 'started',
           ok: decoded['ok'] as bool?,

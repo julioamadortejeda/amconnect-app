@@ -208,6 +208,13 @@ void main() {
     c.add(const AssistantStreamTool(label: 'B', started: true));
     await _pump();
     expect(st().toolLabel, 'B');
+    expect(st().toolName, isNull);
+    c.add(const AssistantStreamTool(name: 'recall', label: 'C', started: true));
+    await _pump();
+    expect(st().toolName, 'recall');
+    c.add(const AssistantStreamTool(label: 'D', started: true));
+    await _pump();
+    expect(st().toolName, isNull); // no hereda el nombre anterior
     c.add(const AssistantStreamDone(
         (text: 'ok', sessionId: 's1', metadata: null, aiBackend: null)));
     await c.close();
