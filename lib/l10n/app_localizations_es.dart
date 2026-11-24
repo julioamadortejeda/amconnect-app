@@ -989,6 +989,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chatSubtitle => 'Conectado a tu base';
 
   @override
+  String get chatThinking => 'Pensando…';
+
+  @override
   String get chatInputHint => 'Pregúntale a tu asistente…';
 
   @override

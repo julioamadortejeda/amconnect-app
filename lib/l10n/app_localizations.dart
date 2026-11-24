@@ -1922,6 +1922,12 @@ abstract class AppLocalizations {
   /// **'Conectado a tu base'**
   String get chatSubtitle;
 
+  /// No description provided for @chatThinking.
+  ///
+  /// In es, this message translates to:
+  /// **'Pensando…'**
+  String get chatThinking;
+
   /// No description provided for @chatInputHint.
   ///
   /// In es, this message translates to:

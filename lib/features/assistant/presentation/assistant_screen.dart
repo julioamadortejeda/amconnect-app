@@ -188,10 +188,17 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       if (state.streamingText.isNotEmpty) {
         trailingItems.add(AssistantBubble(role: 'ai', text: state.streamingText));
       }
+      // Sin texto aún: la línea de estado (etiqueta de la herramienta o
+      // "Pensando…"); con texto fluyendo, el pulso de siempre.
       final toolLabel = state.toolLabel;
-      trailingItems.add(toolLabel != null
-          ? AssistantStatusLine(label: toolLabel)
-          : const AssistantTypingBubble());
+      if (toolLabel != null) {
+        trailingItems.add(AssistantStatusLine(label: toolLabel));
+      } else if (state.streamingText.isEmpty) {
+        trailingItems.add(AssistantStatusLine(
+            label: l10n.chatThinking));
+      } else {
+        trailingItems.add(const AssistantTypingBubble());
+      }
     }
 
     return PopScope(

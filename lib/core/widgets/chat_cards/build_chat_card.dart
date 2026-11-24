@@ -12,10 +12,24 @@ import 'attachment_list_card.dart';
 
 // ─── Factory ─────────────────────────────────────────────────────────────────
 
+const _listKeys = <String, String>{
+  'attachment_list': 'attachments',
+  'contact_list': 'contacts',
+  'reminder_list': 'reminders',
+  'policy_list': 'policies',
+};
+
 /// Returns a premium card widget if the [metadata] contains a known type,
 /// otherwise returns null so the caller can fall back to a text bubble.
 Widget? buildChatCard(Map<String, dynamic> metadata, BuildContext context) {
   final type = metadata['type'] as String?;
+  // Defensivo: una tarjeta de lista sin elementos no se dibuja (quedaría solo
+  // el botón de acción).
+  final listKey = _listKeys[type];
+  if (listKey != null) {
+    final items = metadata[listKey];
+    if (items is! List || items.isEmpty) return null;
+  }
   switch (type) {
     case 'attachment_list':
       return AttachmentListCard(data: metadata);

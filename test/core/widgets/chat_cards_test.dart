@@ -38,6 +38,38 @@ void main() {
     expect(buildChatCard(const {}, _FakeContext()), isNull);
   });
 
+  test('listas vacías no dibujan tarjeta', () {
+    for (final e in {
+      'reminder_list': 'reminders',
+      'policy_list': 'policies',
+      'contact_list': 'contacts',
+      'attachment_list': 'attachments',
+    }.entries) {
+      expect(buildChatCard({'type': e.key, e.value: []}, _FakeContext()), isNull);
+      expect(buildChatCard({'type': e.key}, _FakeContext()), isNull);
+    }
+  });
+
+  testWidgets('policy_list con elementos sí dibuja tarjeta', (tester) async {
+    await _pumpCard(tester, {
+      'type': 'policy_list',
+      'policies': [
+        {'id': 'p1', 'policyNumber': 'X1'}
+      ],
+    });
+    expect(find.byType(PolicyListCard), findsOneWidget);
+  });
+
+  testWidgets('attachment_list con elementos sí dibuja tarjeta', (tester) async {
+    await _pumpCard(tester, {
+      'type': 'attachment_list',
+      'attachments': [
+        {'fileName': 'a.pdf'}
+      ],
+    });
+    expect(find.byType(AttachmentListCard), findsOneWidget);
+  });
+
   group('buildChatCard elige la tarjeta correcta', () {
     final cases = <String, Type>{
       'policy_confirmed': PolicyConfirmedCard,
@@ -45,9 +77,7 @@ void main() {
       'contact_created': ContactCreatedCard,
       'reminder_created': ReminderCreatedCard,
       'contact_info': ContactInfoCard,
-      'policy_list': PolicyListCard,
       'policy_info': PolicyInfoCard,
-      'attachment_list': AttachmentListCard,
     };
     cases.forEach((type, widgetType) {
       testWidgets(type, (tester) async {
