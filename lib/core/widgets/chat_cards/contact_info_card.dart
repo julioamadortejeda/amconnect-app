@@ -114,7 +114,7 @@ class ContactInfoCard extends StatelessWidget {
               child: Column(
                 children: [
                   if (phone != null && phone.isNotEmpty)
-                    ChatDetailRow(icon: Icons.phone_rounded, label: l10n.clientsContactSection, value: phone),
+                    ChatDetailRow(icon: Icons.phone_rounded, label: l10n.clientsContactSection, value: fmtPhone(phone)),
                   if (email != null && email.isNotEmpty)
                     ChatDetailRow(icon: Icons.email_rounded, label: l10n.chatCardFieldEmail, value: email),
                 ],

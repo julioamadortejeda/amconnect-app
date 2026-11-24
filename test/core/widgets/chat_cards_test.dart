@@ -112,7 +112,7 @@ void main() {
     });
     expect(find.textContaining('Luis Gómez'), findsWidgets);
     expect(find.textContaining('luis@test.com'), findsWidgets);
-    expect(find.textContaining('5512345678'), findsWidgets);
+    expect(find.textContaining('55 1234 5678'), findsWidgets);
   });
 
   testWidgets('ReminderCreatedCard pinta el título del recordatorio', (tester) async {
