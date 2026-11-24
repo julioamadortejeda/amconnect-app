@@ -35,7 +35,7 @@ class ClientContactInfo extends StatelessWidget {
         (icon: Icons.phone_outlined, text: '—', muted: true)
       else
         for (final p in phoneEntries)
-          (icon: Icons.phone_outlined, text: p, muted: false),
+          (icon: Icons.phone_outlined, text: fmtPhone(p), muted: false),
       if (emailEntries.isEmpty)
         (icon: Icons.chat_bubble_outline_rounded, text: '—', muted: true)
       else

@@ -123,7 +123,7 @@ class ContactCreatedCard extends StatelessWidget {
               child: Column(
                 children: [
                   if (phone != null)
-                    ChatDetailRow(icon: Icons.phone_rounded, label: l10n.chatCardFieldPhone, value: phone),
+                    ChatDetailRow(icon: Icons.phone_rounded, label: l10n.chatCardFieldPhone, value: fmtPhone(phone)),
                   if (email != null)
                     ChatDetailRow(icon: Icons.email_rounded, label: l10n.chatCardFieldEmail, value: email),
                 ],

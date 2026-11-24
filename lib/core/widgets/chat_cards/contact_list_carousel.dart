@@ -103,7 +103,7 @@ class ContactListCarousel extends StatelessWidget {
                               ),
                               if (phone != null && phone.isNotEmpty)
                                 Text(
-                                  phone,
+                                  fmtPhone(phone),
                                   style: TextStyle(fontSize: 11, color: cs.tertiary),
                                 ),
                             ],

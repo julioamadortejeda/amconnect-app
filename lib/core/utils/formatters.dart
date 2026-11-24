@@ -13,7 +13,7 @@ const _months = [
   'sep',
   'oct',
   'nov',
-  'dic'
+  'dic',
 ];
 const _weekdays = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
 const _monthsFull = [
@@ -28,7 +28,7 @@ const _monthsFull = [
   'septiembre',
   'octubre',
   'noviembre',
-  'diciembre'
+  'diciembre',
 ];
 const _weekdaysFull = [
   'lunes',
@@ -37,7 +37,7 @@ const _weekdaysFull = [
   'jueves',
   'viernes',
   'sábado',
-  'domingo'
+  'domingo',
 ];
 
 String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
@@ -100,8 +100,11 @@ String fmtDateFromIso(String? iso, {bool showYear = true}) {
 }
 
 // "Hoy" / "Mañana" / "13 jun [2026]" — requiere l10n para los labels localizados
-String fmtSmartDate(DateTime? dt, AppLocalizations l10n,
-    {bool showYear = false}) {
+String fmtSmartDate(
+  DateTime? dt,
+  AppLocalizations l10n, {
+  bool showYear = false,
+}) {
   if (dt == null) return '—';
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
@@ -115,8 +118,11 @@ String fmtSmartDate(DateTime? dt, AppLocalizations l10n,
 
 // "Hoy, 17:02" / "Mañana" / "13 jun 2026, 09:00" — día inteligente + hora.
 // Convierte a hora local del dispositivo; medianoche local = sin hora → solo día.
-String fmtSmartDateTime(DateTime? dt, AppLocalizations l10n,
-    {bool showYear = false}) {
+String fmtSmartDateTime(
+  DateTime? dt,
+  AppLocalizations l10n, {
+  bool showYear = false,
+}) {
   if (dt == null) return '—';
   final local = dt.toLocal();
   final day = fmtSmartDate(local, l10n, showYear: showYear);
@@ -188,4 +194,48 @@ String fmtRelativeDay(DateTime? dt, AppLocalizations l10n) {
 String capitalizeFirst(String text) {
   if (text.isEmpty) return text;
   return text[0].toUpperCase() + text.substring(1);
+}
+
+// ── Teléfonos ───────────────────────────────────────────────────────────────
+
+/// Formatea un teléfono SOLO para mostrarlo (nunca cambia el valor guardado ni
+/// el que se usa para `tel:`/WhatsApp).
+///
+/// - México (+52, o +521 legacy móvil): `+52 55 1234 0011` (lada 55/33/81 en
+///   2-4-4) o `+52 222 123 4567` (resto en 3-3-4).
+/// - 10 dígitos sin país: igual pero sin `+52` (`55 1234 0011`).
+/// - EE. UU./Canadá (+1, 10 dígitos): `+1 415 555 0123`.
+/// - Cualquier otra cosa (otros países, extensiones, largos raros, letras):
+///   se devuelve el texto recortado, sin cambios. `null`/vacío → `''`.
+String fmtPhone(String? raw) {
+  final input = raw?.trim() ?? '';
+  if (input.isEmpty) return '';
+  // Solo dígitos, separadores visuales y un '+' inicial; si no, no se toca.
+  if (!RegExp(r'^\+?[\d\s\-.()]+$').hasMatch(input)) return input;
+  final hasPlus = input.startsWith('+');
+  final digits = input.replaceAll(RegExp(r'\D'), '');
+
+  if (hasPlus) {
+    if (digits.startsWith('52')) {
+      var national = digits.substring(2);
+      if (national.length == 11 && national.startsWith('1')) {
+        national = national.substring(1); // prefijo móvil legacy
+      }
+      if (national.length == 10) return '+52 ${_groupMx(national)}';
+    } else if (digits.startsWith('1') && digits.length == 11) {
+      final n = digits.substring(1);
+      return '+1 ${n.substring(0, 3)} ${n.substring(3, 6)} ${n.substring(6)}';
+    }
+    return input;
+  }
+  if (digits.length == 10) return _groupMx(digits);
+  return input;
+}
+
+String _groupMx(String n) {
+  const twoDigitAreas = {'55', '33', '81'};
+  if (twoDigitAreas.contains(n.substring(0, 2))) {
+    return '${n.substring(0, 2)} ${n.substring(2, 6)} ${n.substring(6)}';
+  }
+  return '${n.substring(0, 3)} ${n.substring(3, 6)} ${n.substring(6)}';
 }

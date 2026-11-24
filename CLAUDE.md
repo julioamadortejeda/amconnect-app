@@ -381,6 +381,7 @@ import 'package:amconnect/core/utils/formatters.dart';
 | `fmtSmartDate(dt, l10n)` | `DateTime?, l10n` | `"Hoy"` / `"Mañana"` / `"13 jun"` | Recordatorios en listas |
 | `fmtDateWithWeekday(dt)` | `DateTime?` | `"lun 13 jun 2026"` | Timestamps de comentarios/detalle |
 | `fmtTime(dt)` | `DateTime?` | `"10:30"` / `"—"` | Hora de recordatorios |
+| `fmtPhone(raw)` | `String?` | `"+52 55 1234 0011"` / `"55 1234 0011"` / `"+1 415 555 0123"` | Teléfonos mostrados (solo display; otros formatos se devuelven igual; `tel:`/WhatsApp usan el valor crudo) |
 | `fmtTime(dt, fallback: '')` | `DateTime?` | `"10:30"` / `""` | Hora cuando vacío no muestra nada |
 
 **Reglas:**

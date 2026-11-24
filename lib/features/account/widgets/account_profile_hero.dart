@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/agent_profile.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/am_avatar.dart';
 import '../../../core/widgets/am_form_row.dart';
 import '../../../core/widgets/am_group_card.dart';
@@ -123,7 +124,7 @@ class AccountProfileHero extends StatelessWidget {
               icon: Icons.phone_outlined,
               label: l10n.fieldPhone,
               trailing: Text(
-                profile.phone?.isNotEmpty == true ? profile.phone! : '—',
+                profile.phone?.isNotEmpty == true ? fmtPhone(profile.phone) : '—',
                 style: TextStyle(fontSize: 13.5, color: cs.onSurface),
               ),
             ),
