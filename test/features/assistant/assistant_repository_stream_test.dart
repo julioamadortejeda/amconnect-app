@@ -27,7 +27,7 @@ data: {"label":"Buscando cliente","state":"started"}
 
 id: 3
 event: tool
-data: {"label":"Buscando cliente","state":"finished","ok":true}
+data: {"name":"search_contact","label":"Buscando cliente","state":"finished","ok":true}
 
 id: 4
 event: weird
@@ -56,6 +56,8 @@ void main() {
     ]);
     expect((events[0] as AssistantStreamStatus).sessionId, 's1');
     expect((events[1] as AssistantStreamTool).started, isTrue);
+    expect((events[1] as AssistantStreamTool).name, isNull); // backend viejo
+    expect((events[2] as AssistantStreamTool).name, 'search_contact');
     expect((events[2] as AssistantStreamTool).ok, isTrue);
     final done = (events[4] as AssistantStreamDone).result;
     expect(done.text, 'Hola Ana');

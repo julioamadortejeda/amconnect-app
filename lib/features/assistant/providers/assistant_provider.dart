@@ -207,9 +207,10 @@ class AssistantNotifier extends Notifier<AssistantState> {
         switch (event) {
           case AssistantStreamStatus(:final sessionId):
             if (sessionId != null) state = state.copyWith(sessionId: sessionId);
-          case AssistantStreamTool(:final label, :final started):
+          case AssistantStreamTool(:final name, :final label, :final started):
             if (started) {
-              state = state.copyWith(toolLabel: label);
+              state = state.copyWith(
+                  clearToolLabel: true, toolName: name, toolLabel: label);
             }
             // finished: NO se limpia; la etiqueta queda hasta el siguiente
             // `started` (la herramienta dura ms, el modelo segundos).

@@ -12,6 +12,7 @@ import '../../../core/widgets/am_press.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/chat_cards.dart';
 import '../../feed/widgets/ingest_type_picker.dart';
+import '../models/assistant_tool_labels.dart';
 import '../providers/assistant_provider.dart';
 import '../providers/assistant_session_policy.dart';
 import '../widgets/assistant_bubble.dart';
@@ -191,8 +192,9 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
       // Sin texto aún: la línea de estado (etiqueta de la herramienta o
       // "Pensando…"); con texto fluyendo, el pulso de siempre.
       final toolLabel = state.toolLabel;
-      if (toolLabel != null) {
-        trailingItems.add(AssistantStatusLine(label: toolLabel));
+      if (state.toolName != null || toolLabel != null) {
+        trailingItems.add(AssistantStatusLine(
+            label: resolveToolLabel(l10n, state.toolName, toolLabel)));
       } else if (state.streamingText.isEmpty) {
         trailingItems.add(AssistantStatusLine(
             label: l10n.chatThinking));

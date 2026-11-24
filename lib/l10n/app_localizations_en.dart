@@ -984,6 +984,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatThinking => 'Thinking…';
 
   @override
+  String get chatToolWorking => 'Working…';
+
+  @override
+  String get chatToolContactLookup => 'Looking up contact…';
+
+  @override
+  String get chatToolContactSave => 'Saving contact…';
+
+  @override
+  String get chatToolPolicies => 'Checking policies…';
+
+  @override
+  String get chatToolSchedule => 'Checking your schedule…';
+
+  @override
+  String get chatToolReminderCreate => 'Scheduling reminder…';
+
+  @override
+  String get chatToolReminderMove => 'Moving the appointment…';
+
+  @override
+  String get chatToolReminderUpdate => 'Updating reminder…';
+
+  @override
+  String get chatToolCommitmentsCheck => 'Checking commitments…';
+
+  @override
+  String get chatToolCommitmentSave => 'Saving commitment…';
+
+  @override
+  String get chatToolNotes => 'Searching your notes…';
+
+  @override
   String get chatInputHint => 'Ask your assistant…';
 
   @override

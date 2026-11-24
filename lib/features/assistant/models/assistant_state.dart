@@ -25,8 +25,10 @@ class AssistantState {
   /// que `done` lo fije como mensaje. Vacío si no hay stream en curso.
   final String streamingText;
 
-  /// Etiqueta humana (ya en es/en, viene del backend) de la herramienta que
-  /// está corriendo en el turno de texto; null si no hay ninguna.
+  /// Herramienta que está corriendo en el turno de texto (null si ninguna):
+  /// [toolName] técnico (se traduce con `resolveToolLabel`) y [toolLabel] del
+  /// backend como respaldo si no llegó el nombre.
+  final String? toolName;
   final String? toolLabel;
   final String? error;
   final AiChatContext? pendingContext;
@@ -56,6 +58,7 @@ class AssistantState {
     this.sessionId,
     this.isLoading = false,
     this.streamingText = '',
+    this.toolName,
     this.toolLabel,
     this.error,
     this.pendingContext,
@@ -76,6 +79,7 @@ class AssistantState {
     String? sessionId,
     bool? isLoading,
     String? streamingText,
+    String? toolName,
     String? toolLabel,
     bool clearToolLabel = false,
     String? error,
@@ -101,7 +105,10 @@ class AssistantState {
       sessionId: sessionId ?? this.sessionId,
       isLoading: isLoading ?? this.isLoading,
       streamingText: streamingText ?? this.streamingText,
-      toolLabel: clearToolLabel ? null : (toolLabel ?? this.toolLabel),
+      // clearToolLabel descarta lo anterior y toma solo lo pasado en esta llamada
+      // (así una herramienta sin nombre no hereda el nombre de la anterior).
+      toolName: clearToolLabel ? toolName : (toolName ?? this.toolName),
+      toolLabel: clearToolLabel ? toolLabel : (toolLabel ?? this.toolLabel),
       error: clearError ? null : (error ?? this.error),
       pendingContext: clearContext ? null : (pendingContext ?? this.pendingContext),
       activeContext: clearContext ? null : (activeContext ?? this.activeContext),

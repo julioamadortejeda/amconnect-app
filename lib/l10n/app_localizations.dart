@@ -1928,6 +1928,72 @@ abstract class AppLocalizations {
   /// **'Pensando…'**
   String get chatThinking;
 
+  /// No description provided for @chatToolWorking.
+  ///
+  /// In es, this message translates to:
+  /// **'Trabajando…'**
+  String get chatToolWorking;
+
+  /// No description provided for @chatToolContactLookup.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando contacto…'**
+  String get chatToolContactLookup;
+
+  /// No description provided for @chatToolContactSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando contacto…'**
+  String get chatToolContactSave;
+
+  /// No description provided for @chatToolPolicies.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando pólizas…'**
+  String get chatToolPolicies;
+
+  /// No description provided for @chatToolSchedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando tu agenda…'**
+  String get chatToolSchedule;
+
+  /// No description provided for @chatToolReminderCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Agendando recordatorio…'**
+  String get chatToolReminderCreate;
+
+  /// No description provided for @chatToolReminderMove.
+  ///
+  /// In es, this message translates to:
+  /// **'Moviendo la cita…'**
+  String get chatToolReminderMove;
+
+  /// No description provided for @chatToolReminderUpdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando recordatorio…'**
+  String get chatToolReminderUpdate;
+
+  /// No description provided for @chatToolCommitmentsCheck.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando compromisos…'**
+  String get chatToolCommitmentsCheck;
+
+  /// No description provided for @chatToolCommitmentSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando compromiso…'**
+  String get chatToolCommitmentSave;
+
+  /// No description provided for @chatToolNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando en tus notas…'**
+  String get chatToolNotes;
+
   /// No description provided for @chatInputHint.
   ///
   /// In es, this message translates to:
